@@ -1,0 +1,14 @@
+#!/system/bin/sh
+# ni sh buat ganti mode lah
+echo 'wait . . .';
+mode=$(cat "/data/media/0/modul_mantul/ZyC_mod/ZyC_Turbo_config/status_modul.txt")
+echo "you use mode [$mode]"
+echo "Change mode script to? : ";
+read  modeNya
+if [ -z $modeNya ];then
+    echo "you still use [$mode]";
+else
+    echo $modeNya > /data/media/0/modul_mantul/ZyC_mod/ZyC_Turbo_config/status_modul.txt;
+    echo "mode updated to [$modeNya]";
+fi;
+echo 'request done . . .';

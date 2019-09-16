@@ -1,0 +1,21 @@
+#!/system/bin/sh
+# ni sh buat ganti mode paling cepet di dunia AWKWKWKWK
+echo 'preparing . . .'
+if [ ! -z "$1" ];then
+    echo "updating mode to '$1',please wait. . .";
+    printf "$1" | zyc_mode > /dev/null 2>&1;
+    sleep 0.1s
+    echo "update mode to '$1' done .";
+fi;
+if [ ! -z "$2" ];then
+    echo "updating mode to '$1',please wait. . .";
+    printf "$2" | zyc_render > /dev/null 2>&1;
+    sleep 0.1s
+    echo "update mode to '$1' done .";
+fi;
+zyc_turbo > /dev/null 2>&1
+mode=$(cat "/data/media/0/modul_mantul/ZyC_mod/ZyC_Turbo_config/status_modul.txt");
+render=$(cat "/data/media/0/modul_mantul/ZyC_mod/ZyC_Turbo_config/mode_render.txt");
+echo "use mode [$mode]  and render using [$render]";
+echo 'request done . . .';
+echo 'see log at internal/modul_mantul/ZyC_mod/ZyC_turbo.log';

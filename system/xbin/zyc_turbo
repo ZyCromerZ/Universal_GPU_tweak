@@ -1,0 +1,34 @@
+#!/system/bin/sh
+# ni sh buat nge trigger ganti mode aja
+echo 'wait . . .';
+magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
+GetVersion=$($magisk -c | grep -Eo '[1-9]{2}\.[0-9]+')
+case "$GetVersion" in
+'15.'[1-9]*) # Version 15.1 - 15.9
+	ModulPath=/sbin/.core/img
+;;
+'16.'[1-9]*) # Version 16.1 - 16.9
+	ModulPath=/sbin/.core/img
+;;
+'17.'[1-3]*) # Version 17.1 - 17.3
+	ModulPath=/sbin/.core/img
+;;
+'17.'[4-9]*) # Version 17.4 - 17.9
+	ModulPath=/sbin/.magisk/img
+;;
+'18.'[0-9]*) # Version 18.x
+	ModulPath=/sbin/.magisk/img
+;;
+'19.'[0-9a-zA-Z]*) # Version 19.x
+	ModulPath=/data/adb/modules
+;;
+*)
+    echo "unsupported magisk version detected,fail"
+    exit -1;
+;;
+esac
+sh $ModulPath/ZyC_Turbo/service.sh > /dev/null 2>&1
+mode=$(cat "/data/media/0/modul_mantul/ZyC_mod/ZyC_Turbo_config/status_modul.txt");
+render=$(cat "/data/media/0/modul_mantul/ZyC_mod/ZyC_Turbo_config/mode_render.txt");
+echo "use mode [$mode]  and render using [$render]";
+echo 'request done . . .';
