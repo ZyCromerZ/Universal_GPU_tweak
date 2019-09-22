@@ -1,6 +1,12 @@
 #!/system/bin/sh
 # ni sh buat ganti mode paling cepet di dunia AWKWKWKWK
 echo 'preparing . . .'
+if [ ! -e /data/mod_path.txt ]; then
+    zyc_turbo
+fi
+ModPath=$(cat /data/mod_path.txt)
+Path=$ModPath/modul_mantul/ZyC_mod
+PathModulConfig=$Path/ZyC_Turbo_config
 if [ ! -z "$1" ];then
     echo "updating mode to '$1',please wait. . .";
     printf "$1" | zyc_mode > /dev/null 2>&1;
@@ -8,14 +14,14 @@ if [ ! -z "$1" ];then
     echo "update mode to '$1' done .";
 fi;
 if [ ! -z "$2" ];then
-    echo "updating mode to '$1',please wait. . .";
+    echo "updating mode render to '$2',please wait. . .";
     printf "$2" | zyc_render > /dev/null 2>&1;
     sleep 0.1s
-    echo "update mode to '$1' done .";
+    echo "update mode render to '$2' done .";
 fi;
 zyc_turbo > /dev/null 2>&1
-mode=$(cat "/data/media/0/modul_mantul/ZyC_mod/ZyC_Turbo_config/status_modul.txt");
-render=$(cat "/data/media/0/modul_mantul/ZyC_mod/ZyC_Turbo_config/mode_render.txt");
+mode=$(cat "$PathModulConfig/status_modul.txt");
+render=$(cat "$PathModulConfig/mode_render.txt");
 echo "use mode [$mode]  and render using [$render]";
 echo 'request done . . .';
-echo 'see log at internal/modul_mantul/ZyC_mod/ZyC_turbo.log';
+echo "see log at $Path/ZyC_turbo.log";

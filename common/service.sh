@@ -18,7 +18,11 @@ else
 fi
 # echo $NyariGPU
 # Path=/sdcard/modul_mantul/ZyC_mod
-Path=/data/media/0/modul_mantul/ZyC_mod
+if [ ! -e /data/mod_path.txt ]; then
+    echo "/data/media/0" > /data/mod_path.txt
+fi
+ModPath=$(cat /data/mod_path.txt)
+Path=$ModPath/modul_mantul/ZyC_mod
 if [ ! -d $Path/ZyC_Turbo_config ]; then
     mkdir -p $Path/ZyC_Turbo_config
 fi
@@ -75,10 +79,10 @@ fsyncMode=$(cat $PathModulConfig/fsync_mode.txt)
 # fi
 # ThermalMode=$(cat $PathModulConfig/mode_thermal.txt)
 # setting custom Ram Management
-if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
-    echo '0' > $PathModulConfig/custom_ram_management.txt
-fi
-CustomRam=$(cat $PathModulConfig/custom_ram_management.txt)
+# if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
+#     echo '0' > $PathModulConfig/custom_ram_management.txt
+# fi
+# CustomRam=$(cat $PathModulConfig/custom_ram_management.txt)
 # notes
 if [ ! -e $PathModulConfig/notes_en.txt ]; then
     # echo "please read this xD \nyou can set mode.txt to:\n- off \n- on \n- turbo \nvalue must same as above without'-'\n\nchange mode_render.txt to:\n-  opengl \n-  skiagl \n-  skiavk \n\n note:\n-skiavk = Vulkan \n-skiagl = OpenGL (SKIA)\ndont edit total_fps.txt still not tested" > $PathModulConfig/notes.txt
@@ -580,23 +584,8 @@ SetTurbo(){
     fi
     echo 'use "turbo" done .' | tee -a $saveLog;
 }
-# disableThermal(){
-#     if  [ $NyariGPU != '' ];then
-#         if [ -e "$NyariGPU/thermal_pwrlevel" ]; then
-#           echo "0" > "$NyariGPU/thermal_pwrlevel"
-#         fi
-#     fi
-# }
-# enableThermal(){
-#     if  [ $NyariGPU != '' ];then
-#         if [ -e "$NyariGPU/thermal_pwrlevel" ]; then
-#           echo "1" > "$NyariGPU/thermal_pwrlevel"
-#         fi
-#     fi
-# }
 fstrimDulu(){
     echo "fstrim data cache & system, please wait" | tee -a $saveLog;
-    # echo "nyalain fstim dulu\n" | tee -a $saveLog;
     fstrim -v /cache | tee -a $saveLog;
     fstrim -v /data | tee -a $saveLog;
     fstrim -v /system | tee -a $saveLog;
@@ -676,7 +665,6 @@ enableLogSystem(){
 
 # ngator mode start
   if [ $GetMode == 'off' ];then
-      # echo "yah mode off,mematikan modul . . .\n" | tee -a $saveLog;
       SetOff
       echo "turn off tweak" | tee -a $saveLog;
   elif [ $GetMode == 'on' ];then
@@ -684,20 +672,17 @@ enableLogSystem(){
       SetOn
       # disableFsync
       echo "setting to mode on" | tee -a $saveLog;
-      # echo "nah mode on,menyalakan modul . . .\n" | tee -a $saveLog;
   elif [ $GetMode == 'turbo' ];then
       SetOn
       SetTurbo
       # disableFsync
       # disableThermal
       echo "swith to turbo mode" | tee -a $saveLog;
-      # echo "nah mode turbo, boros dikit gpp lah\n" | tee -a $saveLog;
   else
       SetOff
       SetOn
       # disableFsync
-      echo "please read notes.txt gih,mode $GetMode,not found autmatic set to mode on " | tee -a $saveLog;
-      # echo "Baca notes.txt gih, mode yg lu set kaga ada broo, lu malah set ke $GetMode,sih tapi gw set ke on aja dah \n" | tee -a $saveLog;
+      echo "please read guide, mode $GetMode,not found autmatic set to mode on " | tee -a $saveLog;
       echo 'on' > $PathModulConfig/status_modul.txt
   fi
 # ngator mode end
@@ -706,20 +691,16 @@ enableLogSystem(){
   if [ $FastCharge == "1" ]; then
       if [ -e /sys/kernel/fast_charge/force_fast_charge ]; then
           echo "tying to enable fastcharging using first method" | tee -a $saveLog;
-          # echo "coba cara pertama\n" | tee -a $saveLog;
           echo "2" > /sys/kernel/fast_charge/force_fast_charge
           if [ $(cat /sys/kernel/fast_charge/force_fast_charge) -eq "0" ]; then
               echo "tying to enable fastcharging using second method" | tee -a $saveLog;
-              # echo "coba cara kedua\n" | tee -a $saveLog;
               echo "1" > /sys/kernel/fast_charge/force_fast_charge
           fi
           echo "tying to enable fastcharging using third method,... \neh no third method just kidding xD" | tee -a $saveLog;
           if [ $(cat /sys/kernel/fast_charge/force_fast_charge) -eq "0" ]; then
               echo "fastcharge off,maybe your kernel/phone not support it" | tee -a $saveLog;
-              # echo "fastcharge gagal di nyalain,diantara bug kernel ma bug di modul,set aja manual dah di Kernel auditor\n" | tee -a $saveLog;
           else
               echo "fastcharge on" | tee -a $saveLog;
-              # echo "fastcharge sudah menyala :v \n" | tee -a $saveLog;
           fi
 
       fi
@@ -731,7 +712,6 @@ enableLogSystem(){
   if [ $SetRefreshRate != "0" ];then
       setprop persist.sys.NV_FPSLIMIT $SetRefreshRate
       echo "custom fps detected, set to $SetRefreshRate" | tee -a $saveLog;
-      # echo "modifikasi fps di deteksi bambang, di rubah ke $SetRefreshRate\n" | tee -a $saveLog;
   fi
 # set fps ? end
 
@@ -747,19 +727,15 @@ enableLogSystem(){
   if [ $GpuBooster == "0" ];then
       echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
       echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
-      # echo "modifikasi fps di deteksi bambang, di rubah ke $SetRefreshRate\n" | tee -a $saveLog;
   elif [ $GpuBooster == "1" ];then
       echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
       echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
-      # echo "modifikasi fps di deteksi bambang, di rubah ke $SetRefreshRate\n" | tee -a $saveLog;
   elif [ $GpuBooster == "2" ];then
       echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
       echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
-      # echo "modifikasi fps di deteksi bambang, di rubah ke $SetRefreshRate\n" | tee -a $saveLog;
   elif [ $GpuBooster == "3" ];then
       echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
       echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
-      # echo "modifikasi fps di deteksi bambang, di rubah ke $SetRefreshRate\n" | tee -a $saveLog;
   else
       echo "nice,use default this tweak GpuBoost" | tee -a $saveLog;
       echo '4' > $PathModulConfig/GpuBooster.txt
@@ -771,44 +747,23 @@ enableLogSystem(){
   if [ $RenderMode == 'skiagl' ];then
       setprop debug.hwui.renderer skiagl
       echo "set render gpu to OpenGL (SKIA) done" | tee -a $saveLog;
-      # echo "dah di set ke OpenGL (SKIA)" | tee -a $saveLog;
   elif [ $RenderMode == 'skiavk' ];then
       setprop debug.hwui.renderer skiavk
       echo "set render gpu to Vulkan (SKIA) done" | tee -a $saveLog;
-      # echo "dah di set ke Vulkan (SKIA)" | tee -a $saveLog;
   elif [ $RenderMode == 'opengl' ];then
       setprop debug.hwui.renderer opengl
       echo "set render gpu to OpenGL default done" | tee -a $saveLog;
-      # echo "dah di set ke OpenGL default" | tee -a $saveLog;
   else
       setprop debug.hwui.renderer skiagl
-      # echo "Baca notes.txt gih, mode yg lu set kaga ada broo buat rendernya,gw set dulu ke skiagl\nsejak kapan $RenderMode ada.. eh maap keceplosan xD " | tee -a $saveLog;
       echo "mode not found,set to OpenGL (skia) " | tee -a $saveLog;
       echo 'skiagl' > $PathModulConfig/mode_render.txt
-      # echo "PM gw kalo ada mode yg laen,ntar gw setting dah" | tee -a $saveLog;
   fi
 # gpu render end
-
-# disable thermal start
-  # if [ $ThermalMode == "0" ];then
-  #     disableThermal
-  #     echo "custom thermal detected, set to disable" | tee -a $saveLog;
-  #     # echo "modifikasi fps di deteksi bambang, di rubah ke $SetRefreshRate\n" | tee -a $saveLog;
-  # elif [ $ThermalMode == "1" ];then
-  #     enableThermal
-  #     echo "custom thermal detected, set to enable" | tee -a $saveLog;
-  # else
-  #     enableThermal
-  #     echo "thermal value error,set to enable" | tee -a $saveLog;
-  #     echo '1' > $PathModulConfig/mode_thermal.txt
-  # fi
-# disable thermal end
 
 # disable fsync start
   if [ $fsyncMode == "0" ];then
       disableFsync
       echo "custom fsync detected, set to disable" | tee -a $saveLog;
-      # echo "modifikasi fps di deteksi bambang, di rubah ke $SetRefreshRate\n" | tee -a $saveLog;
   elif [ $fsyncMode == "1" ];then
       enableFsync
       echo "custom fsync detected, set to enable" | tee -a $saveLog;
@@ -820,32 +775,30 @@ enableLogSystem(){
 # disable fsync end
 
 # costum ram managent start
-  if [ $CustomRam == '1' ];then
-      echo "coming_soon :D"| tee -a $saveLog;
-      # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog;
-  else
-      echo "not use custom ram management,good cause still not available :p" | tee -a $saveLog;
-      # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog;
-  fi;
+  # if [ $CustomRam == '1' ];then
+  #     echo "coming_soon :D"| tee -a $saveLog;
+  #     # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog;
+  # else
+  #     echo "not use custom ram management,good cause still not available :p" | tee -a $saveLog;
+  #     # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog;
+  # fi;
 # costum ram managent end
 
 if [ $GetMode == 'off' ];then
     echo "turn off tweak succeess :D"| tee -a $saveLog;
-    # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog;
 else
     echo "done,tweak has been turned on" | tee -a $saveLog;
-    # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog;
 fi;
 if [ $GetMode == 'turbo' ];then
     echo "NOTE: just tell you if you use this mode your battery will litle drain" | tee -a $saveLog;
-    # echo "NOTE: cuma mengingatkan di mode aga boros battery nya,JANGAN NGELUH BAMBANG" | tee -a $saveLog;
 fi;
-echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog;
 if [ $LogStatus == '1' ];then
-    enableLogSystem
+    # enableLogSystem
     disableLogSystem
 else
-    disableLogSystem
+    # disableLogSystem
     enableLogSystem
 fi
+echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog;
+
 exit 0;

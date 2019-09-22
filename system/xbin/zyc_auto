@@ -1,0 +1,47 @@
+#!/system/bin/sh
+# ni sh buat ganti mode paling cepet di dunia AWKWKWKWK
+echo 'preparing . . .'
+if [ ! -e /data/mod_path.txt ]; then
+    zyc_turbo
+fi
+ModPath=$(cat /data/mod_path.txt)
+Path=$ModPath/modul_mantul/ZyC_mod
+PathModulConfigAi=$Path/ZyC_Ai
+if [ ! -e "/system/etc/ZyC_Ai" ];then
+    echo "ai not found"
+    exit -1;
+fi
+if [ ! -z "$1" ];then
+    if [ "$1" == "on" ];then
+        echo "updating auto mode to '1',please wait. . .";
+        echo "1" > $PathModulConfigAi/ai_status.txt;
+        sleep 0.1s
+        echo "update auto mode to '1' done .";
+        
+    elif [ "$1" == "off" ];then
+        echo "updating auto mode to '3',please wait. . .";
+        echo "3" > $PathModulConfigAi/ai_status.txt;
+        sleep 0.1s
+        echo "update auto mode to '3' done .";
+    # fi
+    else
+        echo "updating auto mode to '$1',please wait. . .";
+        echo "$1" > $PathModulConfigAi/ai_status.txt;
+        sleep 0.1s
+        echo "update auto mode to '$1' done .";
+    fi
+fi;
+if [ -e "$PathModulConfigAi/ai_status.txt" ];then
+    aiStatus=$(cat "$PathModulConfigAi/ai_status.txt");
+    if [ "$aiStatus" == '0' ];then
+        echo "set ai status to 1 first"  
+    elif [ "$aiStatus" == '3' ];then
+        echo "check log,auto mode turned off,if not wait a minutes xD"    
+    else
+        sh /system/etc/ZyC_Ai/ai_mode.sh > /dev/null 2>&1
+        echo "close this terminal, the ai mode has been running"
+    fi
+else
+    sh /system/etc/ZyC_Ai/ai_mode.sh > /dev/null 2>&1
+    echo "close this terminal, the ai mode has been running"
+fi

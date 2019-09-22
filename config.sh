@@ -43,33 +43,21 @@ print_modname() {
   ui_print ""
   ui_print "preparing . . ."
   ui_print ""
-  ui_print "Modul GG ini(B aja sih) hanya untuk orang ganteng... eh untuk membantu meningkatkan performa GPU(bukan obat GPU YAHUD COK)"
-  ui_print ""
-  ui_print "thx for some people for help me tested this module :D"
-  ui_print ""
-  ui_print "This modul help your gpu to increase performance"
+  ui_print "This modul help your gpu to increase performance with disable your gpu thermal and some additional feature"
   ui_print ""
   ui_print "Created By : ZyCromerZ"
   ui_print ""
-  ui_print "hanya untuk max pro m2, boleh di coba untuk yang laen :v "
+  ui_print "optimized for max pro m2, but u can try this for other phone "
   ui_print ""
   ui_print "Thx to people for trying this module"
   ui_print ""
-  ui_print "kalo install ni tweak teros bootloop FF Gan"
-  ui_print ""
   ui_print "this modul not make bootloop!!!"
   ui_print ""
-  # ui_print "Hapus other fde.ai,nfs,lkt dari magisk modul, kalo mau ni modul jalan nya maksimal sih ... :D"
-  # ui_print ""
-  # ui_print "please dont combine this module with other module ( like fde.ai,nfs,lkt) that will not make this modul stronger xD"
   ui_print ""
-  ui_print "bisa di install bareng Temod atau disable thermal (pilih 1 aja jangan sekarah) biar makin joss"
   ui_print ""
   ui_print "you can try to flash Thermalmod atau disable thermal (choose 1) for better performance"
   ui_print ""
   ui_print "after reboot check log inside internal/modul_mantul/ZyC_Turbo.log, if is there done,find notes_en.txt and read it xD"
-  ui_print ""
-  ui_print "setelah restart cek log dalem internal/modul_mantul/ZyC_Turbo.log buat mastin aja :v,car cari notes_id.txt terus BACA"
   ui_print ""
   ui_print "enjoy . . ."
 }
@@ -121,6 +109,8 @@ set_permissions() {
     mv $MODPATH/system/xbin/zyc_mode $MODPATH/system/$bin
     mv $MODPATH/system/xbin/zyc_render $MODPATH/system/$bin
     mv $MODPATH/system/xbin/zyc_start $MODPATH/system/$bin
+    mv $MODPATH/system/xbin/zyc_auto $MODPATH/system/$bin
+    mv $MODPATH/system/xbin/aapt $MODPATH/system/$bin
     rm -rf $MODPATH/system/xbin/*
     rmdir $MODPATH/system/xbin
   else
@@ -129,11 +119,14 @@ set_permissions() {
   fi
   set_perm_recursive $MODPATH 0 0 0755 0644
   set_perm_recursive $MODPATH/system/$bin 0 0 0755 0777
+  set_perm_recursive $MODPATH/system/etc/ZyC_Ai 0 0 0755 0777
   set_perm $MODPATH/service.sh 0 0 0777
-  set_perm $MODPATH/system/$bin/zyc_turbo 0 0 0755 0777
-  set_perm $MODPATH/system/$bin/zyc_mode 0 0 0755 0777
-  set_perm $MODPATH/system/$bin/zyc_render 0 0 0755 0777
-  set_perm $MODPATH/system/$bin/zyc_start 0 0 0755 0777
+  set_perm $MODPATH/system/$bin/zyc_turbo 0 0 0777
+  set_perm $MODPATH/system/$bin/zyc_mode 0 0 0777
+  set_perm $MODPATH/system/$bin/zyc_render 0 0 0777
+  set_perm $MODPATH/system/$bin/zyc_start 0 0 0777
+  set_perm $MODPATH/system/$bin/zyc_auto 0 0 0777
+  set_perm $MODPATH/system/$bin/aapt 0 0 0777
   # set_perm_recursive  $MODPATH  0  0  0755  0644
   # set_perm_recursive  $MODPATH/service.sh 0 0 0755 0777
 }
