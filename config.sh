@@ -110,6 +110,7 @@ set_permissions() {
     mv $MODPATH/system/xbin/zyc_render $MODPATH/system/$bin
     mv $MODPATH/system/xbin/zyc_start $MODPATH/system/$bin
     mv $MODPATH/system/xbin/zyc_auto $MODPATH/system/$bin
+    mv $MODPATH/system/xbin/zyc_setting $MODPATH/system/$bin
     mv $MODPATH/system/xbin/aapt $MODPATH/system/$bin
     rm -rf $MODPATH/system/xbin/*
     rmdir $MODPATH/system/xbin
@@ -126,6 +127,7 @@ set_permissions() {
   set_perm $MODPATH/system/$bin/zyc_render 0 0 0777
   set_perm $MODPATH/system/$bin/zyc_start 0 0 0777
   set_perm $MODPATH/system/$bin/zyc_auto 0 0 0777
+  set_perm $MODPATH/system/$bin/zyc_setting 0 0 0777
   set_perm $MODPATH/system/$bin/aapt 0 0 0777
   # set_perm_recursive  $MODPATH  0  0  0755  0644
   # set_perm_recursive  $MODPATH/service.sh 0 0 0755 0777
