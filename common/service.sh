@@ -812,19 +812,22 @@ else
     enableLogSystem
 fi
 if [ $FromTerminal == "tidak" ];then
-    if [ -e $PathModulConfigAi/ai_status.txt ]; then
-        AiStatus=$(cat "$PathModulConfigAi/ai_status.txt")
-        if [ $AiStatus == "1" ];then
-            sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1
-        elif [ $AiStatus == "2" ];then
-            sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1
-        elif [ $AiStatus == "3" ];then
-            sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1
-        elif [ $AiStatus == "0" ];then
-            echo "ai status off"| tee -a $saveLog;
-        else
-            echo "ai status error,set to 0"| tee -a $saveLog;
-            echo '0' > "$PathModulConfigAi/ai_status.txt"
+    if [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ];then
+        BASEDIR=/system/etc/ZyC_Ai
+        if [ -e $PathModulConfigAi/ai_status.txt ]; then
+            AiStatus=$(cat "$PathModulConfigAi/ai_status.txt")
+            if [ $AiStatus == "1" ];then
+                sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1
+            elif [ $AiStatus == "2" ];then
+                sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1
+            elif [ $AiStatus == "3" ];then
+                sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1
+            elif [ $AiStatus == "0" ];then
+                echo "ai status off"| tee -a $saveLog;
+            else
+                echo "ai status error,set to 0"| tee -a $saveLog;
+                echo '0' > "$PathModulConfigAi/ai_status.txt"
+            fi
         fi
     fi
 fi
