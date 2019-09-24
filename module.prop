@@ -1,7 +1,7 @@
 id=ZyC_Turbo
 name=Mod GPU Indo Punya Eaa
-version=Version 3.32 BETA
-versionCode=332
+version=Version 3.33 BETA
+versionCode=333
 author=ZyCromerZ
 description=this module only for disable thermal gpu to get more performance and set adrenoboost to high, check this link for install guide : https://telegra.ph/Magisk-modul-mod-gpu-install-guide-09-16 
 minMagisk=1500

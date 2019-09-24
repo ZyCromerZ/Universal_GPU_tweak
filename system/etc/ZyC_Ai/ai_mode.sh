@@ -151,8 +151,10 @@ SetOff(){
     echo "off" > $PathModulConfig/status_modul.txt
     sh $ModulPath/ZyC_Turbo/service.sh > /dev/null 2>&1
     echo "turn off at : $(date +" %r")" | tee -a $AiLog /dev/null 2>&1;
+    echo "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- " | tee -a $AiLog /dev/null 2>&1 ;
 }
 if [ $aiStatus == "1" ]; then
+    echo "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- " | tee -a $AiLog /dev/null 2>&1 ;
     echo "starting modul at : $(date +" %r")" | tee -a $AiLog /dev/null 2>&1 ;
     # echo 400 > /sys/class/timed_output/vibrator/enable
     # sleep 1s
@@ -188,17 +190,20 @@ elif [ $aiStatus == "2" ];then
 elif [ $aiStatus == "3" ];then
     echo 'deactive . . .'  | tee -a $AiLog /dev/null 2>&1 ;
     echo "end at : $(date +" %r")" | tee -a $AiLog /dev/null 2>&1 ;
+    echo "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- " | tee -a $AiLog /dev/null 2>&1 ;
     echo '0' > $PathModulConfigAi/ai_status.txt
     exit -1;
 elif [ $aiStatus == "0" ];then
     echo "cannot start . . ."  | tee -a $AiLog /dev/null 2>&1 ;
     echo "please change ai status to 1 first" | tee -a $AiLog /dev/null 2>&1 ;
     echo "end at : $(date +" %r")" | tee -a $AiLog /dev/null 2>&1 ;
+    echo "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- " | tee -a $AiLog /dev/null 2>&1 ;
     exit -1; 
 else
     echo "cannot start . . ."  | tee -a $AiLog /dev/null 2>&1 ;
     echo "ai status error . . ."  | tee -a $AiLog /dev/null 2>&1 ;
     echo "end at : $(date +" %r")" | tee -a $AiLog /dev/null 2>&1 ;
+    echo "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- " | tee -a $AiLog /dev/null 2>&1 ;
     echo '0' > $PathModulConfigAi/ai_status.txt
     exit -1;
 fi

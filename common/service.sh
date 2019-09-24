@@ -2,7 +2,13 @@
 # tweak gpu
 # you can try on off my feature
 # prepare function
-sleep 2s
+# sleep 2s
+FromTerminal="tidak";
+if [ ! -z "$1" ];then
+    if [ "$1" == "Terminal" ];then
+        FromTerminal="ya";
+    fi
+fi;
 if [ -d "/sys/class/kgsl/kgsl-3d0" ]; then
   	NyariGPU="/sys/class/kgsl/kgsl-3d0"
 elif [ -d "/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0" ]; then
@@ -23,6 +29,7 @@ if [ ! -e /data/mod_path.txt ]; then
 fi
 ModPath=$(cat /data/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
+PathModulConfigAi=$Path/ZyC_Ai
 if [ ! -d $Path/ZyC_Turbo_config ]; then
     mkdir -p $Path/ZyC_Turbo_config
 fi
@@ -38,6 +45,11 @@ saveLog=$Path/ZyC_Turbo.log
 echo "this module created by : ZyCromerZ " | tee -a $saveLog;
 echo "to increase your GPU performance " | tee -a $saveLog;
 echo "check note_en.txt/note_id.txt for detail :D" | tee -a $saveLog;
+if [ $FromTerminal == "tidak" ];then
+    echo "running with boot detected" | tee -a $saveLog;
+else
+    echo "running without boot detected" | tee -a $saveLog;
+fi
 # status modul
 if [ ! -e $PathModulConfig/status_modul.txt ]; then
     echo 'turbo' > $PathModulConfig/status_modul.txt
@@ -798,6 +810,23 @@ if [ $LogStatus == '1' ];then
 else
     # disableLogSystem
     enableLogSystem
+fi
+if [ $FromTerminal == "tidak" ];then
+    if [ -e $PathModulConfigAi/ai_status.txt ]; then
+        AiStatus=$(cat "$PathModulConfigAi/ai_status.txt")
+        if [ $AiStatus == "1" ];then
+            sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1
+        elif [ $AiStatus == "2" ];then
+            sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1
+        elif [ $AiStatus == "3" ];then
+            sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1
+        elif [ $AiStatus == "0" ];then
+            echo "ai status off"| tee -a $saveLog;
+        else
+            echo "ai status error,set to 0"| tee -a $saveLog;
+            echo '0' > "$PathModulConfigAi/ai_status.txt"
+        fi
+    fi
 fi
 echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog;
 
