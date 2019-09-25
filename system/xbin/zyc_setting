@@ -317,6 +317,13 @@ saveSetting()
     if [ "$GetModeAiBefore" != "$GetModeAiNew" ];then
         echo "$GetModeAiNew" > $PathModulConfigAi/ai_status.txt ; 
     fi
+    echo "re run tweak . . ."
+    zyc_turbo > /dev/null 2>&1
+    if [ "$GetModeAiNew" == "1" ];then
+        echo "turn on ai"
+        zyc_auto > /dev/null 2>&1
+    fi
+    echo "done . . . "
     echo "exit (y/n)?"
     read keluar
     if [ $keluar == "y" ];then
