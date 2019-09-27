@@ -3,6 +3,7 @@
 # you can try on off my feature
 # prepare function
 # sleep 2s
+# MODDIR=${0%/*}
 FromTerminal="tidak";
 if [ ! -z "$1" ];then
     if [ "$1" == "Terminal" ];then

@@ -1,6 +1,7 @@
-<hr>
-this is just magisk modul for disable your thermal gpu and improve your gpu performance with some additional feature <br>
-tested devices : max pro m2 using aegis X oc and non oc kernel,and some custom rom <br>
-and support other qualcomm processor ( need tested ) <br>
-and not support other processor(i mean only qualcomm ),but you can try this modul and told me if is support for your phone xD <br>
-<hr>
+# Magisk Installer
+
+**Update `README.md` if you want to submit your module to the online repo!**
+
+For more information about how to use this module installer, please refer to [documentations](https://topjohnwu.github.io/Magisk/guides.html)
+
+If you are not familiar with the Markdown syntax, you can start by experimenting on GitHub's online Markdown editor, which will let you preview before publishing. If you need more help, the [Markdown Cheat Sheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) will be handy.
