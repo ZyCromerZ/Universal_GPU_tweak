@@ -24,7 +24,8 @@
 # Set to true if you do *NOT* want Magisk to mount
 # any files for you. Most modules would NOT want
 # to set this flag to true
-SKIPMOUNT=false
+# SKIPMOUNT=false
+AUTOMOUNT=true
 
 # Set to true if you need to load system.prop
 PROPFILE=false
@@ -147,7 +148,11 @@ print_modname() {
   ui_print "or disable thermal (choose 1)  "
   ui_print "for better performance"
   ui_print ""
-  ui_print "after reboot check log inside internal/modul_mantul/ZyC_Turbo.log, if is there done,find notes_en.txt/notes_en.id and read it xD"
+  ui_print "after reboot check log inside  "
+  ui_print "internal/modul_mantul/         "
+  ui_print "ZyC_Turbo.log, aftrer reboot   "
+  ui_print "find notes_en.txt/notes_en.id  "
+  ui_print "and read it xD                 "
   ui_print ""
   ui_print "enjoy . . ."
 }
@@ -188,14 +193,14 @@ set_permissions() {
   set_perm_recursive $MODPATH                   0 0 0755 0777
   set_perm_recursive $MODPATH/system/$bin       0 0 0755 0777
   set_perm_recursive $MODPATH/system/etc/ZyC_Ai 0 0 0755 0777
-  # set_perm $MODPATH/service.sh                  0 0 0777
-  # set_perm $MODPATH/system/$bin/zyc_turbo       0 0 0777
-  # set_perm $MODPATH/system/$bin/zyc_mode        0 0 0777
-  # set_perm $MODPATH/system/$bin/zyc_render      0 0 0777
-  # set_perm $MODPATH/system/$bin/zyc_start       0 0 0777
-  # set_perm $MODPATH/system/$bin/zyc_auto        0 0 0777
-  # set_perm $MODPATH/system/$bin/zyc_setting     0 0 0777
-  # set_perm $MODPATH/system/$bin/aapt            0 0 0777
+  set_perm $MODPATH/service.sh                  0 0 0777
+  set_perm $MODPATH/system/$bin/zyc_turbo       0 0 0777
+  set_perm $MODPATH/system/$bin/zyc_mode        0 0 0777
+  set_perm $MODPATH/system/$bin/zyc_render      0 0 0777
+  set_perm $MODPATH/system/$bin/zyc_start       0 0 0777
+  set_perm $MODPATH/system/$bin/zyc_auto        0 0 0777
+  set_perm $MODPATH/system/$bin/zyc_setting     0 0 0777
+  set_perm $MODPATH/system/$bin/aapt            0 0 0777
   # set_perm_recursive  $MODPATH  0  0  0755  0644
   # set_perm_recursive  $MODPATH/service.sh 0 0 0755 0777
   # Here are some examples:

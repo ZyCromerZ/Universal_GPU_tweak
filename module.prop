@@ -3,5 +3,6 @@ name=Mod GPU Indo Punya Eaa
 version=Version 3.34 STABLE
 versionCode=334
 author=ZyCromerZ
-description=this module only for disable thermal gpu to get more performance and set adrenoboost to high, check this link for install guide : https://telegra.ph/Magisk-modul-mod-gpu-install-guide-09-16 
+description=This module help you to improve your gpu for get better performance,check notes_en.txt/notes_id.txt for more information 
 minMagisk=1500
+

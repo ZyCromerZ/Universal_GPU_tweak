@@ -1,4 +1,3 @@
-
 # Created By : ZyCromerZ
 # tweak gpu
 # this is for auto mode :v 
