@@ -14,7 +14,7 @@ if [ ! -d $Path/ZyC_Ai ]; then
 fi
 PathModulConfig=$Path/ZyC_Turbo_config
 if [ ! -d $Path/ZyC_Turbo_config ]; then
-    sh $ModulPath/ZyC_Turbo/service.sh > /dev/null 2>&1
+    mkdir -p $Path/ZyC_Turbo_config
 fi
 PathModulConfigAi=$Path/ZyC_Ai
 # Log AI

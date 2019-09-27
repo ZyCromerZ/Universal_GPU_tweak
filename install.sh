@@ -1,6 +1,8 @@
 ##########################################################################################
 #
 # Magisk Module Installer Script
+# template by @topjohnwu
+# edited by ZyCromerZ
 #
 ##########################################################################################
 ##########################################################################################
@@ -125,21 +127,27 @@ print_modname() {
   ui_print "*******************************"
   ui_print "     Magisk Module Template    "
   ui_print "*******************************"
-  ui_print "preparing . . ."
+  ui_print "     Created By : ZyCromerZ    "
+  ui_print "*******************************"
   ui_print ""
-  ui_print "This modul help your gpu to increase performance with disable your gpu thermal and some additional feature"
+  ui_print "preparing . . .                "
   ui_print ""
-  ui_print "Created By : ZyCromerZ"
+  ui_print "qualcom gpu module with some   "
+  ui_print "additional feature             "
   ui_print ""
-  ui_print "optimized for max pro m2, but u can try this for other phone "
+  ui_print "optimized for max pro m2, but u"
+  ui_print "can try this for other phone   "
   ui_print ""
-  ui_print "Thx to people for trying this module"
+  ui_print "Thx to people for trying this  "
+  ui_print "module"
   ui_print ""
   ui_print "this modul not make bootloop!!!"
   ui_print ""
-  ui_print "you can try to flash Thermalmod atau disable thermal (choose 1) for better performance"
+  ui_print "you can try to flash Thermalmod"
+  ui_print "or disable thermal (choose 1)  "
+  ui_print "for better performance"
   ui_print ""
-  ui_print "after reboot check log inside internal/modul_mantul/ZyC_Turbo.log, if is there done,find notes_en.txt and read it xD"
+  ui_print "after reboot check log inside internal/modul_mantul/ZyC_Turbo.log, if is there done,find notes_en.txt/notes_en.id and read it xD"
   ui_print ""
   ui_print "enjoy . . ."
 }
@@ -177,17 +185,17 @@ set_permissions() {
     rm -rf $MODPATH/system/bin/*
     rmdir $MODPATH/system/bin
   fi
-  set_perm_recursive $MODPATH 0 0 0755 0644
-  set_perm_recursive $MODPATH/system/$bin 0 0 0755 0777
+  set_perm_recursive $MODPATH                   0 0 0755 0777
+  set_perm_recursive $MODPATH/system/$bin       0 0 0755 0777
   set_perm_recursive $MODPATH/system/etc/ZyC_Ai 0 0 0755 0777
-  set_perm $MODPATH/service.sh 0 0 0777
-  set_perm $MODPATH/system/$bin/zyc_turbo 0 0 0777
-  set_perm $MODPATH/system/$bin/zyc_mode 0 0 0777
-  set_perm $MODPATH/system/$bin/zyc_render 0 0 0777
-  set_perm $MODPATH/system/$bin/zyc_start 0 0 0777
-  set_perm $MODPATH/system/$bin/zyc_auto 0 0 0777
-  set_perm $MODPATH/system/$bin/zyc_setting 0 0 0777
-  set_perm $MODPATH/system/$bin/aapt 0 0 0777
+  # set_perm $MODPATH/service.sh                  0 0 0777
+  # set_perm $MODPATH/system/$bin/zyc_turbo       0 0 0777
+  # set_perm $MODPATH/system/$bin/zyc_mode        0 0 0777
+  # set_perm $MODPATH/system/$bin/zyc_render      0 0 0777
+  # set_perm $MODPATH/system/$bin/zyc_start       0 0 0777
+  # set_perm $MODPATH/system/$bin/zyc_auto        0 0 0777
+  # set_perm $MODPATH/system/$bin/zyc_setting     0 0 0777
+  # set_perm $MODPATH/system/$bin/aapt            0 0 0777
   # set_perm_recursive  $MODPATH  0  0  0755  0644
   # set_perm_recursive  $MODPATH/service.sh 0 0 0755 0777
   # Here are some examples:

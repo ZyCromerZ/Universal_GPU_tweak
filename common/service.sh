@@ -11,15 +11,15 @@ if [ ! -z "$1" ];then
     fi
 fi;
 if [ -d "/sys/class/kgsl/kgsl-3d0" ]; then
-  	NyariGPU="/sys/class/kgsl/kgsl-3d0"
+    NyariGPU="/sys/class/kgsl/kgsl-3d0"
 elif [ -d "/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0" ]; then
-  	NyariGPU="/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0"
+    NyariGPU="/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0"
 elif [ -d "/sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0" ]; then
-  	NyariGPU="/sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
+    NyariGPU="/sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
 elif [ -d "/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0" ]; then
-  	NyariGPU="/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
+    NyariGPU="/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
 elif [ -d "/sys/devices/platform/*.gpu/devfreq/*.gpu" ]; then
-  	NyariGPU="/sys/devices/platform/*.gpu/devfreq/*.gpu"
+    NyariGPU="/sys/devices/platform/*.gpu/devfreq/*.gpu"
 else
     NyariGPU='';
 fi
@@ -102,27 +102,22 @@ CustomRam=$(cat $PathModulConfig/custom_ram_management.txt)
 
 # Check notes version
 if [ -e $PathModulConfig/notes_en.txt ];then
-    if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.33-5 BETA" ];then
+    if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.34 STABLE" ];then
         rm $PathModulConfig/notes_en.txt
     fi
 fi
 if [ -e $PathModulConfig/notes_id.txt ];then
-    if [ "$(cat "$PathModulConfig/notes_id.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.33-5 BETA" ];then
+    if [ "$(cat "$PathModulConfig/notes_id.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.34 STABLE" ];then
         rm $PathModulConfig/notes_id.txt
     fi
 fi
 if [ ! -e $PathModulConfig/notes_en.txt ]; then
     # echo "please read this xD \nyou can set mode.txt to:\n- off \n- on \n- turbo \nvalue must same as above without'-'\n\nchange mode_render.txt to:\n-  opengl \n-  skiagl \n-  skiavk \n\n note:\n-skiavk = Vulkan \n-skiagl = OpenGL (SKIA)\ndont edit total_fps.txt still not tested" > $PathModulConfig/notes.txt
     SetNotes=$PathModulConfig/notes_en.txt;
-    echo "This module functions to disable thermal GPU and setting some other parts in the GPU so that the performance is more stable, provided additional features to make it more delicious & this may be the last time I make notes with this description: p
-
-
-
-Bye, how to install already. . .
+    echo "This module functions to disable thermal GPU and setting some other parts in the GPU for get better performance, 
+provided additional features to make it more better performance :p
 
 There are 2 versions, v3 and v2
-
-
 
 For v3:
 
@@ -172,7 +167,7 @@ zyc_auto
 
 
 
-If for the previous version 3.32 to 3 (the latest can also only not recomen) there are several ways, namely:
+If for the previous version 3.32 to 3 (the latest can also only not recomended) there are several ways, namely:
 
 1.) The first way, just to run the module
 
@@ -341,7 +336,7 @@ mode = off / on / turbo
 
 namarender = opengl / skiagl / skiavk
 
-Version:3.33-5 BETA" | tee -a $SetNotes > /dev/null 2>&1;
+Version:3.34 STABLE" | tee -a $SetNotes > /dev/null 2>&1;
 fi
 if [ ! -e $PathModulConfig/notes_id.txt ]; then
     SetNotes=$PathModulConfig/notes_id.txt;
@@ -586,245 +581,248 @@ namamode = off/on/turbo
 
 namarender = opengl/skiagl/skiavk
 
-Version:3.33-5 BETA" | tee -a $SetNotes > /dev/null 2>&1;
+Version:3.34 STABLE" | tee -a $SetNotes > /dev/null 2>&1;
     
 fi
 backupDolo(){
   # backup data dolo boss start
   backup="kaga";
-  if [ ! -d $PathModulConfig/backup ]; then
-      mkdir -p $PathModulConfig/backup
-  fi
+    if [ ! -d $PathModulConfig/backup ]; then
+        mkdir -p $PathModulConfig/backup
+    fi
   #val gpu nya
-  if [ ! -e $PathModulConfig/backup/gpu_throttling.txt ]; then
-      if [ -e $NyariGPU/throttling ]; then
-        echo $(cat "$NyariGPU/throttling") > "$PathModulConfig/backup/gpu_throttling.txt"
-        backup="pake"
-        sleep 0.1s
-      fi
-  fi
+    if [ ! -e $PathModulConfig/backup/gpu_throttling.txt ]; then
+        if [ -e $NyariGPU/throttling ]; then
+            echo $(cat "$NyariGPU/throttling") > "$PathModulConfig/backup/gpu_throttling.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
+    fi
 
-  if [ ! -e $PathModulConfig/backup/gpu_force_no_nap.txt ]; then
-      if [ -e $NyariGPU/force_no_nap ]; then
-        echo $(cat "$NyariGPU/force_no_nap") > "$PathModulConfig/backup/gpu_force_no_nap.txt"
-        backup="pake"
-        sleep 0.1s
-      fi
-  fi
+    if [ ! -e $PathModulConfig/backup/gpu_force_no_nap.txt ]; then
+        if [ -e $NyariGPU/force_no_nap ]; then
+            echo $(cat "$NyariGPU/force_no_nap") > "$PathModulConfig/backup/gpu_force_no_nap.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
+    fi
 
-  if [ ! -e $PathModulConfig/backup/gpu_force_bus_on.txt ]; then
-      if [ -e $NyariGPU/force_bus_on ]; then
-        echo $(cat "$NyariGPU/force_bus_on") > "$PathModulConfig/backup/gpu_force_bus_on.txt"
-        backup="pake"
-        sleep 0.1s
-      fi
-  fi
+    if [ ! -e $PathModulConfig/backup/gpu_force_bus_on.txt ]; then
+        if [ -e $NyariGPU/force_bus_on ]; then
+            echo $(cat "$NyariGPU/force_bus_on") > "$PathModulConfig/backup/gpu_force_bus_on.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
+    fi
 
-  if [ ! -e $PathModulConfig/backup/gpu_force_clk_on.txt ]; then
-      if [ -e $NyariGPU/force_clk_on ]; then
-        echo $(cat "$NyariGPU/force_clk_on") > "$PathModulConfig/backup/gpu_force_clk_on.txt"
-        backup="pake"
-        sleep 0.1s
-      fi
-  fi
+    if [ ! -e $PathModulConfig/backup/gpu_force_clk_on.txt ]; then
+        if [ -e $NyariGPU/force_clk_on ]; then
+            echo $(cat "$NyariGPU/force_clk_on") > "$PathModulConfig/backup/gpu_force_clk_on.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
+    fi
 
-  if [ ! -e $PathModulConfig/backup/gpu_force_rail_on.txt ]; then
-      if [ -e $NyariGPU/force_rail_on ]; then
-        echo $(cat "$NyariGPU/force_rail_on") > "$PathModulConfig/backup/gpu_force_rail_on.txt"
-        backup="pake"
-        sleep 0.1s
-      fi
-  fi
+    if [ ! -e $PathModulConfig/backup/gpu_force_rail_on.txt ]; then
+        if [ -e $NyariGPU/force_rail_on ]; then
+            echo $(cat "$NyariGPU/force_rail_on") > "$PathModulConfig/backup/gpu_force_rail_on.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
+    fi
 
-  if [ ! -e $PathModulConfig/backup/gpu_bus_split.txt ]; then
-      if [ -e $NyariGPU/bus_split ]; then
-        echo $(cat "$NyariGPU/bus_split") > "$PathModulConfig/backup/gpu_bus_split.txt"
-        backup="pake"
-        sleep 0.1s
-      fi
-  fi
+    if [ ! -e $PathModulConfig/backup/gpu_bus_split.txt ]; then
+        if [ -e $NyariGPU/bus_split ]; then
+            echo $(cat "$NyariGPU/bus_split") > "$PathModulConfig/backup/gpu_bus_split.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
+    fi
 
-  if [ ! -e $PathModulConfig/backup/gpu_max_pwrlevel.txt ]; then
-      if [ -e $NyariGPU/max_pwrlevel ]; then
-        echo $(cat "$NyariGPU/max_pwrlevel") > "$PathModulConfig/backup/gpu_max_pwrlevel.txt"
-        backup="pake"
-        sleep 0.1s
-      fi
-  fi
+    if [ ! -e $PathModulConfig/backup/gpu_max_pwrlevel.txt ]; then
+        if [ -e $NyariGPU/max_pwrlevel ]; then
+            echo $(cat "$NyariGPU/max_pwrlevel") > "$PathModulConfig/backup/gpu_max_pwrlevel.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
+    fi
 
-  if [ ! -e $PathModulConfig/backup/gpu_adrenoboost.txt ]; then
-      if [ -e $NyariGPU/devfreq/adrenoboost ]; then
-        echo $(cat "$NyariGPU/devfreq/adrenoboost") > "$PathModulConfig/backup/gpu_adrenoboost.txt"
-        backup="pake"
-        sleep 0.1s
-      fi
-  fi
+    if [ ! -e $PathModulConfig/backup/gpu_adrenoboost.txt ]; then
+        if [ -e $NyariGPU/devfreq/adrenoboost ]; then
+            echo $(cat "$NyariGPU/devfreq/adrenoboost") > "$PathModulConfig/backup/gpu_adrenoboost.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
+    fi
 
-  if [ ! -e $PathModulConfig/backup/gpu_thermal_pwrlevel.txt ]; then
-      if [ -e $NyariGPU/devfreq/thermal_pwrlevel ]; then
-        echo $(cat "$NyariGPU/devfreq/thermal_pwrlevel") > "$PathModulConfig/backup/gpu_thermal_pwrlevel.txt"
-        backup="pake"
-        sleep 0.1s
-      fi
-  fi
+    if [ ! -e $PathModulConfig/backup/gpu_thermal_pwrlevel.txt ]; then
+        if [ -e $NyariGPU/devfreq/thermal_pwrlevel ]; then
+            echo $(cat "$NyariGPU/devfreq/thermal_pwrlevel") > "$PathModulConfig/backup/gpu_thermal_pwrlevel.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
+    fi
 
   # fsync backup
-  if [ ! -e $PathModulConfig/backup/misc_Dyn_fsync_active.txt ]; then
-      if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
-        echo $(cat  "/sys/kernel/dyn_fsync/Dyn_fsync_active") > "$PathModulConfig/backup/misc_Dyn_fsync_active.txt"
-        backup="pake"
-        sleep 0.1s
-      fi
-  fi
+    if [ ! -e $PathModulConfig/backup/misc_Dyn_fsync_active.txt ]; then
+        if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
+            echo $(cat  "/sys/kernel/dyn_fsync/Dyn_fsync_active") > "$PathModulConfig/backup/misc_Dyn_fsync_active.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
+    fi
 
-  if [ ! -e $PathModulConfig/backup/misc_class_fsync_enabled.txt ]; then
-      if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
-        echo $(cat  "/sys/class/misc/fsynccontrol/fsync_enabled") > "$PathModulConfig/backup/misc_class_fsync_enabled.txt"
-        backup="pake"
-        sleep 0.1s
-      fi 
-  fi
+    if [ ! -e $PathModulConfig/backup/misc_class_fsync_enabled.txt ]; then
+        if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
+            echo $(cat  "/sys/class/misc/fsynccontrol/fsync_enabled") > "$PathModulConfig/backup/misc_class_fsync_enabled.txt"
+            backup="pake"
+            sleep 0.1s
+        fi 
+    fi
 
-  if [ ! -e $PathModulConfig/backup/misc_fsync.txt ]; then
-      if [ -e /sys/module/sync/parameters/fsync ]; then
-        echo $(cat  "/sys/module/sync/parameters/fsync") > "$PathModulConfig/backup/misc_fsync.txt"
-        backup="pake"
-        sleep 0.1s
-      fi
-  fi
+    if [ ! -e $PathModulConfig/backup/misc_fsync.txt ]; then
+        if [ -e /sys/module/sync/parameters/fsync ]; then
+            echo $(cat  "/sys/module/sync/parameters/fsync") > "$PathModulConfig/backup/misc_fsync.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
+    fi
 
-  if [ ! -e $PathModulConfig/backup/misc_module_fsync_enabled.txt ]; then
-      if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
-        echo $(cat  "/sys/module/sync/parameters/fsync_enabled") > "$PathModulConfig/backup/misc_module_fsync_enabled.txt"
-        backup="pake"
-        sleep 0.1s
-      fi
-  fi
+    if [ ! -e $PathModulConfig/backup/misc_module_fsync_enabled.txt ]; then
+        if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
+            echo $(cat  "/sys/module/sync/parameters/fsync_enabled") > "$PathModulConfig/backup/misc_module_fsync_enabled.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
+    fi
   # log prop bakcup :D
   # Disable stats logging & monitoring
   # debug.atrace.tags.enableflags=0
-  if [ ! -e $PathModulConfig/backup/prop_debug.atrace.tags.enableflags.txt ]; then
-      echo $(getprop  debug.atrace.tags.enableflags) > "$PathModulConfig/backup/prop_debug.atrace.tags.enableflags.txt"
-      backup="pake"
-      sleep 0.1s
-  fi
+    if [ ! -e $PathModulConfig/backup/prop_debug.atrace.tags.enableflags.txt ]; then
+        echo $(getprop  debug.atrace.tags.enableflags) > "$PathModulConfig/backup/prop_debug.atrace.tags.enableflags.txt"
+        backup="pake"
+        sleep 0.1s
+    fi
 
-  # profiler.force_disable_ulog=true
-  if [ ! -e $PathModulConfig/backup/prop_profiler.force_disable_ulog.txt ]; then
-      echo $(getprop  profiler.force_disable_ulog) > "$PathModulConfig/backup/prop_profiler.force_disable_ulog.txt"
-      backup="pake"
-      sleep 0.1s
-  fi
+    # profiler.force_disable_ulog=true
+    if [ ! -e $PathModulConfig/backup/prop_profiler.force_disable_ulog.txt ]; then
+        echo $(getprop  profiler.force_disable_ulog) > "$PathModulConfig/backup/prop_profiler.force_disable_ulog.txt"
+        backup="pake"
+        sleep 0.1s
+    fi
 
-  # profiler.force_disable_err_rpt=true
-  if [ ! -e $PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt ]; then
-      echo $(getprop  profiler.force_disable_err_rpt) > "$PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt"
-      backup="pake"
-      sleep 0.1s
-  fi
-  
-  # profiler.force_disable_err_rpt=1
-  if [ ! -e $PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt ]; then
-      echo $(getprop  profiler.force_disable_err_rpt) > "$PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt"
-      backup="pake"
-      sleep 0.1s
-  fi
+    # profiler.force_disable_err_rpt=true
+    if [ ! -e $PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt ]; then
+        echo $(getprop  profiler.force_disable_err_rpt) > "$PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt"
+        backup="pake"
+        sleep 0.1s
+    fi
+    
+    # profiler.force_disable_err_rpt=1
+    if [ ! -e $PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt ]; then
+        echo $(getprop  profiler.force_disable_err_rpt) > "$PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt"
+        backup="pake"
+        sleep 0.1s
+    fi
 
-  # ro.config.nocheckin=1
-  if [ ! -e $PathModulConfig/backup/prop_ro.config.nocheckin.txt ]; then
-      echo $(getprop  ro.config.nocheckin) > "$PathModulConfig/backup/prop_ro.config.nocheckin.txt"
-      backup="pake"
-      sleep 0.1s
-  fi
+    # ro.config.nocheckin=1
+    if [ ! -e $PathModulConfig/backup/prop_ro.config.nocheckin.txt ]; then
+        echo $(getprop  ro.config.nocheckin) > "$PathModulConfig/backup/prop_ro.config.nocheckin.txt"
+        backup="pake"
+        sleep 0.1s
+    fi
 
-  # debugtool.anrhistory=0
-  if [ ! -e $PathModulConfig/backup/prop_debugtool.anrhistory.txt ]; then
-      echo $(getprop  debugtool.anrhistory) > "$PathModulConfig/backup/prop_debugtool.anrhistory.txt"
-      backup="pake"
-      sleep 0.1s
-  fi
+    # debugtool.anrhistory=0
+    if [ ! -e $PathModulConfig/backup/prop_debugtool.anrhistory.txt ]; then
+        echo $(getprop  debugtool.anrhistory) > "$PathModulConfig/backup/prop_debugtool.anrhistory.txt"
+        backup="pake"
+        sleep 0.1s
+    fi
   # disable log
-  if [ $LogStatus == '1' ];then
-      # ro.com.google.locationfeatures=0
-      if [ ! -e $PathModulConfig/backup/prop_ro.com.google.locationfeatures.txt ]; then
-          echo $(getprop  ro.com.google.locationfeatures) > "$PathModulConfig/backup/prop_ro.com.google.locationfeatures.txt"
-          backup="pake"
-          sleep 0.1s
-      fi
+    if [ $LogStatus == '1' ];then
+        # ro.com.google.locationfeatures=0
+        if [ ! -e $PathModulConfig/backup/prop_ro.com.google.locationfeatures.txt ]; then
+            echo $(getprop  ro.com.google.locationfeatures) > "$PathModulConfig/backup/prop_ro.com.google.locationfeatures.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
 
-      # ro.com.google.networklocation=0
-      if [ ! -e $PathModulConfig/backup/prop_ro.com.google.networklocation.txt ]; then
-          echo $(getprop  ro.com.google.networklocation) > "$PathModulConfig/backup/prop_ro.com.google.networklocation.txt"
-          backup="pake"
-          sleep 0.1s
-      fi
+        # ro.com.google.networklocation=0
+        if [ ! -e $PathModulConfig/backup/prop_ro.com.google.networklocation.txt ]; then
+            echo $(getprop  ro.com.google.networklocation) > "$PathModulConfig/backup/prop_ro.com.google.networklocation.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
 
-      # profiler.debugmonitor=false
-      if [ ! -e $PathModulConfig/backup/prop_profiler.debugmonitor.txt ]; then
-          echo $(getprop  profiler.debugmonitor) > "$PathModulConfig/backup/prop_profiler.debugmonitor.txt"
-          backup="pake"
-          sleep 0.1s
-      fi
+        # profiler.debugmonitor=false
+        if [ ! -e $PathModulConfig/backup/prop_profiler.debugmonitor.txt ]; then
+            echo $(getprop  profiler.debugmonitor) > "$PathModulConfig/backup/prop_profiler.debugmonitor.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
 
-      # profiler.launch=false
-      if [ ! -e $PathModulConfig/backup/prop_profiler.launch.txt ]; then
-          echo $(getprop  profiler.launch) > "$PathModulConfig/backup/prop_profiler.launch.txt"
-          backup="pake"
-          sleep 0.1s
-      fi
+        # profiler.launch=false
+        if [ ! -e $PathModulConfig/backup/prop_profiler.launch.txt ]; then
+            echo $(getprop  profiler.launch) > "$PathModulConfig/backup/prop_profiler.launch.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
 
-      # profiler.hung.dumpdobugreport=false
-      if [ ! -e $PathModulConfig/backup/prop_profiler.hung.dumpdobugreport.txt ]; then
-          echo $(getprop  profiler.hung.dumpdobugreport) > "$PathModulConfig/backup/prop_profiler.hung.dumpdobugreport.txt"
-          backup="pake"
-          sleep 0.1s
-      fi
+        # profiler.hung.dumpdobugreport=false
+        if [ ! -e $PathModulConfig/backup/prop_profiler.hung.dumpdobugreport.txt ]; then
+            echo $(getprop  profiler.hung.dumpdobugreport) > "$PathModulConfig/backup/prop_profiler.hung.dumpdobugreport.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
 
-      # persist.service.pcsync.enable=0
-      if [ ! -e $PathModulConfig/backup/prop_persist.service.pcsync.enable.txt ]; then
-          echo $(getprop  persist.service.pcsync.enable) > "$PathModulConfig/backup/prop_persist.service.pcsync.enable.txt"
-          backup="pake"
-          sleep 0.1s
-      fi
+        # persist.service.pcsync.enable=0
+        if [ ! -e $PathModulConfig/backup/prop_persist.service.pcsync.enable.txt ]; then
+            echo $(getprop  persist.service.pcsync.enable) > "$PathModulConfig/backup/prop_persist.service.pcsync.enable.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
 
-      # persist.service.lgospd.enable=0
-      if [ ! -e $PathModulConfig/backup/prop_persist.service.lgospd.enable.txt ]; then
-          echo $(getprop  persist.service.lgospd.enable) > "$PathModulConfig/backup/prop_persist.service.lgospd.enable.txt"
-          backup="pake"
-          sleep 0.1s
-      fi
+        # persist.service.lgospd.enable=0
+        if [ ! -e $PathModulConfig/backup/prop_persist.service.lgospd.enable.txt ]; then
+            echo $(getprop  persist.service.lgospd.enable) > "$PathModulConfig/backup/prop_persist.service.lgospd.enable.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
 
-      # persist.sys.purgeable_assets=1
-      if [ ! -e $PathModulConfig/backup/prop_persist.sys.purgeable_assets.txt ]; then
-          echo $(getprop  persist.sys.purgeable_assets) > "$PathModulConfig/backup/prop_persist.sys.purgeable_assets.txt"
-          backup="pake"
-          sleep 0.1s
-      fi
-  fi
-  if [ ! -e $PathModulConfig/backup/ram_enable_adaptive_lmk.txt ];then
-      if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ];then
-          echo $(cat "/sys/module/lowmemorykiller/parameters/enable_adaptive_lmk") > "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt"  
-          backup="pake"
-      fi
-  fi
-  if [ ! -e $PathModulConfig/backup/ram_debug_level.txt ];then
-      if [ -e /sys/module/lowmemorykiller/parameters/debug_level ];then
-          echo $(cat "/sys/module/lowmemorykiller/parameters/debug_level") > "$PathModulConfig/backup/ram_debug_level.txt"  
-          backup="pake"
-      fi
-  fi
-  if [ ! -e $PathModulConfig/backup/ram_adj.txt ];then
-      if [ -e /sys/module/lowmemorykiller/parameters/adj ];then
-          echo $(cat "/sys/module/lowmemorykiller/parameters/adj") > "$PathModulConfig/backup/ram_adj.txt"  
-          backup="pake"
-      fi
-  fi
-  if [ ! -e $PathModulConfig/backup/ram_minfree.txt ];then
-      if [ -e /sys/module/lowmemorykiller/parameters/minfree ];then
-          echo $(cat "/sys/module/lowmemorykiller/parameters/minfree") > "$PathModulConfig/backup/ram_minfree.txt"  
-          backup="pake"
-      fi
-  fi
+        # persist.sys.purgeable_assets=1
+        if [ ! -e $PathModulConfig/backup/prop_persist.sys.purgeable_assets.txt ]; then
+            echo $(getprop  persist.sys.purgeable_assets) > "$PathModulConfig/backup/prop_persist.sys.purgeable_assets.txt"
+            backup="pake"
+            sleep 0.1s
+        fi
+    fi
+  # ram management 
+    if [ "$CustomRam" != "0" ];then
+        if [ ! -e $PathModulConfig/backup/ram_enable_adaptive_lmk.txt ];then
+            if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ];then
+                echo $(cat "/sys/module/lowmemorykiller/parameters/enable_adaptive_lmk") > "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt"  
+                backup="pake"
+            fi
+        fi
+        if [ ! -e $PathModulConfig/backup/ram_debug_level.txt ];then
+            if [ -e /sys/module/lowmemorykiller/parameters/debug_level ];then
+                echo $(cat "/sys/module/lowmemorykiller/parameters/debug_level") > "$PathModulConfig/backup/ram_debug_level.txt"  
+                backup="pake"
+            fi
+        fi
+        if [ ! -e $PathModulConfig/backup/ram_adj.txt ];then
+            if [ -e /sys/module/lowmemorykiller/parameters/adj ];then
+                echo $(cat "/sys/module/lowmemorykiller/parameters/adj") > "$PathModulConfig/backup/ram_adj.txt"  
+                backup="pake"
+            fi
+        fi
+        if [ ! -e $PathModulConfig/backup/ram_minfree.txt ];then
+            if [ -e /sys/module/lowmemorykiller/parameters/minfree ];then
+                echo $(cat "/sys/module/lowmemorykiller/parameters/minfree") > "$PathModulConfig/backup/ram_minfree.txt"  
+                backup="pake"
+            fi
+        fi
+    fi
 # backup data dolo boss end
 }
 
@@ -832,9 +830,9 @@ backupDolo
 # echo 'aelah';
 sleep 0.5s
 # log backup nya
-  if [ $backup == "pake" ]; then
-      echo "backup setting done" | tee -a $saveLog;
-  fi
+    if [ $backup == "pake" ]; then
+        echo "backup setting done" | tee -a $saveLog;
+    fi
 # end log backup
 SetOff(){
     echo 'revert setting . . .' | tee -a $saveLog;
@@ -847,43 +845,43 @@ SetOff(){
     resetprop --delete persist.sys.NV_STEREOSEPCHG > /dev/null 2>&1
     resetprop --delete persist.sys.NV_STEREOSEP > /dev/null 2>&1
     if [ -e $NyariGPU/throttling ]; then
-      echo $(cat "$PathModulConfig/backup/gpu_throttling.txt") > "$NyariGPU/throttling"
+        echo $(cat "$PathModulConfig/backup/gpu_throttling.txt") > "$NyariGPU/throttling"
     fi
     if [ -e $NyariGPU/force_no_nap ]; then
-      echo $(cat "$PathModulConfig/backup/gpu_force_no_nap.txt") > "$NyariGPU/force_no_nap"
+        echo $(cat "$PathModulConfig/backup/gpu_force_no_nap.txt") > "$NyariGPU/force_no_nap"
     fi
     if [ -e $NyariGPU/force_bus_on ]; then
-      echo $(cat "$PathModulConfig/backup/gpu_force_bus_on.txt") > "$NyariGPU/force_bus_on"
+        echo $(cat "$PathModulConfig/backup/gpu_force_bus_on.txt") > "$NyariGPU/force_bus_on"
     fi
     if [ -e $NyariGPU/force_clk_on ]; then
-      echo $(cat "$PathModulConfig/backup/gpu_force_clk_on.txt") > "$NyariGPU/force_clk_on"
+        echo $(cat "$PathModulConfig/backup/gpu_force_clk_on.txt") > "$NyariGPU/force_clk_on"
     fi
     if [ -e $NyariGPU/force_rail_on ]; then
-      echo $(cat "$PathModulConfig/backup/gpu_force_rail_on.txt") > "$NyariGPU/force_rail_on"
+        echo $(cat "$PathModulConfig/backup/gpu_force_rail_on.txt") > "$NyariGPU/force_rail_on"
     fi
     if [ -e $NyariGPU/bus_split ]; then
-      echo $(cat "$PathModulConfig/backup/gpu_bus_split.txt") > "$NyariGPU/bus_split"
+        echo $(cat "$PathModulConfig/backup/gpu_bus_split.txt") > "$NyariGPU/bus_split"
     fi
     if [ -e $NyariGPU/max_pwrlevel ]; then
-      echo $(cat "$PathModulConfig/backup/gpu_max_pwrlevel.txt") > "$NyariGPU/max_pwrlevel"
+        echo $(cat "$PathModulConfig/backup/gpu_max_pwrlevel.txt") > "$NyariGPU/max_pwrlevel"
     fi
     if [ -e $NyariGPU/devfreq/adrenoboost ]; then
-      echo $(cat "$PathModulConfig/backup/gpu_adrenoboost.txt") > "$NyariGPU/devfreq/adrenoboost"
+        echo $(cat "$PathModulConfig/backup/gpu_adrenoboost.txt") > "$NyariGPU/devfreq/adrenoboost"
     fi
     if [ -e $NyariGPU/devfreq/thermal_pwrlevel ]; then
-      echo $(cat "$PathModulConfig/backup/gpu_thermal_pwrlevel.txt") > "$NyariGPU/devfreq/thermal_pwrlevel"
+        echo $(cat "$PathModulConfig/backup/gpu_thermal_pwrlevel.txt") > "$NyariGPU/devfreq/thermal_pwrlevel"
     fi
     if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
-      echo $(cat  "$PathModulConfig/backup/misc_Dyn_fsync_active.txt") > "/sys/kernel/dyn_fsync/Dyn_fsync_active"
+        echo $(cat  "$PathModulConfig/backup/misc_Dyn_fsync_active.txt") > "/sys/kernel/dyn_fsync/Dyn_fsync_active"
     fi
     if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
-      echo $(cat  "$PathModulConfig/backup/misc_class_fsync_enabled.txt") > "/sys/class/misc/fsynccontrol/fsync_enabled"
+        echo $(cat  "$PathModulConfig/backup/misc_class_fsync_enabled.txt") > "/sys/class/misc/fsynccontrol/fsync_enabled"
     fi 
     if [ -e /sys/module/sync/parameters/fsync ]; then
-      echo $(cat  "$PathModulConfig/backup/misc_fsync.txt") > "/sys/module/sync/parameters/fsync"
+        echo $(cat  "$PathModulConfig/backup/misc_fsync.txt") > "/sys/module/sync/parameters/fsync"
     fi
     if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
-      echo $(cat  "$PathModulConfig/backup/misc_module_fsync_enabled.txt") > "/sys/module/sync/parameters/fsync_enabled"
+        echo $(cat  "$PathModulConfig/backup/misc_module_fsync_enabled.txt") > "/sys/module/sync/parameters/fsync_enabled"
     fi
     echo 'revert done . . .' | tee -a $saveLog;
 }
@@ -899,11 +897,11 @@ SetOn(){
     # GPU TWEAK wajib lah biar kaga drop fps xD
     if [ $NyariGPU != '' ];then
         if [ -e $NyariGPU/max_pwrlevel ]; then
-          echo "0" > "$NyariGPU/max_pwrlevel"
-          echo "0" > "$NyariGPU/max_pwrlevel"
+            echo "0" > "$NyariGPU/max_pwrlevel"
+            echo "0" > "$NyariGPU/max_pwrlevel"
         fi
         if [ -e $NyariGPU/devfreq/adrenoboost ]; then
-          echo "3" > "$NyariGPU/devfreq/adrenoboost"
+            echo "3" > "$NyariGPU/devfreq/adrenoboost"
         fi
     fi
     echo 'use "on" done. . .' | tee -a $saveLog;
@@ -915,22 +913,22 @@ SetTurbo(){
     setprop persist.sys.NV_FPSLIMIT 120
     if  [ $NyariGPU != '' ];then
         if [ -e "$NyariGPU/throttling" ]; then
-          echo "0" > $NyariGPU/throttling
+            echo "0" > $NyariGPU/throttling
         fi
         if [ -e "$NyariGPU/force_no_nap" ]; then
-          echo "0" > $NyariGPU/force_no_nap
+            echo "0" > $NyariGPU/force_no_nap
         fi
         if [ -e "$NyariGPU/force_bus_on" ]; then
-          echo "0" > $NyariGPU/force_bus_on
+            echo "0" > $NyariGPU/force_bus_on
         fi
         if [ -e "$NyariGPU/force_clk_on" ]; then
-          echo "0" > $NyariGPU/force_clk_on
+            echo "0" > $NyariGPU/force_clk_on
         fi
         if [ -e "$NyariGPU/force_rail_on" ]; then
-          echo "0" > $NyariGPU/force_rail_on
+            echo "0" > $NyariGPU/force_rail_on
         fi
         if [ -e "$NyariGPU/bus_split" ]; then
-          echo "1" > $NyariGPU/bus_split
+            echo "1" > $NyariGPU/bus_split
         fi
     fi
     echo 'use "turbo" done .' | tee -a $saveLog;
@@ -946,32 +944,32 @@ disableFsync(){
     # disable fsync biar ui smooth :D
     echo 'disable fsync . . .' | tee -a $saveLog;
     if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
-      echo "0" > /sys/kernel/dyn_fsync/Dyn_fsync_active
+        echo "0" > /sys/kernel/dyn_fsync/Dyn_fsync_active
     fi
     if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
-      echo "0" > /sys/class/misc/fsynccontrol/fsync_enabled
+        echo "0" > /sys/class/misc/fsynccontrol/fsync_enabled
     fi 
     if [ -e /sys/module/sync/parameters/fsync ]; then
-      echo "0" > /sys/module/sync/parameters/fsync
+        echo "0" > /sys/module/sync/parameters/fsync
     fi
     if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
-      echo "N" > /sys/module/sync/parameters/fsync_enabled
+        echo "N" > /sys/module/sync/parameters/fsync_enabled
     fi
     echo 'disable done .' | tee -a $saveLog;
 }
 enableFsync(){
     # enable fsync
     if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
-      echo "1" > /sys/kernel/dyn_fsync/Dyn_fsync_active
+        echo "1" > /sys/kernel/dyn_fsync/Dyn_fsync_active
     fi
     if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
-      echo "1" > /sys/class/misc/fsynccontrol/fsync_enabled
+        echo "1" > /sys/class/misc/fsynccontrol/fsync_enabled
     fi 
     if [ -e /sys/module/sync/parameters/fsync ]; then
-      echo "1" > /sys/module/sync/parameters/fsync
+        echo "1" > /sys/module/sync/parameters/fsync
     fi
     if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
-      echo "Y" > /sys/module/sync/parameters/fsync_enabled
+        echo "Y" > /sys/module/sync/parameters/fsync_enabled
     fi
 }
 disableLogSystem(){
@@ -1015,190 +1013,209 @@ enableLogSystem(){
 }
 
 # ngator mode start
-  if [ $GetMode == 'off' ];then
-      SetOff
-      echo "turn off tweak" | tee -a $saveLog;
-  elif [ $GetMode == 'on' ];then
-      SetOff
-      SetOn
-      # disableFsync
-      echo "setting to mode on" | tee -a $saveLog;
-  elif [ $GetMode == 'turbo' ];then
-      SetOn
-      SetTurbo
-      # disableFsync
-      # disableThermal
-      echo "swith to turbo mode" | tee -a $saveLog;
-  else
-      SetOff
-      SetOn
-      # disableFsync
-      echo "please read guide, mode $GetMode,not found autmatic set to mode on " | tee -a $saveLog;
-      echo 'on' > $PathModulConfig/status_modul.txt
-  fi
+    if [ $GetMode == 'off' ];then
+        SetOff
+        echo "turn off tweak" | tee -a $saveLog;
+    elif [ $GetMode == 'on' ];then
+        SetOff
+        SetOn
+        # disableFsync
+        echo "setting to mode on" | tee -a $saveLog;
+    elif [ $GetMode == 'turbo' ];then
+        SetOn
+        SetTurbo
+        # disableFsync
+        # disableThermal
+        echo "swith to turbo mode" | tee -a $saveLog;
+    else
+        SetOff
+        SetOn
+        # disableFsync
+        echo "please read guide, mode $GetMode,not found autmatic set to mode on " | tee -a $saveLog;
+        echo 'on' > $PathModulConfig/status_modul.txt
+    fi
 # ngator mode end
 
 # enable fastcharge start
-  if [ $FastCharge == "1" ]; then
-      if [ -e /sys/kernel/fast_charge/force_fast_charge ]; then
-          echo "tying to enable fastcharging using first method" | tee -a $saveLog;
-          echo "2" > /sys/kernel/fast_charge/force_fast_charge
-          if [ $(cat /sys/kernel/fast_charge/force_fast_charge) -eq "0" ]; then
-              echo "tying to enable fastcharging using second method" | tee -a $saveLog;
-              echo "1" > /sys/kernel/fast_charge/force_fast_charge
-          fi
-          echo "tying to enable fastcharging using third method,... \neh no third method just kidding xD" | tee -a $saveLog;
-          if [ $(cat /sys/kernel/fast_charge/force_fast_charge) -eq "0" ]; then
-              echo "fastcharge off,maybe your kernel/phone not support it" | tee -a $saveLog;
-          else
-              echo "fastcharge on" | tee -a $saveLog;
-          fi
+    if [ $FastCharge == "1" ]; then
+        if [ -e /sys/kernel/fast_charge/force_fast_charge ]; then
+            echo "tying to enable fastcharging using first method" | tee -a $saveLog;
+            echo "2" > /sys/kernel/fast_charge/force_fast_charge
+            if [ $(cat /sys/kernel/fast_charge/force_fast_charge) -eq "0" ]; then
+                echo "tying to enable fastcharging using second method" | tee -a $saveLog;
+                echo "1" > /sys/kernel/fast_charge/force_fast_charge
+            fi
+            echo "tying to enable fastcharging using third method,... \neh no third method just kidding xD" | tee -a $saveLog;
+            if [ $(cat /sys/kernel/fast_charge/force_fast_charge) -eq "0" ]; then
+                echo "fastcharge off,maybe your kernel/phone not support it" | tee -a $saveLog;
+            else
+                echo "fastcharge on" | tee -a $saveLog;
+            fi
 
-      fi
-    
-  fi  
+        fi
+
+    fi  
 # enable fastcharge end
 
 # set fps ? start
-  if [ $SetRefreshRate != "0" ];then
-      setprop persist.sys.NV_FPSLIMIT $SetRefreshRate
-      echo "custom fps detected, set to $SetRefreshRate" | tee -a $saveLog;
-  fi
-# set fps ? end
+    if [ $SetRefreshRate != "0" ];then
+        setprop persist.sys.NV_FPSLIMIT $SetRefreshRate
+        echo "custom fps detected, set to $SetRefreshRate" | tee -a $saveLog;
+    fi
+    # set fps ? end
 
-# fstrim start
-  if [ -e system/bin/fstrim ]; then
-      fstrimDulu
-  elif [ -e system/xbin/fstrim ]; then
-      fstrimDulu
-  fi;
-# fstrim end
+    # fstrim start
+    if [ -e system/bin/fstrim ]; then
+        fstrimDulu
+    elif [ -e system/xbin/fstrim ]; then
+        fstrimDulu
+    fi;
+    # fstrim end
 
 # gpu turbo start
-  if [ $GpuBooster == "0" ];then
-      echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
-      echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
-  elif [ $GpuBooster == "1" ];then
-      echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
-      echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
-  elif [ $GpuBooster == "2" ];then
-      echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
-      echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
-  elif [ $GpuBooster == "3" ];then
-      echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
-      echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
-  else
-      echo "nice,use default this tweak GpuBoost" | tee -a $saveLog;
-      echo '4' > $PathModulConfig/GpuBooster.txt
-  fi
+    if [ $GpuBooster == "0" ];then
+        echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
+        echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
+    elif [ $GpuBooster == "1" ];then
+        echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
+        echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
+    elif [ $GpuBooster == "2" ];then
+        echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
+        echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
+    elif [ $GpuBooster == "3" ];then
+        echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
+        echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
+    else
+        echo "nice,use default this tweak GpuBoost" | tee -a $saveLog;
+        echo '4' > $PathModulConfig/GpuBooster.txt
+    fi
 # gpu turbo end
 
 # echo "ok beres dah . . .\n" | tee -a $saveLog;
 # gpu render start
-  if [ $RenderMode == 'skiagl' ];then
-      setprop debug.hwui.renderer skiagl
-      echo "set render gpu to OpenGL (SKIA) done" | tee -a $saveLog;
-  elif [ $RenderMode == 'skiavk' ];then
-      setprop debug.hwui.renderer skiavk
-      echo "set render gpu to Vulkan (SKIA) done" | tee -a $saveLog;
-  elif [ $RenderMode == 'opengl' ];then
-      setprop debug.hwui.renderer opengl
-      echo "set render gpu to OpenGL default done" | tee -a $saveLog;
-  else
-      setprop debug.hwui.renderer skiagl
-      echo "mode not found,set to OpenGL (skia) " | tee -a $saveLog;
-      echo 'skiagl' > $PathModulConfig/mode_render.txt
-  fi
+    if [ $RenderMode == 'skiagl' ];then
+        setprop debug.hwui.renderer skiagl
+        echo "set render gpu to OpenGL (SKIA) done" | tee -a $saveLog;
+    elif [ $RenderMode == 'skiavk' ];then
+        setprop debug.hwui.renderer skiavk
+        echo "set render gpu to Vulkan (SKIA) done" | tee -a $saveLog;
+    elif [ $RenderMode == 'opengl' ];then
+        setprop debug.hwui.renderer opengl
+        echo "set render gpu to OpenGL default done" | tee -a $saveLog;
+    else
+        setprop debug.hwui.renderer skiagl
+        echo "mode not found,set to OpenGL (skia) " | tee -a $saveLog;
+        echo 'skiagl' > $PathModulConfig/mode_render.txt
+    fi
 # gpu render end
 
-# disable fsync start
-  if [ $fsyncMode == "0" ];then
-      disableFsync
-      echo "custom fsync detected, set to disable" | tee -a $saveLog;
-  elif [ $fsyncMode == "1" ];then
-      enableFsync
-      echo "custom fsync detected, set to enable" | tee -a $saveLog;
-  else
-      disableFsync
-      echo "fsync value error,set to disable" | tee -a $saveLog;
-      echo '0' > $PathModulConfig/fsync_mode.txt
-  fi
+    # disable fsync start
+    if [ $fsyncMode == "0" ];then
+        disableFsync
+        echo "custom fsync detected, set to disable" | tee -a $saveLog;
+    elif [ $fsyncMode == "1" ];then
+        enableFsync
+        echo "custom fsync detected, set to enable" | tee -a $saveLog;
+    else
+        disableFsync
+        echo "fsync value error,set to disable" | tee -a $saveLog;
+        echo '0' > $PathModulConfig/fsync_mode.txt
+    fi
 # disable fsync end
 
 # costum ram managent start
   if [ $CustomRam == '0' ];then
-      # echo "coming_soon :D"| tee -a $saveLog;
-      echo "not use custom ram management,using stock ram management" | tee -a $saveLog;
-      # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog;
-      chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-      chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
-      chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
-      chmod 0666 /sys/module/lowmemorykiller/parameters/minfree;
-      echo $(cat "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt") > "/sys/module/lowmemorykiller/parameters/enable_adaptive_lmk"
-      echo $(cat "$PathModulConfig/backup/ram_debug_level.txt") > "/sys/module/lowmemorykiller/parameters/debug_level"
-      echo $(cat "$PathModulConfig/backup/ram_adj.txt") > "/sys/module/lowmemorykiller/parameters/adj"
-      echo $(cat "$PathModulConfig/backup/ram_minfree.txt") > "/sys/module/lowmemorykiller/parameters/minfree"
-      chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-      chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
-      chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
-      chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
+        # echo "coming_soon :D"| tee -a $saveLog;
+        echo "not use custom ram management,using stock ram management" | tee -a $saveLog;
+        if [ -e $PathModulConfig/backup/ram_enable_adaptive_lmk.txt ];then
+            chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
+            echo $(cat "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt") > "/sys/module/lowmemorykiller/parameters/enable_adaptive_lmk"
+            chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
+            setprop lmk.autocalc false
+            if [ "$(cat "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt")" == "1" ];then
+                setprop lmk.autocalc true
+            else
+                setprop lmk.autocalc false
+            fi
+            rm $PathModulConfig/backup/ram_enable_adaptive_lmk.txt
+        fi
+        if [ -e $PathModulConfig/backup/ram_debug_level.txt ];then
+            echo $(cat "$PathModulConfig/backup/ram_debug_level.txt") > "/sys/module/lowmemorykiller/parameters/debug_level"
+            chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
+            chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
+            rm $PathModulConfig/backup/ram_debug_level.txt
+        fi
+        if [ -e $PathModulConfig/backup/ram_adj.txt ];then
+            chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
+            echo $(cat "$PathModulConfig/backup/ram_adj.txt") > "/sys/module/lowmemorykiller/parameters/adj"
+            chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
+            rm $PathModulConfig/backup/ram_adj.txt
+        fi
+        if [ -e $PathModulConfig/backup/ram_minfree.txt ];then
+            chmod 0666 /sys/module/lowmemorykiller/parameters/minfree;
+            echo $(cat "$PathModulConfig/backup/ram_minfree.txt") > "/sys/module/lowmemorykiller/parameters/minfree"
+            chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
+            rm $PathModulConfig/backup/ram_minfree.txt
+        fi
+        # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog;
   else
-      StopModify="no"
-      GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
-      if [ "$CustomRam" == "1" ]; then # Method 1
-          ForegroundApp=$(((($GetTotalRam*2/100)*1024)/4))
-          VisibleApp=$(((($GetTotalRam*3/100)*1024)/4))
-          SecondaryServer=$(((($GetTotalRam*5/100)*1024)/4))
-          HiddenApp=$(((($GetTotalRam*7/100)*1024)/4))
-          ContentProvider=$(((($GetTotalRam*10/100)*1024)/4))
-          EmptyApp=$(((($GetTotalRam*12/100)*1024)/4))
-      elif [ "$CustomRam" == "2" ]; then # Method 2
-          ForegroundApp=$(((($GetTotalRam*2/100)*1024)/4))
-          VisibleApp=$(((($GetTotalRam*3/100)*1024)/4))
-          SecondaryServer=$(((($GetTotalRam*5/100)*1024)/4))
-          HiddenApp=$(((($GetTotalRam*6/100)*1024)/4))
-          ContentProvider=$(((($GetTotalRam*11/100)*1024)/4))
-          EmptyApp=$(((($GetTotalRam*15/100)*1024)/4))
-      elif [ "$CustomRam" == "3" ]; then # Method 3
-          ForegroundApp=$(((($GetTotalRam*2/80)*1024)/4))
-          VisibleApp=$(((($GetTotalRam*3/100)*1024)/4))
-          SecondaryServer=$(((($GetTotalRam*5/100)*1024)/4))
-          HiddenApp=$(((($GetTotalRam*7/100)*1024)/4))
-          ContentProvider=$(((($GetTotalRam*12/100)*1024)/4))
-          EmptyApp=$(((($GetTotalRam*16/100)*1024)/4))
-      else   
-          echo "Value Error";
-          StopModify="yes"
-      fi;
-      if [ $StopModify == "no" ];then
-          if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ]; then
-              chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-              echo "0" > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
-              chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-              setprop lmk.autocalc false
-              #  echo "* Adaptive LMK = Disabled *" |  tee -a $LOG;
-          fi;
-          if [ -e /sys/module/lowmemorykiller/parameters/debug_level ]; then
-              chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
-              echo "0" > /sys/module/lowmemorykiller/parameters/debug_level
-              chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
-              #  echo "* LMK Debug Level = Disabled *" |  tee -a $LOG;
-          fi;
+        echo "using custom ram management method $CustomRam" | tee -a $saveLog;
+        StopModify="no"
+        GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
+        if [ "$CustomRam" == "1" ]; then # Method 1
+            ForegroundApp=$(((($GetTotalRam*2/100)*1024)/4))
+            VisibleApp=$(((($GetTotalRam*3/100)*1024)/4))
+            SecondaryServer=$(((($GetTotalRam*5/100)*1024)/4))
+            HiddenApp=$(((($GetTotalRam*7/100)*1024)/4))
+            ContentProvider=$(((($GetTotalRam*10/100)*1024)/4))
+            EmptyApp=$(((($GetTotalRam*12/100)*1024)/4))
+        elif [ "$CustomRam" == "2" ]; then # Method 2
+            ForegroundApp=$(((($GetTotalRam*2/100)*1024)/4))
+            VisibleApp=$(((($GetTotalRam*3/100)*1024)/4))
+            SecondaryServer=$(((($GetTotalRam*5/100)*1024)/4))
+            HiddenApp=$(((($GetTotalRam*6/100)*1024)/4))
+            ContentProvider=$(((($GetTotalRam*11/100)*1024)/4))
+            EmptyApp=$(((($GetTotalRam*15/100)*1024)/4))
+        elif [ "$CustomRam" == "3" ]; then # Method 3
+            ForegroundApp=$(((($GetTotalRam*2/80)*1024)/4))
+            VisibleApp=$(((($GetTotalRam*3/100)*1024)/4))
+            SecondaryServer=$(((($GetTotalRam*5/100)*1024)/4))
+            HiddenApp=$(((($GetTotalRam*7/100)*1024)/4))
+            ContentProvider=$(((($GetTotalRam*12/100)*1024)/4))
+            EmptyApp=$(((($GetTotalRam*16/100)*1024)/4))
+        else   
+            echo "method not found" | tee -a $saveLog;
+            StopModify="yes"
+        fi;
+        if [ $StopModify == "no" ];then
+            if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ]; then
+                chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
+                echo "0" > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
+                chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
+                setprop lmk.autocalc false
+                #  echo "* Adaptive LMK = Disabled *" |  tee -a $LOG;
+            fi;
+            if [ -e /sys/module/lowmemorykiller/parameters/debug_level ]; then
+                chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
+                echo "0" > /sys/module/lowmemorykiller/parameters/debug_level
+                chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
+                #  echo "* LMK Debug Level = Disabled *" |  tee -a $LOG;
+            fi;
 
-          chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
-          chmod 0666 /sys/module/lowmemorykiller/parameters/minfree;
-          echo "0,120,230,415,910,1000" > /sys/module/lowmemorykiller/parameters/adj
-          echo "$ForegroundApp,$VisibleApp,$SecondaryServer,$HiddenApp,$ContentProvider,$EmptyApp" > /sys/module/lowmemorykiller/parameters/minfree
-          chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
-          chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
+            chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
+            chmod 0666 /sys/module/lowmemorykiller/parameters/minfree;
+            echo "0,120,230,415,910,1000" > /sys/module/lowmemorykiller/parameters/adj
+            echo "$ForegroundApp,$VisibleApp,$SecondaryServer,$HiddenApp,$ContentProvider,$EmptyApp" > /sys/module/lowmemorykiller/parameters/minfree
+            chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
+            chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
 
-          minFreeSet=$(($GetTotalRam*4))
+            minFreeSet=$(($GetTotalRam*4))
 
-          sysctl -e -w vm.min_free_kbytes=$minFreeSet 2>/dev/null
-          if [ -e /proc/sys/vm/extra_free_kbytes ]; then
-              setprop sys.sysctl.extra_free_kbytes $minFreeSet
-          fi;
-      fi;
+            sysctl -e -w vm.min_free_kbytes=$minFreeSet 2>/dev/null
+            if [ -e /proc/sys/vm/extra_free_kbytes ]; then
+                setprop sys.sysctl.extra_free_kbytes $minFreeSet
+            fi;
+        fi;
       # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog;
   fi;
 # costum ram managent end
@@ -1239,5 +1256,4 @@ if [ $FromTerminal == "tidak" ];then
     fi
 fi
 echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog;
-
 exit 0;
