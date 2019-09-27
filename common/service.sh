@@ -102,12 +102,12 @@ CustomRam=$(cat $PathModulConfig/custom_ram_management.txt)
 
 # Check notes version
 if [ -e $PathModulConfig/notes_en.txt ];then
-    if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.34 STABLE" ];then
+    if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.341 STABLE FIX" ];then
         rm $PathModulConfig/notes_en.txt
     fi
 fi
 if [ -e $PathModulConfig/notes_id.txt ];then
-    if [ "$(cat "$PathModulConfig/notes_id.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.34 STABLE" ];then
+    if [ "$(cat "$PathModulConfig/notes_id.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.341 STABLE FIX" ];then
         rm $PathModulConfig/notes_id.txt
     fi
 fi
@@ -336,7 +336,7 @@ mode = off / on / turbo
 
 namarender = opengl / skiagl / skiavk
 
-Version:3.34 STABLE" | tee -a $SetNotes > /dev/null 2>&1;
+Version:3.341 STABLE FIX" | tee -a $SetNotes > /dev/null 2>&1;
 fi
 if [ ! -e $PathModulConfig/notes_id.txt ]; then
     SetNotes=$PathModulConfig/notes_id.txt;
@@ -581,7 +581,7 @@ namamode = off/on/turbo
 
 namarender = opengl/skiagl/skiavk
 
-Version:3.34 STABLE" | tee -a $SetNotes > /dev/null 2>&1;
+Version:3.341 STABLE FIX" | tee -a $SetNotes > /dev/null 2>&1;
     
 fi
 backupDolo(){
