@@ -22,257 +22,569 @@ elif [ -d "/sys/devices/platform/*.gpu/devfreq/*.gpu" ]; then
 else
     NyariGPU='';
 fi
-# echo $NyariGPU
+
 # Path=/sdcard/modul_mantul/ZyC_mod
 if [ ! -e /data/mod_path.txt ]; then
     echo "/data/media/0" > /data/mod_path.txt
 fi
 ModPath=$(cat /data/mod_path.txt)
+
 Path=$ModPath/modul_mantul/ZyC_mod
+if [ ! -d $Path/ZyC_Ai ]; then
+    mkdir -p $Path/ZyC_Ai
+    echo '1' > "$Path/ZyC_Ai/ai_status.txt"
+fi
 PathModulConfigAi=$Path/ZyC_Ai
 if [ ! -d $Path/ZyC_Turbo_config ]; then
     mkdir -p $Path/ZyC_Turbo_config
 fi
 PathModulConfig=$Path/ZyC_Turbo_config
-if [ ! -d $Path/ZyC_Turbo_config ]; then
-    mkdir -p $Path/ZyC_Turbo_config
-fi
 
 if [ -e $Path/ZyC_Turbo.log ]; then
     rm $Path/ZyC_Turbo.log
 fi
 saveLog=$Path/ZyC_Turbo.log
-echo "this module created by : ZyCromerZ " | tee -a $saveLog;
-echo "to increase your GPU performance " | tee -a $saveLog;
-echo "check note_en.txt/note_id.txt for detail :D" | tee -a $saveLog;
+
+echo "starting modules " | tee -a $saveLog > /dev/null 2>&1;
 if [ $FromTerminal == "tidak" ];then
-    echo "running with boot detected" | tee -a $saveLog;
+    echo "running with boot detected" | tee -a $saveLog > /dev/null 2>&1;
 else
-    echo "running without boot detected" | tee -a $saveLog;
+    echo "running without boot detected" | tee -a $saveLog > /dev/null 2>&1;
 fi
 # status modul
 if [ ! -e $PathModulConfig/status_modul.txt ]; then
     echo 'turbo' > $PathModulConfig/status_modul.txt
 fi
 GetMode=$(cat $PathModulConfig/status_modul.txt)
+
 # mode render
 if [ ! -e $PathModulConfig/mode_render.txt ]; then
     echo 'skiagl' > $PathModulConfig/mode_render.txt
 fi
 RenderMode=$(cat $PathModulConfig/mode_render.txt)
+
 # max fps nya
 if [ ! -e $PathModulConfig/total_fps.txt ]; then
     echo '0' > $PathModulConfig/total_fps.txt
 fi
 SetRefreshRate=$(cat $PathModulConfig/total_fps.txt)
+
 # Status Log nya
 if [ ! -e $PathModulConfig/disable_log_system.txt ]; then
     echo '1' > $PathModulConfig/disable_log_system.txt
 fi
 LogStatus=$(cat $PathModulConfig/disable_log_system.txt)
+
 # fast charging
 if [ ! -e $PathModulConfig/fastcharge.txt ]; then
     echo '1' > $PathModulConfig/fastcharge.txt
 fi
 FastCharge=$(cat $PathModulConfig/fastcharge.txt)
+
 # setting adrenoboost
 if [ ! -e $PathModulConfig/GpuBooster.txt ]; then
     echo '4' > $PathModulConfig/GpuBooster.txt
 fi
 GpuBooster=$(cat $PathModulConfig/GpuBooster.txt)
+
 # setting fsync
 if [ ! -e $PathModulConfig/fsync_mode.txt ]; then
     echo '0' > $PathModulConfig/fsync_mode.txt
 fi
 fsyncMode=$(cat $PathModulConfig/fsync_mode.txt)
-# # setting thermal
-# if [ ! -e $PathModulConfig/mode_thermal.txt ]; then
-#     echo '1' > $PathModulConfig/mode_thermal.txt
-# fi
-# ThermalMode=$(cat $PathModulConfig/mode_thermal.txt)
+
 # setting custom Ram Management
-# if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
-#     echo '0' > $PathModulConfig/custom_ram_management.txt
-# fi
-# CustomRam=$(cat $PathModulConfig/custom_ram_management.txt)
-# notes
+if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
+    echo '0' > $PathModulConfig/custom_ram_management.txt
+fi
+CustomRam=$(cat $PathModulConfig/custom_ram_management.txt)
+
+# Check notes version
+if [ -e $PathModulConfig/notes_en.txt ];then
+    if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.33-5 BETA" ];then
+        rm $PathModulConfig/notes_en.txt
+    fi
+fi
+if [ -e $PathModulConfig/notes_id.txt ];then
+    if [ "$(cat "$PathModulConfig/notes_id.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.33-5 BETA" ];then
+        rm $PathModulConfig/notes_id.txt
+    fi
+fi
 if [ ! -e $PathModulConfig/notes_en.txt ]; then
     # echo "please read this xD \nyou can set mode.txt to:\n- off \n- on \n- turbo \nvalue must same as above without'-'\n\nchange mode_render.txt to:\n-  opengl \n-  skiagl \n-  skiavk \n\n note:\n-skiavk = Vulkan \n-skiagl = OpenGL (SKIA)\ndont edit total_fps.txt still not tested" > $PathModulConfig/notes.txt
     SetNotes=$PathModulConfig/notes_en.txt;
-    echo "this is note from me to you xD" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "tested using Aegis OC & non OC kernel" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "first things you can edit status_modul.txt, mode_render.txt, disable_log_system.txt, fastcharge.txt" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "leave total_fps.txt value to 0, still not tested" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "(dah di tes pake Aegis OC & non OC kernel)" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "(lu bisa edit status_modul.txt, mode_render.txt, disable_log_system.txt, fastcharge.txt)" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "(biarin total_fps.txt isinya 0, belum di test)" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "edit status_modul.txt for change this modul profile,you can set to :" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "(ngedit status_modul.txt buat rubah profile modulnya,bisa di set ke :)" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- off" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- on" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- turbo" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "Note : off to disable module,on to enable,and turbo for increase gpu to maximum,you will get battery drain(not munch) but you can try it" | tee -a $SetNotes > /dev/null 2>&1;
-    # # echo "(Note : off buat disable module,on buat nge aktifin lah,ama turbo biar main game asik,tapi battery drain(kaga banyak) coba aja dah)" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "edit mode_render.txt for change your gpu render,you can set to :" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "(ngedit mode_render.txt buat ubah gpu render,bisa di set ke :)" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- opengl" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- skiagl" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- skiavk" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "Note :" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- opengl = OpenGL (default) -> default android set" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- skiagl = OpenGL (SKIA) -> default value for this tweak " | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- skiavk = Vulkan (dont set to this if you dont know anything) " | tee -a $SetNotes > /dev/null 2>&1;
-    echo "" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "edit disable_log_system.txt to disable log system,but increase little performance(NEED RESTART maybe)[ and maybe xD] you can set to:" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "(ngedit disable_log_system.txt buat disable log system,tapi bisa ningkatin dikit performance(WAJIB RESTART mungkin) dan mungkin bisa di set ke :)" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 0" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 1" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "Note :" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 0 = still active [masih aktip]" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 1 = disable log [ga tau artinya kebangetan lu njirr]" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "edit fastcharge.txt for make this module to trying enable fastcharging for your devices" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "(ngedit fastcharge.txt buat modul ini nyoba nge jalanin fastcharging di hp lu)" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 0" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 1" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "Note :" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 0 = disable,if your system has enabled fastcharging,you dont need this" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 1 = active, this module will trying to enable fastcharging for your devices " | tee -a $SetNotes > /dev/null 2>&1;
-    echo "" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "edit GpuBooster.txt for edit adrenoboost value,leave it as default option" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "(ngedit GpuBooster.txt buat adrenoboost nya,biarin aja default biar enak :D)" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 0" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 1" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 2" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 3" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 4" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "Note :" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 0 = disable" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 1 = low " | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 2 = medium " | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 3 = high " | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 4 = let this set this automatic(recomended) " | tee -a $SetNotes > /dev/null 2>&1;
-    echo "" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "how to run tweak??" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "just open terminal and type [su] and enter and then [zyc_turbo] and enter (without '[]') and done" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "or use new method" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "(cara pake nya?)" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "(cuma buka terminal terus ketik [su] dah gitu enter ketik lagi [zyc_turbo] terus enter  (gausah pake '[]') dan beres)" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "(ato pale cara baru)" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "after type [su]" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "type [zyc_start [off/on/turbo]]" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "or" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "type [zyc_start [off/on/turbo] [opengl/skiagl/skiavk] ]" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "and done . . ." | tee -a $SetNotes > /dev/null 2>&1;
-    echo "have a good day xD" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "and remember type without '[]' and '/' (choose 1)" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "(dan ingat kaga pake '[]' ama '/'(pilih 1) terus type itu ketik)" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "example :" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "$ su" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "$ zyc_start off" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "or" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "$ su" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "$ zyc_start on opengl" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "NOTE : before you update this module to latest version please set to mode off and delete this note and folder backup, and then flash new modul and reboot" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "note again:" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "zyc_turbo = for active modul based config inside internal/modul_mantul/ " | tee -a $SetNotes > /dev/null 2>&1;
-    echo "zyc_mode = change profil/mode tweak " | tee -a $SetNotes > /dev/null 2>&1;
-    echo "zyc_render = change render mode " | tee -a $SetNotes > /dev/null 2>&1;
-    echo "zyc_start = start only or start with change mode tweak and  render or mode tweak only :D " | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "(NOTE : sebelum lu update ni module ke versi terbaru, set ke mode off dulu terus delete note  ini ama folder backup, terus flash modul baru terus reboot)" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "(emang ada modul note nya pake bahasa indo? ini ada bambang!!)" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "create notes_en.txt done . . . :D" | tee -a $saveLog;
+    echo "This module functions to disable thermal GPU and setting some other parts in the GPU so that the performance is more stable, provided additional features to make it more delicious & this may be the last time I make notes with this description: p
+
+
+
+Bye, how to install already. . .
+
+There are 2 versions, v3 and v2
+
+
+
+For v3:
+
+How to install v3
+
+1.) Download the latest v3 version
+
+2.) Flash via magisk
+
+3.) Reboot
+
+4.) Done
+
+
+
+How to update v3.33 version and above
+
+1.) Same as above
+
+
+
+How to update versions v3 - v3.33
+
+1.) Set to off mode
+
+2.) Delete the modul_mantul or zyc_turbo_config folder (just check it inside internal memory)
+
+3.) just flash via magisk
+
+4.) Done
+
+
+
+How to set a special module version 3.33 and above:
+
+1.) The first way, module settings
+
+Open a terminal type
+
+su
+
+zyc_setting
+
+2.) Only to run auto / ai mode
+
+zyc_auto
+
+
+
+If for the previous version 3.32 to 3 (the latest can also only not recomen) there are several ways, namely:
+
+1.) The first way, just to run the module
+
+su
+
+zyc_start
+
+
+
+2.) The second way, run the module and change the module mode
+
+zyc_startnamename
+
+
+
+3.) The third way, run the module and change the module mode + rendering mode
+
+zyc_start namemode code
+
+
+
+4.) The fourth way, change the rendering mode
+
+zyc_render
+
+namarender
+
+
+
+5.) The fifth way, change the module mode
+
+zyc_mode
+
+code name
+
+
+
+6.) The sixth method, just run the module
+
+zyc_turbo
+
+
+
+For module config files in the zyc_turbo_config folder (ignore if file does not exist)
+
+- custom_ram_management.txt
+
+ otw, just config garbage, there are no features, for the next build
+
+
+
+- disable_log_system.txt
+
+ disable the cellphone log, is believed to improve the performance of the cellphone
+
+Value = 0 (disable) [recommendation] / 1 (enable)
+
+
+
+- fsync_mode.txy
+
+ Disable fsync can improve game fps, if you find a bug in the launcher, enable it!
+
+Values ​​= 0 (disable) [recommendation] / 1 (enable)
+
+
+
+- GpuBooster.txt
+
+ For the adrenoboost value setting, if the kernel supports adrenoboost, though.
+
+Value = 0 (disable) / 1 (low) / 2 (medium) / 3 (high) / 4 (set automatically) [recommendation]
+
+
+
+- mode_render.txt
+
+ For the cell phone rendering mode settings, there are some ROMs that don't support the rendering mode settings, you can set them here
+
+Value = opengl (OpenGL) / skiagl (OpenGL SKIA) / skiavk (VULKAN)
+
+
+
+- status_modul.txt
+
+ for the module mode settings, there are 3 settings
+
+Value = off (on) / on / turbo (fastest mode)
+
+
+
+- total_fps.txt
+
+ For the set fps like that, but I don't test anything, leave 0 ae
+
+
+
+- fastcharge.txt
+
+ Fastcharge setting if the cellphone supports it
+
+Value = 0 (using system settings) / 1 (tweaked I tried to activate fastcharge on his cellphone)
+
+
+
+
+
+For module config files in the zyc_ai folder (ignore the missing files)
+
+- ai_status.txt
+
+ For setting the AI ​​status
+
+Value = 0 (off) / 1 (can be turned on) / 2 (currently running) / 3 (currently shutting down)
+
+Note: do not edit status if value 2/3
+
+
+
+- list_app_turbo.txt
+
+ List app to enter turbo mode quickly
+
+
+
+- list_app_package_detected.txt
+
+ The app list can be added into the turbo list
+
+
+
+- status_end_gpu.txt
+
+  Trigger for the module to change the status to off mode based on the gpu usage based inside this value to lowest (for example, the value is 5, if the usage is 5% to down automatically change to off mode)
+
+
+
+- status_start_gpu.txt
+
+  Trigger for the module to change the status to turbo mode based on the gpu usage based inside this value to lowest (for example, the value is 70, if the usage is 70% to up automatically change to turbo mode)
+
+
+
+- wait_time_off.txt
+
+  Time to check the running app or GPU usage when off mode
+
+
+
+- wait_time_on.txt
+
+  Time to check the app that is running or GPU usage when in turbo mode
+
+
+
+
+
+For V2, just flash it via magisk, it will automatically activates after rebooted
+
+
+
+Note:
+
+mode = off / on / turbo
+
+namarender = opengl / skiagl / skiavk
+
+Version:3.33-5 BETA" | tee -a $SetNotes > /dev/null 2>&1;
 fi
 if [ ! -e $PathModulConfig/notes_id.txt ]; then
-    # echo "please read this xD \nyou can set mode.txt to:\n- off \n- on \n- turbo \nvalue must same as above without'-'\n\nchange mode_render.txt to:\n-  opengl \n-  skiagl \n-  skiavk \n\n note:\n-skiavk = Vulkan \n-skiagl = OpenGL (SKIA)\ndont edit total_fps.txt still not tested" > $PathModulConfig/notes.txt
     SetNotes=$PathModulConfig/notes_id.txt;
-    # echo "this is note from me to you xD" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "tested using Aegis OC & non OC kernel" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "first things you can edit status_modul.txt, mode_render.txt, disable_log_system.txt, fastcharge.txt" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "leave total_fps.txt value to 0, still not tested" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "dah di tes pake Aegis OC & non OC kernel" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "lu bisa edit status_modul.txt, mode_render.txt, disable_log_system.txt, fastcharge.txt" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "biarin total_fps.txt isinya 0, belum di test" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "edit status_modul.txt for change this modul profile,you can set to :" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "(ngedit status_modul.txt buat rubah profile modulnya,bisa di set ke :)" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- off" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- on" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- turbo" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "Note : off to disable module,on to enable,and turbo for increase gpu to maximum,you will get battery drain(not munch) but you can try it" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "(Note : off buat disable module,on buat nge aktifin lah,ama turbo biar main game asik,tapi battery drain(kaga banyak) coba aja dah)" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "edit mode_render.txt for change your gpu render,you can set to :" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "ngedit mode_render.txt buat ubah gpu render,bisa di set ke :" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- opengl" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- skiagl" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- skiavk" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "Note :" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- opengl = OpenGL (default) -> default android set [setingan awal dari sono nya]" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- skiagl = OpenGL (SKIA) -> default value for this tweak [setingan ni tweak]" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- skiavk = Vulkan (SKIA) -> coba aja ndiri, resiko tanggung lu aja :v ]" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "edit disable_log_system.txt to disable log system,but increase little performance(NEED RESTART maybe)[ and maybe xD] you can set to:" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "ngedit disable_log_system.txt buat disable log system,tapi bisa ningkatin dikit performance(WAJIB RESTART mungkin) dan mungkin bisa di set ke :" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 0" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 1" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "Note :" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 0 = masih aktip" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 1 = di matikan log nya" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "edit fastcharge.txt for make this module to trying enable fastcharging for your devices" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "ngedit fastcharge.txt buat modul ini nyoba nge jalanin fastcharging di hp lu" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 0" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 1" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "Note :" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 0 = disable, pengaturan di serahin ke default" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 1 = active,ni modul bakal nyoba nyalain fastcharging di hp lu" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "edit GpuBooster.txt for edit adrenoboost value,leave it as default option" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "ngedit GpuBooster.txt buat adrenoboost nya,biarin aja default biar enak :D" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 0" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 1" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 2" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 3" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 4" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "Note :" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 0 = disable" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 1 = low " | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 2 = medium " | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 3 = high " | tee -a $SetNotes > /dev/null 2>&1;
-    echo "- 4 = mending pake ini biarkan modul yg menyesuaikannya" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "how to run tweak??" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "just open terminal and type [su] and enter and then [zyc_turbo] and enter (without '[]') and done" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "or use new method" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "cara pake nya?" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "cuma buka terminal terus ketik [su] dah gitu enter ketik lagi [zyc_turbo] terus enter  (gausah pake '[]') dan beres" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "ato pale cara baru" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "after type [su]" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "type [zyc_start [off/on/turbo]]" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "or" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "type [zyc_start [off/on/turbo] [opengl/skiagl/skiavk] ]" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "and done . . ." | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "have a good day xD" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "and remember type without '[]' and '/' (choose 1)" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "dan ingat kaga pake '[]' ama '/'(pilih 1) terus type itu ketik" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "contoh:" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "$ su" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "$ zyc_start off" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "or" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "$ su" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "$ zyc_start on opengl" | tee -a $SetNotes > /dev/null 2>&1;
-    # echo "NOTE : before you update this module to latest version please set to mode off and delete this note and folder backup, and then flash new modul and reboot" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "NOTE : sebelum lu update ni module ke versi terbaru, set ke mode off dulu terus delete note  ini ama folder backup, terus flash modul baru terus reboot" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "emang ada modul note nya pake bahasa indo? ini ada bambang!!" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "note again:" | tee -a $SetNotes > /dev/null 2>&1;
-    echo "zyc_turbo = for active modul based config inside internal/modul_mantul/ " | tee -a $SetNotes > /dev/null 2>&1;
-    echo "zyc_mode = change profil/mode tweak " | tee -a $SetNotes > /dev/null 2>&1;
-    echo "zyc_render = change render mode " | tee -a $SetNotes > /dev/null 2>&1;
-    echo "zyc_start = start only or start with change mode tweak and  render or mode tweak only :D " | tee -a $SetNotes > /dev/null 2>&1;
-    echo "buat notes_en.txt done . . . :D" | tee -a $saveLog;
+    echo "Created By : ZyCromerZ
+    
+Oke . . .
+
+Jadi gini . . .
+
+
+
+Gw mo ngejelasin dikit apa itu modul yg gw bikin
+
+Jadi baca,teros pahami.
+
+
+
+Ni modul fungsinya buat disable thermal gpu ama setting beberapa bagian lainnya di bagian gpu biar performa nya makin mantap,di sediakan fitur tambahan biar makin enak & ini mungkin terakhir gw bikin note dengan deskripsi kaya gini :p
+
+
+
+Dah lanjut cara install dah . . .
+
+Ada 2 versi,v3 ama v2
+
+
+
+Untuk v3 :
+
+Cara install v3
+
+1.) download versi v3 yg terbaru
+
+2.) Flash via magisk
+
+3.) Reboot
+
+4.) Done
+
+
+
+Cara update versi v3.33 ke atas
+
+1.) Sama kaya di atas
+
+
+
+Cara update versi v3 - v3.33 
+
+1.) Set ke mode off
+
+2.) Delete folder modul_mantul ato zyc_turbo_config (ada di internal cek aja)
+
+3.) Langsung flash via magisk
+
+4.) Done
+
+
+
+Cara setting modul khusus versi 3.33 ke atas :
+
+1.) Cara pertama,setting modul
+
+Buka terminal ketik
+
+su
+
+zyc_setting
+
+2.) Hanya untuk menjalankan mode auto/ai
+
+zyc_auto
+
+
+
+Kalau untuk versi sebelumnya 3.32 sampai 3 ( terbaru juga bisa cuma not recomen ) ada beberapa cara,yaitu :
+
+1.) Cara pertama,hanya untuk menjalakan modul
+
+su
+
+zyc_start
+
+
+
+2.) Cara kedua,menjalankan modul dan ganti mode modul
+
+zyc_start namamode
+
+
+
+3.) Cara ketiga,menjalankan modul dan ganti mode modul + mode render
+
+zyc_start namamode namarender
+
+
+
+4.) Cara keempat,ganti mode render
+
+zyc_render
+
+namarender
+
+
+
+5.) Cara kelima,ganti mode modul
+
+zyc_mode
+
+namamode
+
+
+
+6.) Cara keenam,hanya menjalankan modul
+
+zyc_turbo
+
+
+
+Untuk file config modul dalam folder zyc_turbo_config (abaikan kalo file ada tidak ada)
+
+- custom_ram_management.txt  
+
+ otw,cuma config sampah,belum ada fitur nya,buat next build
+
+
+
+- disable_log_system.txt
+
+ disable log hp nya,dipercaya bisa meningkatkan performa hp nya
+
+Value nya = 0(disable)[rekomendasi]/1(enable)
+
+
+
+- fsync_mode.txy
+
+ Disable fsync bisa meningkatkan fps game,kalo nemu bug di launchernya enable ini !
+
+Valuenya = 0(disable)[rekomendasi]/1(enable)
+
+
+
+- GpuBooster.txt
+
+ Buat setting value adrenoboost nya,kalo kernel support adrenoboost sih.
+
+Value = 0(disable)/1(low)/2(medium)/3(high)/4(di atur otomatis)[rekomendasi]
+
+
+
+- mode_render.txt
+
+ Buat setting mode render hp nya,ada beberapa rom yg gak support buat setting mode render,bisa setting di sini
+
+Value = opengl(OpenGL)/skiagl(OpenGL SKIA)/skiavk(VULKAN)
+
+
+
+- status_modul.txt
+
+ buat setting mode modul,ada 3 pengaturan
+
+Value = off(mati)/on(hidup)/turbo(mode paling cepat)
+
+
+
+- total_fps.txt
+
+ Buat set fps gitu,tapi gw test ga ngaruh apa apa,biarkan 0 ae
+
+
+
+- fastcharge.txt
+
+ Setting fastcharge kalo hp situ support
+
+Value = 0(menggunakan settingan system)/1(tweak gw mencoba untuk mengaktifkan fastcharge di hp nya)
+
+
+
+
+
+Untuk file config modul dalam folder zyc_ai ( abaikan kalo file tidak ada )
+
+- ai_status.txt
+
+ Untuk setting status ai
+
+Value=0(mati)/1(bisa di hidupkan)/2(sedang berjalan)/3(sedang mematikan)
+
+Note:kalau status 2/3 jangan di edit
+
+
+
+- list_app_turbo.txt
+
+ List app agar masuk ke mode turbo dengan cepat
+
+
+
+- list_app_package_detected.txt
+
+ List app yg bisa di masukan ke mode auto ke list turbo 
+
+
+
+- status_end_gpu.txt
+
+ Trigger untuk modul agar mengubah status ke mode off berdasarkan usage gpu dari value yang ada di dalam ini ke terbawah (misalkan isinya 5, kalau usage nya 5% ke bawah otomatis ganti ke mode off)
+
+
+
+- status_start_gpu.txt
+
+ Trigger untuk modul agar mengubah status ke mode turbo berdasarkan usage gpu dari value yang ada di dalam ini ke terbawah (misalkan isinya 70,kalau usage nya 70% ke bawah otomatis ganti ke mode turbo)
+
+
+
+- wait_time_off.txt
+
+  Waktu untuk ai mengecek app yg di jalankan atau gpu usage hp ketika di mode off
+
+
+
+- wait_time_on.txt
+
+  Waktu untuk ai mengecek app yg di jalankan atau gpu usage hp ketika di mode turbo
+
+
+
+
+
+Untuk V2 cukup flash teros biarkan,udah otomatis aktif kalo udah reboot
+
+
+
+Note :
+
+namamode = off/on/turbo
+
+namarender = opengl/skiagl/skiavk
+
+Version:3.33-5 BETA" | tee -a $SetNotes > /dev/null 2>&1;
+    
 fi
 backupDolo(){
   # backup data dolo boss start
@@ -484,6 +796,30 @@ backupDolo(){
           echo $(getprop  persist.sys.purgeable_assets) > "$PathModulConfig/backup/prop_persist.sys.purgeable_assets.txt"
           backup="pake"
           sleep 0.1s
+      fi
+  fi
+  if [ ! -e $PathModulConfig/backup/ram_enable_adaptive_lmk.txt ];then
+      if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ];then
+          echo $(cat "/sys/module/lowmemorykiller/parameters/enable_adaptive_lmk") > "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt"  
+          backup="pake"
+      fi
+  fi
+  if [ ! -e $PathModulConfig/backup/ram_debug_level.txt ];then
+      if [ -e /sys/module/lowmemorykiller/parameters/debug_level ];then
+          echo $(cat "/sys/module/lowmemorykiller/parameters/debug_level") > "$PathModulConfig/backup/ram_debug_level.txt"  
+          backup="pake"
+      fi
+  fi
+  if [ ! -e $PathModulConfig/backup/ram_adj.txt ];then
+      if [ -e /sys/module/lowmemorykiller/parameters/adj ];then
+          echo $(cat "/sys/module/lowmemorykiller/parameters/adj") > "$PathModulConfig/backup/ram_adj.txt"  
+          backup="pake"
+      fi
+  fi
+  if [ ! -e $PathModulConfig/backup/ram_minfree.txt ];then
+      if [ -e /sys/module/lowmemorykiller/parameters/minfree ];then
+          echo $(cat "/sys/module/lowmemorykiller/parameters/minfree") > "$PathModulConfig/backup/ram_minfree.txt"  
+          backup="pake"
       fi
   fi
 # backup data dolo boss end
@@ -787,13 +1123,80 @@ enableLogSystem(){
 # disable fsync end
 
 # costum ram managent start
-  # if [ $CustomRam == '1' ];then
-  #     echo "coming_soon :D"| tee -a $saveLog;
-  #     # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog;
-  # else
-  #     echo "not use custom ram management,good cause still not available :p" | tee -a $saveLog;
-  #     # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog;
-  # fi;
+  if [ $CustomRam == '0' ];then
+      # echo "coming_soon :D"| tee -a $saveLog;
+      echo "not use custom ram management,using stock ram management" | tee -a $saveLog;
+      # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog;
+      chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
+      chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
+      chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
+      chmod 0666 /sys/module/lowmemorykiller/parameters/minfree;
+      echo $(cat "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt") > "/sys/module/lowmemorykiller/parameters/enable_adaptive_lmk"
+      echo $(cat "$PathModulConfig/backup/ram_debug_level.txt") > "/sys/module/lowmemorykiller/parameters/debug_level"
+      echo $(cat "$PathModulConfig/backup/ram_adj.txt") > "/sys/module/lowmemorykiller/parameters/adj"
+      echo $(cat "$PathModulConfig/backup/ram_minfree.txt") > "/sys/module/lowmemorykiller/parameters/minfree"
+      chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
+      chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
+      chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
+      chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
+  else
+      StopModify="no"
+      if [ "$CustomRam" == "1" ]; then # Method 1
+          ForegroundApp=$(((($MEM*2/100)*1024)/4))
+          VisibleApp=$(((($MEM*3/100)*1024)/4))
+          SecondaryServer=$(((($MEM*5/100)*1024)/4))
+          HiddenApp=$(((($MEM*7/100)*1024)/4))
+          ContentProvider=$(((($MEM*10/100)*1024)/4))
+          EmptyApp=$(((($MEM*12/100)*1024)/4))
+      elif [ "$CustomRam" == "2" ]; then # Method 2
+          ForegroundApp=$(((($MEM*2/100)*1024)/4))
+          VisibleApp=$(((($MEM*3/100)*1024)/4))
+          SecondaryServer=$(((($MEM*5/100)*1024)/4))
+          HiddenApp=$(((($MEM*6/100)*1024)/4))
+          ContentProvider=$(((($MEM*11/100)*1024)/4))
+          EmptyApp=$(((($MEM*15/100)*1024)/4))
+      elif [ "$CustomRam" == "3" ]; then # Method 3
+          ForegroundApp=$(((($MEM*2/80)*1024)/4))
+          VisibleApp=$(((($MEM*3/100)*1024)/4))
+          SecondaryServer=$(((($MEM*5/100)*1024)/4))
+          HiddenApp=$(((($MEM*7/100)*1024)/4))
+          ContentProvider=$(((($MEM*12/100)*1024)/4))
+          EmptyApp=$(((($MEM*16/100)*1024)/4))
+      else   
+          echo "Value Error";
+          StopModify="yes"
+      fi;
+      if [ $StopModify == "no" ];then
+          if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ]; then
+              chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
+              echo "0" > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
+              chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
+              setprop lmk.autocalc false
+              #  echo "* Adaptive LMK = Disabled *" |  tee -a $LOG;
+          fi;
+          if [ -e /sys/module/lowmemorykiller/parameters/debug_level ]; then
+              chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
+              echo "0" > /sys/module/lowmemorykiller/parameters/debug_level
+              chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
+              #  echo "* LMK Debug Level = Disabled *" |  tee -a $LOG;
+          fi;
+
+          chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
+          chmod 0666 /sys/module/lowmemorykiller/parameters/minfree;
+          echo "0,120,230,415,910,1000" > /sys/module/lowmemorykiller/parameters/adj
+          echo "$ForegroundApp,$VisibleApp,$SecondaryServer,$HiddenApp,$ContentProvider,$EmptyApp" > /sys/module/lowmemorykiller/parameters/minfree
+          chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
+          chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
+
+          minFreeSet=$(($MEM*4))
+
+          sysctl -e -w vm.min_free_kbytes=$minFreeSet 2>/dev/null
+          if [ -e /proc/sys/vm/extra_free_kbytes ]; then
+              setprop sys.sysctl.extra_free_kbytes $minFreeSet
+          fi;
+      fi;
+      # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog;
+  fi;
 # costum ram managent end
 
 if [ $GetMode == 'off' ];then
