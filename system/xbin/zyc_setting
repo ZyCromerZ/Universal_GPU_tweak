@@ -353,7 +353,7 @@ saveSetting()
         echo "$GetModeAdrenoNew" > $PathModulConfig/GpuBooster.txt ; 
     fi
     if [ "$GetModeRamBefore" != "$GetModeRamNew" ];then
-        echo "$GetModeRamNew" > $PathModulConfigAi/custom_ram_management.txt ; 
+        echo "$GetModeRamNew" > $PathModulConfig/custom_ram_management.txt ; 
     fi
     if [ "$GetModeAiBefore" != "$GetModeAiNew" ];then
         echo "$GetModeAiNew" > $PathModulConfigAi/ai_status.txt ; 

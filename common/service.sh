@@ -1166,23 +1166,23 @@ enableLogSystem(){
             ForegroundApp=$(((($GetTotalRam*2/100)*1024)/4))
             VisibleApp=$(((($GetTotalRam*3/100)*1024)/4))
             SecondaryServer=$(((($GetTotalRam*5/100)*1024)/4))
-            HiddenApp=$(((($GetTotalRam*7/100)*1024)/4))
+            HiddenApp=$(((($GetTotalRam*6/100)*1024)/4))
             ContentProvider=$(((($GetTotalRam*10/100)*1024)/4))
             EmptyApp=$(((($GetTotalRam*12/100)*1024)/4))
         elif [ "$CustomRam" == "2" ]; then # Method 2
-            ForegroundApp=$(((($GetTotalRam*2/100)*1024)/4))
-            VisibleApp=$(((($GetTotalRam*3/100)*1024)/4))
+            ForegroundApp=$(((($GetTotalRam*3/100)*1024)/4))
+            VisibleApp=$(((($GetTotalRam*4/100)*1024)/4))
             SecondaryServer=$(((($GetTotalRam*5/100)*1024)/4))
-            HiddenApp=$(((($GetTotalRam*6/100)*1024)/4))
+            HiddenApp=$(((($GetTotalRam*7/100)*1024)/4))
             ContentProvider=$(((($GetTotalRam*11/100)*1024)/4))
             EmptyApp=$(((($GetTotalRam*15/100)*1024)/4))
         elif [ "$CustomRam" == "3" ]; then # Method 3
-            ForegroundApp=$(((($GetTotalRam*2/80)*1024)/4))
-            VisibleApp=$(((($GetTotalRam*3/100)*1024)/4))
-            SecondaryServer=$(((($GetTotalRam*5/100)*1024)/4))
+            ForegroundApp=$(((($GetTotalRam*4/100)*1024)/4))
+            VisibleApp=$(((($GetTotalRam*5/100)*1024)/4))
+            SecondaryServer=$(((($GetTotalRam*6/100)*1024)/4))
             HiddenApp=$(((($GetTotalRam*7/100)*1024)/4))
             ContentProvider=$(((($GetTotalRam*12/100)*1024)/4))
-            EmptyApp=$(((($GetTotalRam*16/100)*1024)/4))
+            EmptyApp=$(((($GetTotalRam*15/100)*1024)/4))
         else   
             echo "method not found" | tee -a $saveLog;
             StopModify="yes"
