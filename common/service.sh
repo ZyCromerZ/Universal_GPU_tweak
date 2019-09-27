@@ -219,7 +219,8 @@ For module config files in the zyc_turbo_config folder (ignore if file does not 
 
 - custom_ram_management.txt
 
- otw, just config garbage, there are no features, for the next build
+  for custom your ram management
+Value = 0 ( use system default ) / 1 (method 1) / 2 (method 2) / 3 (method 3)
 
 
 
@@ -463,7 +464,8 @@ Untuk file config modul dalam folder zyc_turbo_config (abaikan kalo file ada tid
 
 - custom_ram_management.txt  
 
- otw,cuma config sampah,belum ada fitur nya,buat next build
+  buat setting ram management nya
+Valuenya = 0(pake default)/1(cara 1)/2(cara 2)/3(cara 3)
 
 
 
@@ -471,7 +473,7 @@ Untuk file config modul dalam folder zyc_turbo_config (abaikan kalo file ada tid
 
  disable log hp nya,dipercaya bisa meningkatkan performa hp nya
 
-Value nya = 0(disable)[rekomendasi]/1(enable)
+Valuenya = 0(disable)[rekomendasi]/1(enable)
 
 
 
@@ -1141,27 +1143,28 @@ enableLogSystem(){
       chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
   else
       StopModify="no"
+      GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
       if [ "$CustomRam" == "1" ]; then # Method 1
-          ForegroundApp=$(((($MEM*2/100)*1024)/4))
-          VisibleApp=$(((($MEM*3/100)*1024)/4))
-          SecondaryServer=$(((($MEM*5/100)*1024)/4))
-          HiddenApp=$(((($MEM*7/100)*1024)/4))
-          ContentProvider=$(((($MEM*10/100)*1024)/4))
-          EmptyApp=$(((($MEM*12/100)*1024)/4))
+          ForegroundApp=$(((($GetTotalRam*2/100)*1024)/4))
+          VisibleApp=$(((($GetTotalRam*3/100)*1024)/4))
+          SecondaryServer=$(((($GetTotalRam*5/100)*1024)/4))
+          HiddenApp=$(((($GetTotalRam*7/100)*1024)/4))
+          ContentProvider=$(((($GetTotalRam*10/100)*1024)/4))
+          EmptyApp=$(((($GetTotalRam*12/100)*1024)/4))
       elif [ "$CustomRam" == "2" ]; then # Method 2
-          ForegroundApp=$(((($MEM*2/100)*1024)/4))
-          VisibleApp=$(((($MEM*3/100)*1024)/4))
-          SecondaryServer=$(((($MEM*5/100)*1024)/4))
-          HiddenApp=$(((($MEM*6/100)*1024)/4))
-          ContentProvider=$(((($MEM*11/100)*1024)/4))
-          EmptyApp=$(((($MEM*15/100)*1024)/4))
+          ForegroundApp=$(((($GetTotalRam*2/100)*1024)/4))
+          VisibleApp=$(((($GetTotalRam*3/100)*1024)/4))
+          SecondaryServer=$(((($GetTotalRam*5/100)*1024)/4))
+          HiddenApp=$(((($GetTotalRam*6/100)*1024)/4))
+          ContentProvider=$(((($GetTotalRam*11/100)*1024)/4))
+          EmptyApp=$(((($GetTotalRam*15/100)*1024)/4))
       elif [ "$CustomRam" == "3" ]; then # Method 3
-          ForegroundApp=$(((($MEM*2/80)*1024)/4))
-          VisibleApp=$(((($MEM*3/100)*1024)/4))
-          SecondaryServer=$(((($MEM*5/100)*1024)/4))
-          HiddenApp=$(((($MEM*7/100)*1024)/4))
-          ContentProvider=$(((($MEM*12/100)*1024)/4))
-          EmptyApp=$(((($MEM*16/100)*1024)/4))
+          ForegroundApp=$(((($GetTotalRam*2/80)*1024)/4))
+          VisibleApp=$(((($GetTotalRam*3/100)*1024)/4))
+          SecondaryServer=$(((($GetTotalRam*5/100)*1024)/4))
+          HiddenApp=$(((($GetTotalRam*7/100)*1024)/4))
+          ContentProvider=$(((($GetTotalRam*12/100)*1024)/4))
+          EmptyApp=$(((($GetTotalRam*16/100)*1024)/4))
       else   
           echo "Value Error";
           StopModify="yes"
@@ -1188,7 +1191,7 @@ enableLogSystem(){
           chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
           chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
 
-          minFreeSet=$(($MEM*4))
+          minFreeSet=$(($GetTotalRam*4))
 
           sysctl -e -w vm.min_free_kbytes=$minFreeSet 2>/dev/null
           if [ -e /proc/sys/vm/extra_free_kbytes ]; then

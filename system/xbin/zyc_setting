@@ -73,6 +73,10 @@ if [ -e $PathModulConfig/GpuBooster.txt ];then
     GetModeAdrenoBefore=$(cat "$PathModulConfig/GpuBooster.txt")
     GetModeAdrenoNew=$(cat "$PathModulConfig/GpuBooster.txt")
 fi
+if [ -e $PathModulConfig/custom_ram_management.txt ];then
+    GetModeRamBefore=$(cat "$PathModulConfig/custom_ram_management.txt")
+    GetModeRamNew=$(cat "$PathModulConfig/custom_ram_management.txt")
+fi
 if [ -e $PathModulConfigAi/ai_status.txt ];then
     GetModeAiBefore=$(cat "$PathModulConfigAi/ai_status.txt")
     GetModeAiNew=$(cat "$PathModulConfigAi/ai_status.txt")
@@ -147,6 +151,20 @@ ListMenu(){
                 echo $kuningHitam"this will set to : high"$ResetWarna
             elif [ $GetModeAdrenoNew == "4" ];then
                 echo $biruHitam"this will set to : by tweak"$ResetWarna
+            fi
+        fi
+        echo $cyanPutih"<--- ---- --- --->"$ResetWarna
+    fi
+    if [ -e "$PathModulConfig/custom_ram_management.txt" ];then
+        echo "rms > use system ram management"
+        echo "rm1 > use ram management method 1"
+        echo "rm2 > use ram management method 2"
+        echo "rm3 > use ram management method 3"
+        if [ "$GetModeRamBefore" != "$GetModeRamNew" ];then
+            if [ $GetModeRamNew == "0" ];then
+                echo $hijauHitam"this will set to : use system "$ResetWarna
+            else 
+                echo $merahHitam"this will set to : method $GetModeRamNew"$ResetWarna
             fi
         fi
         echo $cyanPutih"<--- ---- --- --->"$ResetWarna
@@ -247,6 +265,26 @@ ListMenu(){
         GetModeAdrenoNew="4"
         sleep 0.1s
         ListMenu
+    elif [ $pilihan == "rms" ];then
+        Perubahan="ya"
+        GetModeRamNew="0"
+        sleep 0.1s
+        ListMenu
+    elif [ $pilihan == "rm1" ];then
+        Perubahan="ya"
+        GetModeRamNew="1"
+        sleep 0.1s
+        ListMenu
+    elif [ $pilihan == "rm2" ];then
+        Perubahan="ya"
+        GetModeRamNew="2"
+        sleep 0.1s
+        ListMenu
+    elif [ $pilihan == "rm3" ];then
+        Perubahan="ya"
+        GetModeRamNew="3"
+        sleep 0.1s
+        ListMenu
     elif [ $pilihan == "aix" ];then
         Perubahan="ya"
         # GetModeAiNew="1"
@@ -313,6 +351,9 @@ saveSetting()
     fi
     if [ "$GetModeAdrenoBefore" != "$GetModeAdrenoNew" ];then
         echo "$GetModeAdrenoNew" > $PathModulConfig/GpuBooster.txt ; 
+    fi
+    if [ "$GetModeRamBefore" != "$GetModeRamNew" ];then
+        echo "$GetModeRamNew" > $PathModulConfigAi/custom_ram_management.txt ; 
     fi
     if [ "$GetModeAiBefore" != "$GetModeAiNew" ];then
         echo "$GetModeAiNew" > $PathModulConfigAi/ai_status.txt ; 
