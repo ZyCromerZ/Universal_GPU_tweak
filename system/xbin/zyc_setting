@@ -91,6 +91,8 @@ ListMenu(){
         echo "mt > change mode tweak to turbo"
         if [ "$GetModeBefore" != "$GetModeNew" ];then
             echo $kuningHitam"this will set to : $GetModeNew"$ResetWarna
+        else
+            echo "current status : $GetModeBefore";
         fi
         echo $cyanPutih"<--- ---- --- --->"$ResetWarna
     fi
@@ -107,6 +109,14 @@ ListMenu(){
             elif [ $GetModeRenderNew == "skiavk" ];then
                 echo $merahHitam"this will set to : Vulkan"$ResetWarna
             fi
+        else
+            if [ $GetModeRenderBefore == "opengl" ];then
+                echo $hijauHitam"Current Status : OpenGL Default"$ResetWarna
+            elif [ $GetModeRenderBefore == "skiagl" ];then
+                echo $kuningHitam"Current Status : OpenGL Skia"$ResetWarna
+            elif [ $GetModeRenderBefore == "skiavk" ];then
+                echo $merahHitam"Current Status : Vulkan"$ResetWarna
+            fi
         fi
         echo $cyanPutih"<--- ---- --- --->"$ResetWarna
     fi
@@ -116,8 +126,14 @@ ListMenu(){
         if [ "$GetModeFCBefore" != "$GetModeFCNew" ];then
             if [ $GetModeFCNew == "0" ];then
                 echo $hijauHitam"this will set to : by system"$ResetWarna
-            elif [ $GetModeFCNew == "0" ];then
+            elif [ $GetModeFCNew == "1" ];then
                 echo $hijauHitam"this will set to : by this tweak(trying to force on)"$ResetWarna
+            fi
+        else
+            if [ $GetModeFCBefore == "0" ];then
+                echo $hijauHitam"Current Status : by system"$ResetWarna
+            elif [ $GetModeFCBefore == "1" ];then
+                echo $hijauHitam"Current Status : by this tweak(trying to force on)"$ResetWarna
             fi
         fi
         echo $cyanPutih"<--- ---- --- --->"$ResetWarna
@@ -130,6 +146,12 @@ ListMenu(){
                 echo $hijauHitam"this will set to : off"$ResetWarna
             elif [ $GetModeFsyncNew == "1" ];then
                 echo $merahHitam"this will set to : on"$ResetWarna
+            fi
+        else
+            if [ $GetModeFsyncBefore == "0" ];then
+                echo $hijauHitam"Current Status : off"$ResetWarna
+            elif [ $GetModeFsyncBefore == "1" ];then
+                echo $merahHitam"Current Status : on"$ResetWarna
             fi
         fi
         echo $cyanPutih"<--- ---- --- --->"$ResetWarna
@@ -152,6 +174,18 @@ ListMenu(){
             elif [ $GetModeAdrenoNew == "4" ];then
                 echo $biruHitam"this will set to : by tweak"$ResetWarna
             fi
+        else
+            if [ $GetModeAdrenoBefore == "0" ];then
+                echo $hijauHitam"Current status : off"$ResetWarna
+            elif [ $GetModeAdrenoBefore == "1" ];then
+                echo $hijauHitam"Current status : low"$ResetWarna
+            elif [ $GetModeAdrenoBefore == "2" ];then
+                echo $kuningHitam"Current status : medium"$ResetWarna
+            elif [ $GetModeAdrenoBefore == "3" ];then
+                echo $kuningHitam"Current status : high"$ResetWarna
+            elif [ $GetModeAdrenoBefore == "4" ];then
+                echo $biruHitam"Current status : by tweak"$ResetWarna
+            fi
         fi
         echo $cyanPutih"<--- ---- --- --->"$ResetWarna
     fi
@@ -166,6 +200,12 @@ ListMenu(){
             else 
                 echo $merahHitam"this will set to : method $GetModeRamNew"$ResetWarna
             fi
+        else
+            if [ $GetModeRamNew == "0" ];then
+                echo $hijauHitam"current status : use system "$ResetWarna
+            else 
+                echo $merahHitam"current status : method $GetModeRamNew"$ResetWarna
+            fi
         fi
         echo $cyanPutih"<--- ---- --- --->"$ResetWarna
     fi
@@ -179,6 +219,14 @@ ListMenu(){
                 echo $cyanHitam"this will set to : turn off"$ResetWarna
             elif [ $GetModeAiNew == "1" ];then
                 echo $cyanHitam"this will set to : on"$ResetWarna
+            fi
+        else
+            if [ $GetModeAiBefore == "0" ];then
+                echo $cyanHitam"current status : off"$ResetWarna
+            elif [ $GetModeAiBefore == "2" ];then
+                echo $cyanHitam"current status : running"$ResetWarna
+            elif [ $GetModeAiBefore == "1" ];then
+                echo $cyanHitam"current status : on"$ResetWarna
             fi
         fi
         echo $cyanPutih"<--- ---- --- --->"$ResetWarna
@@ -297,7 +345,6 @@ ListMenu(){
         ListMenu
     elif [ $pilihan == "aiy" ];then
         Perubahan="ya"
-        # GetModeAiNew="1"
         if [ $GetModeAiBefore == "0" ];then
             GetModeAiNew="1"
         else
@@ -339,24 +386,31 @@ saveSetting()
     echo "saving changes . . ."
     if [ "$GetModeBefore" != "$GetModeNew" ];then
         echo "$GetModeNew" > $PathModulConfig/status_modul.txt ; 
+        GetModeBefore=$GetModeNew;
     fi
     if [ "$GetModeRenderBefore" != "$GetModeRenderNew" ];then
         echo "$GetModeRenderNew" > $PathModulConfig/mode_render.txt ; 
+        GetModeRenderBefore=$GetModeRenderNew;
     fi
     if [ "$GetModeFCBefore" != "$GetModeFCNew" ];then
         echo "$GetModeFCNew" > $PathModulConfig/fastcharge.txt ; 
+        GetModeFCBefore=$GetModeFCNew;
     fi
     if [ "$GetModeFsyncBefore" != "$GetModeFsyncNew" ];then
         echo "$GetModeFsyncNew" > $PathModulConfig/fsync_mode.txt ; 
+        GetModeFsyncBefore=$GetModeFsyncNew;
     fi
     if [ "$GetModeAdrenoBefore" != "$GetModeAdrenoNew" ];then
         echo "$GetModeAdrenoNew" > $PathModulConfig/GpuBooster.txt ; 
+        GetModeAdrenoBefore=$GetModeAdrenoNew;
     fi
     if [ "$GetModeRamBefore" != "$GetModeRamNew" ];then
         echo "$GetModeRamNew" > $PathModulConfig/custom_ram_management.txt ; 
+        GetModeRamBefore=$GetModeRamNew;
     fi
     if [ "$GetModeAiBefore" != "$GetModeAiNew" ];then
         echo "$GetModeAiNew" > $PathModulConfigAi/ai_status.txt ; 
+        GetModeAiBefore=$GetModeAiNew;
     fi
     echo "re run tweak . . ."
     zyc_turbo > /dev/null 2>&1
@@ -365,6 +419,7 @@ saveSetting()
         zyc_auto > /dev/null 2>&1
     fi
     echo "done . . . "
+    Perubahan="tidak"
     echo "exit (y/n)?"
     read keluar
     if [ $keluar == "y" ];then

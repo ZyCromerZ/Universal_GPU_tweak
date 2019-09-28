@@ -2,6 +2,10 @@
 # tweak gpu
 # this is for auto mode :v 
 # prepare function
+fromBoot="no"
+if [ "$1" == "fromBoot" ];then
+    fromBoot="yes"
+fi
 MAGISKTMP=$ModulPath/ZyC_Turbo
 if [ ! -e /data/mod_path.txt ]; then
     echo "/data/media/0" > /data/mod_path.txt
@@ -221,7 +225,7 @@ setTurbo(){
     getAppName
     echo "turbo" > $PathModulConfig/status_modul.txt
     echo "--- --- --- --- ---" | tee -a $AiLog > /dev/null 2>&1;
-    sh $ModulPath/ZyC_Turbo/service.sh > /dev/null 2>&1
+    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" > /dev/null 2>&1
 }
 setOff(){
     echo 600 > /sys/class/timed_output/vibrator/enable
@@ -230,7 +234,7 @@ setOff(){
     echo "turn off at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1;
     echo "off" > $PathModulConfig/status_modul.txt
     echo "--- --- --- --- ---" | tee -a $AiLog > /dev/null 2>&1;
-    sh $ModulPath/ZyC_Turbo/service.sh > /dev/null 2>&1
+    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" > /dev/null 2>&1
 }
 if [ $aiStatus == "1" ]; then
     echo "<<--- --- --- --- --- " | tee -a $AiLog > /dev/null 2>&1 ;
@@ -292,5 +296,14 @@ if [ $aiStatus == "2"  ];then
     else
         sleep "$waitTimeOff"
     fi
+fi 
+if [ $fromBoot == "yes" ];then
+    sleep 40s
+    echo 600 > /sys/class/timed_output/vibrator/enable
+    sleep 1s
+    echo 300 > /sys/class/timed_output/vibrator/enable
+    sleep 0.6s
+    echo 300 > /sys/class/timed_output/vibrator/enable
+    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" > /dev/null 2>&1
 fi
 sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1
