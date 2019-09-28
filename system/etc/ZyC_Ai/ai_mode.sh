@@ -163,24 +163,6 @@ if [ ! -e $PathModulConfigAi/list_app_auto_turbo.txt ]; then
 fi
 pathAppAutoTubo=$PathModulConfigAi/list_app_auto_turbo.txt
 # Get App list
-if [ -e $PathModulConfigAi/list_app_package_detected.txt ]; then
-    changeSE="tidak"
-    if [ "$(getenforce)" == "Enforcing" ];then
-        changeSE="ya"
-        setenforce 0
-    fi
-    if [ -e $PathModulConfigAi/list_app_package_detected.txt ]; then
-        GetInstalledApp=$( pm list packages -3 | grep -n '' | wc -l)
-        TotalInstalledApp=$(($GetInstalledApp + 2))
-        TotalListedApp=$(grep -n "<<---- List app installed end ---->>" "$PathModulConfigAi/list_app_package_detected.txt" | grep -Eo '^[^:]+')
-        if [ "$TotalInstalledApp" != "$TotalListedApp" ];then
-            rm $PathModulConfigAi/list_app_package_detected.txt
-        fi
-    fi
-    if [ "$changeSE" == "ya" ];then
-        setenforce 1
-    fi
-fi
 if [ ! -e $PathModulConfigAi/list_app_package_detected.txt ]; then
     listAppPath=$PathModulConfigAi/list_app_package_detected.txt
     echo "---->> List app installed start <<----"  | tee -a $listAppPath > /dev/null 2>&1 ;
@@ -204,7 +186,7 @@ fi
 GpuStart="$(cat "$PathModulConfigAi/status_start_gpu.txt")";
 # Gpu trigger start
 if [ ! -e $PathModulConfigAi/status_start_gpu.txt ]; then
-    echo '70' > "$PathModulConfigAi/status_start_gpu.txt"
+    echo '80' > "$PathModulConfigAi/status_start_gpu.txt"
 fi
 GpuStart="$(cat "$PathModulConfigAi/status_start_gpu.txt")";
 if [ ! -e $PathModulConfigAi/status_end_gpu.txt ]; then
@@ -251,7 +233,7 @@ setTurbo(){
     getAppName
     echo "turbo" > $PathModulConfig/status_modul.txt
     echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
-    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" > /dev/null 2>&1
+    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" > /dev/null 2>&1
 }
 setOff(){
     echo 600 > /sys/class/timed_output/vibrator/enable
@@ -260,7 +242,7 @@ setOff(){
     echo "turn off at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1;
     echo "off" > $PathModulConfig/status_modul.txt
     echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
-    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" > /dev/null 2>&1
+    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" > /dev/null 2>&1
 }
 if [ $aiStatus == "1" ]; then
     echo "<<--- --- --- --- --- " | tee -a $AiLog > /dev/null 2>&1 ;
@@ -328,8 +310,8 @@ if [ $fromBoot == "yes" ];then
     echo 600 > /sys/class/timed_output/vibrator/enable
     sleep 1s
     echo 300 > /sys/class/timed_output/vibrator/enable
-    sleep 0.6s
-    echo 300 > /sys/class/timed_output/vibrator/enable
-    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" > /dev/null 2>&1
+    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
+    sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1
+else
+    sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1
 fi
-sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1

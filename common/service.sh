@@ -5,9 +5,15 @@
 # sleep 2s
 # MODDIR=${0%/*}
 FromTerminal="tidak";
+FromAi="tidak"
 if [ ! -z "$1" ];then
     if [ "$1" == "Terminal" ];then
         FromTerminal="ya";
+    fi
+fi;
+if [ ! -z "$2" ];then
+    if [ "$2" == "Ai" ];then
+        FromAi="ya";
     fi
 fi;
 if [ -d "/sys/class/kgsl/kgsl-3d0" ]; then
@@ -50,6 +56,8 @@ echo "<<--- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
 echo "starting modules . . ." | tee -a $saveLog > /dev/null 2>&1;
 if [ $FromTerminal == "tidak" ];then
     echo "running with boot detected" | tee -a $saveLog > /dev/null 2>&1;
+elif [ $FromAi == "ya" ];then
+    echo "running with ai detected" | tee -a $saveLog > /dev/null 2>&1;
 else
     echo "running without boot detected" | tee -a $saveLog > /dev/null 2>&1;
 fi
