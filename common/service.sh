@@ -46,12 +46,14 @@ if [ -e $Path/ZyC_Turbo.log ]; then
 fi
 saveLog=$Path/ZyC_Turbo.log
 
-echo "starting modules " | tee -a $saveLog > /dev/null 2>&1;
+echo "<<--- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+echo "starting modules . . ." | tee -a $saveLog > /dev/null 2>&1;
 if [ $FromTerminal == "tidak" ];then
     echo "running with boot detected" | tee -a $saveLog > /dev/null 2>&1;
 else
     echo "running without boot detected" | tee -a $saveLog > /dev/null 2>&1;
 fi
+echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
 # status modul
 if [ ! -e $PathModulConfig/status_modul.txt ]; then
     echo 'turbo' > $PathModulConfig/status_modul.txt
@@ -102,12 +104,12 @@ CustomRam=$(cat $PathModulConfig/custom_ram_management.txt)
 
 # Check notes version
 if [ -e $PathModulConfig/notes_en.txt ];then
-    if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.341 STABLE FIX" ];then
+    if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.341-2 BETA but stable :p" ];then
         rm $PathModulConfig/notes_en.txt
     fi
 fi
 if [ -e $PathModulConfig/notes_id.txt ];then
-    if [ "$(cat "$PathModulConfig/notes_id.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.341 STABLE FIX" ];then
+    if [ "$(cat "$PathModulConfig/notes_id.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.341-2 BETA but stable :p" ];then
         rm $PathModulConfig/notes_id.txt
     fi
 fi
@@ -336,7 +338,7 @@ mode = off / on / turbo
 
 namarender = opengl / skiagl / skiavk
 
-Version:3.341 STABLE FIX" | tee -a $SetNotes > /dev/null 2>&1;
+Version:3.341-2 BETA but stable :p" | tee -a $SetNotes > /dev/null 2>&1;
 fi
 if [ ! -e $PathModulConfig/notes_id.txt ]; then
     SetNotes=$PathModulConfig/notes_id.txt;
@@ -581,7 +583,7 @@ namamode = off/on/turbo
 
 namarender = opengl/skiagl/skiavk
 
-Version:3.341 STABLE FIX" | tee -a $SetNotes > /dev/null 2>&1;
+Version:3.341-2 BETA but stable :p" | tee -a $SetNotes > /dev/null 2>&1;
     
 fi
 backupDolo(){
@@ -832,6 +834,7 @@ sleep 0.5s
 # log backup nya
     if [ $backup == "pake" ]; then
         echo "backup setting done" | tee -a $saveLog;
+        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
     fi
 # end log backup
 SetOff(){
@@ -884,6 +887,7 @@ SetOff(){
         echo $(cat  "$PathModulConfig/backup/misc_module_fsync_enabled.txt") > "/sys/module/sync/parameters/fsync_enabled"
     fi
     echo 'revert done . . .' | tee -a $saveLog;
+    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
 }
 SetOn(){
     echo 'use "on" setting. . .' | tee -a $saveLog;
@@ -905,6 +909,7 @@ SetOn(){
         fi
     fi
     echo 'use "on" done. . .' | tee -a $saveLog;
+    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
 
 }
 SetTurbo(){
@@ -932,6 +937,7 @@ SetTurbo(){
         fi
     fi
     echo 'use "turbo" done .' | tee -a $saveLog;
+    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
 }
 fstrimDulu(){
     echo "fstrim data cache & system, please wait" | tee -a $saveLog;
@@ -939,6 +945,7 @@ fstrimDulu(){
     fstrim -v /data | tee -a $saveLog;
     fstrim -v /system | tee -a $saveLog;
     echo "done ." | tee -a $saveLog;
+    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
 }
 disableFsync(){
     # disable fsync biar ui smooth :D
@@ -956,9 +963,11 @@ disableFsync(){
         echo "N" > /sys/module/sync/parameters/fsync_enabled
     fi
     echo 'disable done .' | tee -a $saveLog;
+    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
 }
 enableFsync(){
     # enable fsync
+    echo 'enable fsync . . .' | tee -a $saveLog;
     if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
         echo "1" > /sys/kernel/dyn_fsync/Dyn_fsync_active
     fi
@@ -971,6 +980,8 @@ enableFsync(){
     if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
         echo "Y" > /sys/module/sync/parameters/fsync_enabled
     fi
+    echo 'enable done .' | tee -a $saveLog;
+    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
 }
 disableLogSystem(){
 # Disable stats logging & monitoring
@@ -990,11 +1001,12 @@ disableLogSystem(){
     setprop persist.service.pcsync.enable 0 > /dev/null 2>&1
     setprop persist.service.lgospd.enable 0 > /dev/null 2>&1
     setprop persist.sys.purgeable_assets 1 > /dev/null 2>&1
-    
     echo 'disable log and monitoring done .' | tee -a $saveLog;
+    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
 }
 enableLogSystem(){
-# Disable stats logging & monitoring
+# Enable stats logging & monitoring
+    echo 'enable log and monitoring . . .' | tee -a $saveLog;
     setprop debug.atrace.tags.enableflags 1 > /dev/null 2>&1
     setprop profiler.force_disable_ulog false > /dev/null 2>&1
     setprop profiler.force_disable_err_rpt false > /dev/null 2>&1
@@ -1010,6 +1022,8 @@ enableLogSystem(){
     setprop persist.service.pcsync.enable 1 > /dev/null 2>&1
     setprop persist.service.lgospd.enable 1 > /dev/null 2>&1
     setprop persist.sys.purgeable_assets 0 > /dev/null 2>&1
+    echo 'enable log and monitoring done .' | tee -a $saveLog;
+    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
 }
 
 # ngator mode start
@@ -1033,6 +1047,7 @@ enableLogSystem(){
         # disableFsync
         echo "please read guide, mode $GetMode,not found autmatic set to mode on " | tee -a $saveLog;
         echo 'on' > $PathModulConfig/status_modul.txt
+        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
     fi
 # ngator mode end
 
@@ -1041,19 +1056,17 @@ enableLogSystem(){
         if [ -e /sys/kernel/fast_charge/force_fast_charge ]; then
             echo "tying to enable fastcharging using first method" | tee -a $saveLog;
             echo "2" > /sys/kernel/fast_charge/force_fast_charge
-            if [ $(cat /sys/kernel/fast_charge/force_fast_charge) -eq "0" ]; then
+            if [ "$(cat /sys/kernel/fast_charge/force_fast_charge)" == "0" ]; then
                 echo "tying to enable fastcharging using second method" | tee -a $saveLog;
                 echo "1" > /sys/kernel/fast_charge/force_fast_charge
             fi
-            echo "tying to enable fastcharging using third method,... \neh no third method just kidding xD" | tee -a $saveLog;
-            if [ $(cat /sys/kernel/fast_charge/force_fast_charge) -eq "0" ]; then
+            if [ "$(cat /sys/kernel/fast_charge/force_fast_charge)" == "0" ]; then
                 echo "fastcharge off,maybe your kernel/phone not support it" | tee -a $saveLog;
             else
                 echo "fastcharge on" | tee -a $saveLog;
             fi
-
+            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
         fi
-
     fi  
 # enable fastcharge end
 
@@ -1061,6 +1074,7 @@ enableLogSystem(){
     if [ $SetRefreshRate != "0" ];then
         setprop persist.sys.NV_FPSLIMIT $SetRefreshRate
         echo "custom fps detected, set to $SetRefreshRate" | tee -a $saveLog;
+        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
     fi
     # set fps ? end
 
@@ -1089,6 +1103,7 @@ enableLogSystem(){
         echo "nice,use default this tweak GpuBoost" | tee -a $saveLog;
         echo '4' > $PathModulConfig/GpuBooster.txt
     fi
+    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
 # gpu turbo end
 
 # echo "ok beres dah . . .\n" | tee -a $saveLog;
@@ -1107,118 +1122,125 @@ enableLogSystem(){
         echo "mode not found,set to OpenGL (skia) " | tee -a $saveLog;
         echo 'skiagl' > $PathModulConfig/mode_render.txt
     fi
+    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
 # gpu render end
 
-    # disable fsync start
-    if [ $fsyncMode == "0" ];then
-        disableFsync
-        echo "custom fsync detected, set to disable" | tee -a $saveLog;
-    elif [ $fsyncMode == "1" ];then
-        enableFsync
-        echo "custom fsync detected, set to enable" | tee -a $saveLog;
-    else
-        disableFsync
-        echo "fsync value error,set to disable" | tee -a $saveLog;
-        echo '0' > $PathModulConfig/fsync_mode.txt
+# disable fsync start
+    if [ $FromTerminal == "ya" ];then
+        if [ $fsyncMode == "0" ];then
+            disableFsync
+            echo "custom fsync detected, set to disable" | tee -a $saveLog;
+        elif [ $fsyncMode == "1" ];then
+            enableFsync
+            echo "custom fsync detected, set to enable" | tee -a $saveLog;
+        else
+            disableFsync
+            echo "fsync value error,set to disable" | tee -a $saveLog;
+            echo '0' > $PathModulConfig/fsync_mode.txt
+        fi
+        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
     fi
 # disable fsync end
 
-# costum ram managent start
-  if [ $CustomRam == '0' ];then
-        # echo "coming_soon :D"| tee -a $saveLog;
-        echo "not use custom ram management,using stock ram management" | tee -a $saveLog;
-        if [ -e $PathModulConfig/backup/ram_enable_adaptive_lmk.txt ];then
-            chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-            echo $(cat "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt") > "/sys/module/lowmemorykiller/parameters/enable_adaptive_lmk"
-            chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-            setprop lmk.autocalc false
-            if [ "$(cat "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt")" == "1" ];then
-                setprop lmk.autocalc true
-            else
-                setprop lmk.autocalc false
-            fi
-            rm $PathModulConfig/backup/ram_enable_adaptive_lmk.txt
-        fi
-        if [ -e $PathModulConfig/backup/ram_debug_level.txt ];then
-            echo $(cat "$PathModulConfig/backup/ram_debug_level.txt") > "/sys/module/lowmemorykiller/parameters/debug_level"
-            chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
-            chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
-            rm $PathModulConfig/backup/ram_debug_level.txt
-        fi
-        if [ -e $PathModulConfig/backup/ram_adj.txt ];then
-            chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
-            echo $(cat "$PathModulConfig/backup/ram_adj.txt") > "/sys/module/lowmemorykiller/parameters/adj"
-            chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
-            rm $PathModulConfig/backup/ram_adj.txt
-        fi
-        if [ -e $PathModulConfig/backup/ram_minfree.txt ];then
-            chmod 0666 /sys/module/lowmemorykiller/parameters/minfree;
-            echo $(cat "$PathModulConfig/backup/ram_minfree.txt") > "/sys/module/lowmemorykiller/parameters/minfree"
-            chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
-            rm $PathModulConfig/backup/ram_minfree.txt
-        fi
-        # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog;
-  else
-        echo "using custom ram management method $CustomRam" | tee -a $saveLog;
-        StopModify="no"
-        GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
-        if [ "$CustomRam" == "1" ]; then # Method 1
-            ForegroundApp=$(((($GetTotalRam*2/100)*1024)/4))
-            VisibleApp=$(((($GetTotalRam*3/100)*1024)/4))
-            SecondaryServer=$(((($GetTotalRam*5/100)*1024)/4))
-            HiddenApp=$(((($GetTotalRam*6/100)*1024)/4))
-            ContentProvider=$(((($GetTotalRam*10/100)*1024)/4))
-            EmptyApp=$(((($GetTotalRam*12/100)*1024)/4))
-        elif [ "$CustomRam" == "2" ]; then # Method 2
-            ForegroundApp=$(((($GetTotalRam*3/100)*1024)/4))
-            VisibleApp=$(((($GetTotalRam*4/100)*1024)/4))
-            SecondaryServer=$(((($GetTotalRam*5/100)*1024)/4))
-            HiddenApp=$(((($GetTotalRam*7/100)*1024)/4))
-            ContentProvider=$(((($GetTotalRam*11/100)*1024)/4))
-            EmptyApp=$(((($GetTotalRam*15/100)*1024)/4))
-        elif [ "$CustomRam" == "3" ]; then # Method 3
-            ForegroundApp=$(((($GetTotalRam*4/100)*1024)/4))
-            VisibleApp=$(((($GetTotalRam*5/100)*1024)/4))
-            SecondaryServer=$(((($GetTotalRam*6/100)*1024)/4))
-            HiddenApp=$(((($GetTotalRam*7/100)*1024)/4))
-            ContentProvider=$(((($GetTotalRam*12/100)*1024)/4))
-            EmptyApp=$(((($GetTotalRam*15/100)*1024)/4))
-        else   
-            echo "method not found" | tee -a $saveLog;
-            StopModify="yes"
+# custom ram managent start
+    if [ $FromTerminal == "ya" ];then
+        if [ $CustomRam == '0' ];then
+                # echo "coming_soon :D"| tee -a $saveLog;
+                echo "not use custom ram management,using stock ram management" | tee -a $saveLog;
+                if [ -e $PathModulConfig/backup/ram_enable_adaptive_lmk.txt ];then
+                    chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
+                    echo $(cat "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt") > "/sys/module/lowmemorykiller/parameters/enable_adaptive_lmk"
+                    chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
+                    setprop lmk.autocalc false
+                    if [ "$(cat "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt")" == "1" ];then
+                        setprop lmk.autocalc true
+                    else
+                        setprop lmk.autocalc false
+                    fi
+                    rm $PathModulConfig/backup/ram_enable_adaptive_lmk.txt
+                fi
+                if [ -e $PathModulConfig/backup/ram_debug_level.txt ];then
+                    echo $(cat "$PathModulConfig/backup/ram_debug_level.txt") > "/sys/module/lowmemorykiller/parameters/debug_level"
+                    chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
+                    chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
+                    rm $PathModulConfig/backup/ram_debug_level.txt
+                fi
+                if [ -e $PathModulConfig/backup/ram_adj.txt ];then
+                    chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
+                    echo $(cat "$PathModulConfig/backup/ram_adj.txt") > "/sys/module/lowmemorykiller/parameters/adj"
+                    chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
+                    rm $PathModulConfig/backup/ram_adj.txt
+                fi
+                if [ -e $PathModulConfig/backup/ram_minfree.txt ];then
+                    chmod 0666 /sys/module/lowmemorykiller/parameters/minfree;
+                    echo $(cat "$PathModulConfig/backup/ram_minfree.txt") > "/sys/module/lowmemorykiller/parameters/minfree"
+                    chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
+                    rm $PathModulConfig/backup/ram_minfree.txt
+                fi
+                # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog;
+        else
+                echo "using custom ram management method $CustomRam" | tee -a $saveLog;
+                StopModify="no"
+                GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
+                if [ "$CustomRam" == "1" ]; then # Method 1
+                    ForegroundApp=$(((($GetTotalRam*2/100)*1024)/4))
+                    VisibleApp=$(((($GetTotalRam*3/100)*1024)/4))
+                    SecondaryServer=$(((($GetTotalRam*5/100)*1024)/4))
+                    HiddenApp=$(((($GetTotalRam*6/100)*1024)/4))
+                    ContentProvider=$(((($GetTotalRam*10/100)*1024)/4))
+                    EmptyApp=$(((($GetTotalRam*12/100)*1024)/4))
+                elif [ "$CustomRam" == "2" ]; then # Method 2
+                    ForegroundApp=$(((($GetTotalRam*3/100)*1024)/4))
+                    VisibleApp=$(((($GetTotalRam*4/100)*1024)/4))
+                    SecondaryServer=$(((($GetTotalRam*5/100)*1024)/4))
+                    HiddenApp=$(((($GetTotalRam*7/100)*1024)/4))
+                    ContentProvider=$(((($GetTotalRam*11/100)*1024)/4))
+                    EmptyApp=$(((($GetTotalRam*15/100)*1024)/4))
+                elif [ "$CustomRam" == "3" ]; then # Method 3
+                    ForegroundApp=$(((($GetTotalRam*4/100)*1024)/4))
+                    VisibleApp=$(((($GetTotalRam*5/100)*1024)/4))
+                    SecondaryServer=$(((($GetTotalRam*6/100)*1024)/4))
+                    HiddenApp=$(((($GetTotalRam*7/100)*1024)/4))
+                    ContentProvider=$(((($GetTotalRam*12/100)*1024)/4))
+                    EmptyApp=$(((($GetTotalRam*15/100)*1024)/4))
+                else   
+                    echo "method not found" | tee -a $saveLog;
+                    StopModify="yes"
+                fi;
+                if [ $StopModify == "no" ];then
+                    if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ]; then
+                        chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
+                        echo "0" > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
+                        chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
+                        setprop lmk.autocalc false
+                        #  echo "* Adaptive LMK = Disabled *" |  tee -a $LOG;
+                    fi;
+                    if [ -e /sys/module/lowmemorykiller/parameters/debug_level ]; then
+                        chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
+                        echo "0" > /sys/module/lowmemorykiller/parameters/debug_level
+                        chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
+                        #  echo "* LMK Debug Level = Disabled *" |  tee -a $LOG;
+                    fi;
+
+                    chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
+                    chmod 0666 /sys/module/lowmemorykiller/parameters/minfree;
+                    echo "0,120,230,415,910,1000" > /sys/module/lowmemorykiller/parameters/adj
+                    echo "$ForegroundApp,$VisibleApp,$SecondaryServer,$HiddenApp,$ContentProvider,$EmptyApp" > /sys/module/lowmemorykiller/parameters/minfree
+                    chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
+                    chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
+
+                    minFreeSet=$(($GetTotalRam*4))
+
+                    sysctl -e -w vm.min_free_kbytes=$minFreeSet 2>/dev/null
+                    if [ -e /proc/sys/vm/extra_free_kbytes ]; then
+                        setprop sys.sysctl.extra_free_kbytes $minFreeSet
+                    fi;
+                fi;
+            # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog;
         fi;
-        if [ $StopModify == "no" ];then
-            if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ]; then
-                chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-                echo "0" > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
-                chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-                setprop lmk.autocalc false
-                #  echo "* Adaptive LMK = Disabled *" |  tee -a $LOG;
-            fi;
-            if [ -e /sys/module/lowmemorykiller/parameters/debug_level ]; then
-                chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
-                echo "0" > /sys/module/lowmemorykiller/parameters/debug_level
-                chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
-                #  echo "* LMK Debug Level = Disabled *" |  tee -a $LOG;
-            fi;
-
-            chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
-            chmod 0666 /sys/module/lowmemorykiller/parameters/minfree;
-            echo "0,120,230,415,910,1000" > /sys/module/lowmemorykiller/parameters/adj
-            echo "$ForegroundApp,$VisibleApp,$SecondaryServer,$HiddenApp,$ContentProvider,$EmptyApp" > /sys/module/lowmemorykiller/parameters/minfree
-            chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
-            chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
-
-            minFreeSet=$(($GetTotalRam*4))
-
-            sysctl -e -w vm.min_free_kbytes=$minFreeSet 2>/dev/null
-            if [ -e /proc/sys/vm/extra_free_kbytes ]; then
-                setprop sys.sysctl.extra_free_kbytes $minFreeSet
-            fi;
-        fi;
-      # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog;
-  fi;
-# costum ram managent end
+        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+    fi
+# custom ram managent end
 
 if [ $GetMode == 'off' ];then
     echo "turn off tweak succeess :D"| tee -a $saveLog;
@@ -1241,19 +1263,28 @@ if [ $FromTerminal == "tidak" ];then
         if [ -e $PathModulConfigAi/ai_status.txt ]; then
             AiStatus=$(cat "$PathModulConfigAi/ai_status.txt")
             if [ $AiStatus == "1" ];then
+                echo "starting ai mode . . . " | tee -a $saveLog > /dev/null 2>&1;
+                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
                 sh $BASEDIR/ai_mode.sh "fromBoot" | tee -a $saveLog;
             elif [ $AiStatus == "2" ];then
+                echo "re - run ai mode . . . " | tee -a $saveLog > /dev/null 2>&1;
+                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
                 sh $BASEDIR/ai_mode.sh "fromBoot" | tee -a $saveLog;
             elif [ $AiStatus == "3" ];then
+                echo "deactive ai mode . . . " | tee -a $saveLog > /dev/null 2>&1;
+                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
                 sh $BASEDIR/ai_mode.sh "fromBoot" | tee -a $saveLog;
             elif [ $AiStatus == "0" ];then
                 echo "ai status off"| tee -a $saveLog;
+                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
             else
                 echo "ai status error,set to 0"| tee -a $saveLog;
                 echo '0' > "$PathModulConfigAi/ai_status.txt"
+                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
             fi
         fi
     fi
 fi
 echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog;
+echo "  --- --- --- --- --->> " | tee -a $saveLog > /dev/null 2>&1;
 exit 0;

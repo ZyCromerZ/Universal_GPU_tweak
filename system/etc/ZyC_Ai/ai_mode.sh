@@ -78,6 +78,11 @@ fi;
 # App trigger start
 if [ ! -e $PathModulConfigAi/list_app_auto_turbo.txt ]; then
     GameList=$PathModulConfigAi/list_app_auto_turbo.txt
+    changeSE="tidak"
+    if [ "$(getenforce)" == "Enforcing" ];then
+        changeSE="ya"
+        setenforce 0
+    fi
     # Moba Analog
     if [ ! -z $(pm list packages -f com.mobile.legends | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
         echo "com.mobile.legends" | tee -a $GameList > /dev/null 2>&1;
@@ -152,13 +157,34 @@ if [ ! -e $PathModulConfigAi/list_app_auto_turbo.txt ]; then
     # if [ ! -z $(pm list packages -f com. | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
     #     echo "com." | tee -a $GameList > /dev/null 2>&1;
     # fi
+    if [ "$changeSE" == "ya" ];then
+        setenforce 1
+    fi
 fi
 pathAppAutoTubo=$PathModulConfigAi/list_app_auto_turbo.txt
 # Get App list
+if [ -e $PathModulConfigAi/list_app_package_detected.txt ]; then
+    changeSE="tidak"
+    if [ "$(getenforce)" == "Enforcing" ];then
+        changeSE="ya"
+        setenforce 0
+    fi
+    if [ -e $PathModulConfigAi/list_app_package_detected.txt ]; then
+        GetInstalledApp=$( pm list packages -3 | grep -n '' | wc -l)
+        TotalInstalledApp=$(($GetInstalledApp + 2))
+        TotalListedApp=$(grep -n "<<---- List app installed end ---->>" "$PathModulConfigAi/list_app_package_detected.txt" | grep -Eo '^[^:]+')
+        if [ "$TotalInstalledApp" != "$TotalListedApp" ];then
+            rm $PathModulConfigAi/list_app_package_detected.txt
+        fi
+    fi
+    if [ "$changeSE" == "ya" ];then
+        setenforce 1
+    fi
+fi
 if [ ! -e $PathModulConfigAi/list_app_package_detected.txt ]; then
-    # echo $(pm list package -3) > "$PathModulConfigAi/status_start_gpu.txt"
     listAppPath=$PathModulConfigAi/list_app_package_detected.txt
     echo "---->> List app installed start <<----"  | tee -a $listAppPath > /dev/null 2>&1 ;
+    changeSE="tidak"
     if [ "$(getenforce)" == "Enforcing" ];then
         changeSE="ya"
         setenforce 0
@@ -224,7 +250,7 @@ setTurbo(){
     echo "Set to turbo at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1;
     getAppName
     echo "turbo" > $PathModulConfig/status_modul.txt
-    echo "--- --- --- --- ---" | tee -a $AiLog > /dev/null 2>&1;
+    echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
     sh $ModulPath/ZyC_Turbo/service.sh "Terminal" > /dev/null 2>&1
 }
 setOff(){
@@ -233,12 +259,12 @@ setOff(){
     echo 300 > /sys/class/timed_output/vibrator/enable
     echo "turn off at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1;
     echo "off" > $PathModulConfig/status_modul.txt
-    echo "--- --- --- --- ---" | tee -a $AiLog > /dev/null 2>&1;
+    echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
     sh $ModulPath/ZyC_Turbo/service.sh "Terminal" > /dev/null 2>&1
 }
 if [ $aiStatus == "1" ]; then
     echo "<<--- --- --- --- --- " | tee -a $AiLog > /dev/null 2>&1 ;
-    echo "starting modul at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
+    echo "starting ai mode at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
     # echo 400 > /sys/class/timed_output/vibrator/enable
     # sleep 1s
     echo "2" > $PathModulConfigAi/ai_status.txt
@@ -271,22 +297,22 @@ elif [ $aiStatus == "2" ];then
     #     echo 'yess'  | tee -a $AiLog > /dev/null 2>&1 ;
     # fi
 elif [ $aiStatus == "3" ];then
-    echo 'deactive . . .'  | tee -a $AiLog > /dev/null 2>&1 ;
+    echo 'stoping ai mode . . .'  | tee -a $AiLog > /dev/null 2>&1 ;
     echo "end at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
-    echo "--- --- --- --- --->> " | tee -a $AiLog > /dev/null 2>&1 ;
+    echo "  --- --- --- --- --->> " | tee -a $AiLog > /dev/null 2>&1 ;
     echo '0' > $PathModulConfigAi/ai_status.txt
     exit -1;
 elif [ $aiStatus == "0" ];then
     echo "cannot start . . ."  | tee -a $AiLog > /dev/null 2>&1 ;
     echo "please change ai status to 1 first" | tee -a $AiLog > /dev/null 2>&1 ;
     echo "end at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
-    echo "--- --- --- --- --->> " | tee -a $AiLog > /dev/null 2>&1 ;
+    echo "  --- --- --- --- --->> " | tee -a $AiLog > /dev/null 2>&1 ;
     exit -1; 
 else
     echo "cannot start . . ."  | tee -a $AiLog > /dev/null 2>&1 ;
     echo "ai status error . . ."  | tee -a $AiLog > /dev/null 2>&1 ;
     echo "end at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
-    echo "--- --- --- --- --->> " | tee -a $AiLog > /dev/null 2>&1 ;
+    echo "  --- --- --- --- --->> " | tee -a $AiLog > /dev/null 2>&1 ;
     echo '0' > $PathModulConfigAi/ai_status.txt
     exit -1;
 fi

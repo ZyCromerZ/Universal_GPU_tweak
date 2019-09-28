@@ -236,7 +236,7 @@ ListMenu(){
         echo "s/save > save setting"
         # echo "0 > exit"
     fi
-    echo "0 > exit"
+    echo "0/e > exit"
     read pilihan
     if [ $pilihan == "mx" ];then
         Perubahan="ya"
@@ -357,6 +357,8 @@ ListMenu(){
         
     elif [ $pilihan == "0" ];then
         exitSetting
+    elif [ $pilihan == "e" ];then
+        exitSetting
     else 
         if [ $Perubahan == "ya" ];then
             if [ $pilihan == "s" ];then
@@ -377,6 +379,7 @@ ListMenu(){
     fi
 }
 exitSetting(){
+    clear
     echo "selamat tinggal :v "
     echo "Exit . . . "
     exit -1;
@@ -419,6 +422,8 @@ saveSetting()
         zyc_auto > /dev/null 2>&1
     fi
     echo "done . . . "
+    sleep 2s
+    clear
     Perubahan="tidak"
     echo "exit (y/n)?"
     read keluar
