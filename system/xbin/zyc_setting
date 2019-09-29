@@ -18,7 +18,7 @@ unguPutih='\e[01;45m' > /dev/null 2>&1; # ungu - putih
 ResetWarna='\e[0m' > /dev/null 2>&1; # Buat Reser Warna
 # setting warna end
 echo $kuningPutih"Preparing Config . . . ."$ResetWarna
-sleep 5s
+sleep 2s
 magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
 GetVersion=$($magisk -c | grep -Eo '[1-9]{2}\.[0-9]+')
 case "$GetVersion" in
@@ -80,6 +80,10 @@ fi
 if [ -e $PathModulConfigAi/ai_status.txt ];then
     GetModeAiBefore=$(cat "$PathModulConfigAi/ai_status.txt")
     GetModeAiNew=$(cat "$PathModulConfigAi/ai_status.txt")
+fi
+if [ -e $PathModulConfigAi/ai_notif_mode.txt ];then
+    GetModeAiNotifBefore=$(cat "$PathModulConfigAi/ai_notif_mode.txt")
+    GetModeAiNotifNew=$(cat "$PathModulConfigAi/ai_notif_mode.txt")
 fi
 savedata="no"
 ListMenu(){
@@ -231,6 +235,34 @@ ListMenu(){
         fi
         echo $cyanPutih"<--- ---- --- --->"$ResetWarna
     fi
+    if [ -e "$PathModulConfigAi/ai_notif_mode.txt" ];then
+        echo "anx > turn off notif ai";
+        echo "anv > use vibration"
+        echo "an1 > use notif method 1"
+        echo "an2 > use notif method 2"
+        if [ "$GetModeAiNotifBefore" != "$GetModeAiNotifNew" ];then
+            if [ "$GetModeAiNotifNew" == "0" ];then
+                echo $abuHitam"this will set to : $GetModeAiNotifNew"$ResetWarna
+            elif [ "$GetModeAiNotifNew" == "1" ];then
+                echo $cyanHitam"this will set to : $GetModeAiNotifNew"$ResetWarna
+            elif [ "$GetModeAiNotifNew" == "2" ];then
+                echo $hijauHitam"this will set to : $GetModeAiNotifNew"$ResetWarna
+            elif [ "$GetModeAiNotifNew" == "3" ];then
+                echo $hijauPutih"this will set to : $GetModeAiNotifNew"$ResetWarna
+            fi
+        else
+            if [ "$GetModeAiNotifBefore" == "0" ];then
+                echo $abuHitam"Current status : $GetModeAiNotifBefore"$ResetWarna
+            elif [ "$GetModeAiNotifBefore" == "1" ];then
+                echo $cyanHitam"Current status : $GetModeAiNotifBefore"$ResetWarna
+            elif [ "$GetModeAiNotifBefore" == "2" ];then
+                echo $hijauHitam"Current status : $GetModeAiNotifBefore"$ResetWarna
+            elif [ "$GetModeAiNotifBefore" == "3" ];then
+                echo $hijauPutih"Current status : $GetModeAiNotifBefore"$ResetWarna
+            fi
+        fi
+        echo $cyanPutih"<--- ---- --- --->"$ResetWarna
+    fi
     echo "more setting coming soon :p"
     if [ $Perubahan == "ya" ];then
         echo "s/save > save setting"
@@ -354,7 +386,26 @@ ListMenu(){
         fi
         sleep 0.1s
         ListMenu
-        
+    elif [ $pilihan == "anx" ];then
+        Perubahan="ya"
+        GetModeAiNotifNew="0"
+        sleep 0.1s
+        ListMenu
+    elif [ $pilihan == "anv" ];then
+        Perubahan="ya"
+        GetModeAiNotifNew="1"
+        sleep 0.1s
+        ListMenu
+    elif [ $pilihan == "an1" ];then
+        Perubahan="ya"
+        GetModeAiNotifNew="2"
+        sleep 0.1s
+        ListMenu
+    elif [ $pilihan == "an2" ];then
+        Perubahan="ya"
+        GetModeAiNotifNew="3"
+        sleep 0.1s
+        ListMenu
     elif [ $pilihan == "0" ];then
         exitSetting
     elif [ $pilihan == "e" ];then
@@ -414,6 +465,10 @@ saveSetting()
     if [ "$GetModeAiBefore" != "$GetModeAiNew" ];then
         echo "$GetModeAiNew" > $PathModulConfigAi/ai_status.txt ; 
         GetModeAiBefore=$GetModeAiNew;
+    fi
+    if [ "$GetModeAiNotifNew" != "$GetModeAiNotifBefore" ];then
+        echo "$GetModeAiNotifNew" > $PathModulConfigAi/ai_notif_mode.txt ; 
+        GetModeAiNotifBefore=$GetModeAiNotifNew;
     fi
     echo "re run tweak . . ."
     zyc_turbo > /dev/null 2>&1

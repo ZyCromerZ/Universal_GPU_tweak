@@ -112,12 +112,12 @@ CustomRam=$(cat $PathModulConfig/custom_ram_management.txt)
 
 # Check notes version
 if [ -e $PathModulConfig/notes_en.txt ];then
-    if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.341-2 BETA but stable :p" ];then
+    if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.341-4 BETA" ];then
         rm $PathModulConfig/notes_en.txt
     fi
 fi
 if [ -e $PathModulConfig/notes_id.txt ];then
-    if [ "$(cat "$PathModulConfig/notes_id.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.341-2 BETA but stable :p" ];then
+    if [ "$(cat "$PathModulConfig/notes_id.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.341-4 BETA" ];then
         rm $PathModulConfig/notes_id.txt
     fi
 fi
@@ -332,7 +332,11 @@ Note: do not edit status if value 2/3
 
   Time to check the app that is running or GPU usage when in turbo mode
 
+- ai_notif_mode.txt
 
+ Fot setting ai notification led
+
+Value=0 (off) / 1 (vibration mode) / 2 (notification method 1) / 3 (notification metode 2)
 
 
 
@@ -346,7 +350,7 @@ mode = off / on / turbo
 
 namarender = opengl / skiagl / skiavk
 
-Version:3.341-2 BETA but stable :p" | tee -a $SetNotes > /dev/null 2>&1;
+Version:3.341-4 BETA" | tee -a $SetNotes > /dev/null 2>&1;
 fi
 if [ ! -e $PathModulConfig/notes_id.txt ]; then
     SetNotes=$PathModulConfig/notes_id.txt;
@@ -578,6 +582,12 @@ Note:kalau status 2/3 jangan di edit
   Waktu untuk ai mengecek app yg di jalankan atau gpu usage hp ketika di mode turbo
 
 
+- ai_notif_mode.txt
+
+ Untuk setting notif led ai
+
+Value=0(mati)/1(mode getaran)/2(notif metode 1)/3(notif metode 2)
+
 
 
 
@@ -591,7 +601,7 @@ namamode = off/on/turbo
 
 namarender = opengl/skiagl/skiavk
 
-Version:3.341-2 BETA but stable :p" | tee -a $SetNotes > /dev/null 2>&1;
+Version:3.341-4 BETA" | tee -a $SetNotes > /dev/null 2>&1;
     
 fi
 backupDolo(){

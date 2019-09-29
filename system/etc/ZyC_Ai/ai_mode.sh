@@ -68,13 +68,15 @@ if [ NyariGPU == '' ];then
     echo "gpu path not found" | tee -a $AiLog > /dev/null 2>&1 ;
     exit -1;
 fi
-if [ -e "/data/media/0/ai_mode.sh" ];then
-    BASEDIR=/data/media/0/
-elif [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ];then
+if [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ];then
     BASEDIR=/system/etc/ZyC_Ai
 else
     exit -1;
 fi;
+NotifPath="none"
+if [ -e "/system/etc/ZyC_Ai/set_notification.sh" ];then
+    NotifPath=/system/etc/ZyC_Ai/set_notification.sh
+fi
 # App trigger start
 if [ ! -e $PathModulConfigAi/list_app_auto_turbo.txt ]; then
     GameList=$PathModulConfigAi/list_app_auto_turbo.txt
@@ -208,6 +210,11 @@ if [ ! -e $PathModulConfigAi/ai_status.txt ]; then
     echo '1' > "$PathModulConfigAi/ai_status.txt"
 fi
 aiStatus=$(cat "$PathModulConfigAi/ai_status.txt");
+# Set Ai Notif Mode
+if [ ! -e $PathModulConfigAi/ai_notif_mode.txt ]; then
+    echo '1' > "$PathModulConfigAi/ai_notif_mode.txt"
+fi
+aiNotif=$(cat "$PathModulConfigAi/ai_notif_mode.txt");
 StatusModul=$(cat "$PathModulConfig/status_modul.txt");
 GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
 GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
@@ -227,22 +234,42 @@ getAppName()
     echo "while running '$nameApp' your gpu used at $(echo "$GpuStatus")%" | tee -a $AiLog > /dev/null 2>&1;
 }
 setTurbo(){
-    echo 800 > /sys/class/timed_output/vibrator/enable
-    sleep 0.5s
+    if [ $NotifPath != "none" ];
+        if [ $aiNotif == "1" ];then
+            sh $NotifPath "getar" "on" & disown > /dev/null 2>&1 
+        elif [ $aiNotif == "2" ];then
+            sh $NotifPath "notif" "on" & disown > /dev/null 2>&1 
+        elif [ $aiNotif == "3" ];then
+            sh $NotifPath "notif" "on" "2" & disown > /dev/null 2>&1 
+        fi
+    else
+        echo 800 > /sys/class/timed_output/vibrator/enable
+        sleep 0.5s
+    fi
     echo "Set to turbo at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1;
     getAppName
     echo "turbo" > $PathModulConfig/status_modul.txt
     echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
-    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" > /dev/null 2>&1
+    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
 }
 setOff(){
-    echo 600 > /sys/class/timed_output/vibrator/enable
-    sleep 1s
-    echo 300 > /sys/class/timed_output/vibrator/enable
+    if [ $NotifPath != "none" ];
+        if [ $aiNotif == "1" ];then
+            sh $NotifPath "getar" "off" & disown > /dev/null 2>&1 
+        elif [ $aiNotif == "2" ];then
+            sh $NotifPath "notif" "off" & disown > /dev/null 2>&1 
+        elif [ $aiNotif == "3" ];then
+            sh $NotifPath "notif" "off" "2" & disown > /dev/null 2>&1 
+        fi
+    else
+        echo 600 > /sys/class/timed_output/vibrator/enable
+        sleep 1s
+        echo 300 > /sys/class/timed_output/vibrator/enable
+    fi
     echo "turn off at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1;
     echo "off" > $PathModulConfig/status_modul.txt
     echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
-    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" > /dev/null 2>&1
+    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
 }
 if [ $aiStatus == "1" ]; then
     echo "<<--- --- --- --- --- " | tee -a $AiLog > /dev/null 2>&1 ;
