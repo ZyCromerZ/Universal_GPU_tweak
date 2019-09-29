@@ -75,28 +75,28 @@ if [ ! -z "$1" ];then
             elif [ "$getMethod" == "running" ];then
                 echo "70" > $GetLedPath/green/brightness
                 echo "255" > $GetLedPath/red/brightness
-                usleep 600000
+                usleep 400000
                 echo "0" > $GetLedPath/red/brightness
                 echo "0" > $GetLedPath/green/brightness
-                usleep 250000
+                usleep 150000
                 echo "70" > $GetLedPath/green/brightness
                 echo "255" > $GetLedPath/red/brightness
-                usleep 250000
+                usleep 150000
                 echo "0" > $GetLedPath/red/brightness
                 echo "0" > $GetLedPath/green/brightness
-                usleep 250000
+                usleep 150000
                 echo "70" > $GetLedPath/green/brightness
                 echo "255" > $GetLedPath/red/brightness
             elif [ "$getMethod" == "running1" ];then
                 echo "255" > $GetLedPath/green/brightness
                 echo "0" > $GetLedPath/red/brightness
-                usleep 600000
+                usleep 400000
                 echo "0" > $GetLedPath/green/brightness
-                usleep 250000
+                usleep 150000
                 echo "255" > $GetLedPath/green/brightness
-                usleep 250000
+                usleep 150000
                 echo "0" > $GetLedPath/green/brightness
-                usleep 250000
+                usleep 150000
                 echo "255" > $GetLedPath/green/brightness
             fi
             NoNotif="yes"
@@ -104,11 +104,11 @@ if [ ! -z "$1" ];then
                 NoNotif="no"
             fi
             if [ $NoNotif == "no" ];then
-                sleep 1s
+                usleep 400000
                 echo "0" > $GetLedPath/red/brightness
                 echo "0" > $GetLedPath/green/brightness
             fi
-            sleep 1s
+            usleep 400000
             echo "$GetRed" > $GetLedPath/red/brightness
             echo "$GetGreen" > $GetLedPath/green/brightness
             echo "$GetBlue" > $GetLedPath/green/brightness

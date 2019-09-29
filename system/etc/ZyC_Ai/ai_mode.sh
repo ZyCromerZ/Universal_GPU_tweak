@@ -203,7 +203,7 @@ fi
 # Wait time when on
 waitTimeOff=$(cat "$PathModulConfigAi/wait_time_off.txt");# Wait time
 if [ ! -e $PathModulConfigAi/wait_time_on.txt ]; then
-    echo '5s' > "$PathModulConfigAi/wait_time_on.txt"
+    echo '10s' > "$PathModulConfigAi/wait_time_on.txt"
 fi
 waitTimeOn=$(cat "$PathModulConfigAi/wait_time_on.txt");
 # Status 0=tidak aktif,1=aktif,2=sedang berjalan
@@ -280,15 +280,8 @@ setOff(){
 if [ $aiStatus == "1" ]; then
     echo "<<--- --- --- --- --- " | tee -a $AiLog > /dev/null 2>&1 ;
     echo "starting ai mode at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
-    # echo 400 > /sys/class/timed_output/vibrator/enable
-    # sleep 1s
     echo "2" > $PathModulConfigAi/ai_status.txt
-    # sh $BASEDIR
 elif [ $aiStatus == "2" ];then
-    # GetApp=$( $listAppAutoTubo | awk -F: " $1 == '$GetPackageApp' {print $1}" )
-    # echo $GetPackageApp
-    # Check=$(echo $listAppAutoTubo | grep "$GetPackageApp")
-    # echo $Check;
     if [ ! -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
         if [ $StatusModul != "turbo" ];then
             echo "found $GetPackageApp on your setting . . ." | tee -a $AiLog > /dev/null 2>&1 ;
@@ -305,12 +298,6 @@ elif [ $aiStatus == "2" ];then
             fi
         fi
     fi
-    # if [ "$1" == "ShowAppList" ];then
-    #     # echo "running : $GetPackageApp" | tee -a $AiLog > /dev/null 2>&1 ;
-    # fi
-    # if [ "$listAppAutoTubo" == *"$GetPackageApp"* ];then
-    #     echo 'yess'  | tee -a $AiLog > /dev/null 2>&1 ;
-    # fi
 elif [ $aiStatus == "3" ];then
     echo 'stoping ai mode . . .'  | tee -a $AiLog > /dev/null 2>&1 ;
     echo "end at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
@@ -339,7 +326,7 @@ if [ $aiStatus == "2"  ];then
     fi
 fi 
 #notification when turbo mode start
-if [ "$NotifPath" != "none" ] && [ "$(cat "$PathModulConfig/status_modul.txt")" == "turbo" ];then
+if [ "$NotifPath" != "none" ] && [ "$(cat "$PathModulConfig/status_modul.txt")" == "turbo" ] && [ $StatusModul == "turbo" ];then
     if [ "$aiNotifRunning" == "1" ];then
         sh $NotifPath "notif" "running" & disown > /dev/null 2>&1 
     elif [ "$aiNotifRunning" == "2" ];then

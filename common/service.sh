@@ -111,13 +111,10 @@ fi
 CustomRam=$(cat $PathModulConfig/custom_ram_management.txt)
 
 # Check notes version
-SetModulVersion="3.35-1 Testing"
+SetModulVersion="3.35-2 Testing"
 if [ -e $PathModulConfig/notes_en.txt ];then
     if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
         rm $PathModulConfig/notes_en.txt
-        if [ ! -e $PathModulConfigAi/wait_time_on.txt ]; then
-            rm $PathModulConfigAi/wait_time_on.txt
-        fi
     fi
 fi
 if [ -e $PathModulConfig/notes_id.txt ];then
