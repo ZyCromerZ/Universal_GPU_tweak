@@ -5,6 +5,7 @@
 fromBoot="no"
 if [ "$1" == "fromBoot" ];then
     fromBoot="yes"
+    sleep 5s
 fi
 MAGISKTMP=$ModulPath/ZyC_Turbo
 if [ ! -e /data/mod_path.txt ]; then
@@ -212,7 +213,7 @@ fi
 aiStatus=$(cat "$PathModulConfigAi/ai_status.txt");
 # Set Ai Notif Mode
 if [ ! -e $PathModulConfigAi/ai_notif_mode.txt ]; then
-    echo '1' > "$PathModulConfigAi/ai_notif_mode.txt"
+    echo '3' > "$PathModulConfigAi/ai_notif_mode.txt"
 fi
 aiNotif=$(cat "$PathModulConfigAi/ai_notif_mode.txt");
 StatusModul=$(cat "$PathModulConfig/status_modul.txt");

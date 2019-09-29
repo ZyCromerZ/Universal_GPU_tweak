@@ -1020,7 +1020,7 @@ disableLogSystem(){
     setprop persist.service.lgospd.enable 0 > /dev/null 2>&1
     setprop persist.sys.purgeable_assets 1 > /dev/null 2>&1
     echo 'disable log and monitoring done .' | tee -a $saveLog;
-    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1
 }
 enableLogSystem(){
 # Enable stats logging & monitoring
@@ -1283,15 +1283,15 @@ if [ $FromTerminal == "tidak" ];then
             if [ $AiStatus == "1" ];then
                 echo "starting ai mode . . . " | tee -a $saveLog > /dev/null 2>&1;
                 echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
-                sh $BASEDIR/ai_mode.sh "fromBoot" | tee -a $saveLog;
+                sh $BASEDIR/ai_mode.sh "fromBoot" & disown > /dev/null 2>&1;
             elif [ $AiStatus == "2" ];then
                 echo "re - run ai mode . . . " | tee -a $saveLog > /dev/null 2>&1;
                 echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
-                sh $BASEDIR/ai_mode.sh "fromBoot" | tee -a $saveLog;
+                sh $BASEDIR/ai_mode.sh "fromBoot" & disown > /dev/null 2>&1;
             elif [ $AiStatus == "3" ];then
                 echo "deactive ai mode . . . " | tee -a $saveLog > /dev/null 2>&1;
                 echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
-                sh $BASEDIR/ai_mode.sh "fromBoot" | tee -a $saveLog;
+                sh $BASEDIR/ai_mode.sh "fromBoot" & disown > /dev/null 2>&1;
             elif [ $AiStatus == "0" ];then
                 echo "ai status off"| tee -a $saveLog;
                 echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
