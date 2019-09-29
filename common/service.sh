@@ -111,13 +111,17 @@ fi
 CustomRam=$(cat $PathModulConfig/custom_ram_management.txt)
 
 # Check notes version
+SetModulVersion="3.35-1 Testing"
 if [ -e $PathModulConfig/notes_en.txt ];then
-    if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.341-4 BETA" ];then
+    if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
         rm $PathModulConfig/notes_en.txt
+        if [ ! -e $PathModulConfigAi/wait_time_on.txt ]; then
+            rm $PathModulConfigAi/wait_time_on.txt
+        fi
     fi
 fi
 if [ -e $PathModulConfig/notes_id.txt ];then
-    if [ "$(cat "$PathModulConfig/notes_id.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "3.341-4 BETA" ];then
+    if [ "$(cat "$PathModulConfig/notes_id.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
         rm $PathModulConfig/notes_id.txt
     fi
 fi
@@ -132,238 +136,156 @@ There are 2 versions, v3 and v2
 For v3:
 
 How to install v3
-
 1.) Download the latest v3 version
-
 2.) Flash via magisk
-
 3.) Reboot
-
 4.) Done
-
 
 
 How to update v3.33 version and above
-
 1.) Same as above
 
 
-
 How to update versions v3 - v3.33
-
 1.) Set to off mode
-
 2.) Delete the modul_mantul or zyc_turbo_config folder (just check it inside internal memory)
-
 3.) just flash via magisk
-
 4.) Done
 
 
-
 How to set a special module version 3.33 and above:
-
 1.) The first way, module settings
-
 Open a terminal type
-
 su
-
 zyc_setting
 
-2.) Only to run auto / ai mode
-
+2.) Only to run auto / ai mode (do this if folder zyc_ai not available inside internal/modul_mantul/zyc_mod/)
 zyc_auto
 
 
-
 If for the previous version 3.32 to 3 (the latest can also only not recomended) there are several ways, namely:
-
 1.) The first way, just to run the module
-
 su
-
 zyc_start
 
 
-
 2.) The second way, run the module and change the module mode
-
-zyc_startnamename
-
+zyc_start namamode
 
 
 3.) The third way, run the module and change the module mode + rendering mode
-
-zyc_start namemode code
-
+zyc_start namamode namarender
 
 
 4.) The fourth way, change the rendering mode
-
 zyc_render
-
 namarender
 
 
-
 5.) The fifth way, change the module mode
-
 zyc_mode
-
-code name
-
+namamode
 
 
 6.) The sixth method, just run the module
-
 zyc_turbo
-
 
 
 For module config files in the zyc_turbo_config folder (ignore if file does not exist)
 
 - custom_ram_management.txt
-
   for custom your ram management
-Value = 0 ( use system default ) / 1 (method 1) / 2 (method 2) / 3 (method 3)
-
+  Value = 0 ( use system default ) / 1 (method 1) / 2 (method 2) / 3 (method 3)
 
 
 - disable_log_system.txt
-
- disable the cellphone log, is believed to improve the performance of the cellphone
-
-Value = 0 (disable) [recommendation] / 1 (enable)
-
+  disable the cellphone log, is believed to improve the performance of the cellphone
+  Value = 0 (disable) [recommendation] / 1 (enable)
 
 
 - fsync_mode.txy
-
- Disable fsync can improve game fps, if you find a bug in the launcher, enable it!
-
-Values ​​= 0 (disable) [recommendation] / 1 (enable)
-
+  Disable fsync can improve game fps, if you find a bug in the launcher, enable it!
+  Values ​​= 0 (disable) [recommendation] / 1 (enable)
 
 
 - GpuBooster.txt
-
- For the adrenoboost value setting, if the kernel supports adrenoboost, though.
-
-Value = 0 (disable) / 1 (low) / 2 (medium) / 3 (high) / 4 (set automatically) [recommendation]
-
+  For the adrenoboost value setting, if the kernel supports adrenoboost, though.
+  Value = 0 (disable) / 1 (low) / 2 (medium) / 3 (high) / 4 (set automatically) [recommendation]
 
 
 - mode_render.txt
-
- For the cell phone rendering mode settings, there are some ROMs that don't support the rendering mode settings, you can set them here
-
-Value = opengl (OpenGL) / skiagl (OpenGL SKIA) / skiavk (VULKAN)
-
+  For the cell phone rendering mode settings, there are some ROMs that don't support the rendering mode settings, you can set them here
+  Value = opengl (OpenGL) / skiagl (OpenGL SKIA) / skiavk (VULKAN)
 
 
 - status_modul.txt
-
- for the module mode settings, there are 3 settings
-
-Value = off (on) / on / turbo (fastest mode)
-
+  for the module mode settings, there are 3 settings
+  Value = off (on) / on / turbo (fastest mode)
 
 
 - total_fps.txt
-
- For the set fps like that, but I don't test anything, leave 0 ae
-
+  For the set fps, but i tested it but does not work , leave 0 
 
 
 - fastcharge.txt
-
- Fastcharge setting if the cellphone supports it
-
-Value = 0 (using system settings) / 1 (tweaked I tried to activate fastcharge on his cellphone)
-
-
+  Fastcharge setting if the cellphone supports it
+  Value = 0 (using system settings) / 1 (tweaked I tried to activate fastcharge on his cellphone)
 
 
 
 For module config files in the zyc_ai folder (ignore the missing files)
-
 - ai_status.txt
-
- For setting the AI ​​status
-
-Value = 0 (off) / 1 (can be turned on) / 2 (currently running) / 3 (currently shutting down)
-
-Note: do not edit status if value 2/3
-
+  For setting the AI ​​status
+  Value = 0 (off) / 1 (can be turned on) / 2 (currently running) / 3 (currently shutting down)
+  Note: do not edit ai_status.txt if value 2 or 3
 
 
 - list_app_turbo.txt
-
- List app to enter turbo mode quickly
-
+  List app to enter turbo mode quickly
 
 
 - list_app_package_detected.txt
-
- The app list can be added into the turbo list
-
+  The app list can be added into the turbo list
 
 
 - status_end_gpu.txt
-
   Trigger for the module to change the status to off mode based on the gpu usage based inside this value to lowest (for example, the value is 5, if the usage is 5% to down automatically change to off mode)
 
 
-
 - status_start_gpu.txt
-
   Trigger for the module to change the status to turbo mode based on the gpu usage based inside this value to lowest (for example, the value is 70, if the usage is 70% to up automatically change to turbo mode)
 
 
-
 - wait_time_off.txt
-
   Time to check the running app or GPU usage when off mode
 
 
-
 - wait_time_on.txt
-
   Time to check the app that is running or GPU usage when in turbo mode
 
 - ai_notif_mode.txt
-
- Fot setting ai notification led
-
-Value=0 (off) / 1 (vibration mode) / 2 (notification method 1) / 3 (notification metode 2)
-
+  For setting ai notification led
+  Value=0 (off) / 1 (vibration mode) / 2 (notification method 1) / 3 (notification metode 2)
 
 
 For V2, just flash it via magisk, it will automatically activates after rebooted
 
 
-
 Note:
-
 mode = off / on / turbo
-
 namarender = opengl / skiagl / skiavk
-
-Version:3.341-4 BETA" | tee -a $SetNotes > /dev/null 2>&1;
+Version:$SetModulVersion" | tee -a $SetNotes > /dev/null 2>&1;
 fi
 if [ ! -e $PathModulConfig/notes_id.txt ]; then
     SetNotes=$PathModulConfig/notes_id.txt;
     echo "Created By : ZyCromerZ
     
 Oke . . .
-
 Jadi gini . . .
 
 
 
 Gw mo ngejelasin dikit apa itu modul yg gw bikin
-
 Jadi baca,teros pahami.
 
 
@@ -373,235 +295,159 @@ Ni modul fungsinya buat disable thermal gpu ama setting beberapa bagian lainnya 
 
 
 Dah lanjut cara install dah . . .
-
 Ada 2 versi,v3 ama v2
 
 
 
 Untuk v3 :
-
 Cara install v3
-
 1.) download versi v3 yg terbaru
-
 2.) Flash via magisk
-
 3.) Reboot
-
 4.) Done
-
 
 
 Cara update versi v3.33 ke atas
-
 1.) Sama kaya di atas
 
 
-
 Cara update versi v3 - v3.33 
-
 1.) Set ke mode off
-
 2.) Delete folder modul_mantul ato zyc_turbo_config (ada di internal cek aja)
-
 3.) Langsung flash via magisk
-
 4.) Done
 
 
-
 Cara setting modul khusus versi 3.33 ke atas :
-
 1.) Cara pertama,setting modul
-
 Buka terminal ketik
-
 su
-
 zyc_setting
 
-2.) Hanya untuk menjalankan mode auto/ai
 
+2.) Hanya untuk menjalankan mode auto/ai (lakukan cara ini kalo folder zyc_ai kaga ada dalem internal/modul_mantul/zyc_mod/)
 zyc_auto
 
 
 
 Kalau untuk versi sebelumnya 3.32 sampai 3 ( terbaru juga bisa cuma not recomen ) ada beberapa cara,yaitu :
-
 1.) Cara pertama,hanya untuk menjalakan modul
-
 su
-
 zyc_start
 
 
-
 2.) Cara kedua,menjalankan modul dan ganti mode modul
-
 zyc_start namamode
 
 
-
 3.) Cara ketiga,menjalankan modul dan ganti mode modul + mode render
-
 zyc_start namamode namarender
 
 
-
 4.) Cara keempat,ganti mode render
-
 zyc_render
-
 namarender
 
 
-
 5.) Cara kelima,ganti mode modul
-
 zyc_mode
-
 namamode
 
 
-
 6.) Cara keenam,hanya menjalankan modul
-
 zyc_turbo
 
 
-
 Untuk file config modul dalam folder zyc_turbo_config (abaikan kalo file ada tidak ada)
-
 - custom_ram_management.txt  
-
   buat setting ram management nya
-Valuenya = 0(pake default)/1(cara 1)/2(cara 2)/3(cara 3)
+  Valuenya = 0(pake default)/1(cara 1)/2(cara 2)/3(cara 3)
 
 
 
 - disable_log_system.txt
-
- disable log hp nya,dipercaya bisa meningkatkan performa hp nya
-
-Valuenya = 0(disable)[rekomendasi]/1(enable)
-
+  disable log hp nya,dipercaya bisa meningkatkan performa hp nya
+  Valuenya = 0(disable)[rekomendasi]/1(enable)
 
 
 - fsync_mode.txy
-
- Disable fsync bisa meningkatkan fps game,kalo nemu bug di launchernya enable ini !
-
-Valuenya = 0(disable)[rekomendasi]/1(enable)
+  Disable fsync bisa meningkatkan fps game,kalo nemu bug di launchernya enable ini !
+  Valuenya = 0(disable)[rekomendasi]/1(enable)
 
 
 
 - GpuBooster.txt
-
- Buat setting value adrenoboost nya,kalo kernel support adrenoboost sih.
-
-Value = 0(disable)/1(low)/2(medium)/3(high)/4(di atur otomatis)[rekomendasi]
+  Buat setting value adrenoboost nya,kalo kernel support adrenoboost sih.
+  Value = 0(disable)/1(low)/2(medium)/3(high)/4(di atur otomatis)[rekomendasi]
 
 
 
 - mode_render.txt
-
- Buat setting mode render hp nya,ada beberapa rom yg gak support buat setting mode render,bisa setting di sini
-
-Value = opengl(OpenGL)/skiagl(OpenGL SKIA)/skiavk(VULKAN)
+  Buat setting mode render hp nya,ada beberapa rom yg gak support buat setting mode render,bisa setting di sini
+  Value = opengl(OpenGL)/skiagl(OpenGL SKIA)/skiavk(VULKAN)
 
 
 
 - status_modul.txt
-
- buat setting mode modul,ada 3 pengaturan
-
-Value = off(mati)/on(hidup)/turbo(mode paling cepat)
+  buat setting mode modul,ada 3 pengaturan
+  Value = off(mati)/on(hidup)/turbo(mode paling cepat)
 
 
 
 - total_fps.txt
-
- Buat set fps gitu,tapi gw test ga ngaruh apa apa,biarkan 0 ae
+  Buat set fps gitu,tapi gw test ga ngaruh apa apa,biarkan 0 ae
 
 
 
 - fastcharge.txt
-
- Setting fastcharge kalo hp situ support
-
-Value = 0(menggunakan settingan system)/1(tweak gw mencoba untuk mengaktifkan fastcharge di hp nya)
-
-
+  Setting fastcharge kalo hp situ support
+  Value = 0(menggunakan settingan system)/1(tweak gw mencoba untuk mengaktifkan fastcharge di hp nya)
 
 
 
 Untuk file config modul dalam folder zyc_ai ( abaikan kalo file tidak ada )
-
 - ai_status.txt
-
- Untuk setting status ai
-
-Value=0(mati)/1(bisa di hidupkan)/2(sedang berjalan)/3(sedang mematikan)
-
-Note:kalau status 2/3 jangan di edit
-
+  Untuk setting status ai
+  Value=0(mati)/1(bisa di hidupkan)/2(sedang berjalan)/3(sedang mematikan)
+  Note:kalau status 2/3 jangan di edit
 
 
 - list_app_turbo.txt
-
- List app agar masuk ke mode turbo dengan cepat
-
+  List app agar masuk ke mode turbo dengan cepat
 
 
 - list_app_package_detected.txt
-
- List app yg bisa di masukan ke mode auto ke list turbo 
-
+  List app yg bisa di masukan ke mode auto ke list turbo 
 
 
 - status_end_gpu.txt
-
- Trigger untuk modul agar mengubah status ke mode off berdasarkan usage gpu dari value yang ada di dalam ini ke terbawah (misalkan isinya 5, kalau usage nya 5% ke bawah otomatis ganti ke mode off)
-
+  Trigger untuk modul agar mengubah status ke mode off berdasarkan usage gpu dari value yang ada di dalam ini ke terbawah (misalkan isinya 5, kalau usage nya 5% ke bawah otomatis ganti ke mode off)
 
 
 - status_start_gpu.txt
-
- Trigger untuk modul agar mengubah status ke mode turbo berdasarkan usage gpu dari value yang ada di dalam ini ke terbawah (misalkan isinya 70,kalau usage nya 70% ke bawah otomatis ganti ke mode turbo)
-
+  Trigger untuk modul agar mengubah status ke mode turbo berdasarkan usage gpu dari value yang ada di dalam ini ke terbawah (misalkan isinya 70,kalau usage nya 70% ke bawah otomatis ganti ke mode turbo)
 
 
 - wait_time_off.txt
-
   Waktu untuk ai mengecek app yg di jalankan atau gpu usage hp ketika di mode off
 
 
-
 - wait_time_on.txt
-
   Waktu untuk ai mengecek app yg di jalankan atau gpu usage hp ketika di mode turbo
 
 
 - ai_notif_mode.txt
-
- Untuk setting notif led ai
-
-Value=0(mati)/1(mode getaran)/2(notif metode 1)/3(notif metode 2)
-
-
+  Untuk setting notif led ai
+  Value=0(mati)/1(mode getaran)/2(notif metode 1)/3(notif metode 2)
 
 
 Untuk V2 cukup flash teros biarkan,udah otomatis aktif kalo udah reboot
 
 
-
 Note :
-
 namamode = off/on/turbo
-
 namarender = opengl/skiagl/skiavk
-
-Version:3.341-4 BETA" | tee -a $SetNotes > /dev/null 2>&1;
+Version:$SetModulVersion" | tee -a $SetNotes > /dev/null 2>&1;
     
 fi
 backupDolo(){

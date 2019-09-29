@@ -203,7 +203,7 @@ fi
 # Wait time when on
 waitTimeOff=$(cat "$PathModulConfigAi/wait_time_off.txt");# Wait time
 if [ ! -e $PathModulConfigAi/wait_time_on.txt ]; then
-    echo '10s' > "$PathModulConfigAi/wait_time_on.txt"
+    echo '5s' > "$PathModulConfigAi/wait_time_on.txt"
 fi
 waitTimeOn=$(cat "$PathModulConfigAi/wait_time_on.txt");
 # Status 0=tidak aktif,1=aktif,2=sedang berjalan
@@ -211,11 +211,16 @@ if [ ! -e $PathModulConfigAi/ai_status.txt ]; then
     echo '1' > "$PathModulConfigAi/ai_status.txt"
 fi
 aiStatus=$(cat "$PathModulConfigAi/ai_status.txt");
-# Set Ai Notif Mode
+# Set Ai Notif Mode Start
 if [ ! -e $PathModulConfigAi/ai_notif_mode.txt ]; then
     echo '3' > "$PathModulConfigAi/ai_notif_mode.txt"
 fi
 aiNotif=$(cat "$PathModulConfigAi/ai_notif_mode.txt");
+if [ ! -e $PathModulConfigAi/ai_notif_mode_running.txt ]; then
+    echo '0' > "$PathModulConfigAi/ai_notif_mode_running.txt"
+fi
+aiNotifRunning=$(cat "$PathModulConfigAi/ai_notif_mode_running.txt");
+# Set Ai Notif Mode End
 StatusModul=$(cat "$PathModulConfig/status_modul.txt");
 GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
 GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
@@ -333,6 +338,15 @@ if [ $aiStatus == "2"  ];then
         sleep "$waitTimeOff"
     fi
 fi 
+#notification when turbo mode start
+if [ "$NotifPath" != "none" ] && [ "$(cat "$PathModulConfig/status_modul.txt")" == "turbo" ];then
+    if [ "$aiNotifRunning" == "1" ];then
+        sh $NotifPath "notif" "running" & disown > /dev/null 2>&1 
+    elif [ "$aiNotifRunning" == "2" ];then
+        sh $NotifPath "notif" "running1" & disown > /dev/null 2>&1 
+    fi
+fi
+#notification when turbo mode end
 if [ $fromBoot == "yes" ];then
     sleep 40s
     echo 600 > /sys/class/timed_output/vibrator/enable

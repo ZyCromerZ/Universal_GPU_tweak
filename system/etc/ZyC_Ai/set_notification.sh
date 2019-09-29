@@ -8,11 +8,11 @@ if [ ! -z "$1" ];then
     getMethod=$2
     if [ "$getType" == "getar" ];then
         if [ $getMethod == "off" ];then
-            echo 600 > /sys/class/timed_output/vibrator/enable
-            sleep 1s
-            echo 300 > /sys/class/timed_output/vibrator/enable
+            echo 400 > /sys/class/timed_output/vibrator/enable
+            usleep 500000
+            echo 200 > /sys/class/timed_output/vibrator/enable
         elif [ $getMethod == "on" ];then
-            echo 800 > /sys/class/timed_output/vibrator/enable
+            echo 600 > /sys/class/timed_output/vibrator/enable
         fi
     elif [ "$getType" == "notif" ];then
         GetLedPath="none"
@@ -25,6 +25,8 @@ if [ ! -z "$1" ];then
         if [ "$GetLedPath" != "none" ];then
             GetRed=$(cat "/sys/class/leds/red/brightness")
             GetGreen=$(cat "/sys/class/leds/green/brightness")
+            GetBlue=$(cat "/sys/class/leds/blue/brightness")
+            echo "0" > $GetLedPath/blue/brightness;
             if [ "$getMethod" == "on2" ];then
                 echo "255" > $GetLedPath/red/brightness
                 for NumberLed in 0 10 20 40 60 80 100 120 150 255
@@ -33,9 +35,13 @@ if [ ! -z "$1" ];then
                     usleep 200000
                 done
                 echo "0" > $GetLedPath/red/brightness
-                sleep 1s
+                usleep 700000
                 echo "0" > $GetLedPath/green/brightness
-                sleep 1s
+                usleep 500000
+                echo "255" > $GetLedPath/green/brightness
+                usleep 250000
+                echo "0" > $GetLedPath/green/brightness
+                usleep 250000
                 echo "255" > $GetLedPath/green/brightness
             elif [ "$getMethod" == "off2" ];then
                 echo "255" > $GetLedPath/red/brightness
@@ -44,9 +50,13 @@ if [ ! -z "$1" ];then
                     echo "$NumberLed" > $GetLedPath/green/brightness;
                     usleep 200000
                 done
-                sleep 1s
+                usleep 700000
                 echo "0" > $GetLedPath/red/brightness
-                sleep 1s
+                usleep 500000
+                echo "255" > $GetLedPath/red/brightness
+                usleep 250000
+                echo "255" > $GetLedPath/red/brightness
+                usleep 250000
                 echo "255" > $GetLedPath/red/brightness
             elif [ "$getMethod" == "on" ];then
                 echo "0" > $GetLedPath/red/brightness
@@ -62,6 +72,32 @@ if [ ! -z "$1" ];then
                 echo "0" > $GetLedPath/red/brightness
                 sleep 1s
                 echo "255" > $GetLedPath/red/brightness
+            elif [ "$getMethod" == "running" ];then
+                echo "70" > $GetLedPath/green/brightness
+                echo "255" > $GetLedPath/red/brightness
+                usleep 600000
+                echo "0" > $GetLedPath/red/brightness
+                echo "0" > $GetLedPath/green/brightness
+                usleep 250000
+                echo "70" > $GetLedPath/green/brightness
+                echo "255" > $GetLedPath/red/brightness
+                usleep 250000
+                echo "0" > $GetLedPath/red/brightness
+                echo "0" > $GetLedPath/green/brightness
+                usleep 250000
+                echo "70" > $GetLedPath/green/brightness
+                echo "255" > $GetLedPath/red/brightness
+            elif [ "$getMethod" == "running1" ];then
+                echo "255" > $GetLedPath/green/brightness
+                echo "0" > $GetLedPath/red/brightness
+                usleep 600000
+                echo "0" > $GetLedPath/green/brightness
+                usleep 250000
+                echo "255" > $GetLedPath/green/brightness
+                usleep 250000
+                echo "0" > $GetLedPath/green/brightness
+                usleep 250000
+                echo "255" > $GetLedPath/green/brightness
             fi
             NoNotif="yes"
             if [ "$GetRed" != "0" ] && [ "$GetGreen" != "0" ];then
@@ -75,6 +111,7 @@ if [ ! -z "$1" ];then
             sleep 1s
             echo "$GetRed" > $GetLedPath/red/brightness
             echo "$GetGreen" > $GetLedPath/green/brightness
+            echo "$GetBlue" > $GetLedPath/green/brightness
         fi;
     fi;
 fi;

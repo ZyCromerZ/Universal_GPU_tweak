@@ -431,9 +431,19 @@ ListMenu(){
 }
 exitSetting(){
     clear
-    echo "selamat tinggal :v "
-    echo "Exit . . . "
-    exit -1;
+    echo "exit (y/n)?"
+    read keluar
+    if [ $keluar == "y" ];then
+        echo "selamat tinggal :v "
+        echo "Exit after 2s "
+        sleep 2s
+        for GetTerminal in  ` ps -a | grep 'u0' | awk '{print $3}' ` 
+        do 
+            kill -9 $GetTerminal 
+        done
+    else
+        ListMenu
+    fi
 }
 saveSetting()
 {
@@ -480,12 +490,6 @@ saveSetting()
     sleep 2s
     clear
     Perubahan="tidak"
-    echo "exit (y/n)?"
-    read keluar
-    if [ $keluar == "y" ];then
-        exitSetting
-    else
-        ListMenu
-    fi
+    exitSetting
 }
 ListMenu
