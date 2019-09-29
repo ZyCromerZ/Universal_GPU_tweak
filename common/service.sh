@@ -615,7 +615,7 @@ backupDolo(){
         if [ -e $NyariGPU/throttling ]; then
             echo $(cat "$NyariGPU/throttling") > "$PathModulConfig/backup/gpu_throttling.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
     fi
 
@@ -623,7 +623,7 @@ backupDolo(){
         if [ -e $NyariGPU/force_no_nap ]; then
             echo $(cat "$NyariGPU/force_no_nap") > "$PathModulConfig/backup/gpu_force_no_nap.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
     fi
 
@@ -631,7 +631,7 @@ backupDolo(){
         if [ -e $NyariGPU/force_bus_on ]; then
             echo $(cat "$NyariGPU/force_bus_on") > "$PathModulConfig/backup/gpu_force_bus_on.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
     fi
 
@@ -639,7 +639,7 @@ backupDolo(){
         if [ -e $NyariGPU/force_clk_on ]; then
             echo $(cat "$NyariGPU/force_clk_on") > "$PathModulConfig/backup/gpu_force_clk_on.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
     fi
 
@@ -647,7 +647,7 @@ backupDolo(){
         if [ -e $NyariGPU/force_rail_on ]; then
             echo $(cat "$NyariGPU/force_rail_on") > "$PathModulConfig/backup/gpu_force_rail_on.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
     fi
 
@@ -655,7 +655,7 @@ backupDolo(){
         if [ -e $NyariGPU/bus_split ]; then
             echo $(cat "$NyariGPU/bus_split") > "$PathModulConfig/backup/gpu_bus_split.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
     fi
 
@@ -663,7 +663,7 @@ backupDolo(){
         if [ -e $NyariGPU/max_pwrlevel ]; then
             echo $(cat "$NyariGPU/max_pwrlevel") > "$PathModulConfig/backup/gpu_max_pwrlevel.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
     fi
 
@@ -671,7 +671,7 @@ backupDolo(){
         if [ -e $NyariGPU/devfreq/adrenoboost ]; then
             echo $(cat "$NyariGPU/devfreq/adrenoboost") > "$PathModulConfig/backup/gpu_adrenoboost.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
     fi
 
@@ -679,7 +679,7 @@ backupDolo(){
         if [ -e $NyariGPU/devfreq/thermal_pwrlevel ]; then
             echo $(cat "$NyariGPU/devfreq/thermal_pwrlevel") > "$PathModulConfig/backup/gpu_thermal_pwrlevel.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
     fi
 
@@ -688,7 +688,7 @@ backupDolo(){
         if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
             echo $(cat  "/sys/kernel/dyn_fsync/Dyn_fsync_active") > "$PathModulConfig/backup/misc_Dyn_fsync_active.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
     fi
 
@@ -696,7 +696,7 @@ backupDolo(){
         if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
             echo $(cat  "/sys/class/misc/fsynccontrol/fsync_enabled") > "$PathModulConfig/backup/misc_class_fsync_enabled.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi 
     fi
 
@@ -704,7 +704,7 @@ backupDolo(){
         if [ -e /sys/module/sync/parameters/fsync ]; then
             echo $(cat  "/sys/module/sync/parameters/fsync") > "$PathModulConfig/backup/misc_fsync.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
     fi
 
@@ -712,7 +712,7 @@ backupDolo(){
         if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
             echo $(cat  "/sys/module/sync/parameters/fsync_enabled") > "$PathModulConfig/backup/misc_module_fsync_enabled.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
     fi
   # log prop bakcup :D
@@ -721,42 +721,42 @@ backupDolo(){
     if [ ! -e $PathModulConfig/backup/prop_debug.atrace.tags.enableflags.txt ]; then
         echo $(getprop  debug.atrace.tags.enableflags) > "$PathModulConfig/backup/prop_debug.atrace.tags.enableflags.txt"
         backup="pake"
-        sleep 0.1s
+        usleep 100000
     fi
 
     # profiler.force_disable_ulog=true
     if [ ! -e $PathModulConfig/backup/prop_profiler.force_disable_ulog.txt ]; then
         echo $(getprop  profiler.force_disable_ulog) > "$PathModulConfig/backup/prop_profiler.force_disable_ulog.txt"
         backup="pake"
-        sleep 0.1s
+        usleep 100000
     fi
 
     # profiler.force_disable_err_rpt=true
     if [ ! -e $PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt ]; then
         echo $(getprop  profiler.force_disable_err_rpt) > "$PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt"
         backup="pake"
-        sleep 0.1s
+        usleep 100000
     fi
     
     # profiler.force_disable_err_rpt=1
     if [ ! -e $PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt ]; then
         echo $(getprop  profiler.force_disable_err_rpt) > "$PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt"
         backup="pake"
-        sleep 0.1s
+        usleep 100000
     fi
 
     # ro.config.nocheckin=1
     if [ ! -e $PathModulConfig/backup/prop_ro.config.nocheckin.txt ]; then
         echo $(getprop  ro.config.nocheckin) > "$PathModulConfig/backup/prop_ro.config.nocheckin.txt"
         backup="pake"
-        sleep 0.1s
+        usleep 100000
     fi
 
     # debugtool.anrhistory=0
     if [ ! -e $PathModulConfig/backup/prop_debugtool.anrhistory.txt ]; then
         echo $(getprop  debugtool.anrhistory) > "$PathModulConfig/backup/prop_debugtool.anrhistory.txt"
         backup="pake"
-        sleep 0.1s
+        usleep 100000
     fi
   # disable log
     if [ $LogStatus == '1' ];then
@@ -764,56 +764,56 @@ backupDolo(){
         if [ ! -e $PathModulConfig/backup/prop_ro.com.google.locationfeatures.txt ]; then
             echo $(getprop  ro.com.google.locationfeatures) > "$PathModulConfig/backup/prop_ro.com.google.locationfeatures.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
 
         # ro.com.google.networklocation=0
         if [ ! -e $PathModulConfig/backup/prop_ro.com.google.networklocation.txt ]; then
             echo $(getprop  ro.com.google.networklocation) > "$PathModulConfig/backup/prop_ro.com.google.networklocation.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
 
         # profiler.debugmonitor=false
         if [ ! -e $PathModulConfig/backup/prop_profiler.debugmonitor.txt ]; then
             echo $(getprop  profiler.debugmonitor) > "$PathModulConfig/backup/prop_profiler.debugmonitor.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
 
         # profiler.launch=false
         if [ ! -e $PathModulConfig/backup/prop_profiler.launch.txt ]; then
             echo $(getprop  profiler.launch) > "$PathModulConfig/backup/prop_profiler.launch.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
 
         # profiler.hung.dumpdobugreport=false
         if [ ! -e $PathModulConfig/backup/prop_profiler.hung.dumpdobugreport.txt ]; then
             echo $(getprop  profiler.hung.dumpdobugreport) > "$PathModulConfig/backup/prop_profiler.hung.dumpdobugreport.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
 
         # persist.service.pcsync.enable=0
         if [ ! -e $PathModulConfig/backup/prop_persist.service.pcsync.enable.txt ]; then
             echo $(getprop  persist.service.pcsync.enable) > "$PathModulConfig/backup/prop_persist.service.pcsync.enable.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
 
         # persist.service.lgospd.enable=0
         if [ ! -e $PathModulConfig/backup/prop_persist.service.lgospd.enable.txt ]; then
             echo $(getprop  persist.service.lgospd.enable) > "$PathModulConfig/backup/prop_persist.service.lgospd.enable.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
 
         # persist.sys.purgeable_assets=1
         if [ ! -e $PathModulConfig/backup/prop_persist.sys.purgeable_assets.txt ]; then
             echo $(getprop  persist.sys.purgeable_assets) > "$PathModulConfig/backup/prop_persist.sys.purgeable_assets.txt"
             backup="pake"
-            sleep 0.1s
+            usleep 100000
         fi
     fi
   # ram management 
@@ -848,7 +848,7 @@ backupDolo(){
 
 backupDolo
 # echo 'aelah';
-sleep 0.5s
+usleep 500000
 # log backup nya
     if [ $backup == "pake" ]; then
         echo "backup setting done" | tee -a $saveLog;

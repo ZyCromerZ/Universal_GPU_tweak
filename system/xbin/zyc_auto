@@ -15,19 +15,19 @@ if [ ! -z "$1" ];then
     if [ "$1" == "on" ];then
         echo "updating auto mode to '1',please wait. . .";
         echo "1" > $PathModulConfigAi/ai_status.txt;
-        sleep 0.1s
+        usleep 100000
         echo "update auto mode to '1' done .";
         
     elif [ "$1" == "off" ];then
         echo "updating auto mode to '3',please wait. . .";
         echo "3" > $PathModulConfigAi/ai_status.txt;
-        sleep 0.1s
+        usleep 100000
         echo "update auto mode to '3' done .";
     # fi
     else
         echo "updating auto mode to '$1',please wait. . .";
         echo "$1" > $PathModulConfigAi/ai_status.txt;
-        sleep 0.1s
+        usleep 100000
         echo "update auto mode to '$1' done .";
     fi
 fi;

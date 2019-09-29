@@ -6,7 +6,6 @@
 if [ ! -z "$1" ];then
     getType=$1
     getMethod=$2
-    getMethodLed=$3
     if [ "$getType" == "getar" ];then
         if [ $getMethod == "off" ];then
             echo 600 > /sys/class/timed_output/vibrator/enable
@@ -26,47 +25,43 @@ if [ ! -z "$1" ];then
         if [ "$GetLedPath" != "none" ];then
             GetRed=$(cat "/sys/class/leds/red/brightness")
             GetGreen=$(cat "/sys/class/leds/green/brightness")
-            if [ "$getMethodLed" == "2" ];then
-                if [ "$getMethod" == "on" ];then
-                    echo "255" > $GetLedPath/red/brightness
-                    for NumberLed in 0 10 20 40 60 80 100 120 150 255
-                    do
-                        echo "$NumberLed" > $GetLedPath/green/brightness;
-                        sleep 0.2s
-                    done
-                    echo "0" > $GetLedPath/red/brightness
-                    sleep 1s
-                    echo "0" > $GetLedPath/green/brightness
-                    sleep 1s
-                    echo "255" > $GetLedPath/green/brightness
-                elif [ "$getMethod" == "off" ];then
-                    echo "255" > $GetLedPath/red/brightness
-                    for NumberLed in 255 150 120 100 80 60 40 20 10 0
-                    do
-                        echo "$NumberLed" > $GetLedPath/green/brightness;
-                        sleep 0.2s
-                    done
-                    sleep 1s
-                    echo "0" > $GetLedPath/red/brightness
-                    sleep 1s
-                    echo "255" > $GetLedPath/red/brightness
-                fi
-            else
-                if [ "$getMethod" == "on" ];then
-                    echo "0" > $GetLedPath/red/brightness
-                    echo "255" > $GetLedPath/green/brightness
-                    sleep 2s
-                    echo "0" > $GetLedPath/green/brightness
-                    sleep 1s
-                    echo "255" > $GetLedPath/green/brightness
-                elif [ "$getMethod" == "off" ];then
-                    echo "0" > $GetLedPath/green/brightness
-                    echo "255" > $GetLedPath/red/brightness
-                    sleep 2s
-                    echo "0" > $GetLedPath/red/brightness
-                    sleep 1s
-                    echo "255" > $GetLedPath/red/brightness
-                fi
+            if [ "$getMethod" == "on2" ];then
+                echo "255" > $GetLedPath/red/brightness
+                for NumberLed in 0 10 20 40 60 80 100 120 150 255
+                do
+                    echo "$NumberLed" > $GetLedPath/green/brightness;
+                    usleep 200000
+                done
+                echo "0" > $GetLedPath/red/brightness
+                sleep 1s
+                echo "0" > $GetLedPath/green/brightness
+                sleep 1s
+                echo "255" > $GetLedPath/green/brightness
+            elif [ "$getMethod" == "off2" ];then
+                echo "255" > $GetLedPath/red/brightness
+                for NumberLed in 255 150 120 100 80 60 40 20 10 0
+                do
+                    echo "$NumberLed" > $GetLedPath/green/brightness;
+                    usleep 200000
+                done
+                sleep 1s
+                echo "0" > $GetLedPath/red/brightness
+                sleep 1s
+                echo "255" > $GetLedPath/red/brightness
+            elif [ "$getMethod" == "on" ];then
+                echo "0" > $GetLedPath/red/brightness
+                echo "255" > $GetLedPath/green/brightness
+                sleep 2s
+                echo "0" > $GetLedPath/green/brightness
+                sleep 1s
+                echo "255" > $GetLedPath/green/brightness
+            elif [ "$getMethod" == "off" ];then
+                echo "0" > $GetLedPath/green/brightness
+                echo "255" > $GetLedPath/red/brightness
+                sleep 2s
+                echo "0" > $GetLedPath/red/brightness
+                sleep 1s
+                echo "255" > $GetLedPath/red/brightness
             fi
             NoNotif="yes"
             if [ "$GetRed" != "0" ] && [ "$GetGreen" != "0" ];then

@@ -273,97 +273,97 @@ ListMenu(){
     if [ $pilihan == "mx" ];then
         Perubahan="ya"
         GetModeNew="off"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "my" ];then
         Perubahan="ya"
         GetModeNew="on"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "mt" ];then
         Perubahan="ya"
         GetModeNew="turbo"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "opd" ];then
         Perubahan="ya"
         GetModeRenderNew="opengl"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "ops" ];then
         Perubahan="ya"
         GetModeRenderNew="skiagl"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "vkn" ];then
         Perubahan="ya"
         GetModeRenderNew="skiavk"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "fx" ];then
         Perubahan="ya"
         GetModeFCNew="0"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "fy" ];then
         Perubahan="ya"
         GetModeFCNew="1"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "fcx" ];then
         Perubahan="ya"
         GetModeFsyncNew="0"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "fcy" ];then
         Perubahan="ya"
         GetModeFsyncNew="1"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "adx" ];then
         Perubahan="ya"
         GetModeAdrenoNew="0"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "adl" ];then
         Perubahan="ya"
         GetModeAdrenoNew="1"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "adm" ];then
         Perubahan="ya"
         GetModeAdrenoNew="2"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "adh" ];then
         Perubahan="ya"
         GetModeAdrenoNew="3"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "adt" ];then
         Perubahan="ya"
         GetModeAdrenoNew="4"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "rms" ];then
         Perubahan="ya"
         GetModeRamNew="0"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "rm1" ];then
         Perubahan="ya"
         GetModeRamNew="1"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "rm2" ];then
         Perubahan="ya"
         GetModeRamNew="2"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "rm3" ];then
         Perubahan="ya"
         GetModeRamNew="3"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "aix" ];then
         Perubahan="ya"
@@ -373,7 +373,7 @@ ListMenu(){
         else
             GetModeAiNew="0"
         fi
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "aiy" ];then
         Perubahan="ya"
@@ -384,27 +384,27 @@ ListMenu(){
             GetModeAiNew="2"
             sleep 2s
         fi
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "anx" ];then
         Perubahan="ya"
         GetModeAiNotifNew="0"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "anv" ];then
         Perubahan="ya"
         GetModeAiNotifNew="1"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "an1" ];then
         Perubahan="ya"
         GetModeAiNotifNew="2"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "an2" ];then
         Perubahan="ya"
         GetModeAiNotifNew="3"
-        sleep 0.1s
+        usleep 100000
         ListMenu
     elif [ $pilihan == "0" ];then
         exitSetting
@@ -425,7 +425,7 @@ ListMenu(){
         fi
         echo "request not found,please try again"
         sleep 1s
-        sleep 0.1s
+        usleep 100000
         ListMenu
     fi
 }

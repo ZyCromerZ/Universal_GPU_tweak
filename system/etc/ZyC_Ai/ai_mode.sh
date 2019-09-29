@@ -234,17 +234,17 @@ getAppName()
     echo "while running '$nameApp' your gpu used at $(echo "$GpuStatus")%" | tee -a $AiLog > /dev/null 2>&1;
 }
 setTurbo(){
-    if [ $NotifPath != "none" ];then
-        if [ $aiNotif == "1" ];then
-            sh $NotifPath "getar" "on" & disown > /dev/null 2>&1 
-        elif [ $aiNotif == "2" ];then
-            sh $NotifPath "notif" "on" & disown > /dev/null 2>&1 
-        elif [ $aiNotif == "3" ];then
-            sh $NotifPath "notif" "on" "2" & disown > /dev/null 2>&1 
+    if [ "$NotifPath" != "none" ];then
+        if [ "$aiNotif" == "1" ];then
+            sh $NotifPath "getar" "on" > /dev/null 2>&1 
+        elif [ "$aiNotif" == "2" ];then
+            sh $NotifPath "notif" "on" > /dev/null 2>&1 
+        elif [ "$aiNotif" == "3" ];then
+            sh $NotifPath "notif" "on2" > /dev/null 2>&1 
         fi
     else
         echo 800 > /sys/class/timed_output/vibrator/enable
-        sleep 0.5s
+        usleep 500000
     fi
     echo "Set to turbo at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1;
     getAppName
@@ -253,13 +253,13 @@ setTurbo(){
     sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
 }
 setOff(){
-    if [ $NotifPath != "none" ];then
-        if [ $aiNotif == "1" ];then
-            sh $NotifPath "getar" "off" & disown > /dev/null 2>&1 
-        elif [ $aiNotif == "2" ];then
-            sh $NotifPath "notif" "off" & disown > /dev/null 2>&1 
-        elif [ $aiNotif == "3" ];then
-            sh $NotifPath "notif" "off" "2" & disown > /dev/null 2>&1 
+    if [ "$NotifPath" != "none" ];then
+        if [ "$aiNotif" == "1" ];then
+            sh $NotifPath "getar" "off" > /dev/null 2>&1 
+        elif [ "$aiNotif" == "2" ];then
+            sh $NotifPath "notif" "off" > /dev/null 2>&1 
+        elif [ "$aiNotif" == "3" ];then
+            sh $NotifPath "notif" "off2" > /dev/null 2>&1 
         fi
     else
         echo 600 > /sys/class/timed_output/vibrator/enable
