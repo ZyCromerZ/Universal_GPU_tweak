@@ -234,7 +234,7 @@ getAppName()
     echo "while running '$nameApp' your gpu used at $(echo "$GpuStatus")%" | tee -a $AiLog > /dev/null 2>&1;
 }
 setTurbo(){
-    if [ $NotifPath != "none" ];
+    if [ $NotifPath != "none" ];then
         if [ $aiNotif == "1" ];then
             sh $NotifPath "getar" "on" & disown > /dev/null 2>&1 
         elif [ $aiNotif == "2" ];then
@@ -253,7 +253,7 @@ setTurbo(){
     sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
 }
 setOff(){
-    if [ $NotifPath != "none" ];
+    if [ $NotifPath != "none" ];then
         if [ $aiNotif == "1" ];then
             sh $NotifPath "getar" "off" & disown > /dev/null 2>&1 
         elif [ $aiNotif == "2" ];then
