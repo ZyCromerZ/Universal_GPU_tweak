@@ -328,9 +328,11 @@ fi
 #notification when turbo mode start
 if [ "$NotifPath" != "none" ] && [ "$(cat "$PathModulConfig/status_modul.txt")" == "turbo" ] && [ $StatusModul == "turbo" ];then
     if [ "$aiNotifRunning" == "1" ];then
-        sh $NotifPath "notif" "running" & disown > /dev/null 2>&1 
+        sh $NotifPath "notif" "running" > /dev/null 2>&1 
     elif [ "$aiNotifRunning" == "2" ];then
-        sh $NotifPath "notif" "running1" & disown > /dev/null 2>&1 
+        sh $NotifPath "notif" "running1" > /dev/null 2>&1 
+    elif [ "$aiNotifRunning" == "3" ];then
+        sh $NotifPath "notif" "running2" > /dev/null 2>&1 
     fi
 fi
 #notification when turbo mode end
