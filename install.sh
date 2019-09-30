@@ -128,7 +128,9 @@ print_modname() {
   ui_print "*******************************"
   ui_print "     Magisk Module Template    "
   ui_print "*******************************"
-  ui_print "     Created By : ZyCromerZ    "
+  ui_print "     Created By @topjohnwu     "
+  ui_print "*******************************"
+  ui_print "      Edited By : ZyCromerZ    "
   ui_print "*******************************"
   ui_print ""
   ui_print "preparing . . .                "
@@ -194,6 +196,7 @@ set_permissions() {
   set_perm_recursive $MODPATH/system/$bin       0 0 0755 0777
   set_perm_recursive $MODPATH/system/etc/ZyC_Ai 0 0 0755 0777
   set_perm $MODPATH/service.sh                  0 0 0777
+  set_perm $MODPATH/initialize.sh               0 0 0777
   set_perm $MODPATH/system/$bin/zyc_turbo       0 0 0777
   set_perm $MODPATH/system/$bin/zyc_mode        0 0 0777
   set_perm $MODPATH/system/$bin/zyc_render      0 0 0777

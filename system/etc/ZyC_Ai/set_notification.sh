@@ -25,9 +25,13 @@ if [ ! -z "$1" ];then
         if [ "$GetLedPath" != "none" ];then
             GetRed=$(cat "/sys/class/leds/red/brightness")
             GetGreen=$(cat "/sys/class/leds/green/brightness")
-            GetBlue=$(cat "/sys/class/leds/blue/brightness")
-            echo "0" > $GetLedPath/blue/brightness;
+            if [ -e /sys/class/leds/blue/brightness ];then
+                GetBlue=$(cat "/sys/class/leds/blue/brightness")
+                usleep 100
+                echo "0" > $GetLedPath/blue/brightness;
+            fi
             if [ "$getMethod" == "on2" ];then
+                #on perlahan ganti
                 echo "255" > $GetLedPath/red/brightness
                 for NumberLed in 0 10 20 40 60 80 100 120 150 255
                 do
@@ -44,6 +48,7 @@ if [ ! -z "$1" ];then
                 usleep 250000
                 echo "255" > $GetLedPath/green/brightness
             elif [ "$getMethod" == "off2" ];then
+                #off perlahan ganti
                 echo "255" > $GetLedPath/red/brightness
                 for NumberLed in 255 150 120 100 80 60 40 20 10 0
                 do
@@ -55,24 +60,35 @@ if [ ! -z "$1" ];then
                 usleep 500000
                 echo "255" > $GetLedPath/red/brightness
                 usleep 250000
-                echo "255" > $GetLedPath/red/brightness
+                echo "0" > $GetLedPath/red/brightness
                 usleep 250000
                 echo "255" > $GetLedPath/red/brightness
             elif [ "$getMethod" == "on" ];then
+                #on kedip
                 echo "0" > $GetLedPath/red/brightness
                 echo "255" > $GetLedPath/green/brightness
                 sleep 2s
                 echo "0" > $GetLedPath/green/brightness
                 sleep 1s
+                echo "255" > $GetLedPath/green/brightness
+                usleep 500000
+                echo "0" > $GetLedPath/green/brightness
+                usleep 500000
                 echo "255" > $GetLedPath/green/brightness
             elif [ "$getMethod" == "off" ];then
+                #off kedip
                 echo "0" > $GetLedPath/green/brightness
                 echo "255" > $GetLedPath/red/brightness
                 sleep 2s
                 echo "0" > $GetLedPath/red/brightness
                 sleep 1s
                 echo "255" > $GetLedPath/red/brightness
+                usleep 500000
+                echo "0" > $GetLedPath/red/brightness
+                usleep 500000
+                echo "255" > $GetLedPath/red/brightness
             elif [ "$getMethod" == "running" ];then
+                #running kedip kuning
                 echo "70" > $GetLedPath/green/brightness
                 echo "255" > $GetLedPath/red/brightness
                 usleep 400000
@@ -88,6 +104,7 @@ if [ ! -z "$1" ];then
                 echo "70" > $GetLedPath/green/brightness
                 echo "255" > $GetLedPath/red/brightness
             elif [ "$getMethod" == "running1" ];then
+                #running kedip ijo
                 echo "255" > $GetLedPath/green/brightness
                 echo "0" > $GetLedPath/red/brightness
                 usleep 400000
@@ -99,6 +116,7 @@ if [ ! -z "$1" ];then
                 usleep 150000
                 echo "255" > $GetLedPath/green/brightness
             elif [ "$getMethod" == "running2" ];then
+                #running perlahan kuning ijo
                 echo "255" > $GetLedPath/green/brightness
                 echo "0" > $GetLedPath/red/brightness
                 usleep 200000
@@ -123,6 +141,7 @@ if [ ! -z "$1" ];then
                 echo "70" > $GetLedPath/green/brightness
                 echo "255" > $GetLedPath/red/brightness
             elif [ "$getMethod" == "running3" ];then
+                #running perlahan kuning ijo merah
                 echo "0" > $GetLedPath/green/brightness
                 echo "255" > $GetLedPath/red/brightness
                 usleep 100000
@@ -169,7 +188,9 @@ if [ ! -z "$1" ];then
             if [ ! -z "$( acpi -a | grep "on-line" )" ];then
                 echo "$GetRed" > $GetLedPath/red/brightness
                 echo "$GetGreen" > $GetLedPath/green/brightness
-                echo "$GetBlue" > $GetLedPath/blue/brightness
+                if [ -e /sys/class/leds/blue/brightness ];then
+                    echo "$GetBlue" > $GetLedPath/blue/brightness
+                fi
             else
                 echo "0" > $GetLedPath/red/brightness
                 echo "0" > $GetLedPath/green/brightness

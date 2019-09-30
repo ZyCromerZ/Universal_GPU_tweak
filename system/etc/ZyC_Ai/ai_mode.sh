@@ -78,153 +78,67 @@ NotifPath="none"
 if [ -e "/system/etc/ZyC_Ai/set_notification.sh" ];then
     NotifPath=/system/etc/ZyC_Ai/set_notification.sh
 fi
+MissingFile="kaga"
 # App trigger start
 if [ ! -e $PathModulConfigAi/list_app_auto_turbo.txt ]; then
-    GameList=$PathModulConfigAi/list_app_auto_turbo.txt
-    changeSE="tidak"
-    if [ "$(getenforce)" == "Enforcing" ];then
-        changeSE="ya"
-        setenforce 0
-    fi
-    # Moba Analog
-    if [ ! -z $(pm list packages -f com.mobile.legends | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.mobile.legends" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    # Honkai Impact 3
-    if [ ! -z $(pm list packages -f com.miHoYo.bh3oversea | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.miHoYo.bh3oversea" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    # Ashpalt 9
-    if [ ! -z $(pm list packages -f com.gameloft.android.ANMP.GloftA9HM | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.gameloft.android.ANMP.GloftA9HM" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    # Pubg
-    if [ ! -z $(pm list packages -f com.netmarble.revolutionthm | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.netmarble.revolutionthm" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.tencent.tmgp.pubgmhd | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.tencent.tmgp.pubgmhd" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.tencent.tmgp.pubgm | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.tencent.tmgp.pubgm" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.tencent.iglite | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.tencent.iglite" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.pubg.krmobile | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.pubg.krmobile" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.rekoo.pubgm | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.rekoo.pubgm" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.tencent.ig | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.tencent.ig" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    # another game
-    if [ ! -z $(pm list packages -f com.theonegames.gunshipbattle | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.theonegames.gunshipbattle" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.netease.lztgglobal | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.netease.lztgglobal" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.ea.game.nfs14_row | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.ea.game.nfs14_row" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.squareenixmontreal.hitmansniperandroid | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.squareenixmontreal.hitmansniperandroid" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.dts.freefireth | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.dts.freefireth" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.nekki.shadowfight3 | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.nekki.shadowfight3" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.gamedreamer.sgth | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.gamedreamer.sgth" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.netease.eclipseisle | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.netease.eclipseisle" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.pwrd.pwm | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.pwrd.pwm" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.gameloft.android.ANMP.GloftHEHM | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.gameloft.android.ANMP.GloftHEHM" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.garena.game.kgid | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.garena.game.kgid" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.netease.g78na.gb | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.netease.g78na.gb" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    # if [ ! -z $(pm list packages -f com. | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-    #     echo "com." | tee -a $GameList > /dev/null 2>&1;
-    # fi
-    if [ "$changeSE" == "ya" ];then
-        setenforce 1
-    fi
+    MissingFile="iya"
 fi
 pathAppAutoTubo=$PathModulConfigAi/list_app_auto_turbo.txt
 # Get App list
 if [ ! -e $PathModulConfigAi/list_app_package_detected.txt ]; then
-    listAppPath=$PathModulConfigAi/list_app_package_detected.txt
-    echo "---->> List app installed start <<----"  | tee -a $listAppPath > /dev/null 2>&1 ;
-    changeSE="tidak"
-    if [ "$(getenforce)" == "Enforcing" ];then
-        changeSE="ya"
-        setenforce 0
-    fi
-    for listApp in ` pm list packages -3 | awk -F= '{sub("package:","");print $1}'` 
-        do 
-            checkApp=$(pm list packages -f $listApp | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g')
-            nameApp=$(aapt d badging $checkApp | awk -F: ' $1 == "application-label" {print $2}' | sed "s/'*//g")
-            # adb shell /data/local/tmp/aapt-arm-pie d badging $pkg | awk -F: ' $1 == "application-label" {print $2}' 
-            echo "$listApp ($nameApp)"  | tee -a $listAppPath > /dev/null 2>&1 ;
-    done
-    if [ "$changeSE" == "ya" ];then
-        setenforce 1
-    fi
-    echo "<<---- List app installed end ---->>"  | tee -a $listAppPath > /dev/null 2>&1 ;
+    MissingFile="iya"
 fi
 GpuStart="$(cat "$PathModulConfigAi/status_start_gpu.txt")";
 # Gpu trigger start
 if [ ! -e $PathModulConfigAi/status_start_gpu.txt ]; then
-    echo '80' > "$PathModulConfigAi/status_start_gpu.txt"
+    MissingFile="iya"
 fi
 GpuStart="$(cat "$PathModulConfigAi/status_start_gpu.txt")";
 if [ ! -e $PathModulConfigAi/status_end_gpu.txt ]; then
-    echo '5' > "$PathModulConfigAi/status_end_gpu.txt"
+    MissingFile="iya"
 fi
 GpuStop="$(cat "$PathModulConfigAi/status_end_gpu.txt")";
 # Wait time when off
 if [ ! -e $PathModulConfigAi/wait_time_off.txt ]; then
-    echo '3s' > "$PathModulConfigAi/wait_time_off.txt"
+    MissingFile="iya"
 fi
 # Wait time when on
-waitTimeOff=$(cat "$PathModulConfigAi/wait_time_off.txt");# Wait time
+waitTimeOff=$(cat "$PathModulConfigAi/wait_time_off.txt");
 if [ ! -e $PathModulConfigAi/wait_time_on.txt ]; then
-    echo '10s' > "$PathModulConfigAi/wait_time_on.txt"
+    MissingFile="iya"
 fi
 waitTimeOn=$(cat "$PathModulConfigAi/wait_time_on.txt");
 # Status 0=tidak aktif,1=aktif,2=sedang berjalan
 if [ ! -e $PathModulConfigAi/ai_status.txt ]; then
-    echo '1' > "$PathModulConfigAi/ai_status.txt"
+    MissingFile="iya"
 fi
 aiStatus=$(cat "$PathModulConfigAi/ai_status.txt");
 # Set Ai Notif Mode Start
 if [ ! -e $PathModulConfigAi/ai_notif_mode.txt ]; then
-    echo '3' > "$PathModulConfigAi/ai_notif_mode.txt"
+    MissingFile="iya"
 fi
 aiNotif=$(cat "$PathModulConfigAi/ai_notif_mode.txt");
 if [ ! -e $PathModulConfigAi/ai_notif_mode_running.txt ]; then
-    echo '0' > "$PathModulConfigAi/ai_notif_mode_running.txt"
+    MissingFile="iya"
 fi
 aiNotifRunning=$(cat "$PathModulConfigAi/ai_notif_mode_running.txt");
+if [ ! -e $PathModulConfigAi/ai_notif_mode_running_status.txt ]; then
+    MissingFile="iya"
+fi
+aiNotifRunningStatus=$(cat "$PathModulConfigAi/ai_notif_mode_running_status.txt");
 # Set Ai Notif Mode End
+if [ $MissingFile == "iya" ]; then
+    sh $ModulPath/ZyC_Turbo/initialize.sh > /dev/null 2>&1
+    if [ $fromBoot == "yes" ];then
+        sh /system/etc/ZyC_Ai/ai_mode.sh "fromBoot" & disown > /dev/null 2>&1;
+    else
+        sh /system/etc/ZyC_Ai/ai_mode.sh & disown > /dev/null 2>&1;
+    fi
+    exit 0;
+fi
 StatusModul=$(cat "$PathModulConfig/status_modul.txt");
 GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
 GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
-GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1);
 getAppName()
 {
     changeSE="tidak"
@@ -232,6 +146,7 @@ getAppName()
         changeSE="ya"
         setenforce 0
     fi
+    GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1);
     checkApp=$(pm list packages -f $GetPackageApp | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g')
     nameApp=$(aapt d badging $checkApp | awk -F: ' $1 == "application-label" {print $2}' | sed "s/'*//g")
     if [ "$changeSE" == "ya" ];then
@@ -240,6 +155,22 @@ getAppName()
     echo "while running '$nameApp' your gpu used at $(echo "$GpuStatus")%" | tee -a $AiLog > /dev/null 2>&1;
 }
 setTurbo(){
+    SetNotificationOn
+    echo "Set to turbo at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1;
+    getAppName
+    echo "turbo" > $PathModulConfig/status_modul.txt
+    echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
+    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
+    sleep 5s
+}
+setOff(){
+    SetNotificationOff
+    echo "turn off at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1;
+    echo "off" > $PathModulConfig/status_modul.txt
+    echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
+    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
+}
+SetNotificationOn(){
     if [ "$NotifPath" != "none" ];then
         if [ "$aiNotif" == "1" ];then
             sh $NotifPath "getar" "on" > /dev/null 2>&1 
@@ -252,13 +183,8 @@ setTurbo(){
         echo 800 > /sys/class/timed_output/vibrator/enable
         usleep 500000
     fi
-    echo "Set to turbo at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1;
-    getAppName
-    echo "turbo" > $PathModulConfig/status_modul.txt
-    echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
-    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
 }
-setOff(){
+SetNotificationOff(){
     if [ "$NotifPath" != "none" ];then
         if [ "$aiNotif" == "1" ];then
             sh $NotifPath "getar" "off" > /dev/null 2>&1 
@@ -272,32 +198,56 @@ setOff(){
         sleep 1s
         echo 300 > /sys/class/timed_output/vibrator/enable
     fi
-    echo "turn off at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1;
-    echo "off" > $PathModulConfig/status_modul.txt
-    echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
-    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
+}
+SetNotificationRunning(){
+    if [ "$NotifPath" != "none" ] && [ "$(cat "$PathModulConfig/status_modul.txt")" == "turbo" ] && [ $StatusModul == "turbo" ];then
+        if [ "$aiNotifRunning" == "1" ];then
+            sh $NotifPath "notif" "running" & disown > /dev/null 2>&1 
+        elif [ "$aiNotifRunning" == "2" ];then
+            sh $NotifPath "notif" "running1" & disown > /dev/null 2>&1 
+        elif [ "$aiNotifRunning" == "3" ];then
+            sh $NotifPath "notif" "running2" & disown > /dev/null 2>&1 
+        elif [ "$aiNotifRunning" == "4" ];then
+            sh $NotifPath "notif" "running3" & disown > /dev/null 2>&1 
+        fi
+    fi
 }
 if [ $aiStatus == "1" ]; then
     echo "<<--- --- --- --- --- " | tee -a $AiLog > /dev/null 2>&1 ;
     echo "starting ai mode at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
     echo "2" > $PathModulConfigAi/ai_status.txt
 elif [ $aiStatus == "2" ];then
-    if [ ! -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
-        if [ $StatusModul != "turbo" ];then
-            echo "found $GetPackageApp on your setting . . ." | tee -a $AiLog > /dev/null 2>&1 ;
-            setTurbo
-        fi
-    else 
-        if [ "$GpuStatus" -ge "$GpuStart" ];then
+    if [ "$StatusModul" == "off" ];then
+        GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1)
+        if [ ! -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
             if [ $StatusModul != "turbo" ];then
+                echo "found $GetPackageApp on your setting . . ." | tee -a $AiLog > /dev/null 2>&1 ;
                 setTurbo
             fi
-        elif [ "$GpuStatus" -le "$GpuStop" ];then
+        else 
+            if [ "$GpuStatus" -ge "$GpuStart" ];then
+                if [ $StatusModul != "turbo" ];then
+                    setTurbo
+                fi
+            fi
+        fi
+    else
+        if [ "$GpuStatus" -le "$GpuStop" ];then
             if [ $StatusModul != "off" ];then
                 setOff
             fi
+        else
+            if [ $aiNotifRunningStatus == "2" ];then
+                GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1)
+                if [ ! -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
+                    if [ $StatusModul == "turbo" ];then
+                        SetNotificationRunning
+                    fi
+                fi 
+            fi
         fi
     fi
+    
 elif [ $aiStatus == "3" ];then
     echo 'stoping ai mode . . .'  | tee -a $AiLog > /dev/null 2>&1 ;
     echo "end at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
@@ -326,21 +276,15 @@ if [ $aiStatus == "2"  ];then
     fi
 fi 
 #notification when turbo mode start
-if [ "$NotifPath" != "none" ] && [ "$(cat "$PathModulConfig/status_modul.txt")" == "turbo" ] && [ $StatusModul == "turbo" ];then
-    if [ "$aiNotifRunning" == "1" ];then
-        sh $NotifPath "notif" "running" & disown > /dev/null 2>&1 
-    elif [ "$aiNotifRunning" == "2" ];then
-        sh $NotifPath "notif" "running1" & disown > /dev/null 2>&1 
-    elif [ "$aiNotifRunning" == "3" ];then
-        sh $NotifPath "notif" "running2" & disown > /dev/null 2>&1 
-    elif [ "$aiNotifRunning" == "4" ];then
-        sh $NotifPath "notif" "running3" & disown > /dev/null 2>&1 
-    fi
+if [ $aiNotifRunningStatus == "1" ];then
+    SetNotificationRunning
 fi
 #notification when turbo mode end
 if [ $fromBoot == "yes" ];then
     sleep 40s
     sh $NotifPath "getar" "off" > /dev/null 2>&1 
+    echo "Continue running at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
+    echo "  --- --- --- --- --- " | tee -a $AiLog > /dev/null 2>&1 ;
     sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
     sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1
 else

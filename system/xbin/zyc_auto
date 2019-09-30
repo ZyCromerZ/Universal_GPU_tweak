@@ -23,7 +23,6 @@ if [ ! -z "$1" ];then
         echo "3" > $PathModulConfigAi/ai_status.txt;
         usleep 100000
         echo "update auto mode to '3' done .";
-    # fi
     else
         echo "updating auto mode to '$1',please wait. . .";
         echo "$1" > $PathModulConfigAi/ai_status.txt;
@@ -36,7 +35,9 @@ if [ -e "$PathModulConfigAi/ai_status.txt" ];then
     if [ "$aiStatus" == '0' ];then
         echo "set ai status to 1 first"  
     elif [ "$aiStatus" == '3' ];then
-        echo "check log,auto mode turned off,if not wait a minutes xD"    
+        echo "check log,auto mode turned off,if not wait a minutes xD"
+    elif [ "$aiStatus" == '2' ];then
+        echo "ai mode still running"
     else
         sh /system/etc/ZyC_Ai/ai_mode.sh > /dev/null 2>&1
         echo "close this terminal, the ai mode has been running"

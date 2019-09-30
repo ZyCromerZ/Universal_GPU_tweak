@@ -89,6 +89,18 @@ if [ -e $PathModulConfigAi/ai_notif_mode_running.txt ];then
     GetModeAiNotifRunningBefore=$(cat "$PathModulConfigAi/ai_notif_mode_running.txt")
     GetModeAiNotifRunningNew=$(cat "$PathModulConfigAi/ai_notif_mode_running.txt")
 fi
+if [ -e $PathModulConfigAi/ai_notif_mode_running_status.txt ];then
+    GetModeAiNotifRunningStatusBefore=$(cat "$PathModulConfigAi/ai_notif_mode_running_status.txt")
+    GetModeAiNotifRunningStatusNew=$(cat "$PathModulConfigAi/ai_notif_mode_running_status.txt")
+fi
+if [ -e $PathModulConfigAi/wait_time_off.txt ];then
+    waitTimeOffBefore=$(cat "$PathModulConfigAi/wait_time_off.txt")
+    waitTimeOffNew=$(cat "$PathModulConfigAi/wait_time_off.txt")
+fi
+if [ -e $PathModulConfigAi/wait_time_on.txt ];then
+    waitTimeOnBefore=$(cat "$PathModulConfigAi/wait_time_on.txt")
+    waitTimeOnNew=$(cat "$PathModulConfigAi/wait_time_on.txt")
+fi
 savedata="no"
 page="1"
 ListMenu(){
@@ -97,15 +109,19 @@ ListMenu(){
     echo "list menu : "
     if [ "$page" == "1" ];then
         if [ -e "$PathModulConfig/status_modul.txt" ];then
-            echo "mx > turn off tweak";
-            echo "my > change mode tweak to on"
-            echo "mt > change mode tweak to turbo"
+            if [ "$GetModeAiBefore" == "0" ];then
+                echo "mx > turn off tweak";
+                echo "my > change mode tweak to on"
+                echo "mt > change mode tweak to turbo"
+            else
+                echo "ai mode still running,cannot change tweak mode"
+            fi
             if [ "$GetModeBefore" != "$GetModeNew" ];then
                 echo $kuningPutih"this will set to : $GetModeNew"$ResetWarna
             else
                 echo $kuningHitam"current status : $GetModeBefore"$ResetWarna;
             fi
-            echo $cyanPutih"<--- ---- --- --->"$ResetWarna
+            echo $putihHitam"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e "$PathModulConfig/mode_render.txt" ];then
             
@@ -129,7 +145,7 @@ ListMenu(){
                     echo $merahHitam"Current Status : Vulkan"$ResetWarna
                 fi
             fi
-            echo $cyanPutih"<--- ---- --- --->"$ResetWarna
+            echo $putihHitam"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e "$PathModulConfig/fastcharge.txt" ];then
             echo "fx > fastcharge option by system"
@@ -147,7 +163,7 @@ ListMenu(){
                     echo $hijauHitam"Current Status : by this tweak(trying to force on)"$ResetWarna
                 fi
             fi
-            echo $cyanPutih"<--- ---- --- --->"$ResetWarna
+            echo $putihHitam"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e "$PathModulConfig/fsync_mode.txt" ];then
             echo "fcx > turn off fsync"
@@ -165,7 +181,7 @@ ListMenu(){
                     echo $merahHitam"Current Status : on"$ResetWarna
                 fi
             fi
-            echo $cyanPutih"<--- ---- --- --->"$ResetWarna
+            echo $putihHitam"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e "$PathModulConfig/GpuBooster.txt" ];then
             echo "adx > turn off adrenoboost"
@@ -198,7 +214,7 @@ ListMenu(){
                     echo $biruHitam"Current status : by tweak"$ResetWarna
                 fi
             fi
-            echo $cyanPutih"<--- ---- --- --->"$ResetWarna
+            echo $putihHitam"<--- ---- --- --->"$ResetWarna
         fi
         echo "current : page 1"
     elif [ "$page" == "2" ];then
@@ -220,7 +236,7 @@ ListMenu(){
                     echo $merahHitam"current status : method $GetModeRamNew"$ResetWarna
                 fi
             fi
-            echo $cyanPutih"<--- ---- --- --->"$ResetWarna
+            echo $putihHitam"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e "$PathModulConfigAi/ai_status.txt" ];then
             echo "aix > auto/ai mode off"
@@ -242,7 +258,7 @@ ListMenu(){
                     echo $cyanHitam"current status : on"$ResetWarna
                 fi
             fi
-            echo $cyanPutih"<--- ---- --- --->"$ResetWarna
+            echo $putihHitam"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e "$PathModulConfigAi/ai_notif_mode.txt" ];then
             echo "anx > turn off notif ai";
@@ -270,7 +286,7 @@ ListMenu(){
                     echo $unguHitam"Current status : use notif method 2"$ResetWarna
                 fi
             fi
-            echo $cyanPutih"<--- ---- --- --->"$ResetWarna
+            echo $putihHitam"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e "$PathModulConfigAi/ai_notif_mode_running.txt" ];then
             echo "anmx > turn off notif running ai" ;
@@ -303,14 +319,60 @@ ListMenu(){
                     echo $unguHitam"Current status : notif running mode 4"$ResetWarna
                 fi
             fi
-            echo $cyanPutih"<--- ---- --- --->"$ResetWarna
+            echo $putihHitam"<--- ---- --- --->"$ResetWarna
         fi
         echo "current : page 2"
+    elif [ "$page" == "3" ];then
+        if [ -e "$PathModulConfigAi/ai_notif_mode_running_status.txt" ];then
+            echo "ansx > turn off notif running status ai" ;
+            echo "ans1 > use notif running while on turbo mode" ;
+            echo "ans2 > use notif running while on gaming (recomended)" ;
+            if [ "$GetModeAiNotifRunningStatusBefore" != "$GetModeAiNotifRunningStatusNew" ];then
+                if [ "$GetModeAiNotifRunningStatusNew" == "0" ];then
+                    echo $putihHitam"this will set to : off"$ResetWarna
+                elif [ "$GetModeAiNotifRunningStatusNew" == "1" ];then
+                    echo $kuningPutih"this will set to : notif running while on turbo mode"$ResetWarna
+                elif [ "$GetModeAiNotifRunningStatusNew" == "2" ];then
+                    echo $hijauPutih"this will set to : notif running while on gaming"$ResetWarna
+                fi
+            else
+                if [ "$GetModeAiNotifRunningStatusBefore" == "0" ];then
+                    echo $abuHitam"Current status : off"$ResetWarna
+                elif [ "$GetModeAiNotifRunningStatusBefore" == "1" ];then
+                    echo $kuningHitam"Current status : notif running while on turbo mode"$ResetWarna
+                elif [ "$GetModeAiNotifRunningStatusBefore" == "2" ];then
+                    echo $hijauHitam"Current status : notif running while on gaming"$ResetWarna
+                fi
+            fi
+            echo $putihHitam"<--- ---- --- --->"$ResetWarna
+        fi
+        if [ -e $PathModulConfigAi/wait_time_off.txt ];then
+            echo "wtx > set wait time ai to run again while module on mode off"
+            if [ "$waitTimeOffBefore" != "$waitTimeOffNew" ];then
+                echo $abuHitam"this will set to : $waitTimeOffNew"$ResetWarna
+            else
+                echo $abuHitam"Current status : $waitTimeOffBefore"$ResetWarna
+            fi
+            echo $putihHitam"<--- ---- --- --->"$ResetWarna
+        fi
+        if [ -e $PathModulConfigAi/wait_time_on.txt ];then
+            echo "wty > set wait time ai to run again while module on mode turbo"
+            if [ "$waitTimeOnBefore" != "$waitTimeOnNew" ];then
+                echo $abuHitam"this will set to : $waitTimeOnNew"$ResetWarna
+            else
+                echo $abuHitam"Current status : $waitTimeOnBefore"$ResetWarna
+            fi
+            echo $putihHitam"<--- ---- --- --->"$ResetWarna
+        fi
+        echo "current : page 3"
     fi
-    if [ $page == "1" ];then
-        echo "p2 > go to page 2"
+    if [ "$page" == "1" ];then
+        echo "np > go to page $(($page+1))";
+    elif [ "$page" == "3" ];then
+        echo "pp > go to page $(($page-1))";
     else
-        echo "p1 > go to page 1"
+        echo "np > go to page $(($page+1))";
+        echo "pp > go to page $(($page-1))";
     fi
     # echo "more setting coming soon :p"
     if [ $Perubahan == "ya" ];then
@@ -480,13 +542,50 @@ ListMenu(){
         GetModeAiNotifRunningNew="4"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "p1" ];then
-        page=1
+    elif [ $pilihan == "ansx" ];then
+        Perubahan="ya"
+        GetModeAiNotifRunningStatusNew="0"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "ans1" ];then
+        Perubahan="ya"
+        GetModeAiNotifRunningStatusNew="1"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "ans2" ];then
+        Perubahan="ya"
+        GetModeAiNotifRunningStatusNew="2"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "np" ];then
+        if [ "$page" -lt "3" ];then
+            page=$(($page+1))
+        else
+            page="1"
+            echo "error,move to page 1"
+        fi
         usleep 10000
         ListMenu
-    elif [ $pilihan == "p2" ];then
-        page=2
+    elif [ $pilihan == "pp" ];then
+        if [ "$page" -gt "1" ];then
+            page=$(($page-1))
+        else
+            page="1"
+            echo "error,move to page 1"
+        fi
         usleep 10000
+        ListMenu
+    elif [ $pilihan == "wtx" ];then
+        echo "how long (example : 1s or 1m) ??"
+        read getnumber
+        waitTimeOffNew=$getnumber
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "wty" ];then
+        echo "how long (example : 1s or 1m) ??"
+        read getnumber
+        waitTimeOnNew=$getnumber
+        usleep 100000
         ListMenu
     elif [ $pilihan == "0" ];then
         exitSetting
@@ -566,6 +665,18 @@ saveSetting()
     if [ "$GetModeAiNotifRunningNew" != "$GetModeAiNotifRunningBefore" ];then
         echo "$GetModeAiNotifRunningNew" > $PathModulConfigAi/ai_notif_mode_running.txt ; 
         GetModeAiNotifRunningBefore=$GetModeAiNotifRunningNew;
+    fi
+    if [ "$GetModeAiNotifRunningStatusNew" != "$GetModeAiNotifRunningStatusBefore" ];then
+        echo "$GetModeAiNotifRunningStatusNew" > $PathModulConfigAi/ai_notif_mode_running_status.txt ; 
+        GetModeAiNotifRunningStatusBefore=$GetModeAiNotifRunningStatusNew;
+    fi
+    if [ "$waitTimeOffNew" != "$waitTimeOffBefore" ];then
+        echo "$waitTimeOffNew" > $PathModulConfigAi/wait_time_off.txt ; 
+        waitTimeOffBefore=$waitTimeOffNew;
+    fi
+    if [ "$waitTimeOnNew" != "$waitTimeOnBefore" ];then
+        echo "$waitTimeOnNew" > $PathModulConfigAi/wait_time_on.txt ; 
+        waitTimeOnBefore=$waitTimeOnNew;
     fi
     echo "re run tweak . . ."
     zyc_turbo > /dev/null 2>&1
