@@ -137,20 +137,6 @@ if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
 fi
 CustomRam=$(cat $PathModulConfig/custom_ram_management.txt)
 
-# Check notes version
-SetModulVersion="3.35-3 STABLE"
-if [ "$FromTerminal" == "tidak" ];
-    if [ -e $PathModulConfig/notes_en.txt ];then
-        if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
-            MissingFile="iya"
-        fi
-    fi
-    if [ -e $PathModulConfig/notes_id.txt ];then
-        if [ "$(cat "$PathModulConfig/notes_id.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
-            MissingFile="iya"
-        fi
-    fi
-fi
 if [ ! -e $PathModulConfig/notes_en.txt ]; then
     # echo "please read this xD \nyou can set mode.txt to:\n- off \n- on \n- turbo \nvalue must same as above without'-'\n\nchange mode_render.txt to:\n-  opengl \n-  skiagl \n-  skiavk \n\n note:\n-skiavk = Vulkan \n-skiagl = OpenGL (SKIA)\ndont edit total_fps.txt still not tested" > $PathModulConfig/notes.txt
     MissingFile="iya"

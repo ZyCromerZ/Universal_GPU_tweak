@@ -215,6 +215,8 @@ SetNotificationRunning(){
 if [ $aiStatus == "1" ]; then
     echo "<<--- --- --- --- --- " | tee -a $AiLog > /dev/null 2>&1 ;
     echo "starting ai mode at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
+    echo "module version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" | tee -a $AiLog > /dev/null 2>&1 ;
+    echo "  --- --- --- --- --- " | tee -a $AiLog > /dev/null 2>&1 ;
     echo "2" > $PathModulConfigAi/ai_status.txt
 elif [ $aiStatus == "2" ];then
     if [ "$StatusModul" == "off" ];then
@@ -284,6 +286,7 @@ if [ $fromBoot == "yes" ];then
     sleep 40s
     sh $NotifPath "getar" "off" > /dev/null 2>&1 
     echo "Continue running at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
+    echo "module version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" | tee -a $AiLog > /dev/null 2>&1 ;
     echo "  --- --- --- --- --- " | tee -a $AiLog > /dev/null 2>&1 ;
     sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
     sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1
