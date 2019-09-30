@@ -111,7 +111,7 @@ fi
 CustomRam=$(cat $PathModulConfig/custom_ram_management.txt)
 
 # Check notes version
-SetModulVersion="3.35-1 BETA"
+SetModulVersion="3.35-2 STABLE"
 if [ -e $PathModulConfig/notes_en.txt ];then
     if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
         rm $PathModulConfig/notes_en.txt
@@ -131,6 +131,14 @@ provided additional features to make it more better performance :p
 There are 2 versions, v3 and v2
 
 For v3:
+
+How to use v3
+Just flash via magisk and enjoy
+if you want setting some config for my module use terminal and type su -> zyc_setting,then type the code
+example after zyc_setting :
+rm3 <-- using ram management 3
+s <-- save changes
+y <--- y mean for exit after save changes
 
 How to install v3
 1.) Download the latest v3 version
@@ -264,6 +272,10 @@ For module config files in the zyc_ai folder (ignore the missing files)
   For setting ai notification led
   Value=0 (off) / 1 (vibration mode) / 2 (notification method 1) / 3 (notification metode 2)
 
+- ai_notif_mode_running.txt
+  For setting ai notification led when module on turbo mode + ai mode on (lights up based on wait_time_on.txt)
+  Value=0 (off) / 1 (vibration method 1) / 2 (notification method 2) / 3 (notification metode 3) / 4 (notification metode 4)
+
 
 For V2, just flash it via magisk, it will automatically activates after rebooted
 
@@ -294,7 +306,13 @@ Ni modul fungsinya buat disable thermal gpu ama setting beberapa bagian lainnya 
 Dah lanjut cara install dah . . .
 Ada 2 versi,v3 ama v2
 
-
+cara menggunakan v3
+cuma flash via magisk doang beres
+kalo mau di utak atik lagi configurasinya masuk terminal terus ketik su -> zyc_setting,lalu ketik kode nya
+contoh setelah zyc_setting :
+rm3 <-- pake ram management 3
+s <-- simpan perubahan
+y <--- y itu maksudnya untuk keluar setelah menyimpan perubahan
 
 Untuk v3 :
 Cara install v3
@@ -436,6 +454,10 @@ Untuk file config modul dalam folder zyc_ai ( abaikan kalo file tidak ada )
 - ai_notif_mode.txt
   Untuk setting notif led ai
   Value=0(mati)/1(mode getaran)/2(notif metode 1)/3(notif metode 2)
+
+- ai_notif_mode_running.txt
+  Untuk setting notif led ai ketika modul di mode turbo + ai menyala (menyala berdasarkan wait_time_on.txt)
+  Value=0(mati)/1(mode metode 1)/2(notif metode 2)/3(notif metode 3)/4(notif metode 4)
 
 
 Untuk V2 cukup flash teros biarkan,udah otomatis aktif kalo udah reboot

@@ -328,19 +328,19 @@ fi
 #notification when turbo mode start
 if [ "$NotifPath" != "none" ] && [ "$(cat "$PathModulConfig/status_modul.txt")" == "turbo" ] && [ $StatusModul == "turbo" ];then
     if [ "$aiNotifRunning" == "1" ];then
-        sh $NotifPath "notif" "running" > /dev/null 2>&1 
+        sh $NotifPath "notif" "running" & disown > /dev/null 2>&1 
     elif [ "$aiNotifRunning" == "2" ];then
-        sh $NotifPath "notif" "running1" > /dev/null 2>&1 
+        sh $NotifPath "notif" "running1" & disown > /dev/null 2>&1 
     elif [ "$aiNotifRunning" == "3" ];then
-        sh $NotifPath "notif" "running2" > /dev/null 2>&1 
+        sh $NotifPath "notif" "running2" & disown > /dev/null 2>&1 
+    elif [ "$aiNotifRunning" == "4" ];then
+        sh $NotifPath "notif" "running3" & disown > /dev/null 2>&1 
     fi
 fi
 #notification when turbo mode end
 if [ $fromBoot == "yes" ];then
     sleep 40s
-    echo 600 > /sys/class/timed_output/vibrator/enable
-    sleep 1s
-    echo 300 > /sys/class/timed_output/vibrator/enable
+    sh $NotifPath "getar" "off" > /dev/null 2>&1 
     sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
     sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1
 else

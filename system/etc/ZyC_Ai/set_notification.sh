@@ -8,11 +8,11 @@ if [ ! -z "$1" ];then
     getMethod=$2
     if [ "$getType" == "getar" ];then
         if [ $getMethod == "off" ];then
-            echo 400 > /sys/class/timed_output/vibrator/enable
-            usleep 500000
             echo 200 > /sys/class/timed_output/vibrator/enable
+            usleep 400000
+            echo 100 > /sys/class/timed_output/vibrator/enable
         elif [ $getMethod == "on" ];then
-            echo 600 > /sys/class/timed_output/vibrator/enable
+            echo 400 > /sys/class/timed_output/vibrator/enable
         fi
     elif [ "$getType" == "notif" ];then
         GetLedPath="none"
@@ -122,6 +122,39 @@ if [ ! -z "$1" ];then
                 usleep 200000
                 echo "70" > $GetLedPath/green/brightness
                 echo "255" > $GetLedPath/red/brightness
+            elif [ "$getMethod" == "running3" ];then
+                echo "0" > $GetLedPath/green/brightness
+                echo "255" > $GetLedPath/red/brightness
+                usleep 100000
+                echo "70" > $GetLedPath/green/brightness
+                echo "255" > $GetLedPath/red/brightness
+                usleep 100000
+                echo "255" > $GetLedPath/green/brightness
+                echo "0" > $GetLedPath/red/brightness
+                usleep 200000
+                echo "0" > $GetLedPath/green/brightness
+                echo "0" > $GetLedPath/red/brightness
+                usleep 150000
+                echo "255" > $GetLedPath/green/brightness
+                echo "0" > $GetLedPath/red/brightness
+                usleep 100000
+                echo "70" > $GetLedPath/green/brightness
+                echo "255" > $GetLedPath/red/brightness
+                usleep 100000
+                echo "0" > $GetLedPath/green/brightness
+                echo "255" > $GetLedPath/red/brightness
+                usleep 150000
+                echo "0" > $GetLedPath/green/brightness
+                echo "0" > $GetLedPath/red/brightness
+                usleep 150000
+                echo "0" > $GetLedPath/green/brightness
+                echo "255" > $GetLedPath/red/brightness
+                usleep 100000
+                echo "70" > $GetLedPath/green/brightness
+                echo "255" > $GetLedPath/red/brightness
+                usleep 100000
+                echo "255" > $GetLedPath/green/brightness
+                echo "0" > $GetLedPath/red/brightness
             fi;
             NoNotif="yes"
             if [ "$GetRed" != "0" ] && [ "$GetGreen" != "0" ];then

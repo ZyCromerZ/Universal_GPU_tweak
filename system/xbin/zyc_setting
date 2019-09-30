@@ -277,6 +277,7 @@ ListMenu(){
             echo "anm1 > use notif running mode 1" ;
             echo "anm2 > use notif running mode 2" ;
             echo "anm3 > use notif running mode 3" ;
+            echo "anm4 > use notif running mode 4" ;
             if [ "$GetModeAiNotifRunningBefore" != "$GetModeAiNotifRunningNew" ];then
                 if [ "$GetModeAiNotifRunningNew" == "0" ];then
                     echo $putihHitam"this will set to : off"$ResetWarna
@@ -286,6 +287,8 @@ ListMenu(){
                     echo $hijauPutih"this will set to : notif running mode 2"$ResetWarna
                 elif [ "$GetModeAiNotifRunningNew" == "3" ];then
                     echo $cyanPutih"this will set to : notif running mode 3"$ResetWarna
+                elif [ "$GetModeAiNotifRunningNew" == "4" ];then
+                    echo $unguPutih"this will set to : notif running mode 4"$ResetWarna
                 fi
             else
                 if [ "$GetModeAiNotifRunningBefore" == "0" ];then
@@ -296,6 +299,8 @@ ListMenu(){
                     echo $hijauHitam"Current status : notif running mode 2"$ResetWarna
                 elif [ "$GetModeAiNotifRunningBefore" == "3" ];then
                     echo $cyanHitam"Current status : notif running mode 3"$ResetWarna
+                elif [ "$GetModeAiNotifRunningBefore" == "4" ];then
+                    echo $unguHitam"Current status : notif running mode 4"$ResetWarna
                 fi
             fi
             echo $cyanPutih"<--- ---- --- --->"$ResetWarna
@@ -468,6 +473,11 @@ ListMenu(){
     elif [ $pilihan == "anm3" ];then
         Perubahan="ya"
         GetModeAiNotifRunningNew="3"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "anm4" ];then
+        Perubahan="ya"
+        GetModeAiNotifRunningNew="4"
         usleep 100000
         ListMenu
     elif [ $pilihan == "p1" ];then
