@@ -395,15 +395,15 @@ enableLogSystem(){
         echo "custom fps detected, set to $SetRefreshRate" | tee -a $saveLog;
         echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
     fi
-    # set fps ? end
+# set fps ? end
 
-    # fstrim start
+# fstrim start
     if [ -e system/bin/fstrim ]; then
         fstrimDulu
     elif [ -e system/xbin/fstrim ]; then
         fstrimDulu
     fi;
-    # fstrim end
+# fstrim end
 
 # gpu turbo start
     if [ "$GpuBooster" == "0" ];then
@@ -578,6 +578,57 @@ else
     enableLogSystem
 fi
 if [ "$FromTerminal" == "tidak" ];then
+    #fix gms :p
+    GetBusyBox="none"
+    for i in /sbin /system/xbin /su/xbin; do
+        if [ -f $i/busybox ]; then
+            GetBusyBox=$i/busybox;
+            break;
+        fi;
+    done;
+    if [ "$GetBusyBox" == "none " ];then
+        echo "GMS Doze fail . . ." | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1;
+    else
+        # Stop unnecessary GMS and restart it on boot (dorimanx)
+        if [ "$($GetBusyBox pidof com.google.android.gms | wc -l)" -eq "1" ]; then
+            $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms);
+        fi;
+        if [ "$($GetBusyBox pidof com.google.android.gms.wearable | wc -l)" -eq "1" ]; then
+            $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.wearable);
+        fi;
+        if [ "$($GetBusyBox pidof com.google.android.gms.persistent | wc -l)" -eq "1" ]; then
+            $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.persistent);
+        fi;
+        if [ "$($GetBusyBox pidof com.google.android.gms.unstable | wc -l)" -eq "1" ]; then
+            $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.unstable);
+        fi;
+        su -c "pm enable com.google.android.gms/.update.SystemUpdateActivity"
+        su -c "pm enable com.google.android.gms/.update.SystemUpdateService"
+        su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$ActiveReceiver"
+        su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$Receiver"
+        su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$SecretCodeReceiver"
+        su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity"
+        su -c "pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity"
+        su -c "pm enable com.google.android.gsf/.update.SystemUpdateService"
+        su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$Receiver"
+        su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver"
+        su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsReceiver"
+        su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsService"
+        su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsTaskService"
+        su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.service.AnalyticsService"
+        su -c "pm enable com.google.android.gms/com.google.android.gms.chimera.PersistentIntentOperationService"
+        su -c "pm enable com.google.android.gms/com.google.android.gms.clearcut.debug.ClearcutDebugDumpService"
+        su -c "pm enable com.google.android.gms/com.google.android.gms.common.stats.GmsCoreStatsService"
+        su -c "pm enable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceiver"
+        su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.AppMeasurementJobService"
+        su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.AppMeasurementInstallReferrerReceiver"
+        su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementReceiver"
+        su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementService"
+        su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.service.MeasurementBrokerService"
+        su -c "pm enable com.google.android.gms/com.google.android.location.internal.AnalyticsSamplerReceiver"
+        echo "GMS Doze done . . ." | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1;
+    fi
+
     if [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ];then
         BASEDIR=/system/etc/ZyC_Ai
         if [ -e $PathModulConfigAi/ai_status.txt ]; then

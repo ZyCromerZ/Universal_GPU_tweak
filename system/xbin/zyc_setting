@@ -121,7 +121,7 @@ ListMenu(){
             else
                 echo $kuningHitam"current status : $GetModeBefore"$ResetWarna;
             fi
-            echo $putihHitam"<--- ---- --- --->"$ResetWarna
+            echo $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e "$PathModulConfig/mode_render.txt" ];then
             
@@ -145,7 +145,7 @@ ListMenu(){
                     echo $merahHitam"Current Status : Vulkan"$ResetWarna
                 fi
             fi
-            echo $putihHitam"<--- ---- --- --->"$ResetWarna
+            echo $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e "$PathModulConfig/fastcharge.txt" ];then
             echo "fx > fastcharge option by system"
@@ -163,7 +163,7 @@ ListMenu(){
                     echo $hijauHitam"Current Status : by this tweak(trying to force on)"$ResetWarna
                 fi
             fi
-            echo $putihHitam"<--- ---- --- --->"$ResetWarna
+            echo $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e "$PathModulConfig/fsync_mode.txt" ];then
             echo "fcx > turn off fsync"
@@ -181,7 +181,7 @@ ListMenu(){
                     echo $merahHitam"Current Status : on"$ResetWarna
                 fi
             fi
-            echo $putihHitam"<--- ---- --- --->"$ResetWarna
+            echo $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e "$PathModulConfig/GpuBooster.txt" ];then
             echo "adx > turn off adrenoboost"
@@ -214,7 +214,7 @@ ListMenu(){
                     echo $biruHitam"Current status : by tweak"$ResetWarna
                 fi
             fi
-            echo $putihHitam"<--- ---- --- --->"$ResetWarna
+            echo $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
         echo "current : page 1"
     elif [ "$page" == "2" ];then
@@ -236,7 +236,7 @@ ListMenu(){
                     echo $merahHitam"current status : method $GetModeRamNew"$ResetWarna
                 fi
             fi
-            echo $putihHitam"<--- ---- --- --->"$ResetWarna
+            echo $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e "$PathModulConfigAi/ai_status.txt" ];then
             echo "aix > auto/ai mode off"
@@ -258,7 +258,7 @@ ListMenu(){
                     echo $cyanHitam"current status : on"$ResetWarna
                 fi
             fi
-            echo $putihHitam"<--- ---- --- --->"$ResetWarna
+            echo $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e "$PathModulConfigAi/ai_notif_mode.txt" ];then
             echo "anx > turn off notif ai";
@@ -286,7 +286,7 @@ ListMenu(){
                     echo $unguHitam"Current status : use notif method 2"$ResetWarna
                 fi
             fi
-            echo $putihHitam"<--- ---- --- --->"$ResetWarna
+            echo $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e "$PathModulConfigAi/ai_notif_mode_running.txt" ];then
             echo "anmx > turn off notif running ai" ;
@@ -319,7 +319,7 @@ ListMenu(){
                     echo $unguHitam"Current status : notif running mode 4"$ResetWarna
                 fi
             fi
-            echo $putihHitam"<--- ---- --- --->"$ResetWarna
+            echo $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
         echo "current : page 2"
     elif [ "$page" == "3" ];then
@@ -344,25 +344,25 @@ ListMenu(){
                     echo $hijauHitam"Current status : notif running while on gaming"$ResetWarna
                 fi
             fi
-            echo $putihHitam"<--- ---- --- --->"$ResetWarna
+            echo $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e $PathModulConfigAi/wait_time_off.txt ];then
             echo "wtx > set wait time ai to run again while module on mode off"
             if [ "$waitTimeOffBefore" != "$waitTimeOffNew" ];then
-                echo $abuHitam"this will set to : $waitTimeOffNew"$ResetWarna
+                echo $putihHitam"this will set to : $waitTimeOffNew"$ResetWarna
             else
                 echo $abuHitam"Current status : $waitTimeOffBefore"$ResetWarna
             fi
-            echo $putihHitam"<--- ---- --- --->"$ResetWarna
+            echo $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e $PathModulConfigAi/wait_time_on.txt ];then
             echo "wty > set wait time ai to run again while module on mode turbo"
             if [ "$waitTimeOnBefore" != "$waitTimeOnNew" ];then
-                echo $abuHitam"this will set to : $waitTimeOnNew"$ResetWarna
+                echo $putihHitam"this will set to : $waitTimeOnNew"$ResetWarna
             else
                 echo $abuHitam"Current status : $waitTimeOnBefore"$ResetWarna
             fi
-            echo $putihHitam"<--- ---- --- --->"$ResetWarna
+            echo $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
         echo "current : page 3"
     fi

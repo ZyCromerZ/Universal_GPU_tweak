@@ -72,7 +72,7 @@ if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
     echo '0' > $PathModulConfig/custom_ram_management.txt
 fi
 # Check notes version
-SetModulVersion="3.36 STABLE"
+SetModulVersion="3.36-1 BETA"
 if [ -e $PathModulConfig/notes_en.txt ];then
     if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
         rm $PathModulConfig/notes_en.txt
@@ -673,113 +673,148 @@ fi
 
 # For ai_mode.sh
 
-# App trigger start
-if [ ! -e $PathModulConfigAi/list_app_auto_turbo.txt ]; then
-    GameList=$PathModulConfigAi/list_app_auto_turbo.txt
-    changeSE="tidak"
-    if [ "$(getenforce)" == "Enforcing" ];then
-        changeSE="ya"
-        setenforce 0
-    fi
-    # Moba Analog
-    if [ ! -z $(pm list packages -f com.mobile.legends | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.mobile.legends" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    # Honkai Impact 3
-    if [ ! -z $(pm list packages -f com.miHoYo.bh3oversea | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.miHoYo.bh3oversea" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    # Ashpalt 9
-    if [ ! -z $(pm list packages -f com.gameloft.android.ANMP.GloftA9HM | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.gameloft.android.ANMP.GloftA9HM" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    # Pubg
-    if [ ! -z $(pm list packages -f com.netmarble.revolutionthm | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.netmarble.revolutionthm" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.tencent.tmgp.pubgmhd | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.tencent.tmgp.pubgmhd" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.tencent.tmgp.pubgm | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.tencent.tmgp.pubgm" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.tencent.iglite | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.tencent.iglite" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.pubg.krmobile | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.pubg.krmobile" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.rekoo.pubgm | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.rekoo.pubgm" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.tencent.ig | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.tencent.ig" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    # another game
-    if [ ! -z $(pm list packages -f com.theonegames.gunshipbattle | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.theonegames.gunshipbattle" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.netease.lztgglobal | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.netease.lztgglobal" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.ea.game.nfs14_row | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.ea.game.nfs14_row" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.squareenixmontreal.hitmansniperandroid | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.squareenixmontreal.hitmansniperandroid" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.dts.freefireth | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.dts.freefireth" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.nekki.shadowfight3 | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.nekki.shadowfight3" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.gamedreamer.sgth | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.gamedreamer.sgth" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.netease.eclipseisle | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.netease.eclipseisle" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.pwrd.pwm | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.pwrd.pwm" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.gameloft.android.ANMP.GloftHEHM | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.gameloft.android.ANMP.GloftHEHM" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.garena.game.kgid | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.garena.game.kgid" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    if [ ! -z $(pm list packages -f com.netease.g78na.gb | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.netease.g78na.gb" | tee -a $GameList > /dev/null 2>&1;
-    fi
-    # if [ ! -z $(pm list packages -f com. | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-    #     echo "com." | tee -a $GameList > /dev/null 2>&1;
-    # fi
-    if [ "$changeSE" == "ya" ];then
-        setenforce 1
-    fi
+# auto add to game list start
+GameList=$PathModulConfigAi/list_app_auto_turbo.txt
+changeSE="tidak"
+if [ "$(getenforce)" == "Enforcing" ];then
+    changeSE="ya"
+    setenforce 0
 fi
-# Get App list
+# Moba Analog
+if [ ! -z $(pm list packages -f com.mobile.legends | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+    echo "com.mobile.legends" | tee -a $GameList > /dev/null 2>&1;
+fi
+if [ ! -z $(pm list packages -f com.pubg.krmobile | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+    echo "com.pubg.krmobile" | tee -a $GameList > /dev/null 2>&1;
+fi
+if [ ! -z $(pm list packages -f com.pwrd.pwm | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+    echo "com.pwrd.pwm" | tee -a $GameList > /dev/null 2>&1;
+fi
+# if [ ! -z $(pm list packages -f com. | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+#     echo "com." | tee -a $GameList > /dev/null 2>&1;
+# fi
+# new method add game
+# dts
+for dtsGame in `pm list packages -3 | grep 'com.dts' | awk -F= '{sub("package:","");print $1}'`
+then
+    if [ ! -z $(pm list packages -f $dtsGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "$dtsGame" | tee -a $GameList > /dev/null 2>&1;
+    fi
+done 
+# gamedreamer
+for gamedreamerGame in `pm list packages -3 | grep 'com.gamedreamer' | awk -F= '{sub("package:","");print $1}'`
+then
+    if [ ! -z $(pm list packages -f $gamedreamerGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "$gamedreamerGame" | tee -a $GameList > /dev/null 2>&1;
+    fi
+done 
+# nekki
+for nekkiGame in `pm list packages -3 | grep 'com.nekki' | awk -F= '{sub("package:","");print $1}'`
+then
+    if [ ! -z $(pm list packages -f $nekkiGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "$nekkiGame" | tee -a $GameList > /dev/null 2>&1;
+    fi
+done 
+# rekoo
+for rekooGame in `pm list packages -3 | grep 'com.rekoo' | awk -F= '{sub("package:","");print $1}'`
+then
+    if [ ! -z $(pm list packages -f $rekooGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "$rekooGame" | tee -a $GameList > /dev/null 2>&1;
+    fi
+done 
+# tencent
+for tencentGame in `pm list packages -3 | grep 'com.tencent' | awk -F= '{sub("package:","");print $1}'`
+then
+    if [ ! -z $(pm list packages -f $tencentGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "$tencentGame" | tee -a $GameList > /dev/null 2>&1;
+    fi
+done 
+# garena
+for garenaGame in `pm list packages -3 | grep 'com.garena' | awk -F= '{sub("package:","");print $1}'`
+then
+    if [ ! -z $(pm list packages -f $garenaGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "$garenaGame" | tee -a $GameList > /dev/null 2>&1;
+    fi
+done 
+# netease
+for neteaseGame in `pm list packages -3 | grep 'com.netease' | awk -F= '{sub("package:","");print $1}'`
+then
+    if [ ! -z $(pm list packages -f $neteaseGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "$neteaseGame" | tee -a $GameList > /dev/null 2>&1;
+    fi
+done 
+# ea
+for eaGame in `pm list packages -3 | grep 'com.ea' | awk -F= '{sub("package:","");print $1}'`
+then
+    if [ ! -z $(pm list packages -f $eaGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "$eaGame" | tee -a $GameList > /dev/null 2>&1;
+    fi
+done 
+# gameloft
+for gameloftGame in `pm list packages -3 | grep 'com.gameloft' | awk -F= '{sub("package:","");print $1}'`
+then
+    if [ ! -z $(pm list packages -f $gameloftGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "$gameloftGame" | tee -a $GameList > /dev/null 2>&1;
+    fi
+done 
+# nermarble
+for netmarbleGame in `pm list packages -3 | grep 'com.netmarble' | awk -F= '{sub("package:","");print $1}'`
+then
+    if [ ! -z $(pm list packages -f $netmarbleGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "$netmarbleGame" | tee -a $GameList > /dev/null 2>&1;
+    fi
+done 
+# activision
+for activisionGame in `pm list packages -3 | grep 'com.activision' | awk -F= '{sub("package:","");print $1}'`
+then
+    if [ ! -z $(pm list packages -f $activisionGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "$activisionGame" | tee -a $GameList > /dev/null 2>&1;
+    fi
+done 
+# miHoYo
+for miHoYoGame in `pm list packages -3 | grep 'com.miHoYo' | awk -F= '{sub("package:","");print $1}'`
+then
+    if [ ! -z $(pm list packages -f $miHoYoGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "$miHoYoGame" | tee -a $GameList > /dev/null 2>&1;
+    fi
+done 
+# theonegames
+for theonegamesGame in `pm list packages -3 | grep 'com.theonegames' | awk -F= '{sub("package:","");print $1}'`
+then
+    if [ ! -z $(pm list packages -f $theonegamesGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "$theonegamesGame" | tee -a $GameList > /dev/null 2>&1;
+    fi
+done 
+# squareenixmontreal
+for squareenixmontrealGame in `pm list packages -3 | grep 'com.squareenixmontreal' | awk -F= '{sub("package:","");print $1}'`
+then
+    if [ ! -z $(pm list packages -f $squareenixmontrealGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "$squareenixmontrealGame" | tee -a $GameList > /dev/null 2>&1;
+    fi
+done 
+
+
+# auto add to game list end
+# Get App list start
 if [ ! -e $PathModulConfigAi/list_app_package_detected.txt ]; then
     listAppPath=$PathModulConfigAi/list_app_package_detected.txt
     echo "---->> List app installed start <<----"  | tee -a $listAppPath > /dev/null 2>&1 ;
-    changeSE="tidak"
-    if [ "$(getenforce)" == "Enforcing" ];then
-        changeSE="ya"
-        setenforce 0
-    fi
-    for listApp in ` pm list packages -3 | awk -F= '{sub("package:","");print $1}'` 
-        do 
+    echo "<<---- List app installed end ---->>"  | tee -a $listAppPath > /dev/null 2>&1 ;
+fi
+
+for listApp in ` pm list packages -3 | awk -F= '{sub("package:","");print $1}'` 
+    do 
+        if [ ! -z "$( grep "$listApp" "$listAppPath" )" ];then
             checkApp=$(pm list packages -f $listApp | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g')
             nameApp=$(aapt d badging $checkApp | awk -F: ' $1 == "application-label" {print $2}' | sed "s/'*//g")
             # adb shell /data/local/tmp/aapt-arm-pie d badging $pkg | awk -F: ' $1 == "application-label" {print $2}' 
-            echo "$listApp ($nameApp)"  | tee -a $listAppPath > /dev/null 2>&1 ;
-    done
-    if [ "$changeSE" == "ya" ];then
-        setenforce 1
-    fi
-    echo "<<---- List app installed end ---->>"  | tee -a $listAppPath > /dev/null 2>&1 ;
+            sed "2 i\ $listApp ($nameApp)"  $listAppPath  ;
+        fi
+done
+if [ "$changeSE" == "ya" ];then
+    setenforce 1
 fi
+# Get App list end
 # Gpu trigger start
 if [ ! -e $PathModulConfigAi/status_start_gpu.txt ]; then
     echo '80' > "$PathModulConfigAi/status_start_gpu.txt"
