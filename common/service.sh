@@ -584,11 +584,11 @@ if [ "$FromTerminal" == "tidak" ];then
         rm $Path/ZyC_GmsDoze.log
     fi
     for i in /system/bin /system/xbin /sbin /su/xbin; do
-        if [ "$GetBusyBox" == "none" ];
+        if [ "$GetBusyBox" == "none" ]; then
             if [ -f $i/busybox ]; then
                 GetBusyBox=$i/busybox;
             fi;
-        fi
+        fi;
     done;
     if [ "$GetBusyBox" == "none " ];then
         echo "GMS Doze fail . . ." | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1;
