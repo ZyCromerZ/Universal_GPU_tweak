@@ -160,6 +160,7 @@ setTurbo(){
     getAppName
     echo "turbo" > $PathModulConfig/status_modul.txt
     echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
+    sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait > /dev/null 2>&1
     sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
     sleep 5s
 }
@@ -168,6 +169,7 @@ setOff(){
     echo "turn off at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1;
     echo "off" > $PathModulConfig/status_modul.txt
     echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
+    sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait > /dev/null 2>&1
     sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
 }
 SetNotificationOn(){

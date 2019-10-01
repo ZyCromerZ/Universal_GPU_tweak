@@ -19,14 +19,29 @@ else
     NyariGPU='';
 fi
 FromTerminal="tidak";
+GenerateApp="tidak"
 if [ ! -z "$1" ];then
     if [ "$1" == "Terminal" ];then
         FromTerminal="ya";
     fi
+    if [ "$1" == "App" ];then
+        GenerateApp="ya";
+    fi
 fi;
+ketemuInternal="kaga"
 # Path=/sdcard/modul_mantul/ZyC_mod
 if [ ! -e /data/mod_path.txt ]; then
-    echo "/data/media/0" > /data/mod_path.txt
+    for cariInternal in /data/media/0 /storage/emulated/0 /storage/emulated/legacy /storage/sdcard0 /sdcard /data
+    do
+        if [ "$cariInternal" == "/data" ];then
+            ketemuInternal="udah"
+            echo "$cariInternal" > /data/mod_path.txt
+        fi
+        if [ "$ketemuInternal" == "kaga" ] && [ -d $cariInternal/android ];then
+            ketemuInternal="udah"
+            echo "$cariInternal" > /data/mod_path.txt
+        fi
+    done
 fi
 ModPath=$(cat /data/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
@@ -39,53 +54,222 @@ if [ ! -d $Path/ZyC_Turbo_config ]; then
     mkdir -p $Path/ZyC_Turbo_config
 fi
 PathModulConfig=$Path/ZyC_Turbo_config
-# status modul
-if [ ! -e $PathModulConfig/status_modul.txt ]; then
-    echo 'turbo' > $PathModulConfig/status_modul.txt
-fi
-# mode render
-if [ ! -e $PathModulConfig/mode_render.txt ]; then
-    echo 'skiagl' > $PathModulConfig/mode_render.txt
-fi
-# max fps nya
-if [ ! -e $PathModulConfig/total_fps.txt ]; then
-    echo '0' > $PathModulConfig/total_fps.txt
-fi
-# Status Log nya
-if [ ! -e $PathModulConfig/disable_log_system.txt ]; then
-    echo '1' > $PathModulConfig/disable_log_system.txt
-fi
-# fast charging
-if [ ! -e $PathModulConfig/fastcharge.txt ]; then
-    echo '1' > $PathModulConfig/fastcharge.txt
-fi
-# setting adrenoboost
-if [ ! -e $PathModulConfig/GpuBooster.txt ]; then
-    echo '4' > $PathModulConfig/GpuBooster.txt
-fi
-# setting fsync
-if [ ! -e $PathModulConfig/fsync_mode.txt ]; then
-    echo '0' > $PathModulConfig/fsync_mode.txt
-fi
-# setting custom Ram Management
-if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
-    echo '0' > $PathModulConfig/custom_ram_management.txt
-fi
-# Check notes version
-SetModulVersion="3.36-2 BETA"
-if [ -e $PathModulConfig/notes_en.txt ];then
-    if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
-        rm $PathModulConfig/notes_en.txt
+GetAppAndGames(){
+    # auto add to game list start
+    GameList=$PathModulConfigAi/list_app_auto_turbo.txt
+    if [ ! -e $PathModulConfigAi/list_app_auto_turbo.txt ]; then
+        echo "---->> List game installed start <<----"  | tee -a $GameList > /dev/null 2>&1 ;
+        echo "<<---- List game installed end ---->>"  | tee -a $GameList > /dev/null 2>&1 ;
     fi
-fi
-if [ -e $PathModulConfig/notes_id.txt ];then
-    if [ "$(cat "$PathModulConfig/notes_id.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
-        rm $PathModulConfig/notes_id.txt
+    changeSE="tidak"
+    if [ "$(getenforce)" == "Enforcing" ];then
+        changeSE="ya"
+        setenforce 0
     fi
-fi
-if [ ! -e $PathModulConfig/notes_en.txt ]; then
-    # echo "please read this xD \nyou can set mode.txt to:\n- off \n- on \n- turbo \nvalue must same as above without'-'\n\nchange mode_render.txt to:\n-  opengl \n-  skiagl \n-  skiavk \n\n note:\n-skiavk = Vulkan \n-skiagl = OpenGL (SKIA)\ndont edit total_fps.txt still not tested" > $PathModulConfig/notes.txt
-    SetNotes=$PathModulConfig/notes_en.txt;
+    # Moba Analog
+    if [ ! -z $(pm list packages -f com.mobile.legends | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.mobile.legends" "$GameList" ) ];then
+        sed -i "1a  com.mobile.legends" $GameList;
+    fi
+    if [ ! -z $(pm list packages -f com.pubg.krmobile | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.pubg.krmobile" "$GameList" ) ];then
+        sed -i "1a  com.pubg.krmobile" $GameList;
+    fi
+    if [ ! -z $(pm list packages -f com.pwrd.pwm | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.pwrd.pwm" "$GameList" ) ];then
+        sed -i "1a  com.pwrd.pwm" $GameList;
+    fi
+    # if [ ! -z $(pm list packages -f com. | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+    #     echo "com." $GameList;
+    # fi
+    # new method add game
+    # dts
+
+    for dtsGame in `pm list packages -3 | grep 'com.dts' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $dtsGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$dtsGame" "$GameList" ) ];then
+            sed -i "1a  $dtsGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # gamedreamer
+    for gamedreamerGame in `pm list packages -3 | grep 'com.gamedreamer' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $gamedreamerGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$gamedreamerGame" "$GameList" ) ];then
+            sed -i "1a  $gamedreamerGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # nekki
+    for nekkiGame in `pm list packages -3 | grep 'com.nekki' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $nekkiGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$nekkiGame" "$GameList" ) ];then
+            sed -i "1a  $nekkiGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # rekoo
+    for rekooGame in `pm list packages -3 | grep 'com.rekoo' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $rekooGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$rekooGame" "$GameList" ) ];then
+            sed -i "1a  $rekooGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # tencent
+    for tencentGame in `pm list packages -3 | grep 'com.tencent' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $tencentGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$tencentGame" "$GameList" ) ];then
+            sed -i "1a  $tencentGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # garena
+    for garenaGame in `pm list packages -3 | grep 'com.garena' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $garenaGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$garenaGame" "$GameList" ) ];then
+            sed -i "1a  $garenaGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # netease
+    for neteaseGame in `pm list packages -3 | grep 'com.netease' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $neteaseGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$neteaseGame" "$GameList" ) ];then
+            sed -i "1a  $neteaseGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # ea
+    for eaGame in `pm list packages -3 | grep 'com.ea' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $eaGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$eaGame" "$GameList" ) ];then
+            sed -i "1a  $eaGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # gameloft
+    for gameloftGame in `pm list packages -3 | grep 'com.gameloft' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $gameloftGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$gameloftGame" "$GameList" ) ];then
+            sed -i "1a  $gameloftGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # nermarble
+    for netmarbleGame in `pm list packages -3 | grep 'com.netmarble' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $netmarbleGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$netmarbleGame" "$GameList" ) ];then
+            sed -i "1a  $netmarbleGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # activision
+    for activisionGame in `pm list packages -3 | grep 'com.activision' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $activisionGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$activisionGame" "$GameList" ) ];then
+            sed -i "1a  $activisionGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # miHoYo
+    for miHoYoGame in `pm list packages -3 | grep 'com.miHoYo' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $miHoYoGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$miHoYoGame" "$GameList" ) ];then
+            sed -i "1a  $miHoYoGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # theonegames
+    for theonegamesGame in `pm list packages -3 | grep 'com.theonegames' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $theonegamesGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$theonegamesGame" "$GameList" ) ];then
+            sed -i "1a  $theonegamesGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # squareenixmontreal
+    for squareenixmontrealGame in `pm list packages -3 | grep 'com.squareenixmontreal' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $squareenixmontrealGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$squareenixmontrealGame" "$GameList" ) ];then
+            sed -i "1a  $squareenixmontrealGame" $GameList;
+            usleep 100000
+        fi
+    done 
+
+
+    # auto add to game list end
+    # Get App list start
+    listAppPath=$PathModulConfigAi/list_app_package_detected.txt
+    if [ ! -e $PathModulConfigAi/list_app_package_detected.txt ]; then
+        echo "---->> List app installed start <<----"  | tee -a $listAppPath > /dev/null 2>&1 ;
+        echo "<<---- List app installed end ---->>"  | tee -a $listAppPath > /dev/null 2>&1 ;
+    fi
+
+    for listApp in ` pm list packages -3 | awk -F= '{sub("package:","");print $1}'` 
+        do 
+            if [ -z "$( grep "$listApp" "$listAppPath" )" ];then
+                checkApp=$(pm list packages -f $listApp | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g')
+                nameApp=$(aapt d badging $checkApp | awk -F: ' $1 == "application-label" {print $2}' | sed "s/'*//g")
+                # adb shell /data/local/tmp/aapt-arm-pie d badging $pkg | awk -F: ' $1 == "application-label" {print $2}' 
+                sed -i "1a  $listApp ($nameApp)"  $listAppPath  ;
+                usleep 100000
+            fi
+    done
+    if [ "$changeSE" == "ya" ];then
+        setenforce 1
+    fi
+    # Get App list end
+}
+if [ "$FromTerminal" == "tidak" ];then
+    # status modul
+    if [ ! -e $PathModulConfig/status_modul.txt ]; then
+        echo 'turbo' > $PathModulConfig/status_modul.txt
+    fi
+    # mode render
+    if [ ! -e $PathModulConfig/mode_render.txt ]; then
+        echo 'skiagl' > $PathModulConfig/mode_render.txt
+    fi
+    # max fps nya
+    if [ ! -e $PathModulConfig/total_fps.txt ]; then
+        echo '0' > $PathModulConfig/total_fps.txt
+    fi
+    # Status Log nya
+    if [ ! -e $PathModulConfig/disable_log_system.txt ]; then
+        echo '1' > $PathModulConfig/disable_log_system.txt
+    fi
+    # fast charging
+    if [ ! -e $PathModulConfig/fastcharge.txt ]; then
+        echo '1' > $PathModulConfig/fastcharge.txt
+    fi
+    # setting adrenoboost
+    if [ ! -e $PathModulConfig/GpuBooster.txt ]; then
+        echo '4' > $PathModulConfig/GpuBooster.txt
+    fi
+    # setting fsync
+    if [ ! -e $PathModulConfig/fsync_mode.txt ]; then
+        echo '0' > $PathModulConfig/fsync_mode.txt
+    fi
+    # setting custom Ram Management
+    if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
+        echo '0' > $PathModulConfig/custom_ram_management.txt
+    fi
+    # GMS DOZE
+    if [ ! -e $PathModulConfig/gms_doze.txt ]; then
+        echo '1' > $PathModulConfig/gms_doze.txt
+    fi
+    # Check notes version
+    SetModulVersion="3.36-4 BETA"
+    if [ -e $PathModulConfig/notes_en.txt ];then
+        if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
+            rm $PathModulConfig/notes_en.txt
+        fi
+    fi
+    if [ -e $PathModulConfig/notes_id.txt ];then
+        if [ "$(cat "$PathModulConfig/notes_id.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
+            rm $PathModulConfig/notes_id.txt
+        fi
+    fi
+    if [ ! -e $PathModulConfig/notes_en.txt ]; then
+        # echo "please read this xD \nyou can set mode.txt to:\n- off \n- on \n- turbo \nvalue must same as above without'-'\n\nchange mode_render.txt to:\n-  opengl \n-  skiagl \n-  skiavk \n\n note:\n-skiavk = Vulkan \n-skiagl = OpenGL (SKIA)\ndont edit total_fps.txt still not tested" > $PathModulConfig/notes.txt
+        SetNotes=$PathModulConfig/notes_en.txt;
     echo "This module functions to disable thermal GPU and setting some other parts in the GPU for get better performance, 
 provided additional features to make it more better performance :p
 
@@ -245,9 +429,9 @@ Note:
 mode = off / on / turbo
 namarender = opengl / skiagl / skiavk
 Version:$SetModulVersion" | tee -a $SetNotes > /dev/null 2>&1;
-fi
-if [ ! -e $PathModulConfig/notes_id.txt ]; then
-    SetNotes=$PathModulConfig/notes_id.txt;
+    fi
+    if [ ! -e $PathModulConfig/notes_id.txt ]; then
+        SetNotes=$PathModulConfig/notes_id.txt;
     echo "Created By : ZyCromerZ
     
 Oke . . .
@@ -429,438 +613,281 @@ namamode = off/on/turbo
 namarender = opengl/skiagl/skiavk
 Version:$SetModulVersion" | tee -a $SetNotes > /dev/null 2>&1;
     
-fi
-
-# backup data dolo boss start
-if [ ! -d $PathModulConfig/backup ]; then
-    mkdir -p $PathModulConfig/backup
-fi
-#val gpu nya
-if [ ! -e $PathModulConfig/backup/gpu_throttling.txt ]; then
-    if [ -e $NyariGPU/throttling ]; then
-        echo $(cat "$NyariGPU/throttling") > "$PathModulConfig/backup/gpu_throttling.txt"
-        backup="pake"
-        usleep 100000
-    fi
-fi
-
-if [ ! -e $PathModulConfig/backup/gpu_force_no_nap.txt ]; then
-    if [ -e $NyariGPU/force_no_nap ]; then
-        echo $(cat "$NyariGPU/force_no_nap") > "$PathModulConfig/backup/gpu_force_no_nap.txt"
-        backup="pake"
-        usleep 100000
-    fi
-fi
-
-if [ ! -e $PathModulConfig/backup/gpu_force_bus_on.txt ]; then
-    if [ -e $NyariGPU/force_bus_on ]; then
-        echo $(cat "$NyariGPU/force_bus_on") > "$PathModulConfig/backup/gpu_force_bus_on.txt"
-        backup="pake"
-        usleep 100000
-    fi
-fi
-
-if [ ! -e $PathModulConfig/backup/gpu_force_clk_on.txt ]; then
-    if [ -e $NyariGPU/force_clk_on ]; then
-        echo $(cat "$NyariGPU/force_clk_on") > "$PathModulConfig/backup/gpu_force_clk_on.txt"
-        backup="pake"
-        usleep 100000
-    fi
-fi
-
-if [ ! -e $PathModulConfig/backup/gpu_force_rail_on.txt ]; then
-    if [ -e $NyariGPU/force_rail_on ]; then
-        echo $(cat "$NyariGPU/force_rail_on") > "$PathModulConfig/backup/gpu_force_rail_on.txt"
-        backup="pake"
-        usleep 100000
-    fi
-fi
-
-if [ ! -e $PathModulConfig/backup/gpu_bus_split.txt ]; then
-    if [ -e $NyariGPU/bus_split ]; then
-        echo $(cat "$NyariGPU/bus_split") > "$PathModulConfig/backup/gpu_bus_split.txt"
-        backup="pake"
-        usleep 100000
-    fi
-fi
-
-if [ ! -e $PathModulConfig/backup/gpu_max_pwrlevel.txt ]; then
-    if [ -e $NyariGPU/max_pwrlevel ]; then
-        echo $(cat "$NyariGPU/max_pwrlevel") > "$PathModulConfig/backup/gpu_max_pwrlevel.txt"
-        backup="pake"
-        usleep 100000
-    fi
-fi
-
-if [ ! -e $PathModulConfig/backup/gpu_adrenoboost.txt ]; then
-    if [ -e $NyariGPU/devfreq/adrenoboost ]; then
-        echo $(cat "$NyariGPU/devfreq/adrenoboost") > "$PathModulConfig/backup/gpu_adrenoboost.txt"
-        backup="pake"
-        usleep 100000
-    fi
-fi
-
-if [ ! -e $PathModulConfig/backup/gpu_thermal_pwrlevel.txt ]; then
-    if [ -e $NyariGPU/devfreq/thermal_pwrlevel ]; then
-        echo $(cat "$NyariGPU/devfreq/thermal_pwrlevel") > "$PathModulConfig/backup/gpu_thermal_pwrlevel.txt"
-        backup="pake"
-        usleep 100000
-    fi
-fi
-
-# fsync backup
-if [ ! -e $PathModulConfig/backup/misc_Dyn_fsync_active.txt ]; then
-    if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
-        echo $(cat  "/sys/kernel/dyn_fsync/Dyn_fsync_active") > "$PathModulConfig/backup/misc_Dyn_fsync_active.txt"
-        backup="pake"
-        usleep 100000
-    fi
-fi
-
-if [ ! -e $PathModulConfig/backup/misc_class_fsync_enabled.txt ]; then
-    if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
-        echo $(cat  "/sys/class/misc/fsynccontrol/fsync_enabled") > "$PathModulConfig/backup/misc_class_fsync_enabled.txt"
-        backup="pake"
-        usleep 100000
-    fi 
-fi
-
-if [ ! -e $PathModulConfig/backup/misc_fsync.txt ]; then
-    if [ -e /sys/module/sync/parameters/fsync ]; then
-        echo $(cat  "/sys/module/sync/parameters/fsync") > "$PathModulConfig/backup/misc_fsync.txt"
-        backup="pake"
-        usleep 100000
-    fi
-fi
-
-if [ ! -e $PathModulConfig/backup/misc_module_fsync_enabled.txt ]; then
-    if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
-        echo $(cat  "/sys/module/sync/parameters/fsync_enabled") > "$PathModulConfig/backup/misc_module_fsync_enabled.txt"
-        backup="pake"
-        usleep 100000
-    fi
-fi
-# log prop bakcup :D
-# Disable stats logging & monitoring
-# debug.atrace.tags.enableflags=0
-if [ ! -e $PathModulConfig/backup/prop_debug.atrace.tags.enableflags.txt ]; then
-    echo $(getprop  debug.atrace.tags.enableflags) > "$PathModulConfig/backup/prop_debug.atrace.tags.enableflags.txt"
-    backup="pake"
-    usleep 100000
-fi
-
-# profiler.force_disable_ulog=true
-if [ ! -e $PathModulConfig/backup/prop_profiler.force_disable_ulog.txt ]; then
-    echo $(getprop  profiler.force_disable_ulog) > "$PathModulConfig/backup/prop_profiler.force_disable_ulog.txt"
-    backup="pake"
-    usleep 100000
-fi
-
-# profiler.force_disable_err_rpt=true
-if [ ! -e $PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt ]; then
-    echo $(getprop  profiler.force_disable_err_rpt) > "$PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt"
-    backup="pake"
-    usleep 100000
-fi
-
-# profiler.force_disable_err_rpt=1
-if [ ! -e $PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt ]; then
-    echo $(getprop  profiler.force_disable_err_rpt) > "$PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt"
-    backup="pake"
-    usleep 100000
-fi
-
-# ro.config.nocheckin=1
-if [ ! -e $PathModulConfig/backup/prop_ro.config.nocheckin.txt ]; then
-    echo $(getprop  ro.config.nocheckin) > "$PathModulConfig/backup/prop_ro.config.nocheckin.txt"
-    backup="pake"
-    usleep 100000
-fi
-
-# debugtool.anrhistory=0
-if [ ! -e $PathModulConfig/backup/prop_debugtool.anrhistory.txt ]; then
-    echo $(getprop  debugtool.anrhistory) > "$PathModulConfig/backup/prop_debugtool.anrhistory.txt"
-    backup="pake"
-    usleep 100000
-fi
-# disable log
-if [ "$(cat $PathModulConfig/disable_log_system.txt)" == '1' ];then
-    # ro.com.google.locationfeatures=0
-    if [ ! -e $PathModulConfig/backup/prop_ro.com.google.locationfeatures.txt ]; then
-        echo $(getprop  ro.com.google.locationfeatures) > "$PathModulConfig/backup/prop_ro.com.google.locationfeatures.txt"
-        backup="pake"
-        usleep 100000
     fi
 
-    # ro.com.google.networklocation=0
-    if [ ! -e $PathModulConfig/backup/prop_ro.com.google.networklocation.txt ]; then
-        echo $(getprop  ro.com.google.networklocation) > "$PathModulConfig/backup/prop_ro.com.google.networklocation.txt"
-        backup="pake"
-        usleep 100000
+    # backup data dolo boss start
+    if [ ! -d $PathModulConfig/backup ]; then
+        mkdir -p $PathModulConfig/backup
     fi
-
-    # profiler.debugmonitor=false
-    if [ ! -e $PathModulConfig/backup/prop_profiler.debugmonitor.txt ]; then
-        echo $(getprop  profiler.debugmonitor) > "$PathModulConfig/backup/prop_profiler.debugmonitor.txt"
-        backup="pake"
-        usleep 100000
-    fi
-
-    # profiler.launch=false
-    if [ ! -e $PathModulConfig/backup/prop_profiler.launch.txt ]; then
-        echo $(getprop  profiler.launch) > "$PathModulConfig/backup/prop_profiler.launch.txt"
-        backup="pake"
-        usleep 100000
-    fi
-
-    # profiler.hung.dumpdobugreport=false
-    if [ ! -e $PathModulConfig/backup/prop_profiler.hung.dumpdobugreport.txt ]; then
-        echo $(getprop  profiler.hung.dumpdobugreport) > "$PathModulConfig/backup/prop_profiler.hung.dumpdobugreport.txt"
-        backup="pake"
-        usleep 100000
-    fi
-
-    # persist.service.pcsync.enable=0
-    if [ ! -e $PathModulConfig/backup/prop_persist.service.pcsync.enable.txt ]; then
-        echo $(getprop  persist.service.pcsync.enable) > "$PathModulConfig/backup/prop_persist.service.pcsync.enable.txt"
-        backup="pake"
-        usleep 100000
-    fi
-
-    # persist.service.lgospd.enable=0
-    if [ ! -e $PathModulConfig/backup/prop_persist.service.lgospd.enable.txt ]; then
-        echo $(getprop  persist.service.lgospd.enable) > "$PathModulConfig/backup/prop_persist.service.lgospd.enable.txt"
-        backup="pake"
-        usleep 100000
-    fi
-
-    # persist.sys.purgeable_assets=1
-    if [ ! -e $PathModulConfig/backup/prop_persist.sys.purgeable_assets.txt ]; then
-        echo $(getprop  persist.sys.purgeable_assets) > "$PathModulConfig/backup/prop_persist.sys.purgeable_assets.txt"
-        backup="pake"
-        usleep 100000
-    fi
-fi
-# ram management 
-if [ "$(cat $PathModulConfig/custom_ram_management.txt)" != "0" ];then
-    if [ ! -e $PathModulConfig/backup/ram_enable_adaptive_lmk.txt ];then
-        if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ];then
-            echo $(cat "/sys/module/lowmemorykiller/parameters/enable_adaptive_lmk") > "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt"  
+    #val gpu nya
+    if [ ! -e $PathModulConfig/backup/gpu_throttling.txt ]; then
+        if [ -e $NyariGPU/throttling ]; then
+            echo $(cat "$NyariGPU/throttling") > "$PathModulConfig/backup/gpu_throttling.txt"
             backup="pake"
-        fi
-    fi
-    if [ ! -e $PathModulConfig/backup/ram_debug_level.txt ];then
-        if [ -e /sys/module/lowmemorykiller/parameters/debug_level ];then
-            echo $(cat "/sys/module/lowmemorykiller/parameters/debug_level") > "$PathModulConfig/backup/ram_debug_level.txt"  
-            backup="pake"
-        fi
-    fi
-    if [ ! -e $PathModulConfig/backup/ram_adj.txt ];then
-        if [ -e /sys/module/lowmemorykiller/parameters/adj ];then
-            echo $(cat "/sys/module/lowmemorykiller/parameters/adj") > "$PathModulConfig/backup/ram_adj.txt"  
-            backup="pake"
-        fi
-    fi
-    if [ ! -e $PathModulConfig/backup/ram_minfree.txt ];then
-        if [ -e /sys/module/lowmemorykiller/parameters/minfree ];then
-            echo $(cat "/sys/module/lowmemorykiller/parameters/minfree") > "$PathModulConfig/backup/ram_minfree.txt"  
-            backup="pake"
-        fi
-    fi
-fi
-# backup data dolo boss end
-
-
-# For ai_mode.sh
-
-# auto add to game list start
-GameList=$PathModulConfigAi/list_app_auto_turbo.txt
-if [ ! -e $PathModulConfigAi/list_app_auto_turbo.txt ]; then
-    echo "---->> List game installed start <<----"  | tee -a $GameList > /dev/null 2>&1 ;
-    echo "<<---- List game installed end ---->>"  | tee -a $GameList > /dev/null 2>&1 ;
-fi
-changeSE="tidak"
-if [ "$(getenforce)" == "Enforcing" ];then
-    changeSE="ya"
-    setenforce 0
-fi
-# Moba Analog
-if [ ! -z $(pm list packages -f com.mobile.legends | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.mobile.legends" "$GameList" ) ];then
-    sed -i "1a  com.mobile.legends" $GameList;
-fi
-if [ ! -z $(pm list packages -f com.pubg.krmobile | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.pubg.krmobile" "$GameList" ) ];then
-    sed -i "1a  com.pubg.krmobile" $GameList;
-fi
-if [ ! -z $(pm list packages -f com.pwrd.pwm | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.pwrd.pwm" "$GameList" ) ];then
-    sed -i "1a  com.pwrd.pwm" $GameList;
-fi
-# if [ ! -z $(pm list packages -f com. | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-#     echo "com." $GameList;
-# fi
-# new method add game
-# dts
-
-for dtsGame in `pm list packages -3 | grep 'com.dts' | awk -F= '{sub("package:","");print $1}'`
-do
-    if [ ! -z $(pm list packages -f $dtsGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$dtsGame" "$GameList" ) ];then
-        sed -i "1a  $dtsGame" $GameList;
-        usleep 100000
-    fi
-done 
-# gamedreamer
-for gamedreamerGame in `pm list packages -3 | grep 'com.gamedreamer' | awk -F= '{sub("package:","");print $1}'`
-do
-    if [ ! -z $(pm list packages -f $gamedreamerGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$gamedreamerGame" "$GameList" ) ];then
-        sed -i "1a  $gamedreamerGame" $GameList;
-        usleep 100000
-    fi
-done 
-# nekki
-for nekkiGame in `pm list packages -3 | grep 'com.nekki' | awk -F= '{sub("package:","");print $1}'`
-do
-    if [ ! -z $(pm list packages -f $nekkiGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$nekkiGame" "$GameList" ) ];then
-        sed -i "1a  $nekkiGame" $GameList;
-        usleep 100000
-    fi
-done 
-# rekoo
-for rekooGame in `pm list packages -3 | grep 'com.rekoo' | awk -F= '{sub("package:","");print $1}'`
-do
-    if [ ! -z $(pm list packages -f $rekooGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$rekooGame" "$GameList" ) ];then
-        sed -i "1a  $rekooGame" $GameList;
-        usleep 100000
-    fi
-done 
-# tencent
-for tencentGame in `pm list packages -3 | grep 'com.tencent' | awk -F= '{sub("package:","");print $1}'`
-do
-    if [ ! -z $(pm list packages -f $tencentGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$tencentGame" "$GameList" ) ];then
-        sed -i "1a  $tencentGame" $GameList;
-        usleep 100000
-    fi
-done 
-# garena
-for garenaGame in `pm list packages -3 | grep 'com.garena' | awk -F= '{sub("package:","");print $1}'`
-do
-    if [ ! -z $(pm list packages -f $garenaGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$garenaGame" "$GameList" ) ];then
-        sed -i "1a  $garenaGame" $GameList;
-        usleep 100000
-    fi
-done 
-# netease
-for neteaseGame in `pm list packages -3 | grep 'com.netease' | awk -F= '{sub("package:","");print $1}'`
-do
-    if [ ! -z $(pm list packages -f $neteaseGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$neteaseGame" "$GameList" ) ];then
-        sed -i "1a  $neteaseGame" $GameList;
-        usleep 100000
-    fi
-done 
-# ea
-for eaGame in `pm list packages -3 | grep 'com.ea' | awk -F= '{sub("package:","");print $1}'`
-do
-    if [ ! -z $(pm list packages -f $eaGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$eaGame" "$GameList" ) ];then
-        sed -i "1a  $eaGame" $GameList;
-        usleep 100000
-    fi
-done 
-# gameloft
-for gameloftGame in `pm list packages -3 | grep 'com.gameloft' | awk -F= '{sub("package:","");print $1}'`
-do
-    if [ ! -z $(pm list packages -f $gameloftGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$gameloftGame" "$GameList" ) ];then
-        sed -i "1a  $gameloftGame" $GameList;
-        usleep 100000
-    fi
-done 
-# nermarble
-for netmarbleGame in `pm list packages -3 | grep 'com.netmarble' | awk -F= '{sub("package:","");print $1}'`
-do
-    if [ ! -z $(pm list packages -f $netmarbleGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$netmarbleGame" "$GameList" ) ];then
-        sed -i "1a  $netmarbleGame" $GameList;
-        usleep 100000
-    fi
-done 
-# activision
-for activisionGame in `pm list packages -3 | grep 'com.activision' | awk -F= '{sub("package:","");print $1}'`
-do
-    if [ ! -z $(pm list packages -f $activisionGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$activisionGame" "$GameList" ) ];then
-        sed -i "1a  $activisionGame" $GameList;
-        usleep 100000
-    fi
-done 
-# miHoYo
-for miHoYoGame in `pm list packages -3 | grep 'com.miHoYo' | awk -F= '{sub("package:","");print $1}'`
-do
-    if [ ! -z $(pm list packages -f $miHoYoGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$miHoYoGame" "$GameList" ) ];then
-        sed -i "1a  $miHoYoGame" $GameList;
-        usleep 100000
-    fi
-done 
-# theonegames
-for theonegamesGame in `pm list packages -3 | grep 'com.theonegames' | awk -F= '{sub("package:","");print $1}'`
-do
-    if [ ! -z $(pm list packages -f $theonegamesGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$theonegamesGame" "$GameList" ) ];then
-        sed -i "1a  $theonegamesGame" $GameList;
-        usleep 100000
-    fi
-done 
-# squareenixmontreal
-for squareenixmontrealGame in `pm list packages -3 | grep 'com.squareenixmontreal' | awk -F= '{sub("package:","");print $1}'`
-do
-    if [ ! -z $(pm list packages -f $squareenixmontrealGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$squareenixmontrealGame" "$GameList" ) ];then
-        sed -i "1a  $squareenixmontrealGame" $GameList;
-        usleep 100000
-    fi
-done 
-
-
-# auto add to game list end
-# Get App list start
-listAppPath=$PathModulConfigAi/list_app_package_detected.txt
-if [ ! -e $PathModulConfigAi/list_app_package_detected.txt ]; then
-    echo "---->> List app installed start <<----"  | tee -a $listAppPath > /dev/null 2>&1 ;
-    echo "<<---- List app installed end ---->>"  | tee -a $listAppPath > /dev/null 2>&1 ;
-fi
-
-for listApp in ` pm list packages -3 | awk -F= '{sub("package:","");print $1}'` 
-    do 
-        if [ -z "$( grep "$listApp" "$listAppPath" )" ];then
-            checkApp=$(pm list packages -f $listApp | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g')
-            nameApp=$(aapt d badging $checkApp | awk -F: ' $1 == "application-label" {print $2}' | sed "s/'*//g")
-            # adb shell /data/local/tmp/aapt-arm-pie d badging $pkg | awk -F: ' $1 == "application-label" {print $2}' 
-            sed -i "1a  $listApp ($nameApp)"  $listAppPath  ;
             usleep 100000
         fi
-done
-if [ "$changeSE" == "ya" ];then
-    setenforce 1
+    fi
+
+    if [ ! -e $PathModulConfig/backup/gpu_force_no_nap.txt ]; then
+        if [ -e $NyariGPU/force_no_nap ]; then
+            echo $(cat "$NyariGPU/force_no_nap") > "$PathModulConfig/backup/gpu_force_no_nap.txt"
+            backup="pake"
+            usleep 100000
+        fi
+    fi
+
+    if [ ! -e $PathModulConfig/backup/gpu_force_bus_on.txt ]; then
+        if [ -e $NyariGPU/force_bus_on ]; then
+            echo $(cat "$NyariGPU/force_bus_on") > "$PathModulConfig/backup/gpu_force_bus_on.txt"
+            backup="pake"
+            usleep 100000
+        fi
+    fi
+
+    if [ ! -e $PathModulConfig/backup/gpu_force_clk_on.txt ]; then
+        if [ -e $NyariGPU/force_clk_on ]; then
+            echo $(cat "$NyariGPU/force_clk_on") > "$PathModulConfig/backup/gpu_force_clk_on.txt"
+            backup="pake"
+            usleep 100000
+        fi
+    fi
+
+    if [ ! -e $PathModulConfig/backup/gpu_force_rail_on.txt ]; then
+        if [ -e $NyariGPU/force_rail_on ]; then
+            echo $(cat "$NyariGPU/force_rail_on") > "$PathModulConfig/backup/gpu_force_rail_on.txt"
+            backup="pake"
+            usleep 100000
+        fi
+    fi
+
+    if [ ! -e $PathModulConfig/backup/gpu_bus_split.txt ]; then
+        if [ -e $NyariGPU/bus_split ]; then
+            echo $(cat "$NyariGPU/bus_split") > "$PathModulConfig/backup/gpu_bus_split.txt"
+            backup="pake"
+            usleep 100000
+        fi
+    fi
+
+    if [ ! -e $PathModulConfig/backup/gpu_max_pwrlevel.txt ]; then
+        if [ -e $NyariGPU/max_pwrlevel ]; then
+            echo $(cat "$NyariGPU/max_pwrlevel") > "$PathModulConfig/backup/gpu_max_pwrlevel.txt"
+            backup="pake"
+            usleep 100000
+        fi
+    fi
+
+    if [ ! -e $PathModulConfig/backup/gpu_adrenoboost.txt ]; then
+        if [ -e $NyariGPU/devfreq/adrenoboost ]; then
+            echo $(cat "$NyariGPU/devfreq/adrenoboost") > "$PathModulConfig/backup/gpu_adrenoboost.txt"
+            backup="pake"
+            usleep 100000
+        fi
+    fi
+
+    if [ ! -e $PathModulConfig/backup/gpu_thermal_pwrlevel.txt ]; then
+        if [ -e $NyariGPU/devfreq/thermal_pwrlevel ]; then
+            echo $(cat "$NyariGPU/devfreq/thermal_pwrlevel") > "$PathModulConfig/backup/gpu_thermal_pwrlevel.txt"
+            backup="pake"
+            usleep 100000
+        fi
+    fi
+
+    # fsync backup
+    if [ ! -e $PathModulConfig/backup/misc_Dyn_fsync_active.txt ]; then
+        if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
+            echo $(cat  "/sys/kernel/dyn_fsync/Dyn_fsync_active") > "$PathModulConfig/backup/misc_Dyn_fsync_active.txt"
+            backup="pake"
+            usleep 100000
+        fi
+    fi
+
+    if [ ! -e $PathModulConfig/backup/misc_class_fsync_enabled.txt ]; then
+        if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
+            echo $(cat  "/sys/class/misc/fsynccontrol/fsync_enabled") > "$PathModulConfig/backup/misc_class_fsync_enabled.txt"
+            backup="pake"
+            usleep 100000
+        fi 
+    fi
+
+    if [ ! -e $PathModulConfig/backup/misc_fsync.txt ]; then
+        if [ -e /sys/module/sync/parameters/fsync ]; then
+            echo $(cat  "/sys/module/sync/parameters/fsync") > "$PathModulConfig/backup/misc_fsync.txt"
+            backup="pake"
+            usleep 100000
+        fi
+    fi
+
+    if [ ! -e $PathModulConfig/backup/misc_module_fsync_enabled.txt ]; then
+        if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
+            echo $(cat  "/sys/module/sync/parameters/fsync_enabled") > "$PathModulConfig/backup/misc_module_fsync_enabled.txt"
+            backup="pake"
+            usleep 100000
+        fi
+    fi
+    # log prop bakcup :D
+    # Disable stats logging & monitoring
+    # debug.atrace.tags.enableflags=0
+    if [ ! -e $PathModulConfig/backup/prop_debug.atrace.tags.enableflags.txt ]; then
+        echo $(getprop  debug.atrace.tags.enableflags) > "$PathModulConfig/backup/prop_debug.atrace.tags.enableflags.txt"
+        backup="pake"
+        usleep 100000
+    fi
+
+    # profiler.force_disable_ulog=true
+    if [ ! -e $PathModulConfig/backup/prop_profiler.force_disable_ulog.txt ]; then
+        echo $(getprop  profiler.force_disable_ulog) > "$PathModulConfig/backup/prop_profiler.force_disable_ulog.txt"
+        backup="pake"
+        usleep 100000
+    fi
+
+    # profiler.force_disable_err_rpt=true
+    if [ ! -e $PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt ]; then
+        echo $(getprop  profiler.force_disable_err_rpt) > "$PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt"
+        backup="pake"
+        usleep 100000
+    fi
+
+    # profiler.force_disable_err_rpt=1
+    if [ ! -e $PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt ]; then
+        echo $(getprop  profiler.force_disable_err_rpt) > "$PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt"
+        backup="pake"
+        usleep 100000
+    fi
+
+    # ro.config.nocheckin=1
+    if [ ! -e $PathModulConfig/backup/prop_ro.config.nocheckin.txt ]; then
+        echo $(getprop  ro.config.nocheckin) > "$PathModulConfig/backup/prop_ro.config.nocheckin.txt"
+        backup="pake"
+        usleep 100000
+    fi
+
+    # debugtool.anrhistory=0
+    if [ ! -e $PathModulConfig/backup/prop_debugtool.anrhistory.txt ]; then
+        echo $(getprop  debugtool.anrhistory) > "$PathModulConfig/backup/prop_debugtool.anrhistory.txt"
+        backup="pake"
+        usleep 100000
+    fi
+    # backup data dolo boss end
+
+
+    # For ai_mode.sh
+    GetAppAndGames
+    # Gpu trigger start
+    if [ ! -e $PathModulConfigAi/status_start_gpu.txt ]; then
+        echo '80' > "$PathModulConfigAi/status_start_gpu.txt"
+    fi
+    if [ ! -e $PathModulConfigAi/status_end_gpu.txt ]; then
+        echo '5' > "$PathModulConfigAi/status_end_gpu.txt"
+    fi
+    # Wait time when off
+    if [ ! -e $PathModulConfigAi/wait_time_off.txt ]; then
+        echo '3s' > "$PathModulConfigAi/wait_time_off.txt"
+    fi
+    # Wait time when on
+    if [ ! -e $PathModulConfigAi/wait_time_on.txt ]; then
+        echo '10s' > "$PathModulConfigAi/wait_time_on.txt" # Wait time
+    fi
+    # Status 0=tidak aktif,1=aktif,2=sedang berjalan
+    if [ ! -e $PathModulConfigAi/ai_status.txt ]; then
+        echo '1' > "$PathModulConfigAi/ai_status.txt"
+    fi
+    # Set Ai Notif Mode Start
+    if [ ! -e $PathModulConfigAi/ai_notif_mode.txt ]; then
+        echo '3' > "$PathModulConfigAi/ai_notif_mode.txt"
+    fi
+    if [ ! -e $PathModulConfigAi/ai_notif_mode_running.txt ]; then
+        echo '0' > "$PathModulConfigAi/ai_notif_mode_running.txt"
+    fi
+    if [ ! -e $PathModulConfigAi/ai_notif_mode_running_status.txt ]; then
+        echo '0' > "$PathModulConfigAi/ai_notif_mode_running_status.txt"
+    fi
+else    
+    # disable log
+    if [ "$(cat $PathModulConfig/disable_log_system.txt)" == '1' ];then
+        # ro.com.google.locationfeatures=0
+        if [ ! -e $PathModulConfig/backup/prop_ro.com.google.locationfeatures.txt ]; then
+            echo $(getprop  ro.com.google.locationfeatures) > "$PathModulConfig/backup/prop_ro.com.google.locationfeatures.txt"
+            backup="pake"
+            usleep 100000
+        fi
+
+        # ro.com.google.networklocation=0
+        if [ ! -e $PathModulConfig/backup/prop_ro.com.google.networklocation.txt ]; then
+            echo $(getprop  ro.com.google.networklocation) > "$PathModulConfig/backup/prop_ro.com.google.networklocation.txt"
+            backup="pake"
+            usleep 100000
+        fi
+
+        # profiler.debugmonitor=false
+        if [ ! -e $PathModulConfig/backup/prop_profiler.debugmonitor.txt ]; then
+            echo $(getprop  profiler.debugmonitor) > "$PathModulConfig/backup/prop_profiler.debugmonitor.txt"
+            backup="pake"
+            usleep 100000
+        fi
+
+        # profiler.launch=false
+        if [ ! -e $PathModulConfig/backup/prop_profiler.launch.txt ]; then
+            echo $(getprop  profiler.launch) > "$PathModulConfig/backup/prop_profiler.launch.txt"
+            backup="pake"
+            usleep 100000
+        fi
+
+        # profiler.hung.dumpdobugreport=false
+        if [ ! -e $PathModulConfig/backup/prop_profiler.hung.dumpdobugreport.txt ]; then
+            echo $(getprop  profiler.hung.dumpdobugreport) > "$PathModulConfig/backup/prop_profiler.hung.dumpdobugreport.txt"
+            backup="pake"
+            usleep 100000
+        fi
+
+        # persist.service.pcsync.enable=0
+        if [ ! -e $PathModulConfig/backup/prop_persist.service.pcsync.enable.txt ]; then
+            echo $(getprop  persist.service.pcsync.enable) > "$PathModulConfig/backup/prop_persist.service.pcsync.enable.txt"
+            backup="pake"
+            usleep 100000
+        fi
+
+        # persist.service.lgospd.enable=0
+        if [ ! -e $PathModulConfig/backup/prop_persist.service.lgospd.enable.txt ]; then
+            echo $(getprop  persist.service.lgospd.enable) > "$PathModulConfig/backup/prop_persist.service.lgospd.enable.txt"
+            backup="pake"
+            usleep 100000
+        fi
+
+        # persist.sys.purgeable_assets=1
+        if [ ! -e $PathModulConfig/backup/prop_persist.sys.purgeable_assets.txt ]; then
+            echo $(getprop  persist.sys.purgeable_assets) > "$PathModulConfig/backup/prop_persist.sys.purgeable_assets.txt"
+            backup="pake"
+            usleep 100000
+        fi
+    fi
+    # ram management 
+    if [ "$(cat $PathModulConfig/custom_ram_management.txt)" != "0" ];then
+        if [ ! -e $PathModulConfig/backup/ram_enable_adaptive_lmk.txt ];then
+            if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ];then
+                echo $(cat "/sys/module/lowmemorykiller/parameters/enable_adaptive_lmk") > "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt"  
+                backup="pake"
+            fi
+        fi
+        if [ ! -e $PathModulConfig/backup/ram_debug_level.txt ];then
+            if [ -e /sys/module/lowmemorykiller/parameters/debug_level ];then
+                echo $(cat "/sys/module/lowmemorykiller/parameters/debug_level") > "$PathModulConfig/backup/ram_debug_level.txt"  
+                backup="pake"
+            fi
+        fi
+        if [ ! -e $PathModulConfig/backup/ram_adj.txt ];then
+            if [ -e /sys/module/lowmemorykiller/parameters/adj ];then
+                echo $(cat "/sys/module/lowmemorykiller/parameters/adj") > "$PathModulConfig/backup/ram_adj.txt"  
+                backup="pake"
+            fi
+        fi
+        if [ ! -e $PathModulConfig/backup/ram_minfree.txt ];then
+            if [ -e /sys/module/lowmemorykiller/parameters/minfree ];then
+                echo $(cat "/sys/module/lowmemorykiller/parameters/minfree") > "$PathModulConfig/backup/ram_minfree.txt"  
+                backup="pake"
+            fi
+        fi
+    fi
 fi
-# Get App list end
-# Gpu trigger start
-if [ ! -e $PathModulConfigAi/status_start_gpu.txt ]; then
-    echo '80' > "$PathModulConfigAi/status_start_gpu.txt"
-fi
-if [ ! -e $PathModulConfigAi/status_end_gpu.txt ]; then
-    echo '5' > "$PathModulConfigAi/status_end_gpu.txt"
-fi
-# Wait time when off
-if [ ! -e $PathModulConfigAi/wait_time_off.txt ]; then
-    echo '3s' > "$PathModulConfigAi/wait_time_off.txt"
-fi
-# Wait time when on
-if [ ! -e $PathModulConfigAi/wait_time_on.txt ]; then
-    echo '10s' > "$PathModulConfigAi/wait_time_on.txt" # Wait time
-fi
-# Status 0=tidak aktif,1=aktif,2=sedang berjalan
-if [ ! -e $PathModulConfigAi/ai_status.txt ]; then
-    echo '1' > "$PathModulConfigAi/ai_status.txt"
-fi
-# Set Ai Notif Mode Start
-if [ ! -e $PathModulConfigAi/ai_notif_mode.txt ]; then
-    echo '3' > "$PathModulConfigAi/ai_notif_mode.txt"
-fi
-if [ ! -e $PathModulConfigAi/ai_notif_mode_running.txt ]; then
-    echo '0' > "$PathModulConfigAi/ai_notif_mode_running.txt"
-fi
-if [ ! -e $PathModulConfigAi/ai_notif_mode_running_status.txt ]; then
-    echo '0' > "$PathModulConfigAi/ai_notif_mode_running_status.txt"
+if [ $GenerateApp == "ya" ];then
+    GetAppAndGames
 fi

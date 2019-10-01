@@ -35,9 +35,11 @@ if [ ! -z "$1" ];then
     if [ "$1" == "Terminal" ];then
         FromTerminal="ya";
     fi
-else
+fi
+if [ $FromTerminal == "tidak" ];then
     sh $ModulPath/ZyC_Turbo/initialize.sh & wait > /dev/null 2>&1
     sleep 5s
+    sh $ModulPath/ZyC_Turbo/initialize.sh "FromTerminal" & wait > /dev/null 2>&1
 fi;
 if [ ! -z "$2" ];then
     if [ "$2" == "Ai" ];then
@@ -136,6 +138,12 @@ if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
     MissingFile="iya"
 fi
 CustomRam=$(cat $PathModulConfig/custom_ram_management.txt)
+
+# GMS DOZE
+if [ ! -e $PathModulConfig/gms_doze.txt ]; then
+    MissingFile="iya"
+fi
+GMSDoze=$(cat $PathModulConfig/gms_doze.txt)
 
 if [ ! -e $PathModulConfig/notes_en.txt ]; then
     # echo "please read this xD \nyou can set mode.txt to:\n- off \n- on \n- turbo \nvalue must same as above without'-'\n\nchange mode_render.txt to:\n-  opengl \n-  skiagl \n-  skiavk \n\n note:\n-skiavk = Vulkan \n-skiagl = OpenGL (SKIA)\ndont edit total_fps.txt still not tested" > $PathModulConfig/notes.txt
@@ -579,60 +587,61 @@ else
 fi
 if [ "$FromTerminal" == "tidak" ];then
     #fix gms :p
-    GetBusyBox="none"
-    if [ -e $Path/ZyC_GmsDoze.log ];then
-        rm $Path/ZyC_GmsDoze.log
-    fi
-    for i in /system/bin /system/xbin /sbin /su/xbin; do
-        if [ "$GetBusyBox" == "none" ]; then
-            if [ -f $i/busybox ]; then
-                GetBusyBox=$i/busybox;
+    if [ "$GMSDoze" == "1" ];then
+        GetBusyBox="none"
+        if [ -e $Path/ZyC_GmsDoze.log ];then
+            rm $Path/ZyC_GmsDoze.log
+        fi
+        for i in /system/bin /system/xbin /sbin /su/xbin; do
+            if [ "$GetBusyBox" == "none" ]; then
+                if [ -f $i/busybox ]; then
+                    GetBusyBox=$i/busybox;
+                fi;
             fi;
-        fi;
-    done;
-    if [ "$GetBusyBox" == "none " ];then
-        echo "GMS Doze fail . . ." | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1;
-    else
-        # Stop unnecessary GMS and restart it on boot (dorimanx)
-        if [ "$($GetBusyBox pidof com.google.android.gms | wc -l)" -eq "1" ]; then
-            $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms) | tee -a $Path/ZyC_GmsDoze.log;
-        fi;
-        if [ "$($GetBusyBox pidof com.google.android.gms.wearable | wc -l)" -eq "1" ]; then
-            $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.wearable) | tee -a $Path/ZyC_GmsDoze.log;
-        fi;
-        if [ "$($GetBusyBox pidof com.google.android.gms.persistent | wc -l)" -eq "1" ]; then
-            $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.persistent) | tee -a $Path/ZyC_GmsDoze.log;
-        fi;
-        if [ "$($GetBusyBox pidof com.google.android.gms.unstable | wc -l)" -eq "1" ]; then
-            $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.unstable) | tee -a $Path/ZyC_GmsDoze.log;
-        fi;
-        su -c "pm enable com.google.android.gms/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gms/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$ActiveReceiver" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gsf/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsReceiver" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsService" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsTaskService" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.service.AnalyticsService" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gms/com.google.android.gms.chimera.PersistentIntentOperationService" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gms/com.google.android.gms.clearcut.debug.ClearcutDebugDumpService" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gms/com.google.android.gms.common.stats.GmsCoreStatsService" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceiver" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.AppMeasurementJobService" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.AppMeasurementInstallReferrerReceiver" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementReceiver" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementService" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.service.MeasurementBrokerService" | tee -a $Path/ZyC_GmsDoze.log;
-        su -c "pm enable com.google.android.gms/com.google.android.location.internal.AnalyticsSamplerReceiver" | tee -a $Path/ZyC_GmsDoze.log;
-        echo "GMS Doze done . . ." | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1;
+        done;
+        if [ "$GetBusyBox" == "none " ];then
+            echo "GMS Doze fail . . ." | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1;
+        else
+            # Stop unnecessary GMS and restart it on boot (dorimanx)
+            if [ "$($GetBusyBox pidof com.google.android.gms | wc -l)" -eq "1" ]; then
+                $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms) | tee -a $Path/ZyC_GmsDoze.log;
+            fi;
+            if [ "$($GetBusyBox pidof com.google.android.gms.wearable | wc -l)" -eq "1" ]; then
+                $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.wearable) | tee -a $Path/ZyC_GmsDoze.log;
+            fi;
+            if [ "$($GetBusyBox pidof com.google.android.gms.persistent | wc -l)" -eq "1" ]; then
+                $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.persistent) | tee -a $Path/ZyC_GmsDoze.log;
+            fi;
+            if [ "$($GetBusyBox pidof com.google.android.gms.unstable | wc -l)" -eq "1" ]; then
+                $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.unstable) | tee -a $Path/ZyC_GmsDoze.log;
+            fi;
+            su -c "pm enable com.google.android.gms/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gms/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$ActiveReceiver" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gsf/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsReceiver" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsService" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsTaskService" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.service.AnalyticsService" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gms/com.google.android.gms.chimera.PersistentIntentOperationService" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gms/com.google.android.gms.clearcut.debug.ClearcutDebugDumpService" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gms/com.google.android.gms.common.stats.GmsCoreStatsService" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceiver" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.AppMeasurementJobService" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.AppMeasurementInstallReferrerReceiver" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementReceiver" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementService" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.service.MeasurementBrokerService" | tee -a $Path/ZyC_GmsDoze.log;
+            su -c "pm enable com.google.android.gms/com.google.android.location.internal.AnalyticsSamplerReceiver" | tee -a $Path/ZyC_GmsDoze.log;
+            echo "GMS Doze done . . ." | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1;
+        fi
     fi
-
     if [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ];then
         BASEDIR=/system/etc/ZyC_Ai
         if [ -e $PathModulConfigAi/ai_status.txt ]; then

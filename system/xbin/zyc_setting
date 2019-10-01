@@ -101,6 +101,12 @@ if [ -e $PathModulConfigAi/wait_time_on.txt ];then
     waitTimeOnBefore=$(cat "$PathModulConfigAi/wait_time_on.txt")
     waitTimeOnNew=$(cat "$PathModulConfigAi/wait_time_on.txt")
 fi
+if [ -e $PathModulConfig/gms_doze.txt ];then
+    GmsDozeBefore=$(cat "$PathModulConfig/gms_doze.txt")
+    GmsDozeNew=$(cat "$PathModulConfig/gms_doze.txt")
+fi
+RefreshList="tidak"
+RestartNotif="tidak"
 savedata="no"
 page="1"
 ListMenu(){
@@ -109,12 +115,23 @@ ListMenu(){
     echo "list menu : "
     if [ "$page" == "1" ];then
         if [ -e "$PathModulConfig/status_modul.txt" ];then
+            if [ "$GetModeAiBefore" == "2" ];then
+                if [ "$GetModeBefore" == "$GetModeNew" ];then
+                    GetModeBefore=$(cat "$PathModulConfig/status_modul.txt")
+                    GetModeNew=$(cat "$PathModulConfig/status_modul.txt")
+                else
+                    GetModeBefore=$(cat "$PathModulConfig/status_modul.txt")
+                fi
+            fi
             if [ "$GetModeAiBefore" == "0" ];then
                 echo "mx > turn off tweak";
                 echo "my > change mode tweak to on"
                 echo "mt > change mode tweak to turbo"
             else
                 echo "ai mode still running,cannot change tweak mode"
+                echo "mode tweak will automatic change :p"
+                echo "turn off ai first for manual mode"
+                echo "and re run this tweak"
             fi
             if [ "$GetModeBefore" != "$GetModeNew" ];then
                 echo $kuningPutih"this will set to : $GetModeNew"$ResetWarna
@@ -364,6 +381,33 @@ ListMenu(){
             fi
             echo $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
+        if [ -e $PathModulConfigAi/gms_doze.txt ];then
+            echo "gdx > Turn off gms doze fix"
+            echo "gdy > Turn on gms doze fix"
+            if [ "$GmsDozeBefore" != "$GmsDozeNew" ];then
+                if [ "$GmsDozeNew" == "0" ];then
+                    echo $kuningPutih"this will set to : off"$ResetWarna
+                elif [ "$GmsDozeNew" == "1" ];then
+                    echo $hijauPutih"this will set to : on"$ResetWarna
+                fi
+            else
+                if [ "$GmsDozeNew" == "0" ];then
+                    echo $kuningHitam"Current status : off"$ResetWarna
+                elif [ "$GmsDozeNew" == "1" ];then
+                    echo $hijauHitam"Current status : on"$ResetWarna
+                fi
+            fi
+            echo $biruPutih"<--- ---- --- --->"$ResetWarna
+        fi
+        echo "sag > re-scan app and game list :D "
+        echo "sal > to check app list"
+        echo "sgl > to check game list"
+        if [ "$RefreshList" == "sudah" ];then
+            echo $hijauHitam"refresh list game and app done . . . :p"$ResetWarna
+        elif if [ "$RefreshList" == "iya" ];then
+            echo $hijauHitam"refresh list game and app after save setting :p"$ResetWarna
+        fi
+        echo $biruPutih"<--- ---- --- --->"$ResetWarna
         echo "current : page 3"
     fi
     if [ "$page" == "1" ];then
@@ -371,8 +415,7 @@ ListMenu(){
     elif [ "$page" == "3" ];then
         echo "pp > go to page $(($page-1))";
     else
-        echo "np > go to page $(($page+1))";
-        echo "pp > go to page $(($page-1))";
+        echo "pp > go to page $(($page-1))  |  np > go to page $(($page+1))";
     fi
     # echo "more setting coming soon :p"
     if [ $Perubahan == "ya" ];then
@@ -587,6 +630,49 @@ ListMenu(){
         waitTimeOnNew=$getnumber
         usleep 100000
         ListMenu
+    elif [ $pilihan == "gdx" ];then
+        Perubahan="ya"
+        GmsDozeNew="0"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "gdy" ];then
+        Perubahan="ya"
+        GmsDozeNew="1"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "sag" ];then
+        Perubahan="ya"
+        echo "scan now (y/wsc/n)?"
+        echo "y=yes,wsc=when save changes,n=no"
+        read askScan
+        if [ "$askScan" == "y" ];then
+            RefreshList="sudah"
+            echo "--- --- --- --- ---"
+            echo "Re Scan app & game list"
+            echo "--- --- --- --- ---"
+            sh $ModulPath/ZyC_Turbo/initialize.sh "App" & wait > /dev/null 2>&1
+            echo "done . . ."
+        elif [ "$askScan" == "wsc" ];then
+            RefreshList="iya"
+        else 
+            askScan="nope"
+        fi
+        sleep 1s
+        ListMenu
+    elif [ $pilihan == "sal" ];then
+        Perubahan="ya"
+        cat "$PathModulConfigAi/list_app_package_detected.txt"
+        echo "Press any key to continue . . . ."
+        read -n 1 -s -r 
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "sgl" ];then
+        Perubahan="ya"
+        cat "$PathModulConfigAi/list_app_auto_turbo.txt"
+        echo "Press any key to continue . . . ."
+        read -n 1 -s -r 
+        usleep 100000
+        ListMenu
     elif [ $pilihan == "0" ];then
         exitSetting
     elif [ $pilihan == "e" ];then
@@ -615,6 +701,9 @@ exitSetting(){
     echo "exit (y/n)?"
     read keluar
     if [ $keluar == "y" ];then
+        if [ "$RestartNotif" == "iya" ];then
+            echo " please restart to take effect for gms doze fix . . . ."
+        fi
         echo "selamat tinggal :v "
         echo "Exit after 2s "
         sleep 2s
@@ -630,29 +719,36 @@ exitSetting(){
 saveSetting()
 {
     echo "saving changes . . ."
+    RunTweak="tidak"
     if [ "$GetModeBefore" != "$GetModeNew" ];then
         echo "$GetModeNew" > $PathModulConfig/status_modul.txt ; 
         GetModeBefore=$GetModeNew;
+        RunTweak="iya"
     fi
     if [ "$GetModeRenderBefore" != "$GetModeRenderNew" ];then
         echo "$GetModeRenderNew" > $PathModulConfig/mode_render.txt ; 
         GetModeRenderBefore=$GetModeRenderNew;
+        RunTweak="iya"
     fi
     if [ "$GetModeFCBefore" != "$GetModeFCNew" ];then
         echo "$GetModeFCNew" > $PathModulConfig/fastcharge.txt ; 
         GetModeFCBefore=$GetModeFCNew;
+        RunTweak="iya"
     fi
     if [ "$GetModeFsyncBefore" != "$GetModeFsyncNew" ];then
         echo "$GetModeFsyncNew" > $PathModulConfig/fsync_mode.txt ; 
         GetModeFsyncBefore=$GetModeFsyncNew;
+        RunTweak="iya"
     fi
     if [ "$GetModeAdrenoBefore" != "$GetModeAdrenoNew" ];then
         echo "$GetModeAdrenoNew" > $PathModulConfig/GpuBooster.txt ; 
         GetModeAdrenoBefore=$GetModeAdrenoNew;
+        RunTweak="iya"
     fi
     if [ "$GetModeRamBefore" != "$GetModeRamNew" ];then
         echo "$GetModeRamNew" > $PathModulConfig/custom_ram_management.txt ; 
         GetModeRamBefore=$GetModeRamNew;
+        RunTweak="iya"
     fi
     if [ "$GetModeAiBefore" != "$GetModeAiNew" ];then
         echo "$GetModeAiNew" > $PathModulConfigAi/ai_status.txt ; 
@@ -678,12 +774,32 @@ saveSetting()
         echo "$waitTimeOnNew" > $PathModulConfigAi/wait_time_on.txt ; 
         waitTimeOnBefore=$waitTimeOnNew;
     fi
-    echo "re run tweak . . ."
-    zyc_turbo > /dev/null 2>&1
+    if [ "$GmsDozeNew" != "$GmsDozeBefore" ];then
+        echo "$GmsDozeNew" > $PathModulConfig/gms_doze.txt ; 
+        GmsDozeBefore=$GmsDozeNew;
+        RestartNotif="iya"
+    fi
+    if [ "$RunTweak" == "iya" ];then
+        echo "--- --- --- --- ---"
+        echo "re run tweak . . ."
+        echo "--- --- --- --- ---"
+        zyc_turbo > /dev/null 2>&1
+    fi
     if [ "$GetModeAiNew" == "1" ];then
+        echo "--- --- --- --- ---"
         echo "turn on ai"
+        echo "--- --- --- --- ---"
         zyc_auto > /dev/null 2>&1
     fi
+    if [ "$RefreshList" == "iya" ];then
+        echo "--- --- --- --- ---"
+        echo "Re Scan app & game list"
+        echo "--- --- --- --- ---"
+        sh $ModulPath/ZyC_Turbo/initialize.sh "App" & wait > /dev/null 2>&1
+    fi
+    if [ "$RestartNotif" == "iya" ];then
+            echo " please restart to take effect for gms doze fix . . . ."
+        fi
     echo "done . . . "
     sleep 2s
     clear
