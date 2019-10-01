@@ -195,15 +195,15 @@ set_permissions() {
   set_perm_recursive $MODPATH                   0 0 0755 0777
   set_perm_recursive $MODPATH/system/$bin       0 0 0755 0777
   set_perm_recursive $MODPATH/system/etc/ZyC_Ai 0 0 0755 0777
-  set_perm $MODPATH/service.sh                  0 0 0777
-  set_perm $MODPATH/initialize.sh               0 0 0777
-  set_perm $MODPATH/system/$bin/zyc_turbo       0 0 0777
-  set_perm $MODPATH/system/$bin/zyc_mode        0 0 0777
-  set_perm $MODPATH/system/$bin/zyc_render      0 0 0777
-  set_perm $MODPATH/system/$bin/zyc_start       0 0 0777
-  set_perm $MODPATH/system/$bin/zyc_auto        0 0 0777
-  set_perm $MODPATH/system/$bin/zyc_setting     0 0 0777
-  set_perm $MODPATH/system/$bin/aapt            0 0 0777
+  # set_perm $MODPATH/service.sh                  0 0 0777
+  # set_perm $MODPATH/initialize.sh               0 0 0777
+  # set_perm $MODPATH/system/$bin/zyc_turbo       0 0 0777
+  # set_perm $MODPATH/system/$bin/zyc_mode        0 0 0777
+  # set_perm $MODPATH/system/$bin/zyc_render      0 0 0777
+  # set_perm $MODPATH/system/$bin/zyc_start       0 0 0777
+  # set_perm $MODPATH/system/$bin/zyc_auto        0 0 0777
+  # set_perm $MODPATH/system/$bin/zyc_setting     0 0 0777
+  # set_perm $MODPATH/system/$bin/aapt            0 0 0777
   # set_perm_recursive  $MODPATH  0  0  0755  0644
   # set_perm_recursive  $MODPATH/service.sh 0 0 0755 0777
   # Here are some examples:
