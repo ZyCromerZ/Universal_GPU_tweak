@@ -81,16 +81,17 @@ if [ -e $Path/ZyC_Turbo.log ]; then
 fi
 saveLog=$Path/ZyC_Turbo.log
 
-echo "<<--- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
-echo "starting modules . . ." | tee -a $saveLog > /dev/null 2>&1;
+echo "<<--- --- --- --- --- " | tee -a $saveLog 
+echo "starting modules . . ." | tee -a $saveLog 
+echo "Version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )"
 if [ $FromTerminal == "tidak" ];then
-    echo "running with boot detected" | tee -a $saveLog > /dev/null 2>&1;
+    echo "running with boot detected" | tee -a $saveLog 
 elif [ $FromAi == "ya" ];then
-    echo "running with ai detected" | tee -a $saveLog > /dev/null 2>&1;
+    echo "running with ai detected" | tee -a $saveLog 
 else
-    echo "running without boot detected" | tee -a $saveLog > /dev/null 2>&1;
+    echo "running without boot detected" | tee -a $saveLog 
 fi
-echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+echo "  --- --- --- --- --- " | tee -a $saveLog 
 # status modul
 if [ ! -e $PathModulConfig/status_modul.txt ]; then
     MissingFile="iya"
@@ -164,7 +165,7 @@ fi
         if [ "$FromAi" == "ya" ];then
             exit 0;
         else
-            sh $ModulPath/ZyC_Turbo/service.sh & disown > /dev/null 2>&1;
+            sh $ModulPath/ZyC_Turbo/service.sh & disown 
         fi
         exit 0;
     fi
@@ -219,7 +220,7 @@ SetOff(){
         echo $(cat  "$PathModulConfig/backup/misc_module_fsync_enabled.txt") > "/sys/module/sync/parameters/fsync_enabled"
     fi
     echo 'revert done . . .' | tee -a $saveLog;
-    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+    echo "  --- --- --- --- --- " | tee -a $saveLog 
 }
 SetOn(){
     echo 'use "on" setting. . .' | tee -a $saveLog;
@@ -241,7 +242,7 @@ SetOn(){
         fi
     fi
     echo 'use "on" done. . .' | tee -a $saveLog;
-    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+    echo "  --- --- --- --- --- " | tee -a $saveLog 
 
 }
 SetTurbo(){
@@ -269,7 +270,7 @@ SetTurbo(){
         fi
     fi
     echo 'use "turbo" done .' | tee -a $saveLog;
-    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+    echo "  --- --- --- --- --- " | tee -a $saveLog 
 }
 fstrimDulu(){
     echo "fstrim data cache & system, please wait" | tee -a $saveLog;
@@ -277,7 +278,7 @@ fstrimDulu(){
     fstrim -v /data | tee -a $saveLog;
     fstrim -v /system | tee -a $saveLog;
     echo "done ." | tee -a $saveLog;
-    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+    echo "  --- --- --- --- --- " | tee -a $saveLog 
 }
 disableFsync(){
     # disable fsync biar ui smooth :D
@@ -295,7 +296,7 @@ disableFsync(){
         echo "N" > /sys/module/sync/parameters/fsync_enabled
     fi
     echo 'disable done .' | tee -a $saveLog;
-    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+    echo "  --- --- --- --- --- " | tee -a $saveLog 
 }
 enableFsync(){
     # enable fsync
@@ -313,7 +314,7 @@ enableFsync(){
         echo "Y" > /sys/module/sync/parameters/fsync_enabled
     fi
     echo 'enable done .' | tee -a $saveLog;
-    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+    echo "  --- --- --- --- --- " | tee -a $saveLog 
 }
 disableLogSystem(){
 # Disable stats logging & monitoring
@@ -355,7 +356,7 @@ enableLogSystem(){
     setprop persist.service.lgospd.enable 1 > /dev/null 2>&1
     setprop persist.sys.purgeable_assets 0 > /dev/null 2>&1
     echo 'enable log and monitoring done .' | tee -a $saveLog;
-    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+    echo "  --- --- --- --- --- " | tee -a $saveLog 
 }
 
 # ngator mode start
@@ -379,7 +380,7 @@ enableLogSystem(){
         # disableFsync
         echo "please read guide, mode $GetMode,not found autmatic set to mode on " | tee -a $saveLog;
         echo 'on' > $PathModulConfig/status_modul.txt
-        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+        echo "  --- --- --- --- --- " | tee -a $saveLog 
     fi
 # ngator mode end
 
@@ -397,7 +398,7 @@ enableLogSystem(){
             else
                 echo "fastcharge on" | tee -a $saveLog;
             fi
-            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+            echo "  --- --- --- --- --- " | tee -a $saveLog 
         fi
     fi  
 # enable fastcharge end
@@ -406,7 +407,7 @@ enableLogSystem(){
     if [ "$SetRefreshRate" != "0" ];then
         setprop persist.sys.NV_FPSLIMIT $SetRefreshRate
         echo "custom fps detected, set to $SetRefreshRate" | tee -a $saveLog;
-        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+        echo "  --- --- --- --- --- " | tee -a $saveLog 
     fi
 # set fps ? end
 
@@ -435,7 +436,7 @@ enableLogSystem(){
         echo "nice,use default this tweak GpuBoost" | tee -a $saveLog;
         echo '4' > $PathModulConfig/GpuBooster.txt
     fi
-    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+    echo "  --- --- --- --- --- " | tee -a $saveLog 
 # gpu turbo end
 
 # echo "ok beres dah . . .\n" | tee -a $saveLog;
@@ -454,7 +455,7 @@ enableLogSystem(){
         echo "mode not found,set to OpenGL (skia) " | tee -a $saveLog;
         echo 'skiagl' > $PathModulConfig/mode_render.txt
     fi
-    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+    echo "  --- --- --- --- --- " | tee -a $saveLog 
 # gpu render end
 
 # disable fsync start
@@ -472,7 +473,7 @@ enableLogSystem(){
             echo "fsync value error,set to by system" | tee -a $saveLog;
             echo '3' > $PathModulConfig/fsync_mode.txt
         fi
-        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+        echo "  --- --- --- --- --- " | tee -a $saveLog 
     fi
 # disable fsync end
 
@@ -585,7 +586,7 @@ enableLogSystem(){
             fi;
             # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog;
         fi;
-        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+        echo "  --- --- --- --- --- " | tee -a $saveLog 
     fi
 # custom ram managent end
 # custom zram start
@@ -607,13 +608,13 @@ enableLogSystem(){
             setprop ro.config.zram.support false
             setprop zram.disksize 0
             echo 'disable Vram done .' | tee -a $saveLog;
-            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+            echo "  --- --- --- --- --- " | tee -a $saveLog 
         fi;
         StopVramSet="iya"
     elif [ "$CustomVram" == "4" ];then
         StopVramSet="iya"
-        echo "use Vram default system setting" | tee -a $saveLog > /dev/null 2>&1;
-        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+        echo "use Vram default system setting" | tee -a $saveLog 
+        echo "  --- --- --- --- --- " | tee -a $saveLog 
     fi
     if [ "$StopVramSet" == "kaga" ];then
         if [ -e /dev/block/zram0 ]; then
@@ -629,7 +630,7 @@ enableLogSystem(){
             setprop zram.disksize $SetVramTo
             sysctl -e -w vm.swappiness=20
             echo "enable Vram use method $CustomVram done ." | tee -a $saveLog;
-            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+            echo "  --- --- --- --- --- " | tee -a $saveLog 
         fi;
     fi
     
@@ -665,7 +666,7 @@ if [ "$FromTerminal" == "tidak" ];then
             fi;
         done;
         if [ "$GetBusyBox" == "none " ];then
-            echo "GMS Doze fail . . ." | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1;
+            echo "GMS Doze fail . . ." | tee -a $Path/ZyC_GmsDoze.log 
         else
             # Stop unnecessary GMS and restart it on boot (dorimanx)
             if [ "$($GetBusyBox pidof com.google.android.gms | wc -l)" -eq "1" ]; then
@@ -686,10 +687,10 @@ if [ "$FromTerminal" == "tidak" ];then
             su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log;
             su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log;
             su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log;
-            su -c "pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity" | tee -a $Path/ZyC_GmsDoze.log;
-            su -c "pm enable com.google.android.gsf/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log;
-            su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log;
-            su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log;
+            # su -c "pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity" | tee -a $Path/ZyC_GmsDoze.log;
+            # su -c "pm enable com.google.android.gsf/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log;
+            # su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log;
+            # su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log;
             su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsReceiver" | tee -a $Path/ZyC_GmsDoze.log;
             su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsService" | tee -a $Path/ZyC_GmsDoze.log;
             su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsTaskService" | tee -a $Path/ZyC_GmsDoze.log;
@@ -703,8 +704,8 @@ if [ "$FromTerminal" == "tidak" ];then
             su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementReceiver" | tee -a $Path/ZyC_GmsDoze.log;
             su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementService" | tee -a $Path/ZyC_GmsDoze.log;
             su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.service.MeasurementBrokerService" | tee -a $Path/ZyC_GmsDoze.log;
-            su -c "pm enable com.google.android.gms/com.google.android.location.internal.AnalyticsSamplerReceiver" | tee -a $Path/ZyC_GmsDoze.log;
-            echo "GMS Doze done . . ." | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1;
+            # su -c "pm enable com.google.android.gms/com.google.android.location.internal.AnalyticsSamplerReceiver" | tee -a $Path/ZyC_GmsDoze.log;
+            echo "GMS Doze done . . ." | tee -a $Path/ZyC_GmsDoze.log 
         fi
     fi
     if [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ];then
@@ -712,28 +713,28 @@ if [ "$FromTerminal" == "tidak" ];then
         if [ -e $PathModulConfigAi/ai_status.txt ]; then
             AiStatus=$(cat "$PathModulConfigAi/ai_status.txt")
             if [ "$AiStatus" == "1" ];then
-                echo "starting ai mode . . . " | tee -a $saveLog > /dev/null 2>&1;
-                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
-                sh $BASEDIR/ai_mode.sh "fromBoot" & disown > /dev/null 2>&1;
+                echo "starting ai mode . . . " | tee -a $saveLog 
+                echo "  --- --- --- --- --- " | tee -a $saveLog 
+                sh $BASEDIR/ai_mode.sh "fromBoot" & disown & exit 
             elif [ "$AiStatus" == "2" ];then
-                echo "re - run ai mode . . . " | tee -a $saveLog > /dev/null 2>&1;
-                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
-                sh $BASEDIR/ai_mode.sh "fromBoot" & disown > /dev/null 2>&1;
+                echo "re - run ai mode . . . " | tee -a $saveLog 
+                echo "  --- --- --- --- --- " | tee -a $saveLog 
+                sh $BASEDIR/ai_mode.sh "fromBoot" & disown & exit 
             elif [ "$AiStatus" == "3" ];then
-                echo "deactive ai mode . . . " | tee -a $saveLog > /dev/null 2>&1;
-                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
-                sh $BASEDIR/ai_mode.sh "fromBoot" & disown > /dev/null 2>&1;
+                echo "deactive ai mode . . . " | tee -a $saveLog 
+                echo "  --- --- --- --- --- " | tee -a $saveLog 
+                sh $BASEDIR/ai_mode.sh "fromBoot" & disown & exit 
             elif [ "$AiStatus" == "0" ];then
                 echo "ai status off"| tee -a $saveLog;
-                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+                echo "  --- --- --- --- --- " | tee -a $saveLog 
             else
                 echo "ai status error,set to 0"| tee -a $saveLog;
                 echo '0' > "$PathModulConfigAi/ai_status.txt"
-                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+                echo "  --- --- --- --- --- " | tee -a $saveLog 
             fi
         fi
     fi
 fi
 echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog;
-echo "  --- --- --- --- --->> " | tee -a $saveLog > /dev/null 2>&1;
+echo "  --- --- --- --- --->> " | tee -a $saveLog 
 exit 0;

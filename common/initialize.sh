@@ -261,7 +261,7 @@ if [ "$FromTerminal" == "tidak" ];then
     fi
 
     # Check notes version
-    SetModulVersion="3.36-4 BETA"
+    SetModulVersion="3.36-5 BETA"
     if [ -e $PathModulConfig/notes_en.txt ];then
         if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
             rm $PathModulConfig/notes_en.txt
@@ -433,7 +433,7 @@ For V2, just flash it via magisk, it will automatically activates after rebooted
 Note:
 mode = off / on / turbo
 namarender = opengl / skiagl / skiavk
-Version:$SetModulVersion" | tee -a $SetNotes > /dev/null 2>&1;
+Version:$SetModulVersion" | tee -a $SetNotes 
     fi
     if [ ! -e $PathModulConfig/notes_id.txt ]; then
         SetNotes=$PathModulConfig/notes_id.txt;
@@ -616,7 +616,7 @@ Untuk V2 cukup flash teros biarkan,udah otomatis aktif kalo udah reboot
 Note :
 namamode = off/on/turbo
 namarender = opengl/skiagl/skiavk
-Version:$SetModulVersion" | tee -a $SetNotes > /dev/null 2>&1;
+Version:$SetModulVersion" | tee -a $SetNotes 
     
     fi
 

@@ -23,7 +23,7 @@ if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
     echo $merahHitam"please type 'su' first -_-"$ResetWarna
     echo ""
     echo "Exit after :"
-    for timeExit in "3s 2s 1s 0s" ;
+    for timeExit in 3s 2s 1s 0s ;
     do
         echo "$timeExit"
         sleep 1s
@@ -116,6 +116,10 @@ if [ -e $PathModulConfig/gms_doze.txt ];then
     GmsDozeBefore=$(cat "$PathModulConfig/gms_doze.txt")
     GmsDozeNew=$(cat "$PathModulConfig/gms_doze.txt")
 fi
+if [ -e $PathModulConfig/vram.txt ];then
+    VramBefore=$(cat "$PathModulConfig/vram.txt")
+    VramNew=$(cat "$PathModulConfig/vram.txt")
+fi
 RefreshList="tidak"
 RestartNotif="tidak"
 savedata="no"
@@ -126,6 +130,7 @@ ListMenu(){
     echo "list menu : "
     if [ "$page" == "1" ];then
         if [ -e "$PathModulConfig/status_modul.txt" ];then
+            echo "<-- -- Module Status Config -- -->"
             if [ "$GetModeAiBefore" == "2" ];then
                 if [ "$GetModeBefore" == "$GetModeNew" ];then
                     GetModeBefore=$(cat "$PathModulConfig/status_modul.txt")
@@ -147,12 +152,12 @@ ListMenu(){
             if [ "$GetModeBefore" != "$GetModeNew" ];then
                 echo -e $kuningPutih"this will set to : $GetModeNew"$ResetWarna
             else
-                echo -e $kuningHitam"current status : $GetModeBefore"$ResetWarna;
+                echo -e $kuningHitam"current status module : $GetModeBefore"$ResetWarna;
             fi
             echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e "$PathModulConfig/mode_render.txt" ];then
-            
+            echo "<-- -- Mode Render Config -- -->"
             echo "opd > Use Default OpenGL render"
             echo "ops > Use OpenGL Skia render"
             echo "vkn > Use Vulkan render"
@@ -176,6 +181,7 @@ ListMenu(){
             echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e "$PathModulConfig/fastcharge.txt" ];then
+            echo "<-- -- Fastcharge Config -- -->"
             echo "fx > fastcharge option by system"
             echo "fy > fastcharge option by this tweak"
             if [ "$GetModeFCBefore" != "$GetModeFCNew" ];then
@@ -194,6 +200,7 @@ ListMenu(){
             echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e "$PathModulConfig/fsync_mode.txt" ];then
+            echo "<-- -- Fsync Config -- -->"
             echo "fcx > turn off fsync"
             echo "fcy > turn on fsync"
             if [ "$GetModeFsyncBefore" != "$GetModeFsyncNew" ];then
@@ -247,11 +254,12 @@ ListMenu(){
         echo "current : page 1"
     elif [ "$page" == "2" ];then
         if [ -e "$PathModulConfig/custom_ram_management.txt" ];then
+            echo "<-- -- Ram management Config -- -->"
             echo "rms > use system ram management"
             echo "rm1 > use ram management method 1"
             echo "rm2 > use ram management method 2"
             echo "rm3 > use ram management method 3"
-            echo "rm4 > use ram management method 4"
+            echo "rm4 > use ram management method 4 (only for 3gb ram or less)"
             if [ "$GetModeRamBefore" != "$GetModeRamNew" ];then
                 if [ $GetModeRamNew == "0" ];then
                     echo -e $hijauPutih"this will set to : use system "$ResetWarna
@@ -267,7 +275,61 @@ ListMenu(){
             fi
             echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
+        if [ -e "$PathModulConfig/gms_doze.txt" ];then
+            echo "<-- -- GMS DOZE Config -- -->"
+            echo "gdx > Turn off gms doze fix"
+            echo "gdy > Turn on gms doze fix"
+            if [ "$GmsDozeBefore" != "$GmsDozeNew" ];then
+                if [ "$GmsDozeNew" == "0" ];then
+                    echo -e $kuningPutih"this will set to : off"$ResetWarna
+                elif [ "$GmsDozeNew" == "1" ];then
+                    echo -e $hijauPutih"this will set to : on"$ResetWarna
+                fi
+            else
+                if [ "$GmsDozeBefore" == "0" ];then
+                    echo -e $kuningHitam"Current status : off"$ResetWarna
+                elif [ "$GmsDozeBefore" == "1" ];then
+                    echo -e $hijauHitam"Current status : on"$ResetWarna
+                fi
+            fi
+            echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
+        fi
+        if [ -e "$PathModulConfig/vram.txt" ];then
+            echo "<-- -- Vram Config -- -->"
+            echo "vrs > Vram setting by system"
+            echo "vrx > turn off Vram"
+            echo "vr1 > set vram a half from your ram (for high ram devices)"
+            echo "vr2 > set vram to 80% from your ram"
+            echo "vr3 > set vram same as your ram (for less ram devices only)"
+            if [ "$VramBefore" != "$VramNew" ];then
+                if [ "$VramNew" == "0" ];then
+                    echo -e $kuningPutih"this will set to : off"$ResetWarna
+                elif [ "$VramNew" == "1" ];then
+                    echo -e $hijauPutih"this will set to : 50% of your ram"$ResetWarna
+                else [ "$VramNew" == "2" ];then
+                    echo -e $hijauPutih"this will set to : 80% of your ram"$ResetWarna
+                else [ "$VramNew" == "3" ];then
+                    echo -e $kuningPutih"this will set to : same as your total ram"$ResetWarna
+                else [ "$VramNew" == "4" ];then
+                    echo -e $kuningPutih"this will set to : By System"$ResetWarna
+                fi
+            else
+                if [ "$VramBefore" == "0" ];then
+                    echo -e $kuningHitam"Current status : off"$ResetWarna
+                elif [ "$VramBefore" == "1" ];then
+                    echo -e $hijauHitam"Current status : 50% of your ram"$ResetWarna
+                elif [ "$VramBefore" == "2" ];then
+                    echo -e $hijauHitam"Current status : 80% of your ram"$ResetWarna
+                elif [ "$VramBefore" == "3" ];then
+                    echo -e $kuningHitam"Current status : same as your total ram"$ResetWarna
+                elif [ "$VramBefore" == "4" ];then
+                    echo -e $kuningHitam"Current status : By System"$ResetWarna
+                fi
+            fi
+            echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
+        fi
         if [ -e "$PathModulConfigAi/ai_status.txt" ];then
+            echo "<-- -- AI Config -- -->"
             echo "aix > auto/ai mode off"
             echo "aiy > auto/ai mode on"
             if [ "$GetModeAiBefore" != "$GetModeAiNew" ];then
@@ -289,145 +351,162 @@ ListMenu(){
             fi
             echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
+        
+        echo "current : page 2"
+    elif [ "$page" == "3" ];then
         if [ -e "$PathModulConfigAi/ai_notif_mode.txt" ];then
-            echo "anx > turn off notif ai";
-            echo "anv > use vibration"
-            echo "an1 > use notif method 1"
-            echo "an2 > use notif method 2"
-            if [ "$GetModeAiNotifBefore" != "$GetModeAiNotifNew" ];then
-                if [ "$GetModeAiNotifNew" == "0" ];then
-                    echo -e $putihHitam"this will set to : off"$ResetWarna
-                elif [ "$GetModeAiNotifNew" == "1" ];then
-                    echo -e $cyanPutih"this will set to : use vibration "$ResetWarna
-                elif [ "$GetModeAiNotifNew" == "2" ];then
-                    echo -e $hijauPutih"this will set to : use notif method 1"$ResetWarna
-                elif [ "$GetModeAiNotifNew" == "3" ];then
-                    echo -e $unguPutih"this will set to : use notif method 2"$ResetWarna
+            echo "<-- -- AI Notif Config -- -->"
+            if [ "$GetModeAiBefore" == "2" ];then
+                echo "anx > turn off notif ai";
+                echo "anv > use vibration"
+                echo "an1 > use notif method 1"
+                echo "an2 > use notif method 2"
+                if [ "$GetModeAiNotifBefore" != "$GetModeAiNotifNew" ];then
+                    if [ "$GetModeAiNotifNew" == "0" ];then
+                        echo -e $putihHitam"this will set to : off"$ResetWarna
+                    elif [ "$GetModeAiNotifNew" == "1" ];then
+                        echo -e $cyanPutih"this will set to : use vibration "$ResetWarna
+                    elif [ "$GetModeAiNotifNew" == "2" ];then
+                        echo -e $hijauPutih"this will set to : use notif method 1"$ResetWarna
+                    elif [ "$GetModeAiNotifNew" == "3" ];then
+                        echo -e $unguPutih"this will set to : use notif method 2"$ResetWarna
+                    fi
+                else
+                    if [ "$GetModeAiNotifBefore" == "0" ];then
+                        echo -e $abuHitam"Current status : off"$ResetWarna
+                    elif [ "$GetModeAiNotifBefore" == "1" ];then
+                        echo -e $cyanHitam"Current status : use vibration "$ResetWarna
+                    elif [ "$GetModeAiNotifBefore" == "2" ];then
+                        echo -e $hijauHitam"Current status : use notif method 1"$ResetWarna
+                    elif [ "$GetModeAiNotifBefore" == "3" ];then
+                        echo -e $unguHitam"Current status : use notif method 2"$ResetWarna
+                    fi
                 fi
             else
-                if [ "$GetModeAiNotifBefore" == "0" ];then
-                    echo -e $abuHitam"Current status : off"$ResetWarna
-                elif [ "$GetModeAiNotifBefore" == "1" ];then
-                    echo -e $cyanHitam"Current status : use vibration "$ResetWarna
-                elif [ "$GetModeAiNotifBefore" == "2" ];then
-                    echo -e $hijauHitam"Current status : use notif method 1"$ResetWarna
-                elif [ "$GetModeAiNotifBefore" == "3" ];then
-                    echo -e $unguHitam"Current status : use notif method 2"$ResetWarna
+                echo "turn on ai first before setting this . . . ."
+            fi
+            echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
+        fi
+        if [ -e "$PathModulConfigAi/ai_notif_mode_running_status.txt" ];then
+            echo "<-- -- AI Notif Running Status Config -- -->"
+            if [ "$GetModeAiBefore" == "2" ];then
+                echo "ansx > turn off notif running status ai" ;
+                echo "ans1 > use notif running while on turbo mode" ;
+                echo "ans2 > use notif running while on gaming (recomended)" ;
+                if [ "$GetModeAiNotifRunningStatusBefore" != "$GetModeAiNotifRunningStatusNew" ];then
+                    if [ "$GetModeAiNotifRunningStatusNew" == "0" ];then
+                        echo -e $putihHitam"this will set to : off"$ResetWarna
+                    elif [ "$GetModeAiNotifRunningStatusNew" == "1" ];then
+                        echo -e $kuningPutih"this will set to : notif running while on turbo mode"$ResetWarna
+                    elif [ "$GetModeAiNotifRunningStatusNew" == "2" ];then
+                        echo -e $hijauPutih"this will set to : notif running while on gaming"$ResetWarna
+                    fi
+                else
+                    if [ "$GetModeAiNotifRunningStatusBefore" == "0" ];then
+                        echo -e $abuHitam"Current status : off"$ResetWarna
+                    elif [ "$GetModeAiNotifRunningStatusBefore" == "1" ];then
+                        echo -e $kuningHitam"Current status : notif running while on turbo mode"$ResetWarna
+                    elif [ "$GetModeAiNotifRunningStatusBefore" == "2" ];then
+                        echo -e $hijauHitam"Current status : notif running while on gaming"$ResetWarna
+                    fi
                 fi
+            else
+                echo "turn on ai first before setting this . . . ."
             fi
             echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
         if [ -e "$PathModulConfigAi/ai_notif_mode_running.txt" ];then
-            echo "anmx > turn off notif running ai" ;
-            echo "anm1 > use notif running mode 1" ;
-            echo "anm2 > use notif running mode 2" ;
-            echo "anm3 > use notif running mode 3" ;
-            echo "anm4 > use notif running mode 4" ;
-            if [ "$GetModeAiNotifRunningBefore" != "$GetModeAiNotifRunningNew" ];then
-                if [ "$GetModeAiNotifRunningNew" == "0" ];then
-                    echo -e $putihHitam"this will set to : off"$ResetWarna
-                elif [ "$GetModeAiNotifRunningNew" == "1" ];then
-                    echo -e $kuningPutih"this will set to : notif running mode 1"$ResetWarna
-                elif [ "$GetModeAiNotifRunningNew" == "2" ];then
-                    echo -e $hijauPutih"this will set to : notif running mode 2"$ResetWarna
-                elif [ "$GetModeAiNotifRunningNew" == "3" ];then
-                    echo -e $cyanPutih"this will set to : notif running mode 3"$ResetWarna
-                elif [ "$GetModeAiNotifRunningNew" == "4" ];then
-                    echo -e $unguPutih"this will set to : notif running mode 4"$ResetWarna
+            echo "<-- -- AI Notif Running Config -- -->"
+            if [ "$GetModeAiBefore" == "2" ];then
+                echo "anmx > turn off notif running ai" ;
+                echo "anm1 > use notif running mode 1" ;
+                echo "anm2 > use notif running mode 2" ;
+                echo "anm3 > use notif running mode 3" ;
+                echo "anm4 > use notif running mode 4" ;
+                if [ "$GetModeAiNotifRunningBefore" != "$GetModeAiNotifRunningNew" ];then
+                    if [ "$GetModeAiNotifRunningNew" == "0" ];then
+                        echo -e $putihHitam"this will set to : off"$ResetWarna
+                    elif [ "$GetModeAiNotifRunningNew" == "1" ];then
+                        echo -e $kuningPutih"this will set to : notif running mode 1"$ResetWarna
+                    elif [ "$GetModeAiNotifRunningNew" == "2" ];then
+                        echo -e $hijauPutih"this will set to : notif running mode 2"$ResetWarna
+                    elif [ "$GetModeAiNotifRunningNew" == "3" ];then
+                        echo -e $cyanPutih"this will set to : notif running mode 3"$ResetWarna
+                    elif [ "$GetModeAiNotifRunningNew" == "4" ];then
+                        echo -e $unguPutih"this will set to : notif running mode 4"$ResetWarna
+                    fi
+                else
+                    if [ "$GetModeAiNotifRunningBefore" == "0" ];then
+                        echo -e $abuHitam"Current status : off"$ResetWarna
+                    elif [ "$GetModeAiNotifRunningBefore" == "1" ];then
+                        echo -e $kuningHitam"Current status : notif running mode 1"$ResetWarna
+                    elif [ "$GetModeAiNotifRunningBefore" == "2" ];then
+                        echo -e $hijauHitam"Current status : notif running mode 2"$ResetWarna
+                    elif [ "$GetModeAiNotifRunningBefore" == "3" ];then
+                        echo -e $cyanHitam"Current status : notif running mode 3"$ResetWarna
+                    elif [ "$GetModeAiNotifRunningBefore" == "4" ];then
+                        echo -e $unguHitam"Current status : notif running mode 4"$ResetWarna
+                    fi
                 fi
             else
-                if [ "$GetModeAiNotifRunningBefore" == "0" ];then
-                    echo -e $abuHitam"Current status : off"$ResetWarna
-                elif [ "$GetModeAiNotifRunningBefore" == "1" ];then
-                    echo -e $kuningHitam"Current status : notif running mode 1"$ResetWarna
-                elif [ "$GetModeAiNotifRunningBefore" == "2" ];then
-                    echo -e $hijauHitam"Current status : notif running mode 2"$ResetWarna
-                elif [ "$GetModeAiNotifRunningBefore" == "3" ];then
-                    echo -e $cyanHitam"Current status : notif running mode 3"$ResetWarna
-                elif [ "$GetModeAiNotifRunningBefore" == "4" ];then
-                    echo -e $unguHitam"Current status : notif running mode 4"$ResetWarna
-                fi
+                echo "turn on ai first before setting this . . . ."
             fi
             echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
-        echo "current : page 2"
-    elif [ "$page" == "3" ];then
-        if [ -e "$PathModulConfigAi/ai_notif_mode_running_status.txt" ];then
-            echo "ansx > turn off notif running status ai" ;
-            echo "ans1 > use notif running while on turbo mode" ;
-            echo "ans2 > use notif running while on gaming (recomended)" ;
-            if [ "$GetModeAiNotifRunningStatusBefore" != "$GetModeAiNotifRunningStatusNew" ];then
-                if [ "$GetModeAiNotifRunningStatusNew" == "0" ];then
-                    echo -e $putihHitam"this will set to : off"$ResetWarna
-                elif [ "$GetModeAiNotifRunningStatusNew" == "1" ];then
-                    echo -e $kuningPutih"this will set to : notif running while on turbo mode"$ResetWarna
-                elif [ "$GetModeAiNotifRunningStatusNew" == "2" ];then
-                    echo -e $hijauPutih"this will set to : notif running while on gaming"$ResetWarna
+        if [ -e "$PathModulConfigAi/wait_time_off.txt" ];then
+            echo "<-- -- AI Notif Running Status Config -- -->"
+            if [ "$GetModeAiBefore" == "2" ];then
+                echo "wtx > set wait time ai to run again while module on mode off"
+                if [ "$waitTimeOffBefore" != "$waitTimeOffNew" ];then
+                    echo -e $putihHitam"this will set to : $waitTimeOffNew"$ResetWarna
+                else
+                    echo -e $abuHitam"Current status : $waitTimeOffBefore"$ResetWarna
                 fi
             else
-                if [ "$GetModeAiNotifRunningStatusBefore" == "0" ];then
-                    echo -e $abuHitam"Current status : off"$ResetWarna
-                elif [ "$GetModeAiNotifRunningStatusBefore" == "1" ];then
-                    echo -e $kuningHitam"Current status : notif running while on turbo mode"$ResetWarna
-                elif [ "$GetModeAiNotifRunningStatusBefore" == "2" ];then
-                    echo -e $hijauHitam"Current status : notif running while on gaming"$ResetWarna
-                fi
+                echo "turn on ai first before setting this . . . ."
             fi
             echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
-        if [ -e $PathModulConfigAi/wait_time_off.txt ];then
-            echo "wtx > set wait time ai to run again while module on mode off"
-            if [ "$waitTimeOffBefore" != "$waitTimeOffNew" ];then
-                echo -e $putihHitam"this will set to : $waitTimeOffNew"$ResetWarna
-            else
-                echo -e $abuHitam"Current status : $waitTimeOffBefore"$ResetWarna
-            fi
-            echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
-        fi
-        if [ -e $PathModulConfigAi/wait_time_on.txt ];then
-            echo "wty > set wait time ai to run again while module on mode turbo"
-            if [ "$waitTimeOnBefore" != "$waitTimeOnNew" ];then
-                echo -e $putihHitam"this will set to : $waitTimeOnNew"$ResetWarna
-            else
-                echo -e $abuHitam"Current status : $waitTimeOnBefore"$ResetWarna
-            fi
-            echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
-        fi
-        if [ -e $PathModulConfig/gms_doze.txt ];then
-            echo "gdx > Turn off gms doze fix"
-            echo "gdy > Turn on gms doze fix"
-            if [ "$GmsDozeBefore" != "$GmsDozeNew" ];then
-                if [ "$GmsDozeNew" == "0" ];then
-                    echo -e $kuningPutih"this will set to : off"$ResetWarna
-                elif [ "$GmsDozeNew" == "1" ];then
-                    echo -e $hijauPutih"this will set to : on"$ResetWarna
+        if [ -e "$PathModulConfigAi/wait_time_on.txt" ];then
+            echo "<-- -- AI Notif Running Status Config -- -->"
+            if [ "$GetModeAiBefore" == "2" ];then
+                echo "wty > set wait time ai to run again while module on mode turbo"
+                if [ "$waitTimeOnBefore" != "$waitTimeOnNew" ];then
+                    echo -e $putihHitam"this will set to : $waitTimeOnNew"$ResetWarna
+                else
+                    echo -e $abuHitam"Current status : $waitTimeOnBefore"$ResetWarna
                 fi
             else
-                if [ "$GmsDozeNew" == "0" ];then
-                    echo -e $kuningHitam"Current status : off"$ResetWarna
-                elif [ "$GmsDozeNew" == "1" ];then
-                    echo -e $hijauHitam"Current status : on"$ResetWarna
-                fi
+                echo "turn on ai first before setting this . . . ."
             fi
             echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
+    elif [ "$page" == "4" ];then
+        echo "<-- -- App and Game List Config -- -->"
         echo "sag > re-scan app and game list :D "
-        echo "sal > to check app list"
-        echo "sgl > to check game list"
+        echo "sal > to check app list install on your phone"
+        echo "sgl > to check game list for trigger ai to mode turbo faster"
         if [ "$RefreshList" == "sudah" ];then
             echo -e $hijauHitam"refresh list game and app done . . . :p"$ResetWarna
-        elif if [ "$RefreshList" == "iya" ];then
+        elif [ "$RefreshList" == "iya" ];then
             echo -e $hijauHitam"refresh list game and app after save setting :p"$ResetWarna
         fi
         echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
-        echo "current : page 3"
+        echo "current : page 4"
     fi
     if [ "$page" == "1" ];then
         echo "np > go to page $(($page+1))";
-    elif [ "$page" == "3" ];then
+    elif [ "$page" == "4" ];then
         echo "pp > go to page $(($page-1))";
     else
-        echo "pp > go to page $(($page-1))  |  np > go to page $(($page+1))";
+        echo "pp > go to page $(($page-1))      |  np > go to page $(($page+1))";
+    fi
+    if [ "$page" == "4" ];then
+        echo "fp > go to first page"
+    elif [ "$page" == "1" ];then
+        echo "lp > go to last page"
+    elif [ "$page" -lt "4" ] && [ "$page" -gt "1" ];then
+        echo "fp > go to first page  |  lp > go to first page"
     fi
     # echo "more setting coming soon :p"
     if [ $Perubahan == "ya" ];then
@@ -618,7 +697,7 @@ ListMenu(){
         usleep 100000
         ListMenu
     elif [ $pilihan == "np" ];then
-        if [ "$page" -lt "3" ];then
+        if [ "$page" -lt "4" ];then
             page=$(($page+1))
         else
             page="1"
@@ -633,6 +712,14 @@ ListMenu(){
             page="1"
             echo "error,move to page 1"
         fi
+        usleep 10000
+        ListMenu
+    elif [ $pilihan == "fp" ];then
+        page="1"
+        usleep 10000
+        ListMenu
+    elif [ $pilihan == "lp" ];then
+        page="4"
         usleep 10000
         ListMenu
     elif [ $pilihan == "wtx" ];then
@@ -690,6 +777,31 @@ ListMenu(){
         read -n 3 -s -r 
         usleep 100000
         ListMenu
+    elif [ $pilihan == "vrx" ];then
+        Perubahan="ya"
+        VramNew="0"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "vr1" ];then
+        Perubahan="ya"
+        VramNew="1"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "vr2" ];then
+        Perubahan="ya"
+        VramNew="2"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "vr3" ];then
+        Perubahan="ya"
+        VramNew="3"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "vrs" ];then
+        Perubahan="ya"
+        VramNew="4"
+        usleep 100000
+        ListMenu
     elif [ $pilihan == "0" ];then
         exitSetting
     elif [ $pilihan == "e" ];then
@@ -723,14 +835,14 @@ exitSetting(){
         fi
         echo "selamat tinggal :v "
         echo "Exit after :"
-        for timeExit in "3s 2s 1s 0s" ;
+        for timeExit in 3s 2s 1s 0s ;
         do
             echo "$timeExit"
             sleep 1s
         done
         for GetTerminal in  ` ps -a | grep 'u0' | awk '{print $3}' ` 
         do 
-            kill -127 $GetTerminal 
+            kill -9 $GetTerminal 
         done
     else
         page="1"
@@ -799,6 +911,13 @@ saveSetting()
         echo "$GmsDozeNew" > $PathModulConfig/gms_doze.txt ; 
         GmsDozeBefore=$GmsDozeNew;
         RestartNotif="iya"
+    fi
+    if [ "$VramNew" != "$VramBefore" ];then
+        echo "$VramNew" > $PathModulConfig/gms_doze.txt ; 
+        if [ "$VramNew" == "4" ] && [ "$GmsDozeBefore" != "4" ];then
+            RestartNotif="iya"
+        fi
+        GmsDozeBefore=$VramNew;
     fi
     if [ "$RunTweak" == "iya" ];then
         echo "--- --- --- --- ---"
