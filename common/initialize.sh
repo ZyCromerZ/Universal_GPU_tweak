@@ -30,15 +30,39 @@ if [ ! -z "$1" ];then
     fi
 fi;
 ketemuInternal="kaga"
+if [ "$(cat /data/mod_path.txt)" == "/data" ];then
+    GetPath="none"
+    for cariInternal in /data/media/0 /storage/emulated/0 /storage/emulated/legacy /storage/sdcard0 /sdcard /data
+    do
+        if [ "$GetPath" == "none" ] && [ -d $cariInternal/android ];then
+            GetPath=$cariInternal
+        fi
+        if [ "$GetPath" == "none" ] && [ -d $cariInternal/Android ];then
+            GetPath=$cariInternal
+
+        fi
+        if [ "$cariInternal" == "/data" ] && [ "$GetPath" == "none" ];then
+            GetPath=$cariInternal
+        fi
+    done
+    if [ $GetPath != "none" ];then
+        mv $(cat /data/mod_path.txt) $GetPath
+        echo "$cariInternal" > /data/mod_path.txt
+    fi
+fi
 # Path=/sdcard/modul_mantul/ZyC_mod
 if [ ! -e /data/mod_path.txt ]; then
     for cariInternal in /data/media/0 /storage/emulated/0 /storage/emulated/legacy /storage/sdcard0 /sdcard /data
     do
-        if [ "$cariInternal" == "/data" ];then
+        if [ "$ketemuInternal" == "kaga" ] && [ -d $cariInternal/android ];then
             ketemuInternal="udah"
             echo "$cariInternal" > /data/mod_path.txt
         fi
-        if [ "$ketemuInternal" == "kaga" ] && [ -d $cariInternal/android ];then
+        if [ "$ketemuInternal" == "kaga" ] && [ -d $cariInternal/Android ];then
+            ketemuInternal="udah"
+            echo "$cariInternal" > /data/mod_path.txt
+        fi
+        if [ "$cariInternal" == "/data" ] && [ "$ketemuInternal" == "kaga" ];then
             ketemuInternal="udah"
             echo "$cariInternal" > /data/mod_path.txt
         fi

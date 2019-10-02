@@ -298,32 +298,39 @@ ListMenu(){
             echo "<-- -- Vram Config -- -->"
             echo "vrs > Vram setting by system"
             echo "vrx > turn off Vram"
-            echo "vr1 > set vram a half from your ram (for high ram devices)"
-            echo "vr2 > set vram to 80% from your ram"
-            echo "vr3 > set vram same as your ram (for less ram devices only)"
+            echo "vr1 > set vram to 1gb"
+            echo "vr2 > set vram to 2gb"
+            echo "vr3 > set vram to 3gb"
+            echo "vr4 > set vram to 4gb"
+            echo "note : do not set to high :D"
+            echo "       dont blame me if u got random reboot :p"
             if [ "$VramBefore" != "$VramNew" ];then
                 if [ "$VramNew" == "0" ];then
                     echo -e $kuningPutih"this will set to : off"$ResetWarna
                 elif [ "$VramNew" == "1" ];then
-                    echo -e $hijauPutih"this will set to : 50% of your ram"$ResetWarna
+                    echo -e $hijauPutih"this will set to : 1gb "$ResetWarna
                 elif [ "$VramNew" == "2" ];then
-                    echo -e $hijauPutih"this will set to : 80% of your ram"$ResetWarna
+                    echo -e $hijauPutih"this will set to : 2gb"$ResetWarna
                 elif [ "$VramNew" == "3" ];then
-                    echo -e $kuningPutih"this will set to : same as your total ram"$ResetWarna
+                    echo -e $kuningPutih"this will set to : 3gb"$ResetWarna
                 elif [ "$VramNew" == "4" ];then
-                    echo -e $kuningPutih"this will set to : By System"$ResetWarna
+                    echo -e $kuningPutih"this will set to : 4gb"$ResetWarna
+                elif [ "$VramNew" == "5" ];then
+                    echo -e $abuHitam"this will set to :  System"$ResetWarna
                 fi
             else
                 if [ "$VramBefore" == "0" ];then
                     echo -e $kuningHitam"Current status : off"$ResetWarna
                 elif [ "$VramBefore" == "1" ];then
-                    echo -e $hijauHitam"Current status : 50% of your ram"$ResetWarna
+                    echo -e $hijauHitam"Current status : 1gb"$ResetWarna
                 elif [ "$VramBefore" == "2" ];then
-                    echo -e $hijauHitam"Current status : 80% of your ram"$ResetWarna
+                    echo -e $hijauHitam"Current status : 2gb"$ResetWarna
                 elif [ "$VramBefore" == "3" ];then
-                    echo -e $kuningHitam"Current status : same as your total ram"$ResetWarna
+                    echo -e $kuningHitam"Current status : 3gb"$ResetWarna
                 elif [ "$VramBefore" == "4" ];then
-                    echo -e $kuningHitam"Current status : By System"$ResetWarna
+                    echo -e $kuningHitam"Current status : 4gb"$ResetWarna
+                elif [ "$VramBefore" == "5" ];then
+                    echo -e $putihHitam"Current status : By System"$ResetWarna
                 fi
             fi
             echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
@@ -797,9 +804,14 @@ ListMenu(){
         VramNew="3"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "vrs" ];then
+    elif [ $pilihan == "vr4" ];then
         Perubahan="ya"
         VramNew="4"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "vrs" ];then
+        Perubahan="ya"
+        VramNew="5"
         usleep 100000
         ListMenu
     elif [ $pilihan == "0" ];then
@@ -914,7 +926,7 @@ saveSetting()
     fi
     if [ "$VramNew" != "$VramBefore" ];then
         echo "$VramNew" > $PathModulConfig/vram.txt ; 
-        if [ "$VramNew" == "4" ] && [ "$GmsDozeBefore" != "4" ];then
+        if [ "$VramNew" == "5" ] && [ "$GmsDozeBefore" != "5" ];then
             RestartNotif="iya"
         fi
         VramBefore=$VramNew;

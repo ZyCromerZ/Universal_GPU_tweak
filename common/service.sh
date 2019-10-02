@@ -519,38 +519,33 @@ enableLogSystem(){
             StopModify="no"
             GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
             if [ "$CustomRam" == "1" ]; then # Method 1
-                ForegroundApp=$(((($GetTotalRam*2/100)*1024)/4))
-                VisibleApp=$(((($GetTotalRam*3/100)*1024)/4))
-                SecondaryServer=$(((($GetTotalRam*5/100)*1024)/4))
-                HiddenApp=$(((($GetTotalRam*6/100)*1024)/4))
-                ContentProvider=$(((($GetTotalRam*10/100)*1024)/4))
-                EmptyApp=$(((($GetTotalRam*12/100)*1024)/4))
+                ForegroundApp=$((((GetTotalRam*2/100)*1024)/4))
+                VisibleApp=$((((GetTotalRam*3/100)*1024)/4))
+                SecondaryServer=$((((GetTotalRam*5/100)*1024)/4))
+                HiddenApp=$((((GetTotalRam*6/100)*1024)/4))
+                ContentProvider=$((((GetTotalRam*10/100)*1024)/4))
+                EmptyApp=$((((GetTotalRam*12/100)*1024)/4))
             elif [ "$CustomRam" == "2" ]; then # Method 2
-                ForegroundApp=$(((($GetTotalRam*3/100)*1024)/4))
-                VisibleApp=$(((($GetTotalRam*4/100)*1024)/4))
-                SecondaryServer=$(((($GetTotalRam*5/100)*1024)/4))
-                HiddenApp=$(((($GetTotalRam*7/100)*1024)/4))
-                ContentProvider=$(((($GetTotalRam*11/100)*1024)/4))
-                EmptyApp=$(((($GetTotalRam*15/100)*1024)/4))
+                ForegroundApp=$((((GetTotalRam*3/100)*1024)/4))
+                VisibleApp=$((((GetTotalRam*4/100)*1024)/4))
+                SecondaryServer=$((((GetTotalRam*5/100)*1024)/4))
+                HiddenApp=$((((GetTotalRam*7/100)*1024)/4))
+                ContentProvider=$((((GetTotalRam*11/100)*1024)/4))
+                EmptyApp=$((((GetTotalRam*15/100)*1024)/4))
             elif [ "$CustomRam" == "3" ]; then # Method 3
-                ForegroundApp=$(((($GetTotalRam*4/100)*1024)/4))
-                VisibleApp=$(((($GetTotalRam*5/100)*1024)/4))
-                SecondaryServer=$(((($GetTotalRam*6/100)*1024)/4))
-                HiddenApp=$(((($GetTotalRam*7/100)*1024)/4))
-                ContentProvider=$(((($GetTotalRam*12/100)*1024)/4))
-                EmptyApp=$(((($GetTotalRam*15/100)*1024)/4))
+                ForegroundApp=$((((GetTotalRam*4/100)*1024)/4))
+                VisibleApp=$((((GetTotalRam*5/100)*1024)/4))
+                SecondaryServer=$((((GetTotalRam*6/100)*1024)/4))
+                HiddenApp=$((((GetTotalRam*7/100)*1024)/4))
+                ContentProvider=$((((GetTotalRam*12/100)*1024)/4))
+                EmptyApp=$((((GetTotalRam*15/100)*1024)/4))
             elif [ "$CustomRam" == "4" ]; then # Method 4 (for 3gb ram variant)
-                if [ "$GetTotalRam" -lt "3840" ];then
-                    ForegroundApp=$(((($GetTotalRam*6/100)*1024)/4))
-                    VisibleApp=$(((($GetTotalRam*7/100)*1024)/4))
-                    SecondaryServer=$(((($GetTotalRam*8/100)*1024)/4))
-                    HiddenApp=$(((($GetTotalRam*10/100)*1024)/4))
-                    ContentProvider=$(((($GetTotalRam*15/100)*1024)/4))
-                    EmptyApp=$(((($GetTotalRam*19/100)*1024)/4))
-                else
-                    echo "method not found" | tee -a $saveLog;
-                    StopModify="yes"
-                fi
+                ForegroundApp=$((((GetTotalRam*6/100)*1024)/4))
+                VisibleApp=$((((GetTotalRam*7/100)*1024)/4))
+                SecondaryServer=$((((GetTotalRam*8/100)*1024)/4))
+                HiddenApp=$((((GetTotalRam*10/100)*1024)/4))
+                ContentProvider=$((((GetTotalRam*15/100)*1024)/4))
+                EmptyApp=$((((GetTotalRam*19/100)*1024)/4))         
             else   
                 echo "method not found" | tee -a $saveLog;
                 StopModify="yes"
@@ -593,45 +588,68 @@ enableLogSystem(){
     if [ "$FromTerminal" == "ya" ];then
         StopVramSet="kaga"
     fi
-    GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
-    if [ "$CustomVram" == "1" ];then
-        SetVramTo=$((($GetTotalRam/2)))
-    elif [ "$CustomVram" == "2" ];then
-        SetVramTo=$((($GetTotalRam*80/100)))
-    elif [ "$CustomVram" == "3" ];then
-        SetVramTo=$((($GetTotalRam)))
-    elif [ "$CustomVram" == "0" ];then
-        if [ -e /dev/block/zram0 ]; then
-            echo 'disable Vram done .' | tee -a $saveLog;
-            swapoff /dev/block/zram0
-            setprop ro.config.zram false
-            setprop ro.config.zram.support false
-            setprop zram.disksize 0
-            echo 'disable Vram done .' | tee -a $saveLog;
-            echo "  --- --- --- --- --- " | tee -a $saveLog 
+    GetBusyBox="none"
+    PathBusyBox="none"
+    for i in /system/bin /system/xbin /sbin /su/xbin; do
+        if [ "$GetBusyBox" == "none" ]; then
+            if [ -f $i/busybox ]; then
+                GetBusyBox=$i/busybox;
+            fi;
+            PathBusyBox=$i
         fi;
-        StopVramSet="iya"
-    elif [ "$CustomVram" == "4" ];then
-        StopVramSet="iya"
-        echo "use Vram default system setting" | tee -a $saveLog 
+    done;
+    if [ "$GetBusyBox" == "none" ];then
+        echo "need busybox to set vram " | tee -a $saveLog 
         echo "  --- --- --- --- --- " | tee -a $saveLog 
-    fi
-    if [ "$StopVramSet" == "kaga" ];then
-        if [ -e /dev/block/zram0 ]; then
-            echo "enable Vram use method $CustomVram done ." | tee -a $saveLog;
-            echo "Set vram to $SetVramTo MB . . ." | tee -a $saveLog;
-            swapoff /dev/block/zram0
-            echo "1" > /sys/block/zram0/reset
-            echo "$(($SetVramTo*1024*1024))" > /sys/block/zram0/disksize
-            mkswap /dev/block/zram0
-            swapon /dev/block/zram0
-            setprop ro.config.zram true
-            setprop ro.config.zram.support true
-            setprop zram.disksize $SetVramTo
-            sysctl -e -w vm.swappiness=20
-            echo "enable Vram use method $CustomVram done ." | tee -a $saveLog;
+    else
+        GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
+        if [ "$CustomVram" == "1" ];then
+            SetVramTo="1073741824"
+        elif [ "$CustomVram" == "2" ];then
+            SetVramTo="2147483648"
+        elif [ "$CustomVram" == "3" ];then
+            SetVramTo="3221225472"
+        elif [ "$CustomVram" == "4" ];then
+            SetVramTo="4294967296"
+        elif [ "$CustomVram" == "0" ];then
+            if [ -e /dev/block/zram0 ]; then
+                echo 'disable Vram done .' | tee -a $saveLog;
+                $GetBusyBox swapoff /dev/block/zram0
+                $GetBusyBox setprop ro.config.zram false
+                $GetBusyBox setprop ro.config.zram.support false
+                $GetBusyBox setprop zram.disksize 0
+                echo 'disable Vram done .' | tee -a $saveLog;
+                echo "  --- --- --- --- --- " | tee -a $saveLog 
+            fi;
+            StopVramSet="iya"
+        elif [ "$CustomVram" == "4" ];then
+            StopVramSet="iya"
+            echo "use Vram default system setting" | tee -a $saveLog 
             echo "  --- --- --- --- --- " | tee -a $saveLog 
-        fi;
+        fi
+        if [ "$StopVramSet" == "kaga" ];then
+            if [ -e /dev/block/zram0 ]; then
+                stop perfd
+                echo "enable Vram use method $CustomVram done ." | tee -a $saveLog;
+                echo "Set vram to $SetVramTo Bytes . . ." | tee -a $saveLog;
+                FixSize=$(echo $SetVramTo |  sed "s/-*//g"  )
+                $PathBusyBox/swapoff "/dev/block/zram0"
+                usleep 100000
+                echo "1" > /sys/block/zram0/reset
+                echo "$FixSize" > /sys/block/zram0/disksize | tee -a $saveLog;
+                $PathBusyBox/mkswap "/dev/block/zram0"
+                usleep 100000
+                $PathBusyBox/swapon "/dev/block/zram0"
+                usleep 100000
+                # setprop ro.config.zram true
+                # setprop ro.config.zram.support true
+                setprop zram.disksize $SetVramTo
+                sysctl -e -w vm.swappiness=100
+                echo "enable Vram use method $CustomVram done ." | tee -a $saveLog;
+                echo "  --- --- --- --- --- " | tee -a $saveLog 
+                start perfd
+            fi;
+        fi
     fi
     
 # custom zram end
