@@ -306,11 +306,11 @@ ListMenu(){
                     echo -e $kuningPutih"this will set to : off"$ResetWarna
                 elif [ "$VramNew" == "1" ];then
                     echo -e $hijauPutih"this will set to : 50% of your ram"$ResetWarna
-                else [ "$VramNew" == "2" ];then
+                elif [ "$VramNew" == "2" ];then
                     echo -e $hijauPutih"this will set to : 80% of your ram"$ResetWarna
-                else [ "$VramNew" == "3" ];then
+                elif [ "$VramNew" == "3" ];then
                     echo -e $kuningPutih"this will set to : same as your total ram"$ResetWarna
-                else [ "$VramNew" == "4" ];then
+                elif [ "$VramNew" == "4" ];then
                     echo -e $kuningPutih"this will set to : By System"$ResetWarna
                 fi
             else
@@ -913,11 +913,11 @@ saveSetting()
         RestartNotif="iya"
     fi
     if [ "$VramNew" != "$VramBefore" ];then
-        echo "$VramNew" > $PathModulConfig/gms_doze.txt ; 
+        echo "$VramNew" > $PathModulConfig/vram.txt ; 
         if [ "$VramNew" == "4" ] && [ "$GmsDozeBefore" != "4" ];then
             RestartNotif="iya"
         fi
-        GmsDozeBefore=$VramNew;
+        VramBefore=$VramNew;
     fi
     if [ "$RunTweak" == "iya" ];then
         echo "--- --- --- --- ---"

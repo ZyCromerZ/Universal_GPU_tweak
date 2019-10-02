@@ -3,6 +3,7 @@
 # you can try on off my feature
 # prepare function for initialize file if clean install
 # sleep 2s
+# thanks for donation to @Mellinio :D
 # MODDIR=${0%/*}
 # for service.sh
 if [ -d "/sys/class/kgsl/kgsl-3d0" ]; then
@@ -261,7 +262,7 @@ if [ "$FromTerminal" == "tidak" ];then
     fi
 
     # Check notes version
-    SetModulVersion="3.36-5 BETA"
+    SetModulVersion="3.36-52 BETA FIX"
     if [ -e $PathModulConfig/notes_en.txt ];then
         if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
             rm $PathModulConfig/notes_en.txt
