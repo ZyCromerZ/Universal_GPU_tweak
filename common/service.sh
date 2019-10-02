@@ -145,6 +145,12 @@ if [ ! -e $PathModulConfig/gms_doze.txt ]; then
 fi
 GMSDoze=$(cat $PathModulConfig/gms_doze.txt)
 
+# vram
+if [ ! -e $PathModulConfig/vram.txt ]; then
+    MissingFile="iya"
+fi
+CustomVram=$(cat $PathModulConfig/vram.txt)
+
 if [ ! -e $PathModulConfig/notes_en.txt ]; then
     # echo "please read this xD \nyou can set mode.txt to:\n- off \n- on \n- turbo \nvalue must same as above without'-'\n\nchange mode_render.txt to:\n-  opengl \n-  skiagl \n-  skiavk \n\n note:\n-skiavk = Vulkan \n-skiagl = OpenGL (SKIA)\ndont edit total_fps.txt still not tested" > $PathModulConfig/notes.txt
     MissingFile="iya"
@@ -152,7 +158,6 @@ fi
 if [ ! -e $PathModulConfig/notes_id.txt ]; then
     MissingFile="iya"
 fi
-
 # log backup nya
     if [ "$MissingFile" == "iya" ]; then
         sh $ModulPath/ZyC_Turbo/initialize.sh & wait > /dev/null 2>&1
@@ -460,10 +465,12 @@ enableLogSystem(){
         elif [ "$fsyncMode" == "1" ];then
             enableFsync
             echo "custom fsync detected, set to enable" | tee -a $saveLog;
+        elif [ "$fsyncMode" == "3" ];then
+            echo "use system" | tee -a $saveLog;
         else
-            disableFsync
-            echo "fsync value error,set to disable" | tee -a $saveLog;
-            echo '0' > $PathModulConfig/fsync_mode.txt
+            # disableFsync
+            echo "fsync value error,set to by system" | tee -a $saveLog;
+            echo '3' > $PathModulConfig/fsync_mode.txt
         fi
         echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
     fi
@@ -531,6 +538,18 @@ enableLogSystem(){
                 HiddenApp=$(((($GetTotalRam*7/100)*1024)/4))
                 ContentProvider=$(((($GetTotalRam*12/100)*1024)/4))
                 EmptyApp=$(((($GetTotalRam*15/100)*1024)/4))
+            elif [ "$CustomRam" == "4" ]; then # Method 4 (for 3gb ram variant)
+                if [ "$GetTotalRam" -lt "3840" ];then
+                    ForegroundApp=$(((($GetTotalRam*6/100)*1024)/4))
+                    VisibleApp=$(((($GetTotalRam*7/100)*1024)/4))
+                    SecondaryServer=$(((($GetTotalRam*8/100)*1024)/4))
+                    HiddenApp=$(((($GetTotalRam*10/100)*1024)/4))
+                    ContentProvider=$(((($GetTotalRam*15/100)*1024)/4))
+                    EmptyApp=$(((($GetTotalRam*19/100)*1024)/4))
+                else
+                    echo "method not found" | tee -a $saveLog;
+                    StopModify="yes"
+                fi
             else   
                 echo "method not found" | tee -a $saveLog;
                 StopModify="yes"
@@ -569,6 +588,52 @@ enableLogSystem(){
         echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
     fi
 # custom ram managent end
+# custom zram start
+    if [ "$FromTerminal" == "ya" ];then
+        StopVramSet="kaga"
+    fi
+    GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
+    if [ "$CustomVram" == "1" ];then
+        SetVramTo=$((($GetTotalRam/2)))
+    elif [ "$CustomVram" == "2" ];then
+        SetVramTo=$((($GetTotalRam*80/100)))
+    elif [ "$CustomVram" == "3" ];then
+        SetVramTo=$((($GetTotalRam)))
+    elif [ "$CustomVram" == "0" ];then
+        if [ -e /dev/block/zram0 ]; then
+            echo 'disable Vram done .' | tee -a $saveLog;
+            swapoff /dev/block/zram0
+            setprop ro.config.zram false
+            setprop ro.config.zram.support false
+            setprop zram.disksize 0
+            echo 'disable Vram done .' | tee -a $saveLog;
+            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+        fi;
+        StopVramSet="iya"
+    elif [ "$CustomVram" == "4" ];then
+        StopVramSet="iya"
+        echo "use Vram default system setting" | tee -a $saveLog > /dev/null 2>&1;
+        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+    fi
+    if [ "$StopVramSet" == "kaga" ];then
+        if [ -e /dev/block/zram0 ]; then
+            echo "enable Vram use method $CustomVram done ." | tee -a $saveLog;
+            echo "Set vram to $SetVramTo MB . . ." | tee -a $saveLog;
+            swapoff /dev/block/zram0
+            echo "1" > /sys/block/zram0/reset
+            echo "$(($SetVramTo*1024*1024))" > /sys/block/zram0/disksize
+            mkswap /dev/block/zram0
+            swapon /dev/block/zram0
+            setprop ro.config.zram true
+            setprop ro.config.zram.support true
+            setprop zram.disksize $SetVramTo
+            sysctl -e -w vm.swappiness=20
+            echo "enable Vram use method $CustomVram done ." | tee -a $saveLog;
+            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1;
+        fi;
+    fi
+    
+# custom zram end
 
 if [ "$GetMode" == 'off' ];then
     echo "turn off tweak succeess :D"| tee -a $saveLog;

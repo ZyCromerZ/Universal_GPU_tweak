@@ -1,6 +1,17 @@
 #!/system/bin/sh
 # ni sh buat nge trigger ganti mode aja
 echo 'wait . . .';
+if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
+    echo $merahHitam"please type 'su' first -_-"$ResetWarna
+    echo ""
+    echo "Exit after :"
+    for timeExit in "3s 2s 1s 0s" ;
+    do
+        echo "$timeExit"
+        sleep 1s
+    done
+    exit -1
+fi
 magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
 GetVersion=$($magisk -c | grep -Eo '[1-9]{2}\.[0-9]+')
 case "$GetVersion" in

@@ -1,6 +1,17 @@
 #!/system/bin/sh
 # ni sh buat ganti mode lah
 echo 'wait . . .';
+if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
+    echo $merahHitam"please type 'su' first -_-"$ResetWarna
+    echo ""
+    echo "Exit after :"
+    for timeExit in "3s 2s 1s 0s" ;
+    do
+        echo "$timeExit"
+        sleep 1s
+    done
+    exit -1
+fi
 if [ ! -e /data/mod_path.txt ]; then
     zyc_turbo
 fi

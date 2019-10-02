@@ -9,7 +9,7 @@ if [ "$1" == "fromBoot" ];then
 fi
 MAGISKTMP=$ModulPath/ZyC_Turbo
 if [ ! -e /data/mod_path.txt ]; then
-    echo "/data/media/0" > /data/mod_path.txt
+    sh $ModulPath/ZyC_Turbo/initialize.sh & wait > /dev/null 2>&1
 fi
 ModPath=$(cat /data/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod

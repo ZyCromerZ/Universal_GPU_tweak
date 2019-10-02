@@ -255,6 +255,11 @@ if [ "$FromTerminal" == "tidak" ];then
     if [ ! -e $PathModulConfig/gms_doze.txt ]; then
         echo '1' > $PathModulConfig/gms_doze.txt
     fi
+    # vram
+    if [ ! -e $PathModulConfig/vram.txt ]; then
+        echo '4' > $PathModulConfig/vram.txt
+    fi
+
     # Check notes version
     SetModulVersion="3.36-4 BETA"
     if [ -e $PathModulConfig/notes_en.txt ];then
