@@ -120,6 +120,14 @@ if [ -e $PathModulConfig/vram.txt ];then
     VramBefore=$(cat "$PathModulConfig/vram.txt")
     VramNew=$(cat "$PathModulConfig/vram.txt")
 fi
+if [ -e $PathModulConfig/swapinnes.txt ];then
+    swapinnesBefore=$(cat "$PathModulConfig/swapinnes.txt")
+    swapinnesNew=$(cat "$PathModulConfig/swapinnes.txt")
+fi
+if [ -e $PathModulConfig/zram_optimizer.txt ];then
+    ZramOptimizerBefore=$(cat "$PathModulConfig/zram_optimizer.txt")
+    ZramOptimizerNew=$(cat "$PathModulConfig/zram_optimizer.txt")
+fi
 RefreshList="tidak"
 RestartNotif="tidak"
 savedata="no"
@@ -256,12 +264,17 @@ ListMenu(){
         if [ -e "$PathModulConfig/custom_ram_management.txt" ];then
             echo "<-- -- Ram management Config -- -->"
             echo "rms > use system ram management"
-            echo "rm1 > use ram management method 1 (method for light use)"
-            echo "rm2 > use ram management method 2 (method for open some app at same time)"
-            echo "rm3 > use ram management method 3 (method for open multi app & game at same time)"
-            echo "rm4 > use ram management method 4 (method for extreme app and gaming)"
+            echo "rm1 > use ram management method 1 "
+            echo "      (method for light use)"
+            echo "rm2 > use ram management method 2"
+            echo "      (method for open some app at same time)"
+            echo "rm3 > use ram management method 3 "
+            echo "      (method for open multi app & game at same time)"
+            echo "rm4 > use ram management method 4"
+            echo "      (method for extreme app and gaming)"
             echo " NOTE : ram 3gb or less use rm4 for gaming"
-            echo "        ram 4gb or highger use rm3 for gaming,but u can try rm4 :p"
+            echo "        ram 4gb or highger use rm3 for gaming,
+                          but u can try rm4 :p"
             if [ "$GetModeRamBefore" != "$GetModeRamNew" ];then
                 if [ "$GetModeRamNew" == "0" ];then
                     echo -e $hijauPutih"this will set to : use system "$ResetWarna
@@ -300,14 +313,11 @@ ListMenu(){
             echo "<-- -- Vram Config -- -->"
             echo "vrs > Vram setting by system"
             echo "vrx > turn off Vram"
-            echo "vr1 > set vram to 1gb"
-            echo "vr2 > set vram to 2gb"
-            echo "vr3 > set vram to 3gb"
-            echo "vr4 > set vram to 4gb"
+            echo "vrc > costumize vram size"
             echo "note : do not set to high :D"
             echo "       dont blame me if u got random reboot cause set too high :p"
             if [ "$VramBefore" != "$VramNew" ];then
-                if [ "$VramNew" == "0" ];then
+                if [ "$VramNew" == "s" ];then
                     echo -e $kuningPutih"this will set to : off"$ResetWarna
                 elif [ "$VramNew" == "1" ];then
                     echo -e $hijauPutih"this will set to : 1gb "$ResetWarna
@@ -318,10 +328,18 @@ ListMenu(){
                 elif [ "$VramNew" == "4" ];then
                     echo -e $kuningPutih"this will set to : 4gb"$ResetWarna
                 elif [ "$VramNew" == "5" ];then
+                    echo -e $merahPutih"this will set to : 5gb"$ResetWarna
+                elif [ "$VramNew" == "6" ];then
+                    echo -e $merahPutih"this will set to : 6gb"$ResetWarna
+                elif [ "$VramNew" == "7" ];then
+                    echo -e $merahPutih"this will set to : 7gb"$ResetWarna
+                elif [ "$VramNew" == "8" ];then
+                    echo -e $merahPutih"this will set to : 8gb"$ResetWarna
+                elif [ "$VramNew" == "s" ];then
                     echo -e $abuHitam"this will set to :  System"$ResetWarna
                 fi
             else
-                if [ "$VramBefore" == "0" ];then
+                if [ "$VramBefore" == "s" ];then
                     echo -e $kuningHitam"Current status : off"$ResetWarna
                 elif [ "$VramBefore" == "1" ];then
                     echo -e $hijauHitam"Current status : 1gb"$ResetWarna
@@ -332,11 +350,51 @@ ListMenu(){
                 elif [ "$VramBefore" == "4" ];then
                     echo -e $kuningHitam"Current status : 4gb"$ResetWarna
                 elif [ "$VramBefore" == "5" ];then
+                    echo -e $merahHitam"Current status : 5gb"$ResetWarna
+                elif [ "$VramBefore" == "6" ];then
+                    echo -e $merahHitam"Current status : 6gb"$ResetWarna
+                elif [ "$VramBefore" == "7" ];then
+                    echo -e $merahHitam"Current status : 7gb"$ResetWarna
+                elif [ "$VramBefore" == "8" ];then
+                    echo -e $merahHitam"Current status : 8gb"$ResetWarna
+                elif [ "$VramBefore" == "s" ];then
                     echo -e $putihHitam"Current status : By System"$ResetWarna
                 fi
             fi
             echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
+        if [ -e "$PathModulConfig/swapinnes.txt" ];then
+            echo "<-- -- Swappiness Config -- -->"
+            echo "csw > Custom swappiness"
+            if [ "$swapinnesBefore" != "$swapinnesNew" ];then
+                echo -e $kuningPutih"this will set to : $swapinnesNew"$ResetWarna
+            else
+                echo -e $hijauHitam"Current status : $swapinnesBefore"$ResetWarna
+            fi
+            echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
+        fi
+        if [ -e "$PathModulConfig/zram_optimizer.txt" ];then
+            echo "<-- -- Vram Config -- -->"
+            echo "zox > Zram optimizer by system"
+            echo "zoy > Zram optimizer by tweak"
+            if [ "$ZramOptimizerBefore" != "$ZramOptimizerNew" ];then
+                if [ "$ZramOptimizerNew" == "0" ];then
+                    echo -e $kuningPutih"this will set to : off"$ResetWarna
+                elif [ "$ZramOptimizerNew" == "1" ];then
+                    echo -e $hijauPutih"this will set to : on"$ResetWarna
+                fi
+            else
+                if [ "$ZramOptimizerBefore" == "0" ];then
+                    echo -e $kuningHitam"Current status : off"$ResetWarna
+                elif [ "$ZramOptimizerBefore" == "1" ];then
+                    echo -e $hijauHitam"Current status : on"$ResetWarna
+                fi
+            fi
+            echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
+        fi
+        
+        echo "current : page 2"
+    elif [ "$page" == "3" ];then
         if [ -e "$PathModulConfigAi/ai_status.txt" ];then
             echo "<-- -- AI Config -- -->"
             echo "aix > auto/ai mode off"
@@ -360,9 +418,6 @@ ListMenu(){
             fi
             echo -e $biruPutih"<--- ---- --- --->"$ResetWarna
         fi
-        
-        echo "current : page 2"
-    elif [ "$page" == "3" ];then
         if [ -e "$PathModulConfigAi/ai_notif_mode.txt" ];then
             echo "<-- -- AI Notif Config -- -->"
             if [ "$GetModeAiBefore" == "2" ];then
@@ -791,29 +846,47 @@ ListMenu(){
         VramNew="0"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "vr1" ];then
+    elif [ $pilihan == "vrc" ];then
         Perubahan="ya"
-        VramNew="1"
-        usleep 100000
-        ListMenu
-    elif [ $pilihan == "vr2" ];then
-        Perubahan="ya"
-        VramNew="2"
-        usleep 100000
-        ListMenu
-    elif [ $pilihan == "vr3" ];then
-        Perubahan="ya"
-        VramNew="3"
-        usleep 100000
-        ListMenu
-    elif [ $pilihan == "vr4" ];then
-        Perubahan="ya"
-        VramNew="4"
+        echo '--- --- --- ---'
+        echo 'change set vram to ?'
+        echo 'you can set from 1 to 8 :p'
+        read GetChoice
+        if [ "$GetChoice" -le "8" ];then
+            VramNew=$GetChoice
+            echo "set to : $GetChoice Gb"
+        else
+            echo "input error . . ."
+        fi
         usleep 100000
         ListMenu
     elif [ $pilihan == "vrs" ];then
         Perubahan="ya"
-        VramNew="5"
+        VramNew="s"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "csw" ];then
+        Perubahan="ya"
+         echo '--- --- --- ---'
+        echo 'change set vram to ?'
+        echo 'you can set from 0 to 100 :p'
+        read GetChoice
+        if [ "$GetChoice" -le "100" ];then
+            swapinnesNew=$GetChoice
+            echo "set to : $GetChoice Gb"
+        else
+            echo "input error . . ."
+        fi
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "zox" ];then
+        Perubahan="ya"
+        ZramOptimizerNew="0"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "zoy" ];then
+        Perubahan="ya"
+        ZramOptimizerNew="1"
         usleep 100000
         ListMenu
     elif [ $pilihan == "0" ];then
@@ -928,10 +1001,18 @@ saveSetting()
     fi
     if [ "$VramNew" != "$VramBefore" ];then
         echo "$VramNew" > $PathModulConfig/vram.txt ; 
-        if [ "$VramNew" == "5" ] && [ "$GmsDozeBefore" != "5" ];then
-            RestartNotif="iya"
-        fi
         VramBefore=$VramNew;
+        RunTweak="iya"
+    fi
+    if [ "$swapinnesBefore" != "$swapinnesNew" ];then
+        echo "$swapinnesNew" > $PathModulConfig/swapinnes.txt ; 
+        swapinnesBefore=$swapinnesNew;
+        RunTweak="iya"
+    fi
+    if [ "$ZramOptimizerBefore" != "$ZramOptimizerNew" ];then
+        echo "$ZramOptimizerNew" > $PathModulConfig/zram_optimizer.txt ; 
+        ZramOptimizerBefore=$ZramOptimizerNew;
+        RunTweak="iya"
     fi
     if [ "$RunTweak" == "iya" ];then
         echo "--- --- --- --- ---"

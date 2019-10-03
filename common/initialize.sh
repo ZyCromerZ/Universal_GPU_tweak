@@ -282,11 +282,19 @@ if [ "$FromTerminal" == "tidak" ];then
     fi
     # vram
     if [ ! -e $PathModulConfig/vram.txt ]; then
-        echo '4' > $PathModulConfig/vram.txt
+        echo 's' > $PathModulConfig/vram.txt
+    fi
+    # swappiness
+    if [ ! -e $PathModulConfig/swapinnes.txt ]; then
+        echo '100' > $PathModulConfig/swapinnes.txt
+    fi
+    # optimize zram
+    if [ ! -e $PathModulConfig/zram_optimizer.txt ]; then
+        echo '0' > $PathModulConfig/zram_optimizer.txt
     fi
 
     # Check notes version
-    SetModulVersion="3.36-62 BETA"
+    SetModulVersion="3.36-7 BETA"
     if [ -e $PathModulConfig/notes_en.txt ];then
         if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
             rm $PathModulConfig/notes_en.txt
@@ -798,7 +806,26 @@ Version:$SetModulVersion" | tee -a $SetNotes
         usleep 100000
     fi
     # backup data dolo boss end
-
+    # zram config stock :p
+    stop perfd
+    for ZramConf in vm.dirty_ratio vm.dirty_background_ratio vm.swappiness vm.drop_caches vm.vfs_cache_pressure
+    do
+        if [ -z $(echo $ZramConf | grep "compact_memory") ];then
+            echo "$ZramConf";
+            GetPath="$(echo "$PathModulConfig/backup/zram_$ZramConf" | awk '{ print $1".txt" }')"
+            GetData="$(sysctl $ZramConf | awk '{ print $3 }')"
+            if [ ! -e $GetPath ]; then
+                echo "$GetData" > "$GetPath"
+                backup="pake"
+                usleep 100000
+            fi
+            usleep 100000
+        fi 
+    done
+    if [ ! -e $PathModulConfig/backup/zram_disksize.txt ]; then
+        echo $(cat "/sys/block/zram0/disksize" |  sed "s/-*//g" ) > $PathModulConfig/backup/zram_disksize.txt
+    fi
+    start perfd
 
     # For ai_mode.sh
     GetAppAndGames

@@ -151,6 +151,17 @@ if [ ! -e $PathModulConfig/vram.txt ]; then
     MissingFile="iya"
 fi
 CustomVram=$(cat $PathModulConfig/vram.txt)
+# swappiness
+if [ ! -e $PathModulConfig/swapinnes.txt ]; then
+    MissingFile="iya"
+fi
+Swapinnes=$(cat $PathModulConfig/swapinnes.txt)
+
+# optimize zram
+if [ ! -e $PathModulConfig/zram_optimizer.txt ]; then
+    MissingFile="iya"
+fi
+ZramOptimizer=$(cat $PathModulConfig/zram_optimizer.txt)
 
 if [ ! -e $PathModulConfig/notes_en.txt ]; then
     # echo "please read this xD \nyou can set mode.txt to:\n- off \n- on \n- turbo \nvalue must same as above without'-'\n\nchange mode_render.txt to:\n-  opengl \n-  skiagl \n-  skiavk \n\n note:\n-skiavk = Vulkan \n-skiagl = OpenGL (SKIA)\ndont edit total_fps.txt still not tested" > $PathModulConfig/notes.txt
@@ -585,6 +596,7 @@ enableLogSystem(){
     fi
 # custom ram managent end
 # custom zram start
+    StopVramSet="iya"
     if [ "$FromTerminal" == "ya" ];then
         StopVramSet="kaga"
     fi
@@ -611,6 +623,16 @@ enableLogSystem(){
             SetVramTo="3221225472"
         elif [ "$CustomVram" == "4" ];then
             SetVramTo="4294967296"
+        elif [ "$CustomVram" == "5" ];then
+            SetVramTo="5368709120‬"
+        elif [ "$CustomVram" == "6" ];then
+            SetVramTo="6442450944‬"
+        elif [ "$CustomVram" == "7" ];then
+            SetVramTo="7516192768"
+        elif [ "$CustomVram" == "8" ];then
+            SetVramTo="8589934592‬"
+        elif [ "$CustomVram" == "s" ];then
+            SetVramTo=$(cat "$PathModulConfig/backup/zram_disksize.txt")
         elif [ "$CustomVram" == "0" ];then
             if [ -e /dev/block/zram0 ]; then
                 echo 'disable Vram done .' | tee -a $saveLog;
@@ -630,27 +652,43 @@ enableLogSystem(){
         if [ "$StopVramSet" == "kaga" ];then
             if [ -e /dev/block/zram0 ]; then
                 FixSize=$(echo $SetVramTo |  sed "s/-*//g" )
-                GetSwapNow=$(cat "/sys/block/zram0/disksize" |  sed "s/-*//g" )
+                GetSwapNow=$(getprop zram.disksize |  sed "s/-*//g" )
                 if [ "$FixSize" != "$GetSwapNow" ];then
                     stop perfd
-                    echo "enable Vram use method $CustomVram done ." | tee -a $saveLog;
+                    # echo "use Vram default system setting" | tee -a $saveLog 
+                    echo "enable Vram & use $CustomVram Gb done ." | tee -a $saveLog;
                     echo "Set vram to $SetVramTo Bytes . . ." | tee -a $saveLog;
+                    echo "and Swapinnes to $Swapinnes . . ." | tee -a $saveLog;
                     $PathBusyBox/swapoff "/dev/block/zram0"
                     usleep 100000
                     echo "1" > /sys/block/zram0/reset
                     echo "$FixSize" > /sys/block/zram0/disksize | tee -a $saveLog;
                     $PathBusyBox/mkswap "/dev/block/zram0"
                     usleep 100000
-                    $PathBusyBox/swapon "/dev/block/zram0"
-                    usleep 100000
                     # setprop ro.config.zram true
                     # setprop ro.config.zram.support true
                     setprop zram.disksize $SetVramTo
-                    sysctl -e -w vm.swappiness=100
-                    echo "enable Vram use method $CustomVram done ." | tee -a $saveLog;
+                    if [ "$ZramOptimizer" == "1" ];then
+                        echo "echo optimize zram setting . . ." | tee -a $saveLog;
+                        sysctl -e -w vm.swappiness=$Swapinnes
+                        sysctl -e -w vm.dirty_ratio=5
+                        sysctl -e -w vm.dirty_background_ratio=1
+                        sysctl -e -w vm.drop_caches=3
+                        sysctl -e -w vm.vfs_cache_pressure=100
+                    else
+                        echo "use stock zram setting . . ." | tee -a $saveLog;
+                        sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_ratio.txt")
+                        sysctl -e -w vm.dirty_background_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_background_ratio.txt")
+                        sysctl -e -w vm.drop_caches=$(cat "$PathModulConfig/backup/zram_vm.drop_caches.txt")
+                        sysctl -e -w vm.vfs_cache_pressure=$(cat "$PathModulConfig/backup/zram_vm.vfs_cache_pressure.txt")
+                    fi
+                    $PathBusyBox/swapon "/dev/block/zram0"
+                    usleep 100000
+                    echo "enable Vram & use $CustomVram Gb done ." | tee -a $saveLog;
                     echo "  --- --- --- --- --- " | tee -a $saveLog 
                     start perfd
                 fi
+                
             fi;
         fi
     fi
@@ -758,4 +796,3 @@ if [ "$FromTerminal" == "tidak" ];then
 fi
 echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog;
 echo "  --- --- --- --- --->> " | tee -a $saveLog 
-exit 0;
