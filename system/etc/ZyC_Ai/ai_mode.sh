@@ -159,6 +159,7 @@ setTurbo(){
     echo "Set to turbo at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1;
     getAppName
     echo "turbo" > $PathModulConfig/status_modul.txt
+    StatusModul="turbo"
     echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
     sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait > /dev/null 2>&1
     sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
@@ -168,6 +169,7 @@ setOff(){
     SetNotificationOff
     echo "turn off at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1;
     echo "off" > $PathModulConfig/status_modul.txt
+    StatusModul="off"
     echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
     sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait > /dev/null 2>&1
     sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
@@ -226,12 +228,12 @@ elif [ $aiStatus == "2" ];then
         if [ ! -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
             if [ $StatusModul != "turbo" ];then
                 echo "found $GetPackageApp on your setting . . ." | tee -a $AiLog > /dev/null 2>&1 ;
-                setTurbo
+                setTurbo & wait
             fi
         else 
             if [ "$GpuStatus" -ge "$GpuStart" ];then
                 if [ $StatusModul != "turbo" ];then
-                    setTurbo
+                    setTurbo & wait
                 fi
             fi
         fi
@@ -240,7 +242,7 @@ elif [ $aiStatus == "2" ];then
             if [ $StatusModul != "off" ];then
                 GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1)
                 if [ -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
-                    setOff
+                    setOff & wait
                 fi
             fi
         fi
@@ -274,16 +276,15 @@ if [ $aiStatus == "2"  ];then
     fi
 fi 
 #notification when turbo mode start
-if [ $aiNotifRunningStatus == "1" ];then
+if [ $aiNotifRunningStatus == "1" ] && [ "$StatusModul" == "turbo" ];then
     SetNotificationRunning
-elif [ $aiNotifRunningStatus == "2" ];then
+elif [ $aiNotifRunningStatus == "2" ] && [ "$StatusModul" == "turbo" ];then
     GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1)
     if [ ! -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
         if [ $StatusModul == "turbo" ];then
             SetNotificationRunning
         fi
-    fi 
-            
+    fi   
 fi
 #notification when turbo mode end
 if [ $fromBoot == "yes" ];then
