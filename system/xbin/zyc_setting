@@ -256,18 +256,20 @@ ListMenu(){
         if [ -e "$PathModulConfig/custom_ram_management.txt" ];then
             echo "<-- -- Ram management Config -- -->"
             echo "rms > use system ram management"
-            echo "rm1 > use ram management method 1"
-            echo "rm2 > use ram management method 2"
-            echo "rm3 > use ram management method 3"
-            echo "rm4 > use ram management method 4 (only for 3gb ram or less)"
+            echo "rm1 > use ram management method 1 (method for light use)"
+            echo "rm2 > use ram management method 2 (method for open some app at same time)"
+            echo "rm3 > use ram management method 3 (method for open multi app & game at same time)"
+            echo "rm4 > use ram management method 4 (method for extreme app and gaming)"
+            echo " NOTE : ram 3gb or less use rm4 for gaming"
+            echo "        ram 4gb or highger use rm3 for gaming,but u can try rm4 :p"
             if [ "$GetModeRamBefore" != "$GetModeRamNew" ];then
-                if [ $GetModeRamNew == "0" ];then
+                if [ "$GetModeRamNew" == "0" ];then
                     echo -e $hijauPutih"this will set to : use system "$ResetWarna
                 else 
                     echo -e $merahPutih"this will set to : method $GetModeRamNew"$ResetWarna
                 fi
             else
-                if [ $GetModeRamNew == "0" ];then
+                if [ "$GetModeRamNew" == "0" ];then
                     echo -e $hijauHitam"current status : use system "$ResetWarna
                 else 
                     echo -e $merahHitam"current status : method $GetModeRamNew"$ResetWarna
@@ -303,7 +305,7 @@ ListMenu(){
             echo "vr3 > set vram to 3gb"
             echo "vr4 > set vram to 4gb"
             echo "note : do not set to high :D"
-            echo "       dont blame me if u got random reboot :p"
+            echo "       dont blame me if u got random reboot cause set too high :p"
             if [ "$VramBefore" != "$VramNew" ];then
                 if [ "$VramNew" == "0" ];then
                     echo -e $kuningPutih"this will set to : off"$ResetWarna
@@ -935,13 +937,13 @@ saveSetting()
         echo "--- --- --- --- ---"
         echo "re run tweak . . ."
         echo "--- --- --- --- ---"
-        zyc_turbo > /dev/null 2>&1
+        zyc_turbo & wait
     fi
     if [ "$GetModeAiNew" == "1" ];then
         echo "--- --- --- --- ---"
         echo "turn on ai"
         echo "--- --- --- --- ---"
-        zyc_auto > /dev/null 2>&1
+        zyc_auto & wait
     fi
     if [ "$RefreshList" == "iya" ];then
         echo "--- --- --- --- ---"
@@ -950,7 +952,7 @@ saveSetting()
         sh $ModulPath/ZyC_Turbo/initialize.sh "App" & wait > /dev/null 2>&1
     fi
     if [ "$RestartNotif" == "iya" ];then
-            echo " please restart to take effect for gms doze fix . . . ."
+            echo " please restart to take effect for gms doze fix/vram use system . . . ."
         fi
     echo "done . . . "
     sleep 2s

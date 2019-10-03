@@ -629,25 +629,28 @@ enableLogSystem(){
         fi
         if [ "$StopVramSet" == "kaga" ];then
             if [ -e /dev/block/zram0 ]; then
-                stop perfd
-                echo "enable Vram use method $CustomVram done ." | tee -a $saveLog;
-                echo "Set vram to $SetVramTo Bytes . . ." | tee -a $saveLog;
-                FixSize=$(echo $SetVramTo |  sed "s/-*//g"  )
-                $PathBusyBox/swapoff "/dev/block/zram0"
-                usleep 100000
-                echo "1" > /sys/block/zram0/reset
-                echo "$FixSize" > /sys/block/zram0/disksize | tee -a $saveLog;
-                $PathBusyBox/mkswap "/dev/block/zram0"
-                usleep 100000
-                $PathBusyBox/swapon "/dev/block/zram0"
-                usleep 100000
-                # setprop ro.config.zram true
-                # setprop ro.config.zram.support true
-                setprop zram.disksize $SetVramTo
-                sysctl -e -w vm.swappiness=100
-                echo "enable Vram use method $CustomVram done ." | tee -a $saveLog;
-                echo "  --- --- --- --- --- " | tee -a $saveLog 
-                start perfd
+                FixSize=$(echo $SetVramTo |  sed "s/-*//g" )
+                GetSwapNow=$(cat "/sys/block/zram0/disksize" |  sed "s/-*//g" )
+                if [ "$FixSize" != "$GetSwapNow" ];then
+                    stop perfd
+                    echo "enable Vram use method $CustomVram done ." | tee -a $saveLog;
+                    echo "Set vram to $SetVramTo Bytes . . ." | tee -a $saveLog;
+                    $PathBusyBox/swapoff "/dev/block/zram0"
+                    usleep 100000
+                    echo "1" > /sys/block/zram0/reset
+                    echo "$FixSize" > /sys/block/zram0/disksize | tee -a $saveLog;
+                    $PathBusyBox/mkswap "/dev/block/zram0"
+                    usleep 100000
+                    $PathBusyBox/swapon "/dev/block/zram0"
+                    usleep 100000
+                    # setprop ro.config.zram true
+                    # setprop ro.config.zram.support true
+                    setprop zram.disksize $SetVramTo
+                    sysctl -e -w vm.swappiness=100
+                    echo "enable Vram use method $CustomVram done ." | tee -a $saveLog;
+                    echo "  --- --- --- --- --- " | tee -a $saveLog 
+                    start perfd
+                fi
             fi;
         fi
     fi

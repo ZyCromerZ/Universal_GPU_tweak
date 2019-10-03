@@ -238,16 +238,10 @@ elif [ $aiStatus == "2" ];then
     else
         if [ "$GpuStatus" -le "$GpuStop" ];then
             if [ $StatusModul != "off" ];then
-                setOff
-            fi
-        else
-            if [ $aiNotifRunningStatus == "2" ];then
                 GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1)
-                if [ ! -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
-                    if [ $StatusModul == "turbo" ];then
-                        SetNotificationRunning
-                    fi
-                fi 
+                if [ -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
+                    setOff
+                fi
             fi
         fi
     fi
@@ -282,6 +276,14 @@ fi
 #notification when turbo mode start
 if [ $aiNotifRunningStatus == "1" ];then
     SetNotificationRunning
+elif [ $aiNotifRunningStatus == "2" ];then
+    GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1)
+    if [ ! -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
+        if [ $StatusModul == "turbo" ];then
+            SetNotificationRunning
+        fi
+    fi 
+            
 fi
 #notification when turbo mode end
 if [ $fromBoot == "yes" ];then

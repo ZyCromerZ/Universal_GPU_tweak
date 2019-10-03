@@ -286,7 +286,7 @@ if [ "$FromTerminal" == "tidak" ];then
     fi
 
     # Check notes version
-    SetModulVersion="3.36-52 BETA FIX"
+    SetModulVersion="3.36-62 BETA"
     if [ -e $PathModulConfig/notes_en.txt ];then
         if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
             rm $PathModulConfig/notes_en.txt
