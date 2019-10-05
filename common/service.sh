@@ -146,11 +146,11 @@ if [ ! -e $PathModulConfig/gms_doze.txt ]; then
 fi
 GMSDoze=$(cat $PathModulConfig/gms_doze.txt)
 
-# vram
-if [ ! -e $PathModulConfig/vram.txt ]; then
+# Zram
+if [ ! -e $PathModulConfig/zram.txt ]; then
     MissingFile="iya"
 fi
-CustomVram=$(cat $PathModulConfig/vram.txt)
+CustomZram=$(cat $PathModulConfig/zram.txt)
 # swappiness
 if [ ! -e $PathModulConfig/swapinnes.txt ]; then
     MissingFile="iya"
@@ -327,6 +327,34 @@ enableFsync(){
     echo 'enable done .' | tee -a $saveLog;
     echo "  --- --- --- --- --- " | tee -a $saveLog 
 }
+systemFsync(){
+    echo 'use fsync system setting . . .' | tee -a $saveLog;
+    if [ ! -e $PathModulConfig/backup/misc_Dyn_fsync_active.txt ]; then
+        if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
+            echo $(cat  "$PathModulConfig/backup/misc_Dyn_fsync_active.txt") > /sys/kernel/dyn_fsync/Dyn_fsync_active
+        fi
+    fi
+
+    if [ ! -e $PathModulConfig/backup/misc_class_fsync_enabled.txt ]; then
+        if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
+            echo $(cat  "$PathModulConfig/backup/misc_class_fsync_enabled.txt") > /sys/class/misc/fsynccontrol/fsync_enabled
+        fi 
+    fi
+
+    if [ ! -e $PathModulConfig/backup/misc_fsync.txt ]; then
+        if [ -e /sys/module/sync/parameters/fsync ]; then
+            echo $(cat  "$PathModulConfig/backup/misc_fsync.txt") > /sys/module/sync/parameters/fsync
+        fi
+    fi
+
+    if [ ! -e $PathModulConfig/backup/misc_module_fsync_enabled.txt ]; then
+        if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
+            echo $(cat  "$PathModulConfig/backup/misc_module_fsync_enabled.txt") > /sys/module/sync/parameters/fsync_enabled
+        fi
+    fi
+    echo 'use fsync system setting done .' | tee -a $saveLog;
+    echo "  --- --- --- --- --- " | tee -a $saveLog 
+}
 disableLogSystem(){
 # Disable stats logging & monitoring
     echo 'disable log and monitoring . . .' | tee -a $saveLog;
@@ -374,23 +402,26 @@ enableLogSystem(){
     if [ "$GetMode" == 'off' ];then
         SetOff
         echo "turn off tweak" | tee -a $saveLog;
+        echo "  --- --- --- --- --- " | tee -a $saveLog 
     elif [ "$GetMode" == 'on' ];then
         SetOff
         SetOn
         # disableFsync
         echo "setting to mode on" | tee -a $saveLog;
+        echo "  --- --- --- --- --- " | tee -a $saveLog 
     elif [ "$GetMode" == 'turbo' ];then
         SetOn
         SetTurbo
         # disableFsync
         # disableThermal
         echo "swith to turbo mode" | tee -a $saveLog;
+        echo "  --- --- --- --- --- " | tee -a $saveLog 
     else
         SetOff
-        SetOn
+        # SetOn
         # disableFsync
-        echo "please read guide, mode $GetMode,not found autmatic set to mode on " | tee -a $saveLog;
-        echo 'on' > $PathModulConfig/status_modul.txt
+        echo "please read guide, mode $GetMode,not found autmatic set to mode off " | tee -a $saveLog;
+        echo 'off' > $PathModulConfig/status_modul.txt
         echo "  --- --- --- --- --- " | tee -a $saveLog 
     fi
 # ngator mode end
@@ -398,16 +429,18 @@ enableLogSystem(){
 # enable fastcharge start
     if [ "$FastCharge" == "1" ]; then
         if [ -e /sys/kernel/fast_charge/force_fast_charge ]; then
+            fcMethod="one";
             echo "tying to enable fastcharging using first method" | tee -a $saveLog;
             echo "2" > /sys/kernel/fast_charge/force_fast_charge
             if [ "$(cat /sys/kernel/fast_charge/force_fast_charge)" == "0" ]; then
+                fcMethod="two";
                 echo "tying to enable fastcharging using second method" | tee -a $saveLog;
                 echo "1" > /sys/kernel/fast_charge/force_fast_charge
             fi
             if [ "$(cat /sys/kernel/fast_charge/force_fast_charge)" == "0" ]; then
                 echo "fastcharge off,maybe your kernel/phone not support it" | tee -a $saveLog;
             else
-                echo "fastcharge on" | tee -a $saveLog;
+                echo "fastcharge on after use method $fcMethod" | tee -a $saveLog;
             fi
             echo "  --- --- --- --- --- " | tee -a $saveLog 
         fi
@@ -445,28 +478,33 @@ enableLogSystem(){
         echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
     else
         echo "nice,use default this tweak GpuBoost" | tee -a $saveLog;
-        echo '4' > $PathModulConfig/GpuBooster.txt
+        echo 'tweak' > $PathModulConfig/GpuBooster.txt
     fi
     echo "  --- --- --- --- --- " | tee -a $saveLog 
 # gpu turbo end
 
 # echo "ok beres dah . . .\n" | tee -a $saveLog;
 # gpu render start
-    if [ "$RenderMode" == 'skiagl' ];then
-        setprop debug.hwui.renderer skiagl
-        echo "set render gpu to OpenGL (SKIA) done" | tee -a $saveLog;
-    elif [ "$RenderMode" == 'skiavk' ];then
-        setprop debug.hwui.renderer skiavk
-        echo "set render gpu to Vulkan (SKIA) done" | tee -a $saveLog;
-    elif [ "$RenderMode" == 'opengl' ];then
-        setprop debug.hwui.renderer opengl
-        echo "set render gpu to OpenGL default done" | tee -a $saveLog;
-    else
-        setprop debug.hwui.renderer skiagl
-        echo "mode not found,set to OpenGL (skia) " | tee -a $saveLog;
-        echo 'skiagl' > $PathModulConfig/mode_render.txt
+    if [ "$FromTerminal" == "ya" ];then
+        if [ "$RenderMode" == 'skiagl' ];then
+            setprop debug.hwui.renderer skiagl
+            echo "set render gpu to OpenGL (SKIA) done" | tee -a $saveLog;
+        elif [ "$RenderMode" == 'skiavk' ];then
+            setprop debug.hwui.renderer skiavk
+            echo "set render gpu to Vulkan (SKIA) done" | tee -a $saveLog;
+        elif [ "$RenderMode" == 'opengl' ];then
+            setprop debug.hwui.renderer opengl
+            echo "set render gpu to OpenGL default done" | tee -a $saveLog;
+        else
+            GetBackupGPU=$(cat "$PathModulConfig/backup/gpu_render.txt")
+            if [ -z "$GetBackupGPU" ];then
+                echo "system" > $PathModulConfig/mode_render.txt
+                setprop debug.hwui.renderer $GetBackupGPU
+                echo "set render gpu to system setting" | tee -a $saveLog;
+            fi
+        fi
+        echo "  --- --- --- --- --- " | tee -a $saveLog  
     fi
-    echo "  --- --- --- --- --- " | tee -a $saveLog 
 # gpu render end
 
 # disable fsync start
@@ -477,12 +515,14 @@ enableLogSystem(){
         elif [ "$fsyncMode" == "1" ];then
             enableFsync
             echo "custom fsync detected, set to enable" | tee -a $saveLog;
-        elif [ "$fsyncMode" == "3" ];then
-            echo "use system" | tee -a $saveLog;
+        elif [ "$fsyncMode" == "system" ];then
+            systemFsync
+            echo "use system fsync setting" | tee -a $saveLog;
         else
             # disableFsync
+            systemFsync
             echo "fsync value error,set to by system" | tee -a $saveLog;
-            echo '3' > $PathModulConfig/fsync_mode.txt
+            echo 'system' > $PathModulConfig/fsync_mode.txt
         fi
         echo "  --- --- --- --- --- " | tee -a $saveLog 
     fi
@@ -596,9 +636,9 @@ enableLogSystem(){
     fi
 # custom ram managent end
 # custom zram start
-    StopVramSet="iya"
+    StopZramSet="iya"
     if [ "$FromTerminal" == "ya" ];then
-        StopVramSet="kaga"
+        StopZramSet="kaga"
     fi
     GetBusyBox="none"
     PathBusyBox="none"
@@ -611,53 +651,54 @@ enableLogSystem(){
         fi;
     done;
     if [ "$GetBusyBox" == "none" ];then
-        echo "need busybox to set vram " | tee -a $saveLog 
+        StopZramSet="iya"
+        echo "need busybox to set Zram " | tee -a $saveLog 
         echo "  --- --- --- --- --- " | tee -a $saveLog 
     else
         GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
-        if [ "$CustomVram" == "1" ];then
-            SetVramTo="1073741824"
-        elif [ "$CustomVram" == "2" ];then
-            SetVramTo="2147483648"
-        elif [ "$CustomVram" == "3" ];then
-            SetVramTo="3221225472"
-        elif [ "$CustomVram" == "4" ];then
-            SetVramTo="4294967296"
-        elif [ "$CustomVram" == "5" ];then
-            SetVramTo="5368709120‬"
-        elif [ "$CustomVram" == "6" ];then
-            SetVramTo="6442450944‬"
-        elif [ "$CustomVram" == "7" ];then
-            SetVramTo="7516192768"
-        elif [ "$CustomVram" == "8" ];then
-            SetVramTo="8589934592‬"
-        elif [ "$CustomVram" == "s" ];then
-            SetVramTo=$(cat "$PathModulConfig/backup/zram_disksize.txt")
-        elif [ "$CustomVram" == "0" ];then
+        if [ "$CustomZram" == "1" ];then
+            SetZramTo="1073741824"
+        elif [ "$CustomZram" == "2" ];then
+            SetZramTo="2147483648"
+        elif [ "$CustomZram" == "3" ];then
+            SetZramTo="3221225472"
+        elif [ "$CustomZram" == "4" ];then
+            SetZramTo="4294967296"
+        elif [ "$CustomZram" == "5" ];then
+            SetZramTo="5368709120‬"
+        elif [ "$CustomZram" == "6" ];then
+            SetZramTo="6442450944‬"
+        elif [ "$CustomZram" == "7" ];then
+            SetZramTo="7516192768"
+        elif [ "$CustomZram" == "8" ];then
+            SetZramTo="8589934592‬"
+        elif [ "$CustomZram" == "0" ];then
+        #  disable zram
             if [ -e /dev/block/zram0 ]; then
-                echo 'disable Vram done .' | tee -a $saveLog;
+                StopZramSet="iya"
+                echo 'disable Zram done .' | tee -a $saveLog;
                 $GetBusyBox swapoff /dev/block/zram0
                 $GetBusyBox setprop ro.config.zram false
                 $GetBusyBox setprop ro.config.zram.support false
                 $GetBusyBox setprop zram.disksize 0
-                echo 'disable Vram done .' | tee -a $saveLog;
+                echo 'disable Zram done .' | tee -a $saveLog;
                 echo "  --- --- --- --- --- " | tee -a $saveLog 
             fi;
-            StopVramSet="iya"
-        elif [ "$CustomVram" == "4" ];then
-            StopVramSet="iya"
-            echo "use Vram default system setting" | tee -a $saveLog 
+            StopZramSet="iya"
+        elif [ "$CustomZram" == "system" ];then
+            SetZramTo=$(cat "$PathModulConfig/backup/zram_disksize.txt")
+            echo "use Zram default system setting" | tee -a $saveLog 
             echo "  --- --- --- --- --- " | tee -a $saveLog 
         fi
-        if [ "$StopVramSet" == "kaga" ];then
+        if [ "$StopZramSet" == "kaga" ];then
             if [ -e /dev/block/zram0 ]; then
-                FixSize=$(echo $SetVramTo |  sed "s/-*//g" )
+                FixSize=$(echo $SetZramTo |  sed "s/-*//g" )
                 GetSwapNow=$(getprop zram.disksize |  sed "s/-*//g" )
                 if [ "$FixSize" != "$GetSwapNow" ];then
                     stop perfd
-                    # echo "use Vram default system setting" | tee -a $saveLog 
-                    echo "enable Vram & use $CustomVram Gb done ." | tee -a $saveLog;
-                    echo "Set vram to $SetVramTo Bytes . . ." | tee -a $saveLog;
+                    # echo "use Zram default system setting" | tee -a $saveLog 
+                    echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog;
+                    echo "Set Zram to $SetZramTo Bytes . . ." | tee -a $saveLog;
                     echo "and Swapinnes to $Swapinnes . . ." | tee -a $saveLog;
                     $PathBusyBox/swapoff "/dev/block/zram0"
                     usleep 100000
@@ -667,7 +708,7 @@ enableLogSystem(){
                     usleep 100000
                     # setprop ro.config.zram true
                     # setprop ro.config.zram.support true
-                    setprop zram.disksize $SetVramTo
+                    setprop zram.disksize $SetZramTo
                     if [ "$ZramOptimizer" == "1" ];then
                         echo "echo optimize zram setting . . ." | tee -a $saveLog;
                         sysctl -e -w vm.swappiness=$Swapinnes
@@ -684,7 +725,7 @@ enableLogSystem(){
                     fi
                     $PathBusyBox/swapon "/dev/block/zram0"
                     usleep 100000
-                    echo "enable Vram & use $CustomVram Gb done ." | tee -a $saveLog;
+                    echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog;
                     echo "  --- --- --- --- --- " | tee -a $saveLog 
                     start perfd
                 fi
@@ -695,6 +736,13 @@ enableLogSystem(){
     
 # custom zram end
 
+if [ "$LogStatus" == '1' ];then
+    # enableLogSystem
+    disableLogSystem
+elif [ "$LogStatus" == '2' ];then
+    # disableLogSystem
+    enableLogSystem
+fi
 if [ "$GetMode" == 'off' ];then
     echo "turn off tweak succeess :D"| tee -a $saveLog;
 else
@@ -703,13 +751,6 @@ fi;
 if [ "$GetMode" == 'turbo' ];then
     echo "NOTE: just tell you if you use this mode your battery will litle drain" | tee -a $saveLog;
 fi;
-if [ "$LogStatus" == '1' ];then
-    # enableLogSystem
-    disableLogSystem
-else
-    # disableLogSystem
-    enableLogSystem
-fi
 if [ "$FromTerminal" == "tidak" ];then
     #fix gms :p
     if [ "$GMSDoze" == "1" ];then

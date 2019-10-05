@@ -1,11 +1,37 @@
 # Created By : ZyCromerZ
 # tweak gpu
 # you can try on off my feature
-# prepare function for initialize file if clean install
-# sleep 2s
+# prepare function for initialize file if clean install / re create some config file
 # thanks for donation to @Mellinio :D
 # MODDIR=${0%/*}
 # for service.sh
+magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
+GetVersion=$($magisk -c | grep -Eo '[1-9]{2}\.[0-9]+')
+case "$GetVersion" in
+'15.'[1-9]*) # Version 15.1 - 15.9
+	ModulPath=/sbin/.core/img
+;;
+'16.'[1-9]*) # Version 16.1 - 16.9
+	ModulPath=/sbin/.core/img
+;;
+'17.'[1-3]*) # Version 17.1 - 17.3
+	ModulPath=/sbin/.core/img
+;;
+'17.'[4-9]*) # Version 17.4 - 17.9
+	ModulPath=/sbin/.magisk/img
+;;
+'18.'[0-9]*) # Version 18.x
+	ModulPath=/sbin/.magisk/img
+;;
+'19.'[0-9a-zA-Z]*) # Version 19.x
+	ModulPath=/data/adb/modules
+;;
+*)
+    echo "unsupported magisk version detected,fail"
+    exit -1;
+;;
+esac
+GetVersion="$(cat "$ModulPath/ZyC_Turbo/module.prop" | grep "version=" | sed 's/version=*//g' )"
 if [ -d "/sys/class/kgsl/kgsl-3d0" ]; then
     NyariGPU="/sys/class/kgsl/kgsl-3d0"
 elif [ -d "/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0" ]; then
@@ -80,16 +106,16 @@ if [ ! -d $Path/ZyC_Turbo_config ]; then
 fi
 PathModulConfig=$Path/ZyC_Turbo_config
 GetAppAndGames(){
+    changeSE="tidak"
+    if [ "$(getenforce)" == "Enforcing" ];then
+        changeSE="ya"
+        setenforce 0
+    fi
     # auto add to game list start
     GameList=$PathModulConfigAi/list_app_auto_turbo.txt
     if [ ! -e $PathModulConfigAi/list_app_auto_turbo.txt ]; then
         echo "---->> List game installed start <<----"  | tee -a $GameList > /dev/null 2>&1 ;
         echo "<<---- List game installed end ---->>"  | tee -a $GameList > /dev/null 2>&1 ;
-    fi
-    changeSE="tidak"
-    if [ "$(getenforce)" == "Enforcing" ];then
-        changeSE="ya"
-        setenforce 0
     fi
     # Moba Analog
     if [ ! -z $(pm list packages -f com.mobile.legends | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.mobile.legends" "$GameList" ) ];then
@@ -258,19 +284,19 @@ if [ "$FromTerminal" == "tidak" ];then
     fi
     # Status Log nya
     if [ ! -e $PathModulConfig/disable_log_system.txt ]; then
-        echo '1' > $PathModulConfig/disable_log_system.txt
+        echo 'system' > $PathModulConfig/disable_log_system.txt
     fi
     # fast charging
     if [ ! -e $PathModulConfig/fastcharge.txt ]; then
-        echo '1' > $PathModulConfig/fastcharge.txt
+        echo 'system' > $PathModulConfig/fastcharge.txt
     fi
     # setting adrenoboost
     if [ ! -e $PathModulConfig/GpuBooster.txt ]; then
-        echo '4' > $PathModulConfig/GpuBooster.txt
+        echo 's' > $PathModulConfig/GpuBooster.txt
     fi
     # setting fsync
     if [ ! -e $PathModulConfig/fsync_mode.txt ]; then
-        echo '0' > $PathModulConfig/fsync_mode.txt
+        echo 'system' > $PathModulConfig/fsync_mode.txt
     fi
     # setting custom Ram Management
     if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
@@ -278,15 +304,15 @@ if [ "$FromTerminal" == "tidak" ];then
     fi
     # GMS DOZE
     if [ ! -e $PathModulConfig/gms_doze.txt ]; then
-        echo '1' > $PathModulConfig/gms_doze.txt
+        echo '0' > $PathModulConfig/gms_doze.txt
     fi
     # vram
-    if [ ! -e $PathModulConfig/vram.txt ]; then
-        echo 's' > $PathModulConfig/vram.txt
+    if [ ! -e $PathModulConfig/zram.txt ]; then
+        echo 'system' > $PathModulConfig/zram.txt
     fi
     # swappiness
     if [ ! -e $PathModulConfig/swapinnes.txt ]; then
-        echo '100' > $PathModulConfig/swapinnes.txt
+        echo '90' > $PathModulConfig/swapinnes.txt
     fi
     # optimize zram
     if [ ! -e $PathModulConfig/zram_optimizer.txt ]; then
@@ -294,10 +320,12 @@ if [ "$FromTerminal" == "tidak" ];then
     fi
 
     # Check notes version
-    SetModulVersion="3.36-7 BETA"
+    # SetModulVersion="3.36-71 BETA"
+    SetModulVersion="$GetVersion"
     if [ -e $PathModulConfig/notes_en.txt ];then
         if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
             rm $PathModulConfig/notes_en.txt
+            echo 'system' > $PathModulConfig/fsync_mode.txt
         fi
     fi
     if [ -e $PathModulConfig/notes_id.txt ];then
@@ -656,6 +684,14 @@ Version:$SetModulVersion" | tee -a $SetNotes
     # backup data dolo boss start
     if [ ! -d $PathModulConfig/backup ]; then
         mkdir -p $PathModulConfig/backup
+    fi
+    #gpu render backup
+    if [ ! -e $PathModulConfig/backup/gpu_render.txt ]; then
+        if [ -e $NyariGPU/throttling ]; then
+            echo $(getprop debug.hwui.renderer) > "$PathModulConfig/backup/gpu_render.txt"
+            backup="pake"
+            usleep 100000
+        fi
     fi
     #val gpu nya
     if [ ! -e $PathModulConfig/backup/gpu_throttling.txt ]; then
