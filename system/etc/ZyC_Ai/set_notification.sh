@@ -67,9 +67,9 @@ if [ ! -z "$1" ];then
                 #on kedip
                 echo "0" > $GetLedPath/red/brightness
                 echo "255" > $GetLedPath/green/brightness
-                sleep 2s
+                sleep 2
                 echo "0" > $GetLedPath/green/brightness
-                sleep 1s
+                sleep 1
                 echo "255" > $GetLedPath/green/brightness
                 usleep 500000
                 echo "0" > $GetLedPath/green/brightness
@@ -79,9 +79,9 @@ if [ ! -z "$1" ];then
                 #off kedip
                 echo "0" > $GetLedPath/green/brightness
                 echo "255" > $GetLedPath/red/brightness
-                sleep 2s
+                sleep 2
                 echo "0" > $GetLedPath/red/brightness
-                sleep 1s
+                sleep 1
                 echo "255" > $GetLedPath/red/brightness
                 usleep 500000
                 echo "0" > $GetLedPath/red/brightness
@@ -174,6 +174,22 @@ if [ ! -z "$1" ];then
                 usleep 100000
                 echo "255" > $GetLedPath/green/brightness
                 echo "0" > $GetLedPath/red/brightness
+            elif [ "$getMethod" == "dozeon" ];then
+                #on kedip
+                echo "0" > $GetLedPath/green/brightness
+                echo "255" > $GetLedPath/red/brightness
+                usleep 500000
+                echo "0" > $GetLedPath/red/brightness
+                usleep 500000
+                echo "255" > $GetLedPath/green/brightness
+            elif [ "$getMethod" == "dozeoff" ];then
+                #on kedip
+                echo "0" > $GetLedPath/red/brightness
+                echo "255" > $GetLedPath/green/brightness
+                usleep 500000
+                echo "0" > $GetLedPath/green/brightness
+                usleep 500000
+                echo "255" > $GetLedPath/red/brightness
             fi;
             NoNotif="yes"
             if [ "$GetRed" != "0" ] && [ "$GetGreen" != "0" ];then

@@ -166,7 +166,7 @@ setTurbo(){
     echo "turbo" > $PathModulConfig/status_modul.txt
     StatusModul="turbo"
     echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
-    # sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait > /dev/null 2>&1
+    sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait > /dev/null 2>&1
     sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
     # usleep 5000000
 }
@@ -176,17 +176,26 @@ setOff(){
     echo "off" > $PathModulConfig/status_modul.txt
     StatusModul="off"
     echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
-    # sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait > /dev/null 2>&1
+    sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait > /dev/null 2>&1
     sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
 }
 setLag(){
-    SetNotificationOff
+    SetNotificationDozeOn
     echo "set to lag mode at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1;
     echo "lag" > $PathModulConfig/status_modul.txt
     StatusModul="lag"
     echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
-    # sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait > /dev/null 2>&1
-    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
+    sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait > /dev/null 2>&1
+    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" "doze" & disown > /dev/null 2>&1
+}
+setLagoff(){
+    SetNotificationDozeOff
+    echo "revert back to off mode at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1;
+    echo "off" > $PathModulConfig/status_modul.txt
+    StatusModul="off"
+    echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
+    sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait > /dev/null 2>&1
+    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" "doze" & disown > /dev/null 2>&1
 }
 SetNotificationOn(){
     if [ "$NotifPath" != "none" ];then
@@ -230,6 +239,24 @@ SetNotificationRunning(){
         fi
     fi
 }
+SetNotificationDozeOff(){
+    if [ "$NotifPath" != "none" ];then
+        sh $NotifPath "notif" "dozeoff" > /dev/null 2>&1 
+    else
+        echo 600 > /sys/class/timed_output/vibrator/enable
+        sleep 1000000
+        echo 300 > /sys/class/timed_output/vibrator/enable
+    fi
+}
+SetNotificationDozeOn(){
+    if [ "$NotifPath" != "none" ];then
+        sh $NotifPath "notif" "dozeon" > /dev/null 2>&1 
+    else
+        echo 600 > /sys/class/timed_output/vibrator/enable
+        sleep 1000000
+        echo 300 > /sys/class/timed_output/vibrator/enable
+    fi
+}
 if [ $aiStatus == "1" ]; then
     echo "<<--- --- --- --- --- " | tee -a $AiLog > /dev/null 2>&1 ;
     echo "starting ai mode at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
@@ -243,22 +270,25 @@ elif [ $aiStatus == "2" ];then
     # OFF_UNLOCKED
     # OFF_LOCKED
     # ON_LOCKED
+    # echo "$GetScreenState at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
     DozeStatePath=$PathModulConfigAi/doze_state.txt
     DozeState="$(cat "$DozeStatePath")"
     if [ "$GetScreenState" == "OFF_LOCKED" ];then
         if [ "$DozeState" != "on" ];then
             echo "turn on force doze at : $(date +" %r")"  | tee -a $AiLog > /dev/null 2>&1 ;
+            echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
             echo $(dumpsys deviceidle force-idle) > /dev/null 2>&1 ;
-            echo "on" > $DozeStatePath > /dev/null 2>&1 ;
+            echo "on" > "$DozeStatePath" 
             setLag
         fi
     elif [ "$GetScreenState" == "ON_UNLOCKED" ];then
         if [ "$DozeState" != "off" ];then
-            echo "turn of force doze at : $(date +" %r")"  | tee -a $AiLog > /dev/null 2>&1 ;
+            echo "turn off force doze at : $(date +" %r")"  | tee -a $AiLog > /dev/null 2>&1 ;
+            echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
             echo $(dumpsys deviceidle unforce) > /dev/null 2>&1 ;
             echo $(dumpsys deviceidle battery reset) > /dev/null 2>&1 ;
-            echo "off" > $DozeStatePath > /dev/null 2>&1 ;
-            setOff
+            echo "off" > "$DozeStatePath" 
+            setLagOff
         fi
     fi
     if [ "$DozeState" == "off" ];then

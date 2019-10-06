@@ -264,23 +264,23 @@ ListMenu(){
             echo "      disable fsync after change to turbo mode"
             if [ "$GetModeFsyncBefore" != "$GetModeFsyncNew" ];then
                 if [ $GetModeFsyncNew == "0" ];then
-                    echo $hijauPutih"this will set to : off"$ResetWarna
+                    echo $merahPutih"this will set to : off"$ResetWarna
                 elif [ $GetModeFsyncNew == "1" ];then
-                    echo $merahPutih"this will set to : on"$ResetWarna
+                    echo $hijauPutih"this will set to : on"$ResetWarna
                 elif [ $GetModeFsyncNew == "system" ];then
-                    echo $merahPutih"this will set to : by system"$ResetWarna
-                elif [ $GetModeFsyncNew == "system" ];then
-                    echo $merahPutih"this will set to : by auto"$ResetWarna
+                    echo $kuningPutih"this will set to : by system"$ResetWarna
+                elif [ $GetModeFsyncNew == "auto" ];then
+                    echo $cyanPutih"this will set to : by auto"$ResetWarna
                 fi
             else
                 if [ $GetModeFsyncBefore == "0" ];then
-                    echo $hijauHitam"Current Status : off"$ResetWarna
+                    echo $merahHitam"Current Status : off"$ResetWarna
                 elif [ $GetModeFsyncBefore == "1" ];then
-                    echo $merahHitam"Current Status : on"$ResetWarna
+                    echo $hijauHitam"Current Status : on"$ResetWarna
                 elif [ $GetModeFsyncBefore == "system" ];then
-                    echo $merahHitam"Current Status : by system"$ResetWarna
-                elif [ $GetModeFsyncBefore == "system" ];then
-                    echo $merahHitam"Current Status : by auto"$ResetWarna
+                    echo $kuningHitam"Current Status : by system"$ResetWarna
+                elif [ $GetModeFsyncBefore == "auto" ];then
+                    echo $cyanHitam"Current Status : by auto"$ResetWarna
                 fi
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna

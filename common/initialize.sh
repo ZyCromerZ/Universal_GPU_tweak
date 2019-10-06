@@ -296,7 +296,7 @@ if [ "$FromTerminal" == "tidak" ];then
     fi
     # setting fsync
     if [ ! -e $PathModulConfig/fsync_mode.txt ]; then
-        echo 'system' > $PathModulConfig/fsync_mode.txt
+        echo 'auto' > $PathModulConfig/fsync_mode.txt
     fi
     # setting custom Ram Management
     if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
@@ -325,7 +325,7 @@ if [ "$FromTerminal" == "tidak" ];then
     if [ -e $PathModulConfig/notes_en.txt ];then
         if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
             rm $PathModulConfig/notes_en.txt
-            echo 'system' > $PathModulConfig/fsync_mode.txt
+            echo 'auto' > "$PathModulConfig/fsync_mode.txt"
             echo '3' > "$PathModulConfigAi/wait_time_off.txt"
             echo '10' > "$PathModulConfigAi/wait_time_on.txt" # Wait time
         fi
