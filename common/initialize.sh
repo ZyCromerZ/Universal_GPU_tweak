@@ -291,7 +291,7 @@ if [ "$FromTerminal" == "tidak" ];then
         echo 'system' > $PathModulConfig/fastcharge.txt
     fi
     # setting adrenoboost
-    if [ ! -e $PathModulConfig/GpuBooster.txt ]; then
+    if [ ! -e $PathModulConfig/GpuBooster.txt ] && [ -e $NyariGPU/devfreq/adrenoboost ]; then
         echo 's' > $PathModulConfig/GpuBooster.txt
     fi
     # setting fsync
@@ -326,6 +326,8 @@ if [ "$FromTerminal" == "tidak" ];then
         if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
             rm $PathModulConfig/notes_en.txt
             echo 'system' > $PathModulConfig/fsync_mode.txt
+            echo '3' > "$PathModulConfigAi/wait_time_off.txt"
+            echo '10' > "$PathModulConfigAi/wait_time_on.txt" # Wait time
         fi
     fi
     if [ -e $PathModulConfig/notes_id.txt ];then
@@ -874,11 +876,11 @@ Version:$SetModulVersion" | tee -a $SetNotes
     fi
     # Wait time when off
     if [ ! -e $PathModulConfigAi/wait_time_off.txt ]; then
-        echo '3s' > "$PathModulConfigAi/wait_time_off.txt"
+        echo '3' > "$PathModulConfigAi/wait_time_off.txt"
     fi
     # Wait time when on
     if [ ! -e $PathModulConfigAi/wait_time_on.txt ]; then
-        echo '10s' > "$PathModulConfigAi/wait_time_on.txt" # Wait time
+        echo '10' > "$PathModulConfigAi/wait_time_on.txt" # Wait time
     fi
     # Status 0=tidak aktif,1=aktif,2=sedang berjalan
     if [ ! -e $PathModulConfigAi/ai_status.txt ]; then
@@ -897,6 +899,9 @@ Version:$SetModulVersion" | tee -a $SetNotes
     fi
     if [ ! -e $PathModulConfigAi/ai_notif_mode_running_status.txt ]; then
         echo '0' > "$PathModulConfigAi/ai_notif_mode_running_status.txt"
+    fi
+    if [ ! -e $PathModulConfigAi/doze_state.txt ]; then
+        echo '' > "$PathModulConfigAi/doze_state.txt"
     fi
 else    
     # disable log

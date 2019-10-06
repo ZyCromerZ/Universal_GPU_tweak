@@ -123,10 +123,13 @@ fi
 FastCharge=$(cat $PathModulConfig/fastcharge.txt)
 
 # setting adrenoboost
-if [ ! -e $PathModulConfig/GpuBooster.txt ]; then
-    MissingFile="iya"
+GpuBooster="not found"
+if [ -e $NyariGPU/devfreq/adrenoboost ];then
+    if [ ! -e $PathModulConfig/GpuBooster.txt ]; then
+        MissingFile="iya"
+    fi
+    GpuBooster=$(cat $PathModulConfig/GpuBooster.txt)
 fi
-GpuBooster=$(cat $PathModulConfig/GpuBooster.txt)
 
 # setting fsync
 if [ ! -e $PathModulConfig/fsync_mode.txt ]; then
@@ -327,6 +330,31 @@ enableFsync(){
     echo 'enable done .' | tee -a $saveLog;
     echo "  --- --- --- --- --- " | tee -a $saveLog 
 }
+LagMode(){
+    if [ "$NyariGPU" != '' ];then
+        if [ -e $NyariGPU/devfreq/adrenoboost ]; then
+            echo "0" > "$NyariGPU/devfreq/adrenoboost"
+        fi
+        if [ -e "$NyariGPU/throttling" ]; then
+            echo "1" > $NyariGPU/throttling
+        fi
+        if [ -e "$NyariGPU/force_no_nap" ]; then
+            echo "1" > $NyariGPU/force_no_nap
+        fi
+        if [ -e "$NyariGPU/force_bus_on" ]; then
+            echo "1" > $NyariGPU/force_bus_on
+        fi
+        if [ -e "$NyariGPU/force_clk_on" ]; then
+            echo "1" > $NyariGPU/force_clk_on
+        fi
+        if [ -e "$NyariGPU/force_rail_on" ]; then
+            echo "1" > $NyariGPU/force_rail_on
+        fi
+        if [ -e "$NyariGPU/bus_split" ]; then
+            echo "0" > $NyariGPU/bus_split
+        fi
+    fi
+}
 systemFsync(){
     echo 'use fsync system setting . . .' | tee -a $saveLog;
     if [ ! -e $PathModulConfig/backup/misc_Dyn_fsync_active.txt ]; then
@@ -414,7 +442,18 @@ enableLogSystem(){
         SetTurbo
         # disableFsync
         # disableThermal
+        if [ "$fsyncMode" != "auto" ];then
+            disableFsync
+            echo "fsync value error,set to by system" | tee -a $saveLog;
+            echo 'system' > $PathModulConfig/fsync_mode.txt
+        fi
         echo "swith to turbo mode" | tee -a $saveLog;
+        echo "  --- --- --- --- --- " | tee -a $saveLog 
+    elif [ "$GetMode" == 'lag' ];then
+        SetOff
+        SetOn
+        # disableFsync
+        echo "setting to mode on" | tee -a $saveLog;
         echo "  --- --- --- --- --- " | tee -a $saveLog 
     else
         SetOff
@@ -464,21 +503,25 @@ enableLogSystem(){
 # fstrim end
 
 # gpu turbo start
-    if [ "$GpuBooster" == "0" ];then
-        echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
-        echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
-    elif [ "$GpuBooster" == "1" ];then
-        echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
-        echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
-    elif [ "$GpuBooster" == "2" ];then
-        echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
-        echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
-    elif [ "$GpuBooster" == "3" ];then
-        echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
-        echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
-    else
-        echo "nice,use default this tweak GpuBoost" | tee -a $saveLog;
-        echo 'tweak' > $PathModulConfig/GpuBooster.txt
+    if [ "$GpuBooster" == "not found" ];then
+        if [ "$GpuBooster" == "0" ];then
+            echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
+            echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
+        elif [ "$GpuBooster" == "1" ];then
+            echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
+            echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
+        elif [ "$GpuBooster" == "2" ];then
+            echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
+            echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
+        elif [ "$GpuBooster" == "3" ];then
+            echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
+            echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
+        else
+            if [ "$GpuBooster" != "tweak" ];then
+                echo 'tweak' > $PathModulConfig/GpuBooster.txt
+            fi
+            echo "nice,use default this tweak GpuBoost" | tee -a $saveLog;
+        fi
     fi
     echo "  --- --- --- --- --- " | tee -a $saveLog 
 # gpu turbo end
@@ -519,10 +562,12 @@ enableLogSystem(){
             systemFsync
             echo "use system fsync setting" | tee -a $saveLog;
         else
+            if [ "$fsyncMode" != "auto" ];then
+                systemFsync
+                echo "fsync value error,set to by system" | tee -a $saveLog;
+                echo 'system' > $PathModulConfig/fsync_mode.txt
+            fi
             # disableFsync
-            systemFsync
-            echo "fsync value error,set to by system" | tee -a $saveLog;
-            echo 'system' > $PathModulConfig/fsync_mode.txt
         fi
         echo "  --- --- --- --- --- " | tee -a $saveLog 
     fi

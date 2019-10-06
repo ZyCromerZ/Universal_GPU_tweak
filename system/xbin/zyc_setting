@@ -191,6 +191,7 @@ ListMenu(){
                 echo "mx > turn off tweak";
                 echo "my > change mode tweak to on"
                 echo "mt > change mode tweak to turbo"
+                echo "lm > lag mode tweak"
             else
                 echo "ai mode still running,cannot change tweak mode"
                 echo "mode tweak will automatic change :p"
@@ -198,9 +199,9 @@ ListMenu(){
                 echo "and re run this tweak"
             fi
             if [ "$GetModeBefore" != "$GetModeNew" ];then
-                echo $kuningPutih"this will set to : $GetModeNew"$ResetWarna
+                echo $kuningPutih"this will set to : $GetModeNew mode"$ResetWarna
             else
-                echo $kuningHitam"current status module : $GetModeBefore"$ResetWarna;
+                echo $kuningHitam"current status module : $GetModeBefore mode"$ResetWarna;
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
@@ -259,6 +260,8 @@ ListMenu(){
             echo "fcs > set fsync by system"
             echo "fcx > turn off fsync"
             echo "fcy > turn on fsync"
+            echo "fca > auto change fsync"
+            echo "      disable fsync after change to turbo mode"
             if [ "$GetModeFsyncBefore" != "$GetModeFsyncNew" ];then
                 if [ $GetModeFsyncNew == "0" ];then
                     echo $hijauPutih"this will set to : off"$ResetWarna
@@ -266,6 +269,8 @@ ListMenu(){
                     echo $merahPutih"this will set to : on"$ResetWarna
                 elif [ $GetModeFsyncNew == "system" ];then
                     echo $merahPutih"this will set to : by system"$ResetWarna
+                elif [ $GetModeFsyncNew == "system" ];then
+                    echo $merahPutih"this will set to : by auto"$ResetWarna
                 fi
             else
                 if [ $GetModeFsyncBefore == "0" ];then
@@ -274,6 +279,8 @@ ListMenu(){
                     echo $merahHitam"Current Status : on"$ResetWarna
                 elif [ $GetModeFsyncBefore == "system" ];then
                     echo $merahHitam"Current Status : by system"$ResetWarna
+                elif [ $GetModeFsyncBefore == "system" ];then
+                    echo $merahHitam"Current Status : by auto"$ResetWarna
                 fi
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
@@ -472,7 +479,7 @@ ListMenu(){
         fi
         if [ -e "$PathModulConfigAi/ai_change.txt" ];then
             echo "<-- -- AI Change mode by -- -->"
-            echo "acu > change mode based gpu sage"
+            echo "acu > change mode based gpu usage"
             echo "ace > change mode by game only"
             echo "acb > change mode by game or gpu usage"
             if [ "$GetModeAiCBefore" != "$GetModeAiCNew" ];then
@@ -600,9 +607,9 @@ ListMenu(){
             if [ "$GetModeAiBefore" == "2" ];then
                 echo "wtx > set wait time ai to run again while module on mode off"
                 if [ "$waitTimeOffBefore" != "$waitTimeOffNew" ];then
-                    echo $putihHitam"this will set to : $waitTimeOffNew"$ResetWarna
+                    echo $putihHitam"this will set to : $waitTimeOffNew s"$ResetWarna
                 else
-                    echo $abuHitam"Current status : $waitTimeOffBefore"$ResetWarna
+                    echo $abuHitam"Current status : $waitTimeOffBefore s"$ResetWarna
                 fi
             else
                 echo "turn on ai first before setting this . . . ."
@@ -614,9 +621,9 @@ ListMenu(){
             if [ "$GetModeAiBefore" == "2" ];then
                 echo "wty > set wait time ai to run again while module on mode turbo"
                 if [ "$waitTimeOnBefore" != "$waitTimeOnNew" ];then
-                    echo $putihHitam"this will set to : $waitTimeOnNew"$ResetWarna
+                    echo $putihHitam"this will set to : $waitTimeOnNew s"$ResetWarna
                 else
-                    echo $abuHitam"Current status : $waitTimeOnBefore"$ResetWarna
+                    echo $abuHitam"Current status : $waitTimeOnBefore s"$ResetWarna
                 fi
             else
                 echo "turn on ai first before setting this . . . ."
@@ -671,6 +678,11 @@ ListMenu(){
         GetModeNew="turbo"
         usleep 100000
         ListMenu
+    elif [ $pilihan == "lm" ];then
+        Perubahan="ya"
+        GetModeNew="lag"
+        usleep 100000
+        ListMenu
     elif [ $pilihan == "srd" ];then
         Perubahan="ya"
         GetModeRenderNew="system"
@@ -714,6 +726,11 @@ ListMenu(){
     elif [ $pilihan == "fcy" ];then
         Perubahan="ya"
         GetModeFsyncNew="1"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "fca" ];then
+        Perubahan="ya"
+        GetModeFsyncNew="auto"
         usleep 100000
         ListMenu
     elif [ $pilihan == "adx" ];then
@@ -888,13 +905,13 @@ ListMenu(){
         usleep 10000
         ListMenu
     elif [ $pilihan == "wtx" ];then
-        echo "how long (example : 1s or 1m) ??"
+        echo "how long (example : 1) ??"
         read getnumber
         waitTimeOffNew=$getnumber
         usleep 100000
         ListMenu
     elif [ $pilihan == "wty" ];then
-        echo "how long (example : 1s or 1m) ??"
+        echo "how long (example : 1) ??"
         read getnumber
         waitTimeOnNew=$getnumber
         usleep 100000
@@ -1114,6 +1131,11 @@ saveSetting()
     if [ "$ZramOptimizerBefore" != "$ZramOptimizerNew" ];then
         echo "$ZramOptimizerNew" > $PathModulConfig/zram_optimizer.txt ; 
         ZramOptimizerBefore=$ZramOptimizerNew;
+        RunTweak="iya"
+    fi
+    if [ "$GetModeAiCBefore" != "$GetModeAiCNew" ];then
+        echo "$GetModeAiCNew" > $PathModulConfigAi/ai_change.txt ; 
+        GetModeAiCBefore=$GetModeAiCNew;
         RunTweak="iya"
     fi
     if [ "$RunTweak" == "iya" ];then
