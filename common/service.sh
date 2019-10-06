@@ -442,10 +442,10 @@ enableLogSystem(){
         SetTurbo
         # disableFsync
         # disableThermal
-        if [ "$fsyncMode" != "auto" ];then
+        if [ "$fsyncMode" == "auto" ];then
             disableFsync
-            echo "fsync value error,set to by system" | tee -a $saveLog;
-            echo 'system' > $PathModulConfig/fsync_mode.txt
+            echo "disable fysnc" | tee -a $saveLog;
+            echo "  --- --- --- --- --- " | tee -a $saveLog 
         fi
         echo "swith to turbo mode" | tee -a $saveLog;
         echo "  --- --- --- --- --- " | tee -a $saveLog 
