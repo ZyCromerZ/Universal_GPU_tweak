@@ -884,6 +884,10 @@ Version:$SetModulVersion" | tee -a $SetNotes
     if [ ! -e $PathModulConfigAi/ai_status.txt ]; then
         echo '1' > "$PathModulConfigAi/ai_status.txt"
     fi
+    # run when gaming only or based gpu sage or both
+    if [ ! -e $PathModulConfigAi/ai_change.txt ]; then
+        echo '3' > "$PathModulConfigAi/ai_change.txt"
+    fi
     # Set Ai Notif Mode Start
     if [ ! -e $PathModulConfigAi/ai_notif_mode.txt ]; then
         echo '3' > "$PathModulConfigAi/ai_notif_mode.txt"

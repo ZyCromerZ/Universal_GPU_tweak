@@ -38,7 +38,7 @@ if [ ! -z "$1" ];then
 fi
 if [ $FromTerminal == "tidak" ];then
     sh $ModulPath/ZyC_Turbo/initialize.sh & wait > /dev/null 2>&1
-    sleep 5s
+    usleep 5000000
     sh $ModulPath/ZyC_Turbo/initialize.sh "FromTerminal" & wait > /dev/null 2>&1
 fi;
 if [ ! -z "$2" ];then
@@ -678,8 +678,6 @@ enableLogSystem(){
                 StopZramSet="iya"
                 echo 'disable Zram done .' | tee -a $saveLog;
                 $GetBusyBox swapoff /dev/block/zram0
-                $GetBusyBox setprop ro.config.zram false
-                $GetBusyBox setprop ro.config.zram.support false
                 $GetBusyBox setprop zram.disksize 0
                 echo 'disable Zram done .' | tee -a $saveLog;
                 echo "  --- --- --- --- --- " | tee -a $saveLog 

@@ -18,7 +18,7 @@ unguPutih='\e[01;45m' > /dev/null 2>&1; # ungu - putih
 ResetWarna='\e[0m' > /dev/null 2>&1; # Buat Reser Warna
 # setting warna end
 echo $kuningPutih"Preparing Config . . . ."$ResetWarna
-sleep 1s
+usleep 1000000
 if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
     echo $merahHitam"please type 'su' first -_-"$ResetWarna
     echo ""
@@ -26,15 +26,15 @@ if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
     for timeExit in 3s 2s 1s 0s ;
     do
         echo "$timeExit"
-        sleep 1s
+        usleep 1000000
     done
     exit -1
 else
-    echo $cyanPutih"<<-≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠->>"$ResetWarna
+    echo $cyanPutih"<<--------------------------------->>"$ResetWarna
     usleep 200000
     echo "*  thanks for use my modules  *"
     usleep 200000
-    echo $cyanPutih"<<-≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠->>"$ResetWarna
+    echo $cyanPutih"<<--------------------------------->>"$ResetWarna
     usleep 200000
     echo "        ZyC GPU Turbo          "
     usleep 200000
@@ -42,20 +42,28 @@ else
     usleep 200000
     echo "       for channel logo :D     "
     usleep 200000
-    echo "       and the bottom too      "
-    usleep 200000
-    echo $cyanPutih"<<-≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠->>"$ResetWarna
+    echo $cyanPutih"<<--------------------------------->>"$ResetWarna
     echo "  _______          ____        "
+    usleep 200000
     echo "  \___  /ɢᴘᴜ ᴛᴜʀʙᴏ/  ___\      "
+    usleep 200000
     echo "     / /  __   __| /           "
+    usleep 200000
     echo "    / /__ \ \ / /| \____       "
+    usleep 200000
     echo "   /_____\ \ \ /  \____/       "
+    usleep 200000
     echo "            / /                "
+    usleep 200000
     echo "           /_/                 "
+    usleep 200000
     echo "                               "
-    echo "≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠"
+    usleep 200000
+    echo "-------------------------------"
+    usleep 200000
     echo "ᴅᴇsɪɢɴᴇᴅ ʙʏ ɴᴏᴡᴀʏᴅᴇᴠ           "
-    echo $cyanPutih"<<-≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠->>"$ResetWarna
+    usleep 200000
+    echo $cyanPutih"<<--------------------------------->>"$ResetWarna
     usleep 1000000
 fi
 magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
@@ -119,6 +127,10 @@ fi
 if [ -e $PathModulConfigAi/ai_status.txt ];then
     GetModeAiBefore=$(cat "$PathModulConfigAi/ai_status.txt")
     GetModeAiNew=$(cat "$PathModulConfigAi/ai_status.txt")
+fi
+if [ -e $PathModulConfigAi/ai_change.txt ];then
+    GetModeAiCBefore=$(cat "$PathModulConfigAi/ai_change.txt")
+    GetModeAiCNew=$(cat "$PathModulConfigAi/ai_change.txt")
 fi
 if [ -e $PathModulConfigAi/ai_notif_mode.txt ];then
     GetModeAiNotifBefore=$(cat "$PathModulConfigAi/ai_notif_mode.txt")
@@ -240,6 +252,8 @@ ListMenu(){
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
+        echo "current : page 1"
+    elif [ "$page" == "2" ];then
         if [ -e "$PathModulConfig/fsync_mode.txt" ];then
             echo "<-- -- Fsync Config -- -->"
             echo "fcs > set fsync by system"
@@ -297,8 +311,6 @@ ListMenu(){
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
-        echo "current : page 1"
-    elif [ "$page" == "2" ];then
         if [ -e "$PathModulConfig/custom_ram_management.txt" ];then
             echo "<-- -- Ram management Config -- -->"
             echo "rms > use system ram management"
@@ -327,6 +339,10 @@ ListMenu(){
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
+        
+        echo "current : page 2"
+    elif [ "$page" == "3" ];then
+    
         if [ -e "$PathModulConfig/gms_doze.txt" ];then
             echo "<-- -- GMS DOZE Config -- -->"
             echo "gdx > Turn off gms doze fix"
@@ -429,9 +445,8 @@ ListMenu(){
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
-        
-        echo "current : page 2"
-    elif [ "$page" == "3" ];then
+        echo "current : page 3"
+    elif [ "$page" == "4" ];then
         if [ -e "$PathModulConfigAi/ai_status.txt" ];then
             echo "<-- -- AI Config -- -->"
             echo "aix > auto/ai mode off"
@@ -451,6 +466,30 @@ ListMenu(){
                     echo $cyanHitam"current status : running"$ResetWarna
                 elif [ $GetModeAiBefore == "1" ];then
                     echo $cyanHitam"current status : on"$ResetWarna
+                fi
+            fi
+            echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
+        fi
+        if [ -e "$PathModulConfigAi/ai_change.txt" ];then
+            echo "<-- -- AI Change mode by -- -->"
+            echo "acu > change mode based gpu sage"
+            echo "ace > change mode by game only"
+            echo "acb > change mode by game or gpu usage"
+            if [ "$GetModeAiCBefore" != "$GetModeAiCNew" ];then
+                if [ $GetModeAiCNew == "1" ];then
+                    echo $cyanPutih"this will set to : by gpu usage"$ResetWarna
+                elif [ $GetModeAiCNew == "2" ];then
+                    echo $cyanPutih"this will set to : By detected game"$ResetWarna
+                elif [ $GetModeAiCNew == "3" ];then
+                    echo $cyanPutih"this will set to : both"$ResetWarna
+                fi
+            else
+                if [ $GetModeAiCBefore == "1" ];then
+                    echo $cyanHitam"current status : by gpu usage"$ResetWarna
+                elif [ $GetModeAiCBefore == "2" ];then
+                    echo $cyanHitam"current status : By detected game"$ResetWarna
+                elif [ $GetModeAiCBefore == "3" ];then
+                    echo $cyanHitam"current status : both"$ResetWarna
                 fi
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
@@ -516,6 +555,8 @@ ListMenu(){
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
+        echo "current : page 4"
+    elif [ "$page" == "5" ];then
         if [ -e "$PathModulConfigAi/ai_notif_mode_running.txt" ];then
             echo "<-- -- AI Notif Running Config -- -->"
             if [ "$GetModeAiBefore" == "2" ];then
@@ -554,7 +595,6 @@ ListMenu(){
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
-    elif [ "$page" == "4" ];then
         if [ -e "$PathModulConfigAi/wait_time_off.txt" ];then
             echo "<-- -- AI Notif Running Status Config -- -->"
             if [ "$GetModeAiBefore" == "2" ];then
@@ -593,21 +633,21 @@ ListMenu(){
             echo $hijauHitam"refresh list game and app after save setting :p"$ResetWarna
         fi
         echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
-        echo "current : page 4"
+        echo "current : page 5"
     fi
     if [ "$page" == "1" ];then
         echo "np > go to page $(($page+1))";
-    elif [ "$page" == "4" ];then
+    elif [ "$page" == "5" ];then
         echo "pp > go to page $(($page-1))";
     else
         echo "pp > go to page $(($page-1))      |  np > go to page $(($page+1))";
     fi
-    if [ "$page" == "4" ];then
+    if [ "$page" == "5" ];then
         echo "fp > go to first page"
     elif [ "$page" == "1" ];then
         echo "lp > go to last page"
-    elif [ "$page" -lt "4" ] && [ "$page" -gt "1" ];then
-        echo "fp > go to first page  |  lp > go to first page"
+    elif [ "$page" -lt "5" ] && [ "$page" -gt "1" ];then
+        echo "fp > go to first page  |  lp > go to last page"
     fi
     # echo "more setting coming soon :p"
     if [ $Perubahan == "ya" ];then
@@ -631,9 +671,9 @@ ListMenu(){
         GetModeNew="turbo"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "opd" ];then
+    elif [ $pilihan == "srd" ];then
         Perubahan="ya"
-        GetModeRenderNew="opengl"
+        GetModeRenderNew="system"
         usleep 100000
         ListMenu
     elif [ $pilihan == "opd" ];then
@@ -651,14 +691,9 @@ ListMenu(){
         GetModeRenderNew="skiavk"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "vkn" ];then
-        Perubahan="ya"
-        GetModeRenderNew="skiavk"
-        usleep 100000
-        ListMenu
     elif [ $pilihan == "fs" ];then
-        Perubahan="system"
-        GetModeFCNew="0"
+        Perubahan="ya"
+        GetModeFCNew="system"
         usleep 100000
         ListMenu
     elif [ $pilihan == "fy" ];then
@@ -741,6 +776,21 @@ ListMenu(){
         fi
         usleep 100000
         ListMenu
+    elif [ $pilihan == "acu" ];then
+        Perubahan="ya"
+        GetModeAiCNew="1"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "ace" ];then
+        Perubahan="ya"
+        GetModeAiCNew="2"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "acb" ];then
+        Perubahan="ya"
+        GetModeAiCNew="3"
+        usleep 100000
+        ListMenu
     elif [ $pilihan == "aiy" ];then
         Perubahan="ya"
         if [ $GetModeAiBefore == "0" ];then
@@ -748,7 +798,6 @@ ListMenu(){
         else
             echo "ai still running . . ."
             GetModeAiNew="2"
-            sleep 2s
         fi
         usleep 100000
         ListMenu
@@ -813,7 +862,7 @@ ListMenu(){
         usleep 100000
         ListMenu
     elif [ $pilihan == "np" ];then
-        if [ "$page" -lt "4" ];then
+        if [ "$page" -lt "5" ];then
             page=$(($page+1))
         else
             page="1"
@@ -835,7 +884,7 @@ ListMenu(){
         usleep 10000
         ListMenu
     elif [ $pilihan == "lp" ];then
-        page="4"
+        page="5"
         usleep 10000
         ListMenu
     elif [ $pilihan == "wtx" ];then
@@ -877,7 +926,7 @@ ListMenu(){
         else 
             askScan="nope"
         fi
-        sleep 1s
+        usleep 1000000
         ListMenu
     elif [ $pilihan == "sal" ];then
         Perubahan="ya"
@@ -960,8 +1009,8 @@ ListMenu(){
             fi
         fi
         echo "request not found,please try again"
-        sleep 1s
-        usleep 100000
+        usleep 1000000
+        # usleep 100000
         ListMenu
     fi
 }
@@ -978,7 +1027,7 @@ exitSetting(){
         for timeExit in 3s 2s 1s 0s ;
         do
             echo "$timeExit"
-            sleep 1s
+            usleep 1000000
         done
         for GetTerminal in  ` ps -a | grep 'u0' | awk '{print $3}' ` 
         do 
@@ -1089,7 +1138,7 @@ saveSetting()
             echo " please restart to take effect for gms doze fix/vram use system . . . ."
         fi
     echo "done . . . "
-    sleep 2s
+    usleep 2000000
     clear
     Perubahan="tidak"
     exitSetting

@@ -113,6 +113,11 @@ if [ ! -e $PathModulConfigAi/ai_status.txt ]; then
     MissingFile="iya"
 fi
 aiStatus=$(cat "$PathModulConfigAi/ai_status.txt");
+# run when gaming only or based gpu sage or both
+if [ ! -e $PathModulConfigAi/ai_change.txt ]; then
+    MissingFile="iya"
+fi
+aiChange=$(cat "$PathModulConfigAi/ai_change.txt")
 # Set Ai Notif Mode Start
 if [ ! -e $PathModulConfigAi/ai_notif_mode.txt ]; then
     MissingFile="iya"
@@ -137,8 +142,6 @@ if [ $MissingFile == "iya" ]; then
     exit 0;
 fi
 StatusModul=$(cat "$PathModulConfig/status_modul.txt");
-GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
-GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
 getAppName()
 {
     changeSE="tidak"
@@ -146,6 +149,8 @@ getAppName()
         changeSE="ya"
         setenforce 0
     fi
+    GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
+    GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
     GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1);
     checkApp=$(pm list packages -f $GetPackageApp | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g')
     nameApp=$(aapt d badging $checkApp | awk -F: ' $1 == "application-label" {print $2}' | sed "s/'*//g")
@@ -223,26 +228,49 @@ if [ $aiStatus == "1" ]; then
     echo "  --- --- --- --- --- " | tee -a $AiLog > /dev/null 2>&1 ;
     echo "2" > $PathModulConfigAi/ai_status.txt
 elif [ $aiStatus == "2" ];then
-    if [ "$StatusModul" == "off" ];then
+    if [ "$aiChange" == "1" ];then
+        GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
+        GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
+        if [ "$GpuStatus" -ge "$GpuStart" ] && [ $StatusModul != "turbo" ];then
+            setTurbo & wait
+        elif [ "$GpuStatus" -le "$GpuStop" ] && [ $StatusModul != "off" ];then
+            setOff & wait
+        fi
+    elif [ "$aiChange" == "2" ];then
         GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1)
-        if [ ! -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
-            if [ $StatusModul != "turbo" ];then
-                echo "found $GetPackageApp on your setting . . ." | tee -a $AiLog > /dev/null 2>&1 ;
-                setTurbo & wait
-            fi
-        else 
-            if [ "$GpuStatus" -ge "$GpuStart" ];then
+        if [ ! -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ] && [ $StatusModul != "turbo" ];then
+            echo "found $GetPackageApp on your setting . . ." | tee -a $AiLog > /dev/null 2>&1 ;
+            setTurbo & wait
+        elif  [ $StatusModul != "off" ] && [ -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
+            setOff & wait
+        fi
+    elif [ "$aiChange" == "3" ];then
+        if [ "$StatusModul" == "off" ];then
+            GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1)
+            if [ ! -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
                 if [ $StatusModul != "turbo" ];then
+                    echo "found $GetPackageApp on your setting . . ." | tee -a $AiLog > /dev/null 2>&1 ;
                     setTurbo & wait
                 fi
+            else 
+                GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
+                GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
+                if [ "$GpuStatus" -ge "$GpuStart" ];then
+                    if [ $StatusModul != "turbo" ];then
+                        setTurbo & wait
+                    fi
+                fi
             fi
-        fi
-    else
-        if [ "$GpuStatus" -le "$GpuStop" ];then
-            if [ $StatusModul != "off" ];then
-                GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1)
-                if [ -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
-                    setOff & wait
+        else
+            
+                GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
+                GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
+            if [ "$GpuStatus" -le "$GpuStop" ];then
+                if [ $StatusModul != "off" ];then
+                    GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1)
+                    if [ -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
+                        setOff & wait
+                    fi
                 fi
             fi
         fi
