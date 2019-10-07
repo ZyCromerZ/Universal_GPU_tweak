@@ -467,5 +467,4 @@ runScript(){
         sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1
     fi
 }
-echo "start running at : $(date +"%d-%m-%Y %r")" | tee -a $Path/ZyC_Ai.running.log > /dev/null 2>&1 ;
-runScript | tee -a $Path/ZyC_Ai.running.log > /dev/null 2>&1 ;
+runScript 2>&1 | tee -a $Path/ZyC_Ai.running.log > /dev/null 2>&1 ;

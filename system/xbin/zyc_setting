@@ -1078,6 +1078,20 @@ ListMenu(){
         AiDozeNew="on"
         usleep 100000
         ListMenu
+    elif [ $pilihan == "gux" ];then
+        echo "how long (example : 1) ??"
+        read getnumber
+        Perubahan="ya"
+        StatusStartGpuNew="$getnumber"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "gun" ];then
+        echo "how long (example : 1) ??"
+        read getnumber
+        Perubahan="ya"
+        StatusEndGpuNew="$getnumber"
+        usleep 100000
+        ListMenu
     elif [ $pilihan == "0" ];then
         exitSetting
     elif [ $pilihan == "e" ];then
@@ -1212,6 +1226,16 @@ saveSetting()
     if [ "$AiDozeBefore" != "$AiDozeNew" ];then
         echo "$AiDozeNew" > $PathModulConfigAi/ai_doze.txt ; 
         AiDozeBefore=$AiDozeNew;
+        # RunTweak="iya"ai_doze
+    fi
+    if [ "$StatusStartGpuBefore" != "$StatusStartGpuNew" ];then
+        echo "$StatusStartGpuNew" > $PathModulConfigAi/status_start_gpu.txt ; 
+        StatusStartGpuBefore=$StatusStartGpuNew;
+        # RunTweak="iya"ai_doze
+    fi
+    if [ "$StatusEndGpuBefore" != "$StatusEndGpuNew" ];then
+        echo "$StatusEndGpuNew" > $PathModulConfigAi/status_end_gpu.txt ; 
+        StatusEndGpuBefore=$StatusEndGpuNew;
         # RunTweak="iya"ai_doze
     fi
     if [ "$RunTweak" == "iya" ];then

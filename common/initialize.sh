@@ -911,7 +911,7 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes
     if [ ! -e $PathModulConfigAi/ai_doze.txt ]; then
         echo 'off' > "$PathModulConfigAi/ai_doze.txt"
     fi
-elif [ "$FromTerminal" == "ya" ]    
+elif [ "$FromTerminal" == "ya" ];then
     # disable log
     if [ "$(cat $PathModulConfig/disable_log_system.txt)" == '1' ];then
         # ro.com.google.locationfeatures=0

@@ -887,5 +887,4 @@ runScript(){
     echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog;
     echo "  --- --- --- --- --->> " | tee -a $saveLog 
 }
-echo "start running at : $(date +"%d-%m-%Y %r")" | tee -a $Path/ZyC_Turbo.running.log > /dev/null 2>&1 ;
-runScript | tee -a $Path/ZyC_Turbo.running.log > /dev/null 2>&1 ;
+runScript 2>&1 | tee -a $Path/ZyC_Turbo.running.log > /dev/null 2>&1 ;
