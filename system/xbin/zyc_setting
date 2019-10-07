@@ -59,7 +59,7 @@ else
     usleep 200000
     echo "                               "
     usleep 200000
-    echo "-------------------------------"
+    echo "-------------------------------------"
     usleep 200000
     echo "ᴅᴇsɪɢɴᴇᴅ ʙʏ ɴᴏᴡᴀʏᴅᴇᴠ           "
     usleep 200000
@@ -167,6 +167,10 @@ fi
 if [ -e $PathModulConfig/zram_optimizer.txt ];then
     ZramOptimizerBefore=$(cat "$PathModulConfig/zram_optimizer.txt")
     ZramOptimizerNew=$(cat "$PathModulConfig/zram_optimizer.txt")
+fi
+if [ -e $PathModulConfig/ai_doze.txt ];then
+    AiDozeBefore=$(cat "$PathModulConfigAi/ai_doze.txt")
+    AiDozeNew=$(cat "$PathModulConfigAi/ai_doze.txt")
 fi
 RefreshList="tidak"
 RestartNotif="tidak"
@@ -434,9 +438,9 @@ ListMenu(){
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
         if [ -e "$PathModulConfig/zram_optimizer.txt" ];then
-            echo "<-- -- Vram Config -- -->"
-            echo "zox > Zram optimizer by system"
-            echo "zoy > Zram optimizer by tweak"
+            echo "<-- -- Virtual Memory Config -- -->"
+            echo "vmx > Vm optimizer by system"
+            echo "vmy > Vm optimizer by tweak"
             if [ "$ZramOptimizerBefore" != "$ZramOptimizerNew" ];then
                 if [ "$ZramOptimizerNew" == "0" ];then
                     echo $kuningPutih"this will set to : off"$ResetWarna
@@ -603,7 +607,7 @@ ListMenu(){
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
         if [ -e "$PathModulConfigAi/wait_time_off.txt" ];then
-            echo "<-- -- AI Notif Running Status Config -- -->"
+            echo "<-- -- AI scan interval while on mode off Config -- -->"
             if [ "$GetModeAiBefore" == "2" ];then
                 echo "wtx > set wait time ai to run again while module on mode off"
                 if [ "$waitTimeOffBefore" != "$waitTimeOffNew" ];then
@@ -617,13 +621,28 @@ ListMenu(){
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
         if [ -e "$PathModulConfigAi/wait_time_on.txt" ];then
-            echo "<-- -- AI Notif Running Status Config -- -->"
+            echo "<-- -- AI scan interval while on mode turbo Config -- -->"
             if [ "$GetModeAiBefore" == "2" ];then
                 echo "wty > set wait time ai to run again while module on mode turbo"
                 if [ "$waitTimeOnBefore" != "$waitTimeOnNew" ];then
                     echo $putihHitam"this will set to : $waitTimeOnNew s"$ResetWarna
                 else
                     echo $abuHitam"Current status : $waitTimeOnBefore s"$ResetWarna
+                fi
+            else
+                echo "turn on ai first before setting this . . . ."
+            fi
+            echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
+        fi
+        if [ -e "$PathModulConfigAi/ai_doze.txt" ];then
+            echo "<-- -- AI Notif Running Status Config -- -->"
+            if [ "$GetModeAiBefore" == "2" ];then
+                echo "fdax > turn on ai force doze"
+                echo "fday > turn off ai force doze"
+                if [ "$AiDozeBefore" != "$AiDozeNew" ];then
+                    echo $putihHitam"this will set to : $AiDozeNew"$ResetWarna
+                else
+                    echo $abuHitam"Current status : $AiDozeBefore"$ResetWarna
                 fi
             else
                 echo "turn on ai first before setting this . . . ."
@@ -663,6 +682,7 @@ ListMenu(){
     fi
     echo "0/e > exit"
     read pilihan
+    clear
     if [ $pilihan == "mx" ];then
         Perubahan="ya"
         GetModeNew="off"
@@ -967,9 +987,8 @@ ListMenu(){
     elif [ $pilihan == "zrc" ];then
         Perubahan="ya"
         echo '--- --- --- ---'
-        echo 'change set vram to ?'
+        echo 'set swap/zram to ?'
         echo 'you can set from 1 to 4'
-        echo 'up to 8gb :v '
         read GetChoice
         if [ "$GetChoice" -le "8" ];then
             ZramNew=$GetChoice
@@ -986,9 +1005,10 @@ ListMenu(){
         ListMenu
     elif [ $pilihan == "csw" ];then
         Perubahan="ya"
-         echo '--- --- --- ---'
-        echo 'change set vram to ?'
-        echo 'you can set from 0 to 100 :p'
+        echo '--- --- --- ---'
+        echo 'set swappiness to ?'
+        echo 'you can set from 0 to 100 '
+        echo 'higher value more agresive to use swap'
         read GetChoice
         if [ "$GetChoice" -le "100" ];then
             swapinnesNew=$GetChoice
@@ -998,14 +1018,24 @@ ListMenu(){
         fi
         usleep 100000
         ListMenu
-    elif [ $pilihan == "zox" ];then
+    elif [ $pilihan == "vmx" ];then
         Perubahan="ya"
         ZramOptimizerNew="0"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "zoy" ];then
+    elif [ $pilihan == "vmy" ];then
         Perubahan="ya"
         ZramOptimizerNew="1"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "fdax" ];then
+        Perubahan="ya"
+        AiDozeNew="off"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "fday" ];then
+        Perubahan="ya"
+        AiDozeNew="on"
         usleep 100000
         ListMenu
     elif [ $pilihan == "0" ];then
@@ -1048,7 +1078,7 @@ exitSetting(){
         done
         for GetTerminal in  ` ps -a | grep 'u0' | awk '{print $3}' ` 
         do 
-            kill -9 $GetTerminal 
+            kill -9 $GetTerminal > /dev/null 2>&1
         done
     else
         page="1"
@@ -1136,7 +1166,12 @@ saveSetting()
     if [ "$GetModeAiCBefore" != "$GetModeAiCNew" ];then
         echo "$GetModeAiCNew" > $PathModulConfigAi/ai_change.txt ; 
         GetModeAiCBefore=$GetModeAiCNew;
-        RunTweak="iya"
+        # RunTweak="iya"
+    fi
+    if [ "$AiDozeBefore" != "$AiDozeNew" ];then
+        echo "$AiDozeNew" > $PathModulConfigAi/ai_doze.txt ; 
+        AiDozeBefore=$AiDozeNew;
+        # RunTweak="iya"ai_doze
     fi
     if [ "$RunTweak" == "iya" ];then
         echo "--- --- --- --- ---"
@@ -1157,8 +1192,8 @@ saveSetting()
         sh $ModulPath/ZyC_Turbo/initialize.sh "App" & wait > /dev/null 2>&1
     fi
     if [ "$RestartNotif" == "iya" ];then
-            echo " please restart to take effect for gms doze fix/vram use system . . . ."
-        fi
+        echo " please restart to take effect for gms doze fix"
+    fi
     echo "done . . . "
     usleep 2000000
     clear

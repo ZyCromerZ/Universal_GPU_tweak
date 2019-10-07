@@ -37,7 +37,7 @@ if [ ! -z "$1" ];then
     fi
 fi
 if [ $FromTerminal == "tidak" ];then
-    sh $ModulPath/ZyC_Turbo/initialize.sh & wait > /dev/null 2>&1
+    sh $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait > /dev/null 2>&1
     usleep 5000000
     sh $ModulPath/ZyC_Turbo/initialize.sh "FromTerminal" & wait > /dev/null 2>&1
 fi;
@@ -298,7 +298,7 @@ fstrimDulu(){
     echo "  --- --- --- --- --- " | tee -a $saveLog 
 }
 disableFsync(){
-    # disable fsync biar ui smooth :D
+    # disable fsync 
     echo 'disable fsync . . .' | tee -a $saveLog;
     if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
         echo "0" > /sys/kernel/dyn_fsync/Dyn_fsync_active
@@ -506,7 +506,7 @@ enableLogSystem(){
 # fstrim end
 
 # gpu turbo start
-    if [ "$GpuBooster" == "not found" ];then
+    if [ "$GpuBooster" != "not found" ];then
         if [ "$GpuBooster" == "0" ];then
             echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
             echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
@@ -525,8 +525,8 @@ enableLogSystem(){
             fi
             echo "nice,use default this tweak GpuBoost" | tee -a $saveLog;
         fi
+        echo "  --- --- --- --- --- " | tee -a $saveLog 
     fi
-    echo "  --- --- --- --- --- " | tee -a $saveLog 
 # gpu turbo end
 
 # echo "ok beres dah . . .\n" | tee -a $saveLog;
@@ -558,21 +558,24 @@ enableLogSystem(){
         if [ "$fsyncMode" == "0" ];then
             disableFsync
             echo "custom fsync detected, set to disable" | tee -a $saveLog;
+            echo "  --- --- --- --- --- " | tee -a $saveLog 
         elif [ "$fsyncMode" == "1" ];then
             enableFsync
             echo "custom fsync detected, set to enable" | tee -a $saveLog;
+            echo "  --- --- --- --- --- " | tee -a $saveLog 
         elif [ "$fsyncMode" == "system" ];then
             systemFsync
             echo "use system fsync setting" | tee -a $saveLog;
+            echo "  --- --- --- --- --- " | tee -a $saveLog 
         else
             if [ "$fsyncMode" != "auto" ];then
                 systemFsync
                 echo "fsync value error,set to by system" | tee -a $saveLog;
                 echo 'system' > $PathModulConfig/fsync_mode.txt
+                echo "  --- --- --- --- --- " | tee -a $saveLog 
             fi
             # disableFsync
         fi
-        echo "  --- --- --- --- --- " | tee -a $saveLog 
     fi
 # disable fsync end
 
@@ -814,6 +817,11 @@ if [ "$FromTerminal" == "tidak" ];then
         if [ "$GetBusyBox" == "none " ];then
             echo "GMS Doze fail . . ." | tee -a $Path/ZyC_GmsDoze.log 
         else
+            echo "Note : better to use universal gms doze :D" | tee -a $Path/ZyC_GmsDoze.log 
+            # source script from gms doze universal 1.7.3
+            cmd appops set com.google.android.gms BOOT_COMPLETED ignore | tee -a $Path/ZyC_GmsDoze.log;
+            cmd appops set com.google.android.gms AUTO_START ignore | tee -a $Path/ZyC_GmsDoze.log;
+            pm disable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceiver | tee -a $Path/ZyC_GmsDoze.log;
             # Stop unnecessary GMS and restart it on boot (dorimanx)
             if [ "$($GetBusyBox pidof com.google.android.gms | wc -l)" -eq "1" ]; then
                 $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms) | tee -a $Path/ZyC_GmsDoze.log;
@@ -833,10 +841,6 @@ if [ "$FromTerminal" == "tidak" ];then
             su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log;
             su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log;
             su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log;
-            # su -c "pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity" | tee -a $Path/ZyC_GmsDoze.log;
-            # su -c "pm enable com.google.android.gsf/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log;
-            # su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log;
-            # su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log;
             su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsReceiver" | tee -a $Path/ZyC_GmsDoze.log;
             su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsService" | tee -a $Path/ZyC_GmsDoze.log;
             su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsTaskService" | tee -a $Path/ZyC_GmsDoze.log;
@@ -850,7 +854,6 @@ if [ "$FromTerminal" == "tidak" ];then
             su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementReceiver" | tee -a $Path/ZyC_GmsDoze.log;
             su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementService" | tee -a $Path/ZyC_GmsDoze.log;
             su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.service.MeasurementBrokerService" | tee -a $Path/ZyC_GmsDoze.log;
-            # su -c "pm enable com.google.android.gms/com.google.android.location.internal.AnalyticsSamplerReceiver" | tee -a $Path/ZyC_GmsDoze.log;
             echo "GMS Doze done . . ." | tee -a $Path/ZyC_GmsDoze.log 
         fi
     fi

@@ -74,6 +74,76 @@ if [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ];then
 else
     exit -1;
 fi;
+# check service sh config start
+    # status modul
+    if [ ! -e $PathModulConfig/status_modul.txt ]; then
+        MissingFile="iya"
+    fi
+    # mode render
+    if [ ! -e $PathModulConfig/mode_render.txt ]; then
+        MissingFile="iya"
+    fi
+
+    # max fps nya
+    if [ ! -e $PathModulConfig/total_fps.txt ]; then
+        MissingFile="iya"
+    fi
+
+    # Status Log nya
+    if [ ! -e $PathModulConfig/disable_log_system.txt ]; then
+        MissingFile="iya"
+    fi
+
+    # fast charging
+    if [ ! -e $PathModulConfig/fastcharge.txt ]; then
+        MissingFile="iya"
+    fi
+
+    # setting adrenoboost
+    GpuBooster="not found"
+    if [ -e $NyariGPU/devfreq/adrenoboost ];then
+        if [ ! -e $PathModulConfig/GpuBooster.txt ]; then
+            MissingFile="iya"
+        fi
+    fi
+
+    # setting fsync
+    if [ ! -e $PathModulConfig/fsync_mode.txt ]; then
+        MissingFile="iya"
+    fi
+
+    # setting custom Ram Management
+    if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
+        MissingFile="iya"
+    fi
+
+    # GMS DOZE
+    if [ ! -e $PathModulConfig/gms_doze.txt ]; then
+        MissingFile="iya"
+    fi
+
+    # Zram
+    if [ ! -e $PathModulConfig/zram.txt ]; then
+        MissingFile="iya"
+    fi
+    # swappiness
+    if [ ! -e $PathModulConfig/swapinnes.txt ]; then
+        MissingFile="iya"
+    fi
+
+    # optimize zram
+    if [ ! -e $PathModulConfig/zram_optimizer.txt ]; then
+        MissingFile="iya"
+    fi
+
+    if [ ! -e $PathModulConfig/notes_en.txt ]; then
+        # echo "please read this xD \nyou can set mode.txt to:\n- off \n- on \n- turbo \nvalue must same as above without'-'\n\nchange mode_render.txt to:\n-  opengl \n-  skiagl \n-  skiavk \n\n note:\n-skiavk = Vulkan \n-skiagl = OpenGL (SKIA)\ndont edit total_fps.txt still not tested" > $PathModulConfig/notes.txt
+        MissingFile="iya"
+    fi
+    if [ ! -e $PathModulConfig/notes_id.txt ]; then
+        MissingFile="iya"
+    fi
+# check service.sh config done
 NotifPath="none"
 if [ -e "/system/etc/ZyC_Ai/set_notification.sh" ];then
     NotifPath=/system/etc/ZyC_Ai/set_notification.sh
@@ -272,24 +342,29 @@ elif [ $aiStatus == "2" ];then
     # ON_LOCKED
     # echo "$GetScreenState at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
     DozeStatePath=$PathModulConfigAi/doze_state.txt
+    DozeConfig="$(cat $PathModulConfigAi/ai_doze.txt)"
     DozeState="$(cat "$DozeStatePath")"
-    if [ "$GetScreenState" == "OFF_LOCKED" ];then
-        if [ "$DozeState" != "on" ];then
-            echo "turn on force doze at : $(date +" %r")"  | tee -a $AiLog > /dev/null 2>&1 ;
-            echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
-            echo $(dumpsys deviceidle force-idle) > /dev/null 2>&1 ;
-            echo "on" > "$DozeStatePath" 
-            setLag
+    if [ "$DozeConfig" == "on" ];then
+        if [ "$GetScreenState" == "OFF_LOCKED" ];then
+            if [ "$DozeState" != "on" ];then
+                echo "turn on force doze at : $(date +" %r")"  | tee -a $AiLog > /dev/null 2>&1 ;
+                echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
+                echo $(dumpsys deviceidle force-idle) > /dev/null 2>&1 ;
+                echo "on" > "$DozeStatePath" 
+                setLag
+            fi
+        elif [ "$GetScreenState" == "ON_UNLOCKED" ];then
+            if [ "$DozeState" != "off" ];then
+                echo "turn off force doze at : $(date +" %r")"  | tee -a $AiLog > /dev/null 2>&1 ;
+                echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
+                echo $(dumpsys deviceidle unforce) > /dev/null 2>&1 ;
+                echo $(dumpsys deviceidle battery reset) > /dev/null 2>&1 ;
+                echo "off" > "$DozeStatePath" 
+                setLagoff
+            fi
         fi
-    elif [ "$GetScreenState" == "ON_UNLOCKED" ];then
-        if [ "$DozeState" != "off" ];then
-            echo "turn off force doze at : $(date +" %r")"  | tee -a $AiLog > /dev/null 2>&1 ;
-            echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
-            echo $(dumpsys deviceidle unforce) > /dev/null 2>&1 ;
-            echo $(dumpsys deviceidle battery reset) > /dev/null 2>&1 ;
-            echo "off" > "$DozeStatePath" 
-            setLagoff
-        fi
+    else
+        DozeState="off"
     fi
     if [ "$DozeState" == "off" ];then
         if [ "$aiChange" == "1" ];then

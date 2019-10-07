@@ -54,6 +54,10 @@ if [ ! -z "$1" ];then
     if [ "$1" == "App" ];then
         GenerateApp="ya";
     fi
+    if [ "$1" == "boot" ];then
+        echo $(getprop debug.hwui.renderer) > "$PathModulConfig/backup/gpu_render.txt"
+        echo 'system' > $PathModulConfig/mode_render.txt
+    fi
 fi;
 ketemuInternal="kaga"
 if [ "$(cat /data/mod_path.txt)" == "/data" ];then
@@ -276,7 +280,7 @@ if [ "$FromTerminal" == "tidak" ];then
     fi
     # mode render
     if [ ! -e $PathModulConfig/mode_render.txt ]; then
-        echo 'skiagl' > $PathModulConfig/mode_render.txt
+        echo 'system' > $PathModulConfig/mode_render.txt
     fi
     # max fps nya
     if [ ! -e $PathModulConfig/total_fps.txt ]; then
@@ -689,11 +693,9 @@ Version:$SetModulVersion" | tee -a $SetNotes
     fi
     #gpu render backup
     if [ ! -e $PathModulConfig/backup/gpu_render.txt ]; then
-        if [ -e $NyariGPU/throttling ]; then
-            echo $(getprop debug.hwui.renderer) > "$PathModulConfig/backup/gpu_render.txt"
-            backup="pake"
-            usleep 100000
-        fi
+        echo $(getprop debug.hwui.renderer) > "$PathModulConfig/backup/gpu_render.txt"
+        backup="pake"
+        usleep 100000
     fi
     #val gpu nya
     if [ ! -e $PathModulConfig/backup/gpu_throttling.txt ]; then
@@ -901,7 +903,10 @@ Version:$SetModulVersion" | tee -a $SetNotes
         echo '0' > "$PathModulConfigAi/ai_notif_mode_running_status.txt"
     fi
     if [ ! -e $PathModulConfigAi/doze_state.txt ]; then
-        echo '' > "$PathModulConfigAi/doze_state.txt"
+        echo 'off' > "$PathModulConfigAi/doze_state.txt"
+    fi
+    if [ ! -e $PathModulConfigAi/ai_doze.txt ]; then
+        echo 'off' > "$PathModulConfigAi/ai_doze.txt"
     fi
 else    
     # disable log
