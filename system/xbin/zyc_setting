@@ -100,78 +100,88 @@ Path=$ModPath/modul_mantul/ZyC_mod
 PathModulConfig=$Path/ZyC_Turbo_config
 PathModulConfigAi=$Path/ZyC_Ai
 Perubahan="tidak"
-if [ -e $PathModulConfig/status_modul.txt ];then
-    GetModeBefore=$(cat "$PathModulConfig/status_modul.txt")
-    GetModeNew=$(cat "$PathModulConfig/status_modul.txt")
-fi
-if [ -e $PathModulConfig/mode_render.txt ];then
-    GetModeRenderBefore=$(cat "$PathModulConfig/mode_render.txt")
-    GetModeRenderNew=$(cat "$PathModulConfig/mode_render.txt")
-fi
-if [ -e $PathModulConfig/fastcharge.txt ];then
-    GetModeFCBefore=$(cat "$PathModulConfig/fastcharge.txt")
-    GetModeFCNew=$(cat "$PathModulConfig/fastcharge.txt")
-fi
-if [ -e $PathModulConfig/fsync_mode.txt ];then
-    GetModeFsyncBefore=$(cat "$PathModulConfig/fsync_mode.txt")
-    GetModeFsyncNew=$(cat "$PathModulConfig/fsync_mode.txt")
-fi
-if [ -e $PathModulConfig/GpuBooster.txt ];then
-    GetModeAdrenoBefore=$(cat "$PathModulConfig/GpuBooster.txt")
-    GetModeAdrenoNew=$(cat "$PathModulConfig/GpuBooster.txt")
-fi
-if [ -e $PathModulConfig/custom_ram_management.txt ];then
-    GetModeRamBefore=$(cat "$PathModulConfig/custom_ram_management.txt")
-    GetModeRamNew=$(cat "$PathModulConfig/custom_ram_management.txt")
-fi
-if [ -e $PathModulConfigAi/ai_status.txt ];then
-    GetModeAiBefore=$(cat "$PathModulConfigAi/ai_status.txt")
-    GetModeAiNew=$(cat "$PathModulConfigAi/ai_status.txt")
-fi
-if [ -e $PathModulConfigAi/ai_change.txt ];then
-    GetModeAiCBefore=$(cat "$PathModulConfigAi/ai_change.txt")
-    GetModeAiCNew=$(cat "$PathModulConfigAi/ai_change.txt")
-fi
-if [ -e $PathModulConfigAi/ai_notif_mode.txt ];then
-    GetModeAiNotifBefore=$(cat "$PathModulConfigAi/ai_notif_mode.txt")
-    GetModeAiNotifNew=$(cat "$PathModulConfigAi/ai_notif_mode.txt")
-fi
-if [ -e $PathModulConfigAi/ai_notif_mode_running.txt ];then
-    GetModeAiNotifRunningBefore=$(cat "$PathModulConfigAi/ai_notif_mode_running.txt")
-    GetModeAiNotifRunningNew=$(cat "$PathModulConfigAi/ai_notif_mode_running.txt")
-fi
-if [ -e $PathModulConfigAi/ai_notif_mode_running_status.txt ];then
-    GetModeAiNotifRunningStatusBefore=$(cat "$PathModulConfigAi/ai_notif_mode_running_status.txt")
-    GetModeAiNotifRunningStatusNew=$(cat "$PathModulConfigAi/ai_notif_mode_running_status.txt")
-fi
-if [ -e $PathModulConfigAi/wait_time_off.txt ];then
-    waitTimeOffBefore=$(cat "$PathModulConfigAi/wait_time_off.txt")
-    waitTimeOffNew=$(cat "$PathModulConfigAi/wait_time_off.txt")
-fi
-if [ -e $PathModulConfigAi/wait_time_on.txt ];then
-    waitTimeOnBefore=$(cat "$PathModulConfigAi/wait_time_on.txt")
-    waitTimeOnNew=$(cat "$PathModulConfigAi/wait_time_on.txt")
-fi
-if [ -e $PathModulConfig/gms_doze.txt ];then
-    GmsDozeBefore=$(cat "$PathModulConfig/gms_doze.txt")
-    GmsDozeNew=$(cat "$PathModulConfig/gms_doze.txt")
-fi
-if [ -e $PathModulConfig/zram.txt ];then
-    ZramBefore=$(cat "$PathModulConfig/zram.txt")
-    ZramNew=$(cat "$PathModulConfig/zram.txt")
-fi
-if [ -e $PathModulConfig/swapinnes.txt ];then
-    swapinnesBefore=$(cat "$PathModulConfig/swapinnes.txt")
-    swapinnesNew=$(cat "$PathModulConfig/swapinnes.txt")
-fi
-if [ -e $PathModulConfig/zram_optimizer.txt ];then
-    ZramOptimizerBefore=$(cat "$PathModulConfig/zram_optimizer.txt")
-    ZramOptimizerNew=$(cat "$PathModulConfig/zram_optimizer.txt")
-fi
-if [ -e $PathModulConfigAi/ai_doze.txt ];then
-    AiDozeBefore=$(cat "$PathModulConfigAi/ai_doze.txt")
-    AiDozeNew=$(cat "$PathModulConfigAi/ai_doze.txt")
-fi
+GetSetting(){
+    if [ -e $PathModulConfig/status_modul.txt ];then
+        GetModeBefore=$(cat "$PathModulConfig/status_modul.txt")
+        GetModeNew=$(cat "$PathModulConfig/status_modul.txt")
+    fi
+    if [ -e $PathModulConfig/mode_render.txt ];then
+        GetModeRenderBefore=$(cat "$PathModulConfig/mode_render.txt")
+        GetModeRenderNew=$(cat "$PathModulConfig/mode_render.txt")
+    fi
+    if [ -e $PathModulConfig/fastcharge.txt ];then
+        GetModeFCBefore=$(cat "$PathModulConfig/fastcharge.txt")
+        GetModeFCNew=$(cat "$PathModulConfig/fastcharge.txt")
+    fi
+    if [ -e $PathModulConfig/fsync_mode.txt ];then
+        GetModeFsyncBefore=$(cat "$PathModulConfig/fsync_mode.txt")
+        GetModeFsyncNew=$(cat "$PathModulConfig/fsync_mode.txt")
+    fi
+    if [ -e $PathModulConfig/GpuBooster.txt ];then
+        GetModeAdrenoBefore=$(cat "$PathModulConfig/GpuBooster.txt")
+        GetModeAdrenoNew=$(cat "$PathModulConfig/GpuBooster.txt")
+    fi
+    if [ -e $PathModulConfig/custom_ram_management.txt ];then
+        GetModeRamBefore=$(cat "$PathModulConfig/custom_ram_management.txt")
+        GetModeRamNew=$(cat "$PathModulConfig/custom_ram_management.txt")
+    fi
+    if [ -e $PathModulConfigAi/ai_status.txt ];then
+        GetModeAiBefore=$(cat "$PathModulConfigAi/ai_status.txt")
+        GetModeAiNew=$(cat "$PathModulConfigAi/ai_status.txt")
+    fi
+    if [ -e $PathModulConfigAi/ai_change.txt ];then
+        GetModeAiCBefore=$(cat "$PathModulConfigAi/ai_change.txt")
+        GetModeAiCNew=$(cat "$PathModulConfigAi/ai_change.txt")
+    fi
+    if [ -e $PathModulConfigAi/ai_notif_mode.txt ];then
+        GetModeAiNotifBefore=$(cat "$PathModulConfigAi/ai_notif_mode.txt")
+        GetModeAiNotifNew=$(cat "$PathModulConfigAi/ai_notif_mode.txt")
+    fi
+    if [ -e $PathModulConfigAi/ai_notif_mode_running.txt ];then
+        GetModeAiNotifRunningBefore=$(cat "$PathModulConfigAi/ai_notif_mode_running.txt")
+        GetModeAiNotifRunningNew=$(cat "$PathModulConfigAi/ai_notif_mode_running.txt")
+    fi
+    if [ -e $PathModulConfigAi/ai_notif_mode_running_status.txt ];then
+        GetModeAiNotifRunningStatusBefore=$(cat "$PathModulConfigAi/ai_notif_mode_running_status.txt")
+        GetModeAiNotifRunningStatusNew=$(cat "$PathModulConfigAi/ai_notif_mode_running_status.txt")
+    fi
+    if [ -e $PathModulConfigAi/wait_time_off.txt ];then
+        waitTimeOffBefore=$(cat "$PathModulConfigAi/wait_time_off.txt")
+        waitTimeOffNew=$(cat "$PathModulConfigAi/wait_time_off.txt")
+    fi
+    if [ -e $PathModulConfigAi/wait_time_on.txt ];then
+        waitTimeOnBefore=$(cat "$PathModulConfigAi/wait_time_on.txt")
+        waitTimeOnNew=$(cat "$PathModulConfigAi/wait_time_on.txt")
+    fi
+    if [ -e $PathModulConfig/gms_doze.txt ];then
+        GmsDozeBefore=$(cat "$PathModulConfig/gms_doze.txt")
+        GmsDozeNew=$(cat "$PathModulConfig/gms_doze.txt")
+    fi
+    if [ -e $PathModulConfig/zram.txt ];then
+        ZramBefore=$(cat "$PathModulConfig/zram.txt")
+        ZramNew=$(cat "$PathModulConfig/zram.txt")
+    fi
+    if [ -e $PathModulConfig/swapinnes.txt ];then
+        swapinnesBefore=$(cat "$PathModulConfig/swapinnes.txt")
+        swapinnesNew=$(cat "$PathModulConfig/swapinnes.txt")
+    fi
+    if [ -e $PathModulConfig/zram_optimizer.txt ];then
+        ZramOptimizerBefore=$(cat "$PathModulConfig/zram_optimizer.txt")
+        ZramOptimizerNew=$(cat "$PathModulConfig/zram_optimizer.txt")
+    fi
+    if [ -e $PathModulConfigAi/ai_doze.txt ];then
+        AiDozeBefore=$(cat "$PathModulConfigAi/ai_doze.txt")
+        AiDozeNew=$(cat "$PathModulConfigAi/ai_doze.txt")
+    fi
+    if [ -e $PathModulConfig/status_start_gpu.txt ];then
+        StatusStartGpuBefore=$(cat "$PathModulConfig/status_start_gpu.txt")
+        StatusStartGpuNew=$(cat "$PathModulConfig/status_start_gpu.txt")
+    fi
+    if [ -e $PathModulConfig/status_end_gpu.txt ];then
+        StatusEndGpuBefore=$(cat "$PathModulConfig/status_end_gpu.txt")
+        StatusEndGpuNew=$(cat "$PathModulConfig/status_end_gpu.txt")
+    fi
+}
 RefreshList="tidak"
 RestartNotif="tidak"
 savedata="no"
@@ -223,7 +233,7 @@ ListMenu(){
                 elif [ $GetModeRenderNew == "skiavk" ];then
                     echo $merahPutih"this will set to : Vulkan"$ResetWarna
                 elif [ $GetModeRenderNew == "system" ];then
-                    echo $merahPutih"this will set to : System Default"$ResetWarna
+                    echo $putihHitam"this will set to : System Default"$ResetWarna
                 fi
             else
                 if [ $GetModeRenderBefore == "opengl" ];then
@@ -233,7 +243,7 @@ ListMenu(){
                 elif [ $GetModeRenderBefore == "skiavk" ];then
                     echo $merahHitam"Current Status : Vulkan"$ResetWarna
                 elif [ $GetModeRenderBefore == "system" ];then
-                    echo $merahHitam"Current Status : System Default"$ResetWarna
+                    echo $abuHitam"Current Status : System Default"$ResetWarna
                 fi
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
@@ -272,7 +282,7 @@ ListMenu(){
                 elif [ $GetModeFsyncNew == "1" ];then
                     echo $hijauPutih"this will set to : on"$ResetWarna
                 elif [ $GetModeFsyncNew == "system" ];then
-                    echo $kuningPutih"this will set to : by system"$ResetWarna
+                    echo $biruPutih"this will set to : by system"$ResetWarna
                 elif [ $GetModeFsyncNew == "auto" ];then
                     echo $cyanPutih"this will set to : by auto"$ResetWarna
                 fi
@@ -282,7 +292,7 @@ ListMenu(){
                 elif [ $GetModeFsyncBefore == "1" ];then
                     echo $hijauHitam"Current Status : on"$ResetWarna
                 elif [ $GetModeFsyncBefore == "system" ];then
-                    echo $kuningHitam"Current Status : by system"$ResetWarna
+                    echo $biruHitam"Current Status : by system"$ResetWarna
                 elif [ $GetModeFsyncBefore == "auto" ];then
                     echo $cyanHitam"Current Status : by auto"$ResetWarna
                 fi
@@ -378,8 +388,8 @@ ListMenu(){
             echo "zrs > Zram setting by system"
             echo "zrx > turn off Zram"
             echo "zrc > costumize Zram size"
-            echo "note : do not set to high :D"
-            echo "       dont blame me if u got random reboot cause set too high :p"
+            echo "note : do not set to high"
+            echo "       it usseless,"
             if [ "$ZramBefore" != "$ZramNew" ];then
                 if [ "$ZramNew" == "0" ];then
                     echo $kuningPutih"this will set to : off"$ResetWarna
@@ -464,7 +474,7 @@ ListMenu(){
             echo "aiy > auto/ai mode on"
             if [ "$GetModeAiBefore" != "$GetModeAiNew" ];then
                 if [ $GetModeAiNew == "0" ];then
-                    echo $cyanPutih"this will set to : off"$ResetWarna
+                    echo $merahPutih"this will set to : off"$ResetWarna
                 elif [ $GetModeAiNew == "3" ];then
                     echo $cyanPutih"this will set to : turn off"$ResetWarna
                 elif [ $GetModeAiNew == "1" ];then
@@ -472,7 +482,7 @@ ListMenu(){
                 fi
             else
                 if [ $GetModeAiBefore == "0" ];then
-                    echo $cyanHitam"current status : off"$ResetWarna
+                    echo $merahHitam"current status : off"$ResetWarna
                 elif [ $GetModeAiBefore == "2" ];then
                     echo $cyanHitam"current status : running"$ResetWarna
                 elif [ $GetModeAiBefore == "1" ];then
@@ -628,6 +638,34 @@ ListMenu(){
                     echo $putihHitam"this will set to : $waitTimeOnNew s"$ResetWarna
                 else
                     echo $abuHitam"Current status : $waitTimeOnBefore s"$ResetWarna
+                fi
+            else
+                echo "turn on ai first before setting this . . . ."
+            fi
+            echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
+        fi
+        if [ -e "$PathModulConfigAi/status_start_gpu.txt" ];then
+            echo "<-- -- AI max gpu usage for switch to mode turbo Config -- -->"
+            if [ "$GetModeAiBefore" == "2" ];then
+                echo "gux > set max gpu usage for switch to mode"
+                if [ "$StatusStartGpuBefore" != "$StatusStartGpuNew" ];then
+                    echo $putihHitam"this will set to : $StatusStartGpuNew %"$ResetWarna
+                else
+                    echo $abuHitam"Current status : $StatusStartGpuBefore %"$ResetWarna
+                fi
+            else
+                echo "turn on ai first before setting this . . . ."
+            fi
+            echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
+        fi
+        if [ -e "$PathModulConfigAi/status_end_gpu.txt" ];then
+            echo "<-- -- AI min gpu usage for switch to mode off Config -- -->"
+            if [ "$GetModeAiBefore" == "2" ];then
+                echo "gun > set wait time ai to run again while module on mode turbo"
+                if [ "$StatusEndGpuBefore" != "$StatusEndGpuNew" ];then
+                    echo $putihHitam"this will set to : $StatusEndGpuNew %"$ResetWarna
+                else
+                    echo $abuHitam"Current status : $StatusEndGpuBefore %"$ResetWarna
                 fi
             else
                 echo "turn on ai first before setting this . . . ."
@@ -928,12 +966,14 @@ ListMenu(){
         echo "how long (example : 1) ??"
         read getnumber
         waitTimeOffNew=$getnumber
+        Perubahan="ya"
         usleep 100000
         ListMenu
     elif [ $pilihan == "wty" ];then
         echo "how long (example : 1) ??"
         read getnumber
         waitTimeOnNew=$getnumber
+        Perubahan="ya"
         usleep 100000
         ListMenu
     elif [ $pilihan == "gdx" ];then
@@ -1082,6 +1122,7 @@ exitSetting(){
         done
     else
         page="1"
+        GetSetting
         ListMenu
     fi
 }
@@ -1200,4 +1241,5 @@ saveSetting()
     Perubahan="tidak"
     exitSetting
 }
+GetSetting
 ListMenu

@@ -53,6 +53,7 @@ if [ ! -z "$1" ];then
     fi
     if [ "$1" == "App" ];then
         GenerateApp="ya";
+        FromTerminal="skip"
     fi
     if [ "$1" == "boot" ];then
         echo $(getprop debug.hwui.renderer) > "$PathModulConfig/backup/gpu_render.txt"
@@ -342,7 +343,8 @@ if [ "$FromTerminal" == "tidak" ];then
     if [ ! -e $PathModulConfig/notes_en.txt ]; then
         # echo "please read this xD \nyou can set mode.txt to:\n- off \n- on \n- turbo \nvalue must same as above without'-'\n\nchange mode_render.txt to:\n-  opengl \n-  skiagl \n-  skiavk \n\n note:\n-skiavk = Vulkan \n-skiagl = OpenGL (SKIA)\ndont edit total_fps.txt still not tested" > $PathModulConfig/notes.txt
         SetNotes=$PathModulConfig/notes_en.txt;
-    echo "This module functions to disable thermal GPU and setting some other parts in the GPU for get better performance, 
+    echo "Version:$SetModulVersion
+This module functions to disable thermal GPU and setting some other parts in the GPU for get better performance, 
 provided additional features to make it more better performance :p
 
 There are 2 versions, v3 and v2
@@ -493,18 +495,19 @@ For module config files in the zyc_ai folder (ignore the missing files)
   For setting ai notification led when module on turbo mode + ai mode on (lights up based on wait_time_on.txt)
   Value=0 (off) / 1 (vibration method 1) / 2 (notification method 2) / 3 (notification metode 3) / 4 (notification metode 4)
 
+and i cannot explain for another (new) configs,i dont have a time to explain it sorry ,please open zyc_setting in your terminal app for modify some config 
 
 For V2, just flash it via magisk, it will automatically activates after rebooted
 
 
 Note:
 mode = off / on / turbo
-namarender = opengl / skiagl / skiavk
-Version:$SetModulVersion" | tee -a $SetNotes 
+namarender = opengl / skiagl / skiavk" | tee -a $SetNotes 
     fi
     if [ ! -e $PathModulConfig/notes_id.txt ]; then
         SetNotes=$PathModulConfig/notes_id.txt;
     echo "Created By : ZyCromerZ
+    Version:$SetModulVersion
     
 Oke . . .
 Jadi gini . . .
@@ -676,14 +679,14 @@ Untuk file config modul dalam folder zyc_ai ( abaikan kalo file tidak ada )
   Untuk setting notif led ai ketika modul di mode turbo + ai menyala (menyala berdasarkan wait_time_on.txt)
   Value=0(mati)/1(mode metode 1)/2(notif metode 2)/3(notif metode 3)/4(notif metode 4)
 
+maap,gw ga bisa menjelaskan fungsi dari file config yg baru,ga ada waktu buat buat nya 
 
 Untuk V2 cukup flash teros biarkan,udah otomatis aktif kalo udah reboot
 
 
 Note :
 namamode = off/on/turbo
-namarender = opengl/skiagl/skiavk
-Version:$SetModulVersion" | tee -a $SetNotes 
+namarender = opengl/skiagl/skiavk" | tee -a $SetNotes 
     
     fi
 
@@ -908,7 +911,7 @@ Version:$SetModulVersion" | tee -a $SetNotes
     if [ ! -e $PathModulConfigAi/ai_doze.txt ]; then
         echo 'off' > "$PathModulConfigAi/ai_doze.txt"
     fi
-else    
+elif [ "$FromTerminal" == "ya" ]    
     # disable log
     if [ "$(cat $PathModulConfig/disable_log_system.txt)" == '1' ];then
         # ro.com.google.locationfeatures=0
