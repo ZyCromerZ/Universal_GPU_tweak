@@ -174,7 +174,7 @@ if [ ! -z "$1" ];then
                 usleep 100000
                 echo "255" > $GetLedPath/green/brightness
                 echo "0" > $GetLedPath/red/brightness
-            elif [ "$getMethod" == "dozeon" ];then
+            elif [ "$getMethod" == "dozeoff" ];then
                 #on kedip
                 echo "0" > $GetLedPath/green/brightness
                 echo "255" > $GetLedPath/red/brightness
@@ -182,7 +182,7 @@ if [ ! -z "$1" ];then
                 echo "0" > $GetLedPath/red/brightness
                 usleep 500000
                 echo "255" > $GetLedPath/green/brightness
-            elif [ "$getMethod" == "dozeoff" ];then
+            elif [ "$getMethod" == "dozeon" ];then
                 #on kedip
                 echo "0" > $GetLedPath/red/brightness
                 echo "255" > $GetLedPath/green/brightness

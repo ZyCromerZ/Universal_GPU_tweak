@@ -173,13 +173,13 @@ GetSetting(){
         AiDozeBefore=$(cat "$PathModulConfigAi/ai_doze.txt")
         AiDozeNew=$(cat "$PathModulConfigAi/ai_doze.txt")
     fi
-    if [ -e $PathModulConfig/status_start_gpu.txt ];then
-        StatusStartGpuBefore=$(cat "$PathModulConfig/status_start_gpu.txt")
-        StatusStartGpuNew=$(cat "$PathModulConfig/status_start_gpu.txt")
+    if [ -e $PathModulConfigAi/status_start_gpu.txt ];then
+        StatusStartGpuBefore=$(cat "$PathModulConfigAi/status_start_gpu.txt")
+        StatusStartGpuNew=$(cat "$PathModulConfigAi/status_start_gpu.txt")
     fi
-    if [ -e $PathModulConfig/status_end_gpu.txt ];then
-        StatusEndGpuBefore=$(cat "$PathModulConfig/status_end_gpu.txt")
-        StatusEndGpuNew=$(cat "$PathModulConfig/status_end_gpu.txt")
+    if [ -e $PathModulConfigAi/status_end_gpu.txt ];then
+        StatusEndGpuBefore=$(cat "$PathModulConfigAi/status_end_gpu.txt")
+        StatusEndGpuNew=$(cat "$PathModulConfigAi/status_end_gpu.txt")
     fi
 }
 RefreshList="tidak"
@@ -647,7 +647,7 @@ ListMenu(){
         if [ -e "$PathModulConfigAi/status_start_gpu.txt" ];then
             echo "<-- -- AI max gpu usage for switch to mode turbo Config -- -->"
             if [ "$GetModeAiBefore" == "2" ];then
-                echo "gux > set max gpu usage for switch to mode"
+                echo "gux > set max gpu usage for switch to mode turbo"
                 if [ "$StatusStartGpuBefore" != "$StatusStartGpuNew" ];then
                     echo $putihHitam"this will set to : $StatusStartGpuNew %"$ResetWarna
                 else
@@ -661,7 +661,7 @@ ListMenu(){
         if [ -e "$PathModulConfigAi/status_end_gpu.txt" ];then
             echo "<-- -- AI min gpu usage for switch to mode off Config -- -->"
             if [ "$GetModeAiBefore" == "2" ];then
-                echo "gun > set wait time ai to run again while module on mode turbo"
+                echo "gun > set min gpu usage for switch to mode off "
                 if [ "$StatusEndGpuBefore" != "$StatusEndGpuNew" ];then
                     echo $putihHitam"this will set to : $StatusEndGpuNew %"$ResetWarna
                 else
