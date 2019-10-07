@@ -252,7 +252,7 @@ SetOn(){
             echo "0" > "$NyariGPU/max_pwrlevel"
         fi
         if [ -e $NyariGPU/devfreq/adrenoboost ]; then
-            echo "3" > "$NyariGPU/devfreq/adrenoboost"
+            echo "2" > "$NyariGPU/devfreq/adrenoboost"
         fi
     fi
     echo 'use "on" done. . .' | tee -a $saveLog;
@@ -264,6 +264,9 @@ SetTurbo(){
     echo 'use "turbo" setting. . .' | tee -a $saveLog;
     setprop persist.sys.NV_FPSLIMIT 120
     if  [ $NyariGPU != '' ];then
+        if [ -e $NyariGPU/devfreq/adrenoboost ]; then
+            echo "3" > "$NyariGPU/devfreq/adrenoboost"
+        fi
         if [ -e "$NyariGPU/throttling" ]; then
             echo "0" > $NyariGPU/throttling
         fi
@@ -450,10 +453,10 @@ enableLogSystem(){
         echo "swith to turbo mode" | tee -a $saveLog;
         echo "  --- --- --- --- --- " | tee -a $saveLog 
     elif [ "$GetMode" == 'lag' ];then
-        SetOff
-        SetOn
+        # SetOff
+        LagMode
         # disableFsync
-        echo "setting to mode on" | tee -a $saveLog;
+        echo "setting to mode lag" | tee -a $saveLog;
         echo "  --- --- --- --- --- " | tee -a $saveLog 
     else
         SetOff

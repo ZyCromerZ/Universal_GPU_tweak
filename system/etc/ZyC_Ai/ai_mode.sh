@@ -288,7 +288,7 @@ elif [ $aiStatus == "2" ];then
             echo $(dumpsys deviceidle unforce) > /dev/null 2>&1 ;
             echo $(dumpsys deviceidle battery reset) > /dev/null 2>&1 ;
             echo "off" > "$DozeStatePath" 
-            setLagOff
+            setLagoff
         fi
     fi
     if [ "$DozeState" == "off" ];then
