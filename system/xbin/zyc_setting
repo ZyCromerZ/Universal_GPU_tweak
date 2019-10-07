@@ -168,7 +168,7 @@ if [ -e $PathModulConfig/zram_optimizer.txt ];then
     ZramOptimizerBefore=$(cat "$PathModulConfig/zram_optimizer.txt")
     ZramOptimizerNew=$(cat "$PathModulConfig/zram_optimizer.txt")
 fi
-if [ -e $PathModulConfig/ai_doze.txt ];then
+if [ -e $PathModulConfigAi/ai_doze.txt ];then
     AiDozeBefore=$(cat "$PathModulConfigAi/ai_doze.txt")
     AiDozeNew=$(cat "$PathModulConfigAi/ai_doze.txt")
 fi
@@ -635,10 +635,10 @@ ListMenu(){
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
         if [ -e "$PathModulConfigAi/ai_doze.txt" ];then
-            echo "<-- -- AI Notif Running Status Config -- -->"
+            echo "<-- -- AI force doze Config -- -->"
             if [ "$GetModeAiBefore" == "2" ];then
-                echo "fdax > turn on ai force doze"
-                echo "fday > turn off ai force doze"
+                echo "fdax > turn off ai force doze"
+                echo "fday > turn on ai force doze"
                 if [ "$AiDozeBefore" != "$AiDozeNew" ];then
                     echo $putihHitam"this will set to : $AiDozeNew"$ResetWarna
                 else

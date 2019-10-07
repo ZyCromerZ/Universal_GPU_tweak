@@ -329,9 +329,9 @@ if [ "$FromTerminal" == "tidak" ];then
     if [ -e $PathModulConfig/notes_en.txt ];then
         if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
             rm $PathModulConfig/notes_en.txt
-            echo 'auto' > "$PathModulConfig/fsync_mode.txt"
-            echo '3' > "$PathModulConfigAi/wait_time_off.txt"
-            echo '10' > "$PathModulConfigAi/wait_time_on.txt" # Wait time
+            # echo 'auto' > "$PathModulConfig/fsync_mode.txt"
+            # echo '3' > "$PathModulConfigAi/wait_time_off.txt"
+            # echo '10' > "$PathModulConfigAi/wait_time_on.txt" # Wait time
         fi
     fi
     if [ -e $PathModulConfig/notes_id.txt ];then
