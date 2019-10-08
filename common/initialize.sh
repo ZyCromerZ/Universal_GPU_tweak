@@ -110,6 +110,7 @@ if [ ! -z "$1" ];then
             echo $(getprop debug.hwui.renderer) > "$PathModulConfig/backup/gpu_render.txt"
             echo 'system' > $PathModulConfig/mode_render.txt
             echo 'system' > $PathModulConfig/fsync_mode.txt
+            setprop ram_management.change "belom"
         fi
     fi
 fi;
@@ -145,6 +146,27 @@ GetAppAndGames(){
     fi
     if [ ! -z $(pm list packages -f com.pwrd.pwm | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.pwrd.pwm" "$GameList" ) ];then
         sed -i "1a  com.pwrd.pwm" $GameList;
+    fi
+    if [ ! -z $(pm list packages -f jp.konami | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "jp.konami" $GameList;
+    fi
+    if [ ! -z $(pm list packages -f org.gamesamba | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "org.gamesamba" $GameList;
+    fi
+    if [ ! -z $(pm list packages -f com. | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "com.skizze" $GameList;
+    fi
+    if [ ! -z $(pm list packages -f com.vitotechnology | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "com.vitotechnology" $GameList;
+    fi
+    if [ ! -z $(pm list packages -f com.mohjang | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "com.mohjang" $GameList;
+    fi
+    if [ ! -z $(pm list packages -f com.dmi | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "com.dmi" $GameList;
+    fi
+    if [ ! -z $(pm list packages -f com.herogames | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
+        echo "com.herogames" $GameList;
     fi
     # if [ ! -z $(pm list packages -f com. | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
     #     echo "com." $GameList;

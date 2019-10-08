@@ -676,9 +676,9 @@ runScript(){
 
                     minFreeSet=$(($GetTotalRam*4))
 
-                    sysctl -e -w vm.min_free_kbytes=$minFreeSet 2>/dev/null
+                    sysctl -e -w vm.min_free_kbytes=$minFreeSet > /dev/null 2>&1 ;
                     if [ -e /proc/sys/vm/extra_free_kbytes ]; then
-                        setprop sys.sysctl.extra_free_kbytes $minFreeSet
+                        setprop sys.sysctl.extra_free_kbytes $minFreeSet > /dev/null 2>&1 ;
                     fi;
                 fi;
                 # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog > /dev/null 2>&1 ;
@@ -724,62 +724,68 @@ runScript(){
             elif [ "$CustomZram" == "8" ];then
                 SetZramTo="8589934592‬"
             elif [ "$CustomZram" == "0" ];then
-            #  disable zram
-                if [ -e /dev/block/zram0 ]; then
-                    StopZramSet="iya"
-                    echo 'disable Zram done .' | tee -a $saveLog > /dev/null 2>&1 ;
-                    $GetBusyBox swapoff /dev/block/zram0
-                    $GetBusyBox setprop zram.disksize 0
-                    echo 'disable Zram done .' | tee -a $saveLog > /dev/null 2>&1 ;
-                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
-                fi;
+            #  disable zram 
+                if [ "$(getprop ram_management.change)" == "belom" ];then
+                    if [ -e /dev/block/zram0 ]; then
+                        setprop ram_management.change "udah"
+                        StopZramSet="iya"
+                        echo 'disable Zram done .' | tee -a $saveLog > /dev/null 2>&1 ;
+                        $GetBusyBox swapoff /dev/block/zram0  > /dev/null 2>&1 
+                        $GetBusyBox setprop zram.disksize 0  > /dev/null 2>&1 
+                        echo 'disable Zram done .' | tee -a $saveLog > /dev/null 2>&1 ;
+                        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                    fi;
+                fi
                 StopZramSet="iya"
             elif [ "$CustomZram" == "system" ];then
                 SetZramTo=$(cat "$PathModulConfig/backup/zram_disksize.txt")
                 echo "use Zram default system setting" | tee -a $saveLog > /dev/null 2>&1 
                 echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
             fi
-            if [ "$StopZramSet" == "kaga" ];then
-                if [ -e /dev/block/zram0 ]; then
-                    FixSize=$(echo $SetZramTo |  sed "s/-*//g" )
-                    GetSwapNow=$(getprop zram.disksize |  sed "s/-*//g" )
-                    if [ "$FixSize" != "$GetSwapNow" ];then
-                        stop perfd
-                        # echo "use Zram default system setting" | tee -a $saveLog > /dev/null 2>&1 
-                        echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog > /dev/null 2>&1 ;
-                        echo "Set Zram to $SetZramTo Bytes . . ." | tee -a $saveLog > /dev/null 2>&1 ;
-                        echo "and Swapinnes to $Swapinnes . . ." | tee -a $saveLog > /dev/null 2>&1 ;
-                        $PathBusyBox/swapoff "/dev/block/zram0"
-                        usleep 100000
-                        echo "1" > /sys/block/zram0/reset
-                        echo "$FixSize" > /sys/block/zram0/disksize | tee -a $saveLog > /dev/null 2>&1 ;
-                        $PathBusyBox/mkswap "/dev/block/zram0"
-                        usleep 100000
-                        # setprop ro.config.zram true
-                        # setprop ro.config.zram.support true
-                        setprop zram.disksize $SetZramTo
-                        if [ "$ZramOptimizer" == "1" ];then
-                            echo "echo optimize zram setting . . ." | tee -a $saveLog > /dev/null 2>&1 ;
-                            sysctl -e -w vm.swappiness=$Swapinnes
-                            sysctl -e -w vm.dirty_ratio=5
-                            sysctl -e -w vm.dirty_background_ratio=1
-                            sysctl -e -w vm.drop_caches=3
-                            sysctl -e -w vm.vfs_cache_pressure=100
-                        else
-                            echo "use stock zram setting . . ." | tee -a $saveLog > /dev/null 2>&1 ;
-                            sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_ratio.txt")
-                            sysctl -e -w vm.dirty_background_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_background_ratio.txt")
-                            sysctl -e -w vm.drop_caches=$(cat "$PathModulConfig/backup/zram_vm.drop_caches.txt")
-                            sysctl -e -w vm.vfs_cache_pressure=$(cat "$PathModulConfig/backup/zram_vm.vfs_cache_pressure.txt")
+            if [ "$(getprop ram_management.change)" == "belom" ];then
+                if [ "$StopZramSet" == "kaga" ];then
+                    if [ -e /dev/block/zram0 ]; then
+                        setprop ram_management.change "udah"
+                        FixSize=$(echo $SetZramTo |  sed "s/-*//g" )
+                        GetSwapNow=$(getprop zram.disksize |  sed "s/-*//g" )
+                        if [ "$FixSize" != "$GetSwapNow" ];then
+                            stop perfd
+                            # echo "use Zram default system setting" | tee -a $saveLog > /dev/null 2>&1 
+                            echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog > /dev/null 2>&1 ;
+                            echo "Set Zram to $SetZramTo Bytes . . ." | tee -a $saveLog > /dev/null 2>&1 ;
+                            echo "and Swapinnes to $Swapinnes . . ." | tee -a $saveLog > /dev/null 2>&1 ;
+                            $PathBusyBox/swapoff "/dev/block/zram0"
+                            usleep 100000
+                            echo "1" > /sys/block/zram0/reset
+                            echo "$FixSize" > /sys/block/zram0/disksize | tee -a $saveLog > /dev/null 2>&1 ;
+                            $PathBusyBox/mkswap "/dev/block/zram0"
+                            usleep 100000
+                            # setprop ro.config.zram true
+                            # setprop ro.config.zram.support true
+                            setprop zram.disksize $SetZramTo
+                            if [ "$ZramOptimizer" == "1" ];then
+                                echo "echo optimize zram setting . . ." | tee -a $saveLog > /dev/null 2>&1 ;
+                                sysctl -e -w vm.swappiness=$Swapinnes  > /dev/null 2>&1 
+                                sysctl -e -w vm.dirty_ratio=5  > /dev/null 2>&1 
+                                sysctl -e -w vm.dirty_background_ratio=1  > /dev/null 2>&1 
+                                sysctl -e -w vm.drop_caches=3  > /dev/null 2>&1 
+                                sysctl -e -w vm.vfs_cache_pressure=100  > /dev/null 2>&1 
+                            else
+                                echo "use stock zram setting . . ." | tee -a $saveLog > /dev/null 2>&1 ;
+                                sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_ratio.txt")  > /dev/null 2>&1 
+                                sysctl -e -w vm.dirty_background_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_background_ratio.txt")  > /dev/null 2>&1 
+                                sysctl -e -w vm.drop_caches=$(cat "$PathModulConfig/backup/zram_vm.drop_caches.txt")  > /dev/null 2>&1 
+                                sysctl -e -w vm.vfs_cache_pressure=$(cat "$PathModulConfig/backup/zram_vm.vfs_cache_pressure.txt")  > /dev/null 2>&1 
+                            fi
+                            $PathBusyBox/swapon "/dev/block/zram0"  > /dev/null 2>&1 
+                            usleep 100000
+                            echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog > /dev/null 2>&1 ;
+                            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                            start perfd
                         fi
-                        $PathBusyBox/swapon "/dev/block/zram0"
-                        usleep 100000
-                        echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog > /dev/null 2>&1 ;
-                        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
-                        start perfd
-                    fi
-                    
-                fi;
+                        
+                    fi;
+                fi
             fi
         fi
         
