@@ -331,11 +331,10 @@ runScript(){
     if [ $aiStatus == "1" ]; then
         echo "<<--- --- --- --- --- " | tee -a $AiLog > /dev/null 2>&1 ;
         echo "starting ai mode at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
-        echo "module version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" | tee -a $AiLog > /dev/null 2>&1 ;
+        echo "module version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed 's/Version:*//g' )" | tee -a $AiLog > /dev/null 2>&1 ;
         echo "  --- --- --- --- --- " | tee -a $AiLog > /dev/null 2>&1 ;
         echo "2" > $PathModulConfigAi/ai_status.txt
     elif [ $aiStatus == "2" ];then
-        GetScreenState="$( dumpsys nfc | grep 'mScreenState=' | sed "s/mScreenState=*//g" )"
         # output
         # ON_UNLOCKED
         # OFF_UNLOCKED
@@ -346,7 +345,38 @@ runScript(){
         DozeConfig="$(cat $PathModulConfigAi/ai_doze.txt)"
         DozeState="$(cat "$DozeStatePath")"
         if [ "$DozeConfig" == "on" ];then
-            if [ "$GetScreenState" == "OFF_LOCKED" ];then
+            GetScreenStateNFC="$( dumpsys nfc | grep 'mScreenState=' | sed 's/mScreenState=*//g' )"
+            GetScreenStateOF="$( dumpsys display | grep "mScreenState" | sed 's/mScreenState=*//g'  )"
+            GetScreenStateTF="$( dumpsys power | grep "mHoldingDisplaySuspendBlocker" | sed 's/mHoldingDisplaySuspendBlocker=*//g' )"
+            StatusLayar="gak tau"
+            if [ "$GetScreenStateNFC" == "ON_LOCKED" ] || [ "$GetScreenStateNFC" == "ON_UNLOCKED" ] || [ "$GetScreenStateNFC" == "OFF_LOCKED" ] || [ "$GetScreenStateNFC" == "OFF_UNLOCKED" ];then
+                if [ "$StatusLayar" == "gak tau" ];then
+                    if [ "$GetScreenStateNFC" == "OFF_LOCKED" ];then
+                        StatusLayar="mati"
+                    elif [ "$GetScreenStateNFC" == "ON_UNLOCKED" ];then
+                        StatusLayar="idup"
+                    fi
+                fi
+            fi
+            if [ "$GetScreenStateOF" == "ON" ] || [ "$GetScreenStateOF" == "OFF" ];then
+                if [ "$StatusLayar" == "gak tau" ];then
+                    if [ "$GetScreenStateOF" == "OFF" ];then
+                        StatusLayar="mati"
+                    elif [ "$GetScreenStateOF" == "ON" ];then
+                        StatusLayar="idup"
+                    fi
+                fi
+            fi
+            if [ "$GetScreenStateTF" == "ON" ] || [ "$GetScreenStateTF" == "OFF" ];then
+                if [ "$StatusLayar" == "gak tau" ];then
+                    if [ "$GetScreenStateTF" == "false" ];then
+                        StatusLayar="mati"
+                    elif [ "$GetScreenStateTF" == "true" ];then
+                        StatusLayar="idup"
+                    fi
+                fi
+            fi
+            if [ "$StatusLayar" == "mati" ];then
                 if [ "$DozeState" != "on" ];then
                     echo "turn on force doze at : $(date +" %r")"  | tee -a $AiLog > /dev/null 2>&1 ;
                     echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
@@ -354,7 +384,7 @@ runScript(){
                     echo "on" > "$DozeStatePath" 
                     setLag
                 fi
-            elif [ "$GetScreenState" == "ON_UNLOCKED" ];then
+            elif [ "$StatusLayar" == "idup" ];then
                 if [ "$DozeState" != "off" ];then
                     echo "turn off force doze at : $(date +" %r")"  | tee -a $AiLog > /dev/null 2>&1 ;
                     echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
@@ -459,7 +489,7 @@ runScript(){
         usleep 10000000
         sh $NotifPath "getar" "off" > /dev/null 2>&1 
         echo "Continue running at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
-        echo "module version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" | tee -a $AiLog > /dev/null 2>&1 ;
+        echo "module version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed 's/Version:*//g' )" | tee -a $AiLog > /dev/null 2>&1 ;
         echo "  --- --- --- --- --- " | tee -a $AiLog > /dev/null 2>&1 ;
         sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
         sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1

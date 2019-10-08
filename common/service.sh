@@ -81,17 +81,17 @@ if [ -e $Path/ZyC_Turbo.log ]; then
 fi
 saveLog=$Path/ZyC_Turbo.log
 runScript(){
-    echo "<<--- --- --- --- --- " | tee -a $saveLog 
-    echo "starting modules . . ." | tee -a $saveLog 
-    echo "Version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )"
+    echo "<<--- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1
+    echo "starting modules . . ." | tee -a $saveLog > /dev/null 2>&1
+    echo "Version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" > /dev/null 2>&1
     if [ $FromTerminal == "tidak" ];then
-        echo "running with boot detected" | tee -a $saveLog 
+        echo "running with boot detected" | tee -a $saveLog > /dev/null 2>&1
     elif [ $FromAi == "ya" ];then
-        echo "running with ai detected" | tee -a $saveLog 
+        echo "running with ai detected" | tee -a $saveLog > /dev/null 2>&1
     else
-        echo "running without boot detected" | tee -a $saveLog 
+        echo "running without boot detected" | tee -a $saveLog > /dev/null 2>&1
     fi
-    echo "  --- --- --- --- --- " | tee -a $saveLog 
+    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1
     # status modul
     if [ ! -e $PathModulConfig/status_modul.txt ]; then
         MissingFile="iya"
@@ -179,13 +179,13 @@ runScript(){
             if [ "$FromAi" == "ya" ];then
                 exit 0;
             else
-                sh $ModulPath/ZyC_Turbo/service.sh & disown 
+                nohup sh $ModulPath/ZyC_Turbo/service.sh 
             fi
             exit 0;
         fi
     # end log backup
     SetOff(){
-        echo 'revert setting . . .' | tee -a $saveLog;
+        echo 'revert setting . . .' | tee -a $saveLog > /dev/null 2>&1 ;
         #mengembalikan settingan ke asal :D
         setprop persist.sys.NV_FPSLIMIT 35 > /dev/null 2>&1
         resetprop --delete persist.sys.NV_FPSLIMIT > /dev/null 2>&1
@@ -233,11 +233,11 @@ runScript(){
         if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
             echo $(cat  "$PathModulConfig/backup/misc_module_fsync_enabled.txt") > "/sys/module/sync/parameters/fsync_enabled"
         fi
-        echo 'revert done . . .' | tee -a $saveLog;
-        echo "  --- --- --- --- --- " | tee -a $saveLog 
+        echo 'revert done . . .' | tee -a $saveLog > /dev/null 2>&1 ;
+        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
     }
     SetOn(){
-        echo 'use "on" setting. . .' | tee -a $saveLog;
+        echo 'use "on" setting. . .' | tee -a $saveLog > /dev/null 2>&1 ;
         #fps limit ke 90
         setprop persist.sys.NV_FPSLIMIT 90
         setprop persist.sys.NV_POWERMODE 1
@@ -255,13 +255,13 @@ runScript(){
                 echo "2" > "$NyariGPU/devfreq/adrenoboost"
             fi
         fi
-        echo 'use "on" done. . .' | tee -a $saveLog;
-        echo "  --- --- --- --- --- " | tee -a $saveLog 
+        echo 'use "on" done. . .' | tee -a $saveLog > /dev/null 2>&1 ;
+        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
 
     }
     SetTurbo(){
         #fps limit ke 120
-        echo 'use "turbo" setting. . .' | tee -a $saveLog;
+        echo 'use "turbo" setting. . .' | tee -a $saveLog > /dev/null 2>&1 ;
         setprop persist.sys.NV_FPSLIMIT 120
         if  [ $NyariGPU != '' ];then
             if [ -e $NyariGPU/devfreq/adrenoboost ]; then
@@ -286,20 +286,20 @@ runScript(){
                 echo "1" > $NyariGPU/bus_split
             fi
         fi
-        echo 'use "turbo" done .' | tee -a $saveLog;
-        echo "  --- --- --- --- --- " | tee -a $saveLog 
+        echo 'use "turbo" done .' | tee -a $saveLog > /dev/null 2>&1 ;
+        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
     }
     fstrimDulu(){
-        echo "fstrim data cache & system, please wait" | tee -a $saveLog;
-        fstrim -v /cache | tee -a $saveLog;
-        fstrim -v /data | tee -a $saveLog;
-        fstrim -v /system | tee -a $saveLog;
-        echo "done ." | tee -a $saveLog;
-        echo "  --- --- --- --- --- " | tee -a $saveLog 
+        echo "fstrim data cache & system, please wait" | tee -a $saveLog > /dev/null 2>&1 ;
+        fstrim -v /cache | tee -a $saveLog > /dev/null 2>&1 ;
+        fstrim -v /data | tee -a $saveLog > /dev/null 2>&1 ;
+        fstrim -v /system | tee -a $saveLog > /dev/null 2>&1 ;
+        echo "done ." | tee -a $saveLog > /dev/null 2>&1 ;
+        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
     }
     disableFsync(){
         # disable fsync 
-        echo 'disable fsync . . .' | tee -a $saveLog;
+        echo 'disable fsync . . .' | tee -a $saveLog > /dev/null 2>&1 ;
         if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
             echo "0" > /sys/kernel/dyn_fsync/Dyn_fsync_active
         fi
@@ -312,12 +312,12 @@ runScript(){
         if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
             echo "N" > /sys/module/sync/parameters/fsync_enabled
         fi
-        echo 'disable done .' | tee -a $saveLog;
-        echo "  --- --- --- --- --- " | tee -a $saveLog 
+        echo 'disable done .' | tee -a $saveLog > /dev/null 2>&1 ;
+        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
     }
     enableFsync(){
         # enable fsync
-        echo 'enable fsync . . .' | tee -a $saveLog;
+        echo 'enable fsync . . .' | tee -a $saveLog > /dev/null 2>&1 ;
         if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
             echo "1" > /sys/kernel/dyn_fsync/Dyn_fsync_active
         fi
@@ -330,8 +330,8 @@ runScript(){
         if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
             echo "Y" > /sys/module/sync/parameters/fsync_enabled
         fi
-        echo 'enable done .' | tee -a $saveLog;
-        echo "  --- --- --- --- --- " | tee -a $saveLog 
+        echo 'enable done .' | tee -a $saveLog > /dev/null 2>&1 ;
+        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
     }
     LagMode(){
         if [ "$NyariGPU" != '' ];then
@@ -359,7 +359,7 @@ runScript(){
         fi
     }
     systemFsync(){
-        echo 'use fsync system setting . . .' | tee -a $saveLog;
+        echo 'use fsync system setting . . .' | tee -a $saveLog > /dev/null 2>&1 ;
         if [ ! -e $PathModulConfig/backup/misc_Dyn_fsync_active.txt ]; then
             if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
                 echo $(cat  "$PathModulConfig/backup/misc_Dyn_fsync_active.txt") > /sys/kernel/dyn_fsync/Dyn_fsync_active
@@ -383,12 +383,12 @@ runScript(){
                 echo $(cat  "$PathModulConfig/backup/misc_module_fsync_enabled.txt") > /sys/module/sync/parameters/fsync_enabled
             fi
         fi
-        echo 'use fsync system setting done .' | tee -a $saveLog;
-        echo "  --- --- --- --- --- " | tee -a $saveLog 
+        echo 'use fsync system setting done .' | tee -a $saveLog > /dev/null 2>&1 ;
+        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
     }
     disableLogSystem(){
     # Disable stats logging & monitoring
-        echo 'disable log and monitoring . . .' | tee -a $saveLog;
+        echo 'disable log and monitoring . . .' | tee -a $saveLog > /dev/null 2>&1 ;
         setprop debug.atrace.tags.enableflags 0 > /dev/null 2>&1
         setprop profiler.force_disable_ulog true > /dev/null 2>&1
         setprop profiler.force_disable_err_rpt true > /dev/null 2>&1
@@ -404,12 +404,12 @@ runScript(){
         setprop persist.service.pcsync.enable 0 > /dev/null 2>&1
         setprop persist.service.lgospd.enable 0 > /dev/null 2>&1
         setprop persist.sys.purgeable_assets 1 > /dev/null 2>&1
-        echo 'disable log and monitoring done .' | tee -a $saveLog;
+        echo 'disable log and monitoring done .' | tee -a $saveLog > /dev/null 2>&1 ;
         echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1
     }
     enableLogSystem(){
     # Enable stats logging & monitoring
-        echo 'enable log and monitoring . . .' | tee -a $saveLog;
+        echo 'enable log and monitoring . . .' | tee -a $saveLog > /dev/null 2>&1 ;
         setprop debug.atrace.tags.enableflags 1 > /dev/null 2>&1
         setprop profiler.force_disable_ulog false > /dev/null 2>&1
         setprop profiler.force_disable_err_rpt false > /dev/null 2>&1
@@ -425,21 +425,21 @@ runScript(){
         setprop persist.service.pcsync.enable 1 > /dev/null 2>&1
         setprop persist.service.lgospd.enable 1 > /dev/null 2>&1
         setprop persist.sys.purgeable_assets 0 > /dev/null 2>&1
-        echo 'enable log and monitoring done .' | tee -a $saveLog;
-        echo "  --- --- --- --- --- " | tee -a $saveLog 
+        echo 'enable log and monitoring done .' | tee -a $saveLog > /dev/null 2>&1 ;
+        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
     }
 
     # ngator mode start
         if [ "$GetMode" == 'off' ];then
             SetOff
-            echo "turn off tweak" | tee -a $saveLog;
-            echo "  --- --- --- --- --- " | tee -a $saveLog 
+            echo "turn off tweak" | tee -a $saveLog > /dev/null 2>&1 ;
+            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
         elif [ "$GetMode" == 'on' ];then
             SetOff
             SetOn
             # disableFsync
-            echo "setting to mode on" | tee -a $saveLog;
-            echo "  --- --- --- --- --- " | tee -a $saveLog 
+            echo "setting to mode on" | tee -a $saveLog > /dev/null 2>&1 ;
+            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
         elif [ "$GetMode" == 'turbo' ];then
             SetOn
             SetTurbo
@@ -447,24 +447,24 @@ runScript(){
             # disableThermal
             if [ "$fsyncMode" == "auto" ];then
                 disableFsync
-                echo "disable fysnc" | tee -a $saveLog;
-                echo "  --- --- --- --- --- " | tee -a $saveLog 
+                echo "disable fysnc" | tee -a $saveLog > /dev/null 2>&1 ;
+                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
             fi
-            echo "swith to turbo mode" | tee -a $saveLog;
-            echo "  --- --- --- --- --- " | tee -a $saveLog 
+            echo "swith to turbo mode" | tee -a $saveLog > /dev/null 2>&1 ;
+            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
         elif [ "$GetMode" == 'lag' ];then
             # SetOff
             LagMode
             # disableFsync
-            echo "setting to mode lag" | tee -a $saveLog;
-            echo "  --- --- --- --- --- " | tee -a $saveLog 
+            echo "setting to mode lag" | tee -a $saveLog > /dev/null 2>&1 ;
+            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
         else
             SetOff
             # SetOn
             # disableFsync
-            echo "please read guide, mode $GetMode,not found autmatic set to mode off " | tee -a $saveLog;
+            echo "please read guide, mode $GetMode,not found autmatic set to mode off " | tee -a $saveLog > /dev/null 2>&1 ;
             echo 'off' > $PathModulConfig/status_modul.txt
-            echo "  --- --- --- --- --- " | tee -a $saveLog 
+            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
         fi
     # ngator mode end
 
@@ -472,19 +472,19 @@ runScript(){
         if [ "$FastCharge" == "1" ]; then
             if [ -e /sys/kernel/fast_charge/force_fast_charge ]; then
                 fcMethod="one";
-                echo "tying to enable fastcharging using first method" | tee -a $saveLog;
+                echo "tying to enable fastcharging using first method" | tee -a $saveLog > /dev/null 2>&1 ;
                 echo "2" > /sys/kernel/fast_charge/force_fast_charge
                 if [ "$(cat /sys/kernel/fast_charge/force_fast_charge)" == "0" ]; then
                     fcMethod="two";
-                    echo "tying to enable fastcharging using second method" | tee -a $saveLog;
+                    echo "tying to enable fastcharging using second method" | tee -a $saveLog > /dev/null 2>&1 ;
                     echo "1" > /sys/kernel/fast_charge/force_fast_charge
                 fi
                 if [ "$(cat /sys/kernel/fast_charge/force_fast_charge)" == "0" ]; then
-                    echo "fastcharge off,maybe your kernel/phone not support it" | tee -a $saveLog;
+                    echo "fastcharge off,maybe your kernel/phone not support it" | tee -a $saveLog > /dev/null 2>&1 ;
                 else
-                    echo "fastcharge on after use method $fcMethod" | tee -a $saveLog;
+                    echo "fastcharge on after use method $fcMethod" | tee -a $saveLog > /dev/null 2>&1 ;
                 fi
-                echo "  --- --- --- --- --- " | tee -a $saveLog 
+                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
             fi
         fi  
     # enable fastcharge end
@@ -492,8 +492,8 @@ runScript(){
     # set fps ? start
         if [ "$SetRefreshRate" != "0" ];then
             setprop persist.sys.NV_FPSLIMIT $SetRefreshRate
-            echo "custom fps detected, set to $SetRefreshRate" | tee -a $saveLog;
-            echo "  --- --- --- --- --- " | tee -a $saveLog 
+            echo "custom fps detected, set to $SetRefreshRate" | tee -a $saveLog > /dev/null 2>&1 ;
+            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
         fi
     # set fps ? end
 
@@ -509,47 +509,47 @@ runScript(){
         if [ "$GpuBooster" != "not found" ];then
             if [ "$GpuBooster" == "0" ];then
                 echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
-                echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
+                echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog > /dev/null 2>&1 ;
             elif [ "$GpuBooster" == "1" ];then
                 echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
-                echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
+                echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog > /dev/null 2>&1 ;
             elif [ "$GpuBooster" == "2" ];then
                 echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
-                echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
+                echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog > /dev/null 2>&1 ;
             elif [ "$GpuBooster" == "3" ];then
                 echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
-                echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
+                echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog > /dev/null 2>&1 ;
             else
                 if [ "$GpuBooster" != "tweak" ];then
                     echo 'tweak' > $PathModulConfig/GpuBooster.txt
                 fi
-                echo "nice,use default this tweak GpuBoost" | tee -a $saveLog;
+                echo "nice,use default this tweak GpuBoost" | tee -a $saveLog > /dev/null 2>&1 ;
             fi
-            echo "  --- --- --- --- --- " | tee -a $saveLog 
+            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
         fi
     # gpu turbo end
 
-    # echo "ok beres dah . . .\n" | tee -a $saveLog;
+    # echo "ok beres dah . . .\n" | tee -a $saveLog > /dev/null 2>&1 ;
     # gpu render start
         if [ "$FromTerminal" == "ya" ];then
             if [ "$RenderMode" == 'skiagl' ];then
                 setprop debug.hwui.renderer skiagl
-                echo "set render gpu to OpenGL (SKIA) done" | tee -a $saveLog;
+                echo "set render gpu to OpenGL (SKIA) done" | tee -a $saveLog > /dev/null 2>&1 ;
             elif [ "$RenderMode" == 'skiavk' ];then
                 setprop debug.hwui.renderer skiavk
-                echo "set render gpu to Vulkan (SKIA) done" | tee -a $saveLog;
+                echo "set render gpu to Vulkan (SKIA) done" | tee -a $saveLog > /dev/null 2>&1 ;
             elif [ "$RenderMode" == 'opengl' ];then
                 setprop debug.hwui.renderer opengl
-                echo "set render gpu to OpenGL default done" | tee -a $saveLog;
+                echo "set render gpu to OpenGL default done" | tee -a $saveLog > /dev/null 2>&1 ;
             else
                 GetBackupGPU=$(cat "$PathModulConfig/backup/gpu_render.txt")
                 if [ -z "$GetBackupGPU" ];then
                     echo "system" > $PathModulConfig/mode_render.txt
                     setprop debug.hwui.renderer "$GetBackupGPU"
-                    echo "set render gpu to system setting" | tee -a $saveLog;
+                    echo "set render gpu to system setting" | tee -a $saveLog > /dev/null 2>&1 ;
                 fi
             fi
-            echo "  --- --- --- --- --- " | tee -a $saveLog  
+            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1  
         fi
     # gpu render end
 
@@ -557,22 +557,22 @@ runScript(){
         if [ "$FromTerminal" == "ya" ];then
             if [ "$fsyncMode" == "0" ];then
                 disableFsync
-                echo "custom fsync detected, set to disable" | tee -a $saveLog;
-                echo "  --- --- --- --- --- " | tee -a $saveLog 
+                echo "custom fsync detected, set to disable" | tee -a $saveLog > /dev/null 2>&1 ;
+                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
             elif [ "$fsyncMode" == "1" ];then
                 enableFsync
-                echo "custom fsync detected, set to enable" | tee -a $saveLog;
-                echo "  --- --- --- --- --- " | tee -a $saveLog 
+                echo "custom fsync detected, set to enable" | tee -a $saveLog > /dev/null 2>&1 ;
+                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
             elif [ "$fsyncMode" == "system" ];then
                 systemFsync
-                echo "use system fsync setting" | tee -a $saveLog;
-                echo "  --- --- --- --- --- " | tee -a $saveLog 
+                echo "use system fsync setting" | tee -a $saveLog > /dev/null 2>&1 ;
+                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
             else
                 if [ "$fsyncMode" != "auto" ];then
                     systemFsync
-                    echo "fsync value error,set to by system" | tee -a $saveLog;
+                    echo "fsync value error,set to by system" | tee -a $saveLog > /dev/null 2>&1 ;
                     echo 'system' > $PathModulConfig/fsync_mode.txt
-                    echo "  --- --- --- --- --- " | tee -a $saveLog 
+                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
                 fi
                 # disableFsync
             fi
@@ -582,8 +582,8 @@ runScript(){
     # custom ram managent start
         if [ "$FromTerminal" == "ya" ];then
             if [ "$CustomRam" == '0' ];then
-                    # echo "coming_soon :D"| tee -a $saveLog;
-                    echo "not use custom ram management,using stock ram management" | tee -a $saveLog;
+                    # echo "coming_soon :D"| tee -a $saveLog > /dev/null 2>&1 ;
+                    echo "not use custom ram management,using stock ram management" | tee -a $saveLog > /dev/null 2>&1 ;
                     if [ -e $PathModulConfig/backup/ram_enable_adaptive_lmk.txt ];then
                         chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
                         echo $(cat "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt") > "/sys/module/lowmemorykiller/parameters/enable_adaptive_lmk"
@@ -614,10 +614,10 @@ runScript(){
                         chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
                         rm $PathModulConfig/backup/ram_minfree.txt
                     fi
-                    # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog;
+                    # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog > /dev/null 2>&1 ;
             else
                 sh $ModulPath/ZyC_Turbo/initialize.sh & wait > /dev/null 2>&1
-                echo "using custom ram management method $CustomRam" | tee -a $saveLog;
+                echo "using custom ram management method $CustomRam" | tee -a $saveLog > /dev/null 2>&1 ;
                 StopModify="no"
                 GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
                 if [ "$CustomRam" == "1" ]; then # Method 1
@@ -649,7 +649,7 @@ runScript(){
                     ContentProvider=$((((GetTotalRam*15/100)*1024)/4))
                     EmptyApp=$((((GetTotalRam*19/100)*1024)/4))         
                 else   
-                    echo "method not found" | tee -a $saveLog;
+                    echo "method not found" | tee -a $saveLog > /dev/null 2>&1 ;
                     StopModify="yes"
                 fi;
                 if [ $StopModify == "no" ];then
@@ -681,9 +681,9 @@ runScript(){
                         setprop sys.sysctl.extra_free_kbytes $minFreeSet
                     fi;
                 fi;
-                # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog;
+                # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog > /dev/null 2>&1 ;
             fi;
-            echo "  --- --- --- --- --- " | tee -a $saveLog 
+            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
         fi
     # custom ram managent end
     # custom zram start
@@ -703,8 +703,8 @@ runScript(){
         done;
         if [ "$GetBusyBox" == "none" ];then
             StopZramSet="iya"
-            echo "need busybox to set Zram " | tee -a $saveLog 
-            echo "  --- --- --- --- --- " | tee -a $saveLog 
+            echo "need busybox to set Zram " | tee -a $saveLog > /dev/null 2>&1 
+            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
         else
             GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
             if [ "$CustomZram" == "1" ];then
@@ -727,17 +727,17 @@ runScript(){
             #  disable zram
                 if [ -e /dev/block/zram0 ]; then
                     StopZramSet="iya"
-                    echo 'disable Zram done .' | tee -a $saveLog;
+                    echo 'disable Zram done .' | tee -a $saveLog > /dev/null 2>&1 ;
                     $GetBusyBox swapoff /dev/block/zram0
                     $GetBusyBox setprop zram.disksize 0
-                    echo 'disable Zram done .' | tee -a $saveLog;
-                    echo "  --- --- --- --- --- " | tee -a $saveLog 
+                    echo 'disable Zram done .' | tee -a $saveLog > /dev/null 2>&1 ;
+                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
                 fi;
                 StopZramSet="iya"
             elif [ "$CustomZram" == "system" ];then
                 SetZramTo=$(cat "$PathModulConfig/backup/zram_disksize.txt")
-                echo "use Zram default system setting" | tee -a $saveLog 
-                echo "  --- --- --- --- --- " | tee -a $saveLog 
+                echo "use Zram default system setting" | tee -a $saveLog > /dev/null 2>&1 
+                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
             fi
             if [ "$StopZramSet" == "kaga" ];then
                 if [ -e /dev/block/zram0 ]; then
@@ -745,28 +745,28 @@ runScript(){
                     GetSwapNow=$(getprop zram.disksize |  sed "s/-*//g" )
                     if [ "$FixSize" != "$GetSwapNow" ];then
                         stop perfd
-                        # echo "use Zram default system setting" | tee -a $saveLog 
-                        echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog;
-                        echo "Set Zram to $SetZramTo Bytes . . ." | tee -a $saveLog;
-                        echo "and Swapinnes to $Swapinnes . . ." | tee -a $saveLog;
+                        # echo "use Zram default system setting" | tee -a $saveLog > /dev/null 2>&1 
+                        echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog > /dev/null 2>&1 ;
+                        echo "Set Zram to $SetZramTo Bytes . . ." | tee -a $saveLog > /dev/null 2>&1 ;
+                        echo "and Swapinnes to $Swapinnes . . ." | tee -a $saveLog > /dev/null 2>&1 ;
                         $PathBusyBox/swapoff "/dev/block/zram0"
                         usleep 100000
                         echo "1" > /sys/block/zram0/reset
-                        echo "$FixSize" > /sys/block/zram0/disksize | tee -a $saveLog;
+                        echo "$FixSize" > /sys/block/zram0/disksize | tee -a $saveLog > /dev/null 2>&1 ;
                         $PathBusyBox/mkswap "/dev/block/zram0"
                         usleep 100000
                         # setprop ro.config.zram true
                         # setprop ro.config.zram.support true
                         setprop zram.disksize $SetZramTo
                         if [ "$ZramOptimizer" == "1" ];then
-                            echo "echo optimize zram setting . . ." | tee -a $saveLog;
+                            echo "echo optimize zram setting . . ." | tee -a $saveLog > /dev/null 2>&1 ;
                             sysctl -e -w vm.swappiness=$Swapinnes
                             sysctl -e -w vm.dirty_ratio=5
                             sysctl -e -w vm.dirty_background_ratio=1
                             sysctl -e -w vm.drop_caches=3
                             sysctl -e -w vm.vfs_cache_pressure=100
                         else
-                            echo "use stock zram setting . . ." | tee -a $saveLog;
+                            echo "use stock zram setting . . ." | tee -a $saveLog > /dev/null 2>&1 ;
                             sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_ratio.txt")
                             sysctl -e -w vm.dirty_background_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_background_ratio.txt")
                             sysctl -e -w vm.drop_caches=$(cat "$PathModulConfig/backup/zram_vm.drop_caches.txt")
@@ -774,8 +774,8 @@ runScript(){
                         fi
                         $PathBusyBox/swapon "/dev/block/zram0"
                         usleep 100000
-                        echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog;
-                        echo "  --- --- --- --- --- " | tee -a $saveLog 
+                        echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog > /dev/null 2>&1 ;
+                        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
                         start perfd
                     fi
                     
@@ -793,12 +793,12 @@ runScript(){
         enableLogSystem
     fi
     if [ "$GetMode" == 'off' ];then
-        echo "turn off tweak succeess :D"| tee -a $saveLog;
+        echo "turn off tweak succeess :D"| tee -a $saveLog > /dev/null 2>&1 ;
     else
-        echo "done,tweak has been turned on" | tee -a $saveLog;
+        echo "done,tweak has been turned on" | tee -a $saveLog > /dev/null 2>&1 ;
     fi;
     if [ "$GetMode" == 'turbo' ];then
-        echo "NOTE: just tell you if you use this mode your battery will litle drain" | tee -a $saveLog;
+        echo "NOTE: just tell you if you use this mode your battery will litle drain" | tee -a $saveLog > /dev/null 2>&1 ;
     fi;
     if [ "$FromTerminal" == "tidak" ];then
         #fix gms :p
@@ -862,29 +862,52 @@ runScript(){
             if [ -e $PathModulConfigAi/ai_status.txt ]; then
                 AiStatus=$(cat "$PathModulConfigAi/ai_status.txt")
                 if [ "$AiStatus" == "1" ];then
-                    echo "starting ai mode . . . " | tee -a $saveLog 
-                    echo "  --- --- --- --- --- " | tee -a $saveLog 
-                    sh $BASEDIR/ai_mode.sh "fromBoot" & disown & exit 
+                    echo "starting ai mode . . . " | tee -a $saveLog > /dev/null 2>&1 
+                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                    nohup sh $BASEDIR/ai_mode.sh "fromBoot"
+                    exit
                 elif [ "$AiStatus" == "2" ];then
-                    echo "re - run ai mode . . . " | tee -a $saveLog 
-                    echo "  --- --- --- --- --- " | tee -a $saveLog 
-                    sh $BASEDIR/ai_mode.sh "fromBoot" & disown & exit 
+                    echo "re - run ai mode . . . " | tee -a $saveLog > /dev/null 2>&1 
+                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                    nohup sh $BASEDIR/ai_mode.sh "fromBoot"
+                    exit
                 elif [ "$AiStatus" == "3" ];then
-                    echo "deactive ai mode . . . " | tee -a $saveLog 
-                    echo "  --- --- --- --- --- " | tee -a $saveLog 
-                    sh $BASEDIR/ai_mode.sh "fromBoot" & disown & exit 
+                    echo "deactive ai mode . . . " | tee -a $saveLog > /dev/null 2>&1 
+                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                    nohup sh $BASEDIR/ai_mode.sh "fromBoot"
+                    exit
                 elif [ "$AiStatus" == "0" ];then
-                    echo "ai status off"| tee -a $saveLog;
-                    echo "  --- --- --- --- --- " | tee -a $saveLog 
+                    echo "ai status off"| tee -a $saveLog > /dev/null 2>&1 ;
+                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
                 else
-                    echo "ai status error,set to 0"| tee -a $saveLog;
+                    echo "ai status error,set to 0"| tee -a $saveLog > /dev/null 2>&1 ;
                     echo '0' > "$PathModulConfigAi/ai_status.txt"
-                    echo "  --- --- --- --- --- " | tee -a $saveLog 
+                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
                 fi
             fi
         fi
     fi
-    echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog;
-    echo "  --- --- --- --- --->> " | tee -a $saveLog 
+    echo "adding youtube 4k"
+    setprop sys.display-size '3840x2160'
+    echo "done . . ."
+    echo "tambahan secara paksa by @WhySakura"
+    setprop media.stagefright.enable-http 'true'
+    setprop media.stagefright.enable-player 'true'
+    setprop media.stagefright.enable-meta 'true'
+    setprop media.stagefright.enable-aac 'true'
+    setprop media.stagefright.enable-qcp 'true'
+    setprop media.stagefright.enable-scan 'true'
+    setprop media.stagefright.enable-record 'true'
+    echo 'dah di tambahkan,ga ada backup buat lu'
+    echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog > /dev/null 2>&1 ;
+    echo "  --- --- --- --- --->> " | tee -a $saveLog > /dev/null 2>&1 
 }
+if [ -z "$1" ];then
+    if [ -e $Path/ZyC_Turbo.running.log  ];then
+        rm $Path/ZyC_Turbo.running.log
+    fi
+    if [ -e $Path/ZyC_Ai.running.log  ];then
+        rm $Path/ZyC_Ai.running.log
+    fi
+fi
 runScript 2>&1 | tee -a $Path/ZyC_Turbo.running.log > /dev/null 2>&1 ;

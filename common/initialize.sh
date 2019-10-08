@@ -31,7 +31,7 @@ case "$GetVersion" in
     exit -1;
 ;;
 esac
-GetVersion="$(cat "$ModulPath/ZyC_Turbo/module.prop" | grep "version=" | sed 's/version=*//g' )"
+GetVersion="$(cat "$ModulPath/ZyC_Turbo/module.prop" | grep "version=Version" | sed 's/version=Version*//g')"
 if [ -d "/sys/class/kgsl/kgsl-3d0" ]; then
     NyariGPU="/sys/class/kgsl/kgsl-3d0"
 elif [ -d "/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0" ]; then
@@ -301,7 +301,7 @@ if [ "$FromTerminal" == "tidak" ];then
     fi
     # setting fsync
     if [ ! -e $PathModulConfig/fsync_mode.txt ]; then
-        echo 'auto' > $PathModulConfig/fsync_mode.txt
+        echo 'system' > $PathModulConfig/fsync_mode.txt
     fi
     # setting custom Ram Management
     if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
@@ -328,16 +328,18 @@ if [ "$FromTerminal" == "tidak" ];then
     # SetModulVersion="3.36-71 BETA"
     SetModulVersion="$GetVersion"
     if [ -e $PathModulConfig/notes_en.txt ];then
-        if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
+        if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed 's/Version:*//g'  )" != "$SetModulVersion" ];then
             rm $PathModulConfig/notes_en.txt
+            echo 'delete notes_en';
             # echo 'auto' > "$PathModulConfig/fsync_mode.txt"
             # echo '3' > "$PathModulConfigAi/wait_time_off.txt"
             # echo '10' > "$PathModulConfigAi/wait_time_on.txt" # Wait time
         fi
     fi
     if [ -e $PathModulConfig/notes_id.txt ];then
-        if [ "$(cat "$PathModulConfig/notes_id.txt" | grep 'Version:' | sed "s/Version:*//g" )" != "$SetModulVersion" ];then
+        if [ "$(cat "$PathModulConfig/notes_id.txt" | grep 'Version:' | sed 's/Version:*//g'  )" != "$SetModulVersion" ];then
             rm $PathModulConfig/notes_id.txt
+            echo 'delete notes_id';
         fi
     fi
     if [ ! -e $PathModulConfig/notes_en.txt ]; then
@@ -502,7 +504,7 @@ For V2, just flash it via magisk, it will automatically activates after rebooted
 
 Note:
 mode = off / on / turbo
-namarender = opengl / skiagl / skiavk" | tee -a $SetNotes 
+namarender = opengl / skiagl / skiavk" | tee -a $SetNotes > /dev/null 2>&1
     fi
     if [ ! -e $PathModulConfig/notes_id.txt ]; then
         SetNotes=$PathModulConfig/notes_id.txt;
@@ -686,7 +688,7 @@ Untuk V2 cukup flash teros biarkan,udah otomatis aktif kalo udah reboot
 
 Note :
 namamode = off/on/turbo
-namarender = opengl/skiagl/skiavk" | tee -a $SetNotes 
+namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
     
     fi
 
@@ -865,8 +867,13 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes
             usleep 100000
         fi 
     done
+    if [ -e $PathModulConfig/backup/zram_disksize.txt ];then
+        if [ "$(cat $PathModulConfig/backup/zram_disksize.txt)" == "0" ];then
+            rm $PathModulConfig/backup/zram_disksize.txt
+        fi
+    fi
     if [ ! -e $PathModulConfig/backup/zram_disksize.txt ]; then
-        echo $(cat "/sys/block/zram0/disksize" |  sed "s/-*//g" ) > $PathModulConfig/backup/zram_disksize.txt
+        echo $( free | grep 'wap'| awk '{print $2}' ) > $PathModulConfig/backup/zram_disksize.txt
     fi
     start perfd
 
