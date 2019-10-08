@@ -46,20 +46,7 @@ else
     NyariGPU='';
 fi
 FromTerminal="tidak";
-GenerateApp="tidak"
-if [ ! -z "$1" ];then
-    if [ "$1" == "Terminal" ];then
-        FromTerminal="ya";
-    fi
-    if [ "$1" == "App" ];then
-        GenerateApp="ya";
-        FromTerminal="skip"
-    fi
-    if [ "$1" == "boot" ];then
-        echo $(getprop debug.hwui.renderer) > "$PathModulConfig/backup/gpu_render.txt"
-        echo 'system' > $PathModulConfig/mode_render.txt
-    fi
-fi;
+GenerateApp="tidak";
 ketemuInternal="kaga"
 if [ "$(cat /data/mod_path.txt)" == "/data" ];then
     GetPath="none"
@@ -99,6 +86,33 @@ if [ ! -e /data/mod_path.txt ]; then
         fi
     done
 fi
+if [ ! -z "$1" ];then
+    if [ "$1" == "Terminal" ];then
+        FromTerminal="ya";
+    fi
+    if [ "$1" == "App" ];then
+        GenerateApp="ya";
+        FromTerminal="skip"
+    fi
+    if [ "$1" == "boot" ];then
+        ModPath=$(cat /data/mod_path.txt)
+        if [ "$ModPath" != "" ];then
+            Path=$ModPath/modul_mantul/ZyC_mod
+            if [ ! -d $Path/ZyC_Ai ]; then
+                mkdir -p $Path/ZyC_Ai
+                echo '1' > "$Path/ZyC_Ai/ai_status.txt"
+            fi
+            PathModulConfigAi=$Path/ZyC_Ai
+            if [ ! -d $Path/ZyC_Turbo_config ]; then
+                mkdir -p $Path/ZyC_Turbo_config
+            fi
+            PathModulConfig=$Path/ZyC_Turbo_config
+            echo $(getprop debug.hwui.renderer) > "$PathModulConfig/backup/gpu_render.txt"
+            echo 'system' > $PathModulConfig/mode_render.txt
+            echo 'system' > $PathModulConfig/fsync_mode.txt
+        fi
+    fi
+fi;
 ModPath=$(cat /data/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
 if [ ! -d $Path/ZyC_Ai ]; then
@@ -508,8 +522,7 @@ namarender = opengl / skiagl / skiavk" | tee -a $SetNotes > /dev/null 2>&1
     fi
     if [ ! -e $PathModulConfig/notes_id.txt ]; then
         SetNotes=$PathModulConfig/notes_id.txt;
-    echo "Created By : ZyCromerZ
-    Version:$SetModulVersion
+    echo "Version:$SetModulVersion
     
 Oke . . .
 Jadi gini . . .
@@ -850,6 +863,63 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
         backup="pake"
         usleep 100000
     fi
+
+    # sys.display-size
+    if [ ! -e $PathModulConfig/backup/prop_sys.display-size.txt ]; then
+        echo $(getprop  sys.display-size) > "$PathModulConfig/backup/prop_sys.display-size.txt"
+        backup="pake"
+        usleep 100000
+    fi
+
+    # media.stagefright.enable-http
+    if [ ! -e $PathModulConfig/backup/prop_media.stagefright.enable-http.txt ]; then
+        echo $(getprop  media.stagefright.enable-http) > "$PathModulConfig/backup/prop_media.stagefright.enable-http.txt"
+        backup="pake"
+        usleep 100000
+    fi
+
+    # media.stagefright.enable-player
+    if [ ! -e $PathModulConfig/backup/prop_media.stagefright.enable-player.txt ]; then
+        echo $(getprop  media.stagefright.enable-player) > "$PathModulConfig/backup/prop_media.stagefright.enable-player.txt"
+        backup="pake"
+        usleep 100000
+    fi
+
+    # media.stagefright.enable-meta
+    if [ ! -e $PathModulConfig/backup/prop_media.stagefright.enable-meta.txt ]; then
+        echo $(getprop  media.stagefright.enable-meta) > "$PathModulConfig/backup/prop_media.stagefright.enable-meta.txt"
+        backup="pake"
+        usleep 100000
+    fi
+
+    # media.stagefright.enable-aac
+    if [ ! -e $PathModulConfig/backup/prop_media.stagefright.enable-aac.txt ]; then
+        echo $(getprop  media.stagefright.enable-aac) > "$PathModulConfig/backup/prop_media.stagefright.enable-aac.txt"
+        backup="pake"
+        usleep 100000
+    fi
+
+    # media.stagefright.enable-qcp
+    if [ ! -e $PathModulConfig/backup/prop_media.stagefright.enable-qcp.txt ]; then
+        echo $(getprop  media.stagefright.enable-qcp) > "$PathModulConfig/backup/prop_media.stagefright.enable-qcp.txt"
+        backup="pake"
+        usleep 100000
+    fi
+
+    # media.stagefright.enable-scan
+    if [ ! -e $PathModulConfig/backup/prop_media.stagefright.enable-scan.txt ]; then
+        echo $(getprop  media.stagefright.enable-scan) > "$PathModulConfig/backup/prop_media.stagefright.enable-scan.txt"
+        backup="pake"
+        usleep 100000
+    fi
+
+    # media.stagefright.enable-record
+    if [ ! -e $PathModulConfig/backup/prop_media.stagefright.enable-record.txt ]; then
+        echo $(getprop  media.stagefright.enable-record) > "$PathModulConfig/backup/prop_media.stagefright.enable-record.txt"
+        backup="pake"
+        usleep 100000
+    fi
+    
     # backup data dolo boss end
     # zram config stock :p
     stop perfd

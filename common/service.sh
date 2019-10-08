@@ -887,18 +887,17 @@ runScript(){
             fi
         fi
     fi
-    echo "adding youtube 4k"
-    setprop sys.display-size '3840x2160'
-    echo "done . . ."
-    echo "tambahan secara paksa by @WhySakura"
-    setprop media.stagefright.enable-http 'true'
-    setprop media.stagefright.enable-player 'true'
-    setprop media.stagefright.enable-meta 'true'
-    setprop media.stagefright.enable-aac 'true'
-    setprop media.stagefright.enable-qcp 'true'
-    setprop media.stagefright.enable-scan 'true'
-    setprop media.stagefright.enable-record 'true'
-    echo 'dah di tambahkan,ga ada backup buat lu'
+    echo "adding youtube 4k,suggested by @WhySakura" > /dev/null 2>&1 ;
+    setprop sys.display-size '3840x2160' > /dev/null 2>&1 ;
+    echo "done . . ." > /dev/null 2>&1 ;
+    echo "add video optimizer,suggested by @WhySakura" > /dev/null 2>&1 ;
+    setprop media.stagefright.enable-http 'true' > /dev/null 2>&1 ;
+    setprop media.stagefright.enable-player 'true' > /dev/null 2>&1 ;
+    setprop media.stagefright.enable-meta 'true' > /dev/null 2>&1 ;
+    setprop media.stagefright.enable-aac 'true' > /dev/null 2>&1 ;
+    setprop media.stagefright.enable-qcp 'true' > /dev/null 2>&1 ;
+    setprop media.stagefright.enable-scan 'true' > /dev/null 2>&1 ;
+    setprop media.stagefright.enable-record 'true' > /dev/null 2>&1 ;
     echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog > /dev/null 2>&1 ;
     echo "  --- --- --- --- --->> " | tee -a $saveLog > /dev/null 2>&1 
 }
