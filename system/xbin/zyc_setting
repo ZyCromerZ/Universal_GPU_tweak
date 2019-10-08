@@ -644,6 +644,8 @@ ListMenu(){
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
+        echo "current : page 5"
+    elif [ "$page" == "6" ];then
         if [ -e "$PathModulConfigAi/status_start_gpu.txt" ];then
             echo "<-- -- AI max gpu usage for switch to mode turbo Config -- -->"
             if [ "$GetModeAiBefore" == "2" ];then
@@ -697,20 +699,19 @@ ListMenu(){
             echo $hijauHitam"refresh list game and app after save setting :p"$ResetWarna
         fi
         echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
-        echo "current : page 5"
     fi
     if [ "$page" == "1" ];then
         echo "np > go to page $(($page+1))";
-    elif [ "$page" == "5" ];then
+    elif [ "$page" == "6" ];then
         echo "pp > go to page $(($page-1))";
     else
         echo "pp > go to page $(($page-1))      |  np > go to page $(($page+1))";
     fi
-    if [ "$page" == "5" ];then
+    if [ "$page" == "6" ];then
         echo "fp > go to first page"
     elif [ "$page" == "1" ];then
         echo "lp > go to last page"
-    elif [ "$page" -lt "5" ] && [ "$page" -gt "1" ];then
+    elif [ "$page" -lt "6" ] && [ "$page" -gt "1" ];then
         echo "fp > go to first page  |  lp > go to last page"
     fi
     # echo "more setting coming soon :p"
@@ -937,7 +938,7 @@ ListMenu(){
         usleep 100000
         ListMenu
     elif [ $pilihan == "np" ];then
-        if [ "$page" -lt "5" ];then
+        if [ "$page" -lt "6" ];then
             page=$(($page+1))
         else
             page="1"
@@ -959,7 +960,7 @@ ListMenu(){
         usleep 10000
         ListMenu
     elif [ $pilihan == "lp" ];then
-        page="5"
+        page="6"
         usleep 10000
         ListMenu
     elif [ $pilihan == "wtx" ];then

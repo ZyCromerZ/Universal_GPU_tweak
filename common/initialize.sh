@@ -147,29 +147,29 @@ GetAppAndGames(){
     if [ ! -z $(pm list packages -f com.pwrd.pwm | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.pwrd.pwm" "$GameList" ) ];then
         sed -i "1a  com.pwrd.pwm" $GameList;
     fi
-    if [ ! -z $(pm list packages -f jp.konami | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "jp.konami" $GameList;
-    fi
-    if [ ! -z $(pm list packages -f org.gamesamba | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "org.gamesamba" $GameList;
-    fi
-    if [ ! -z $(pm list packages -f com. | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.skizze" $GameList;
-    fi
-    if [ ! -z $(pm list packages -f com.vitotechnology | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.vitotechnology" $GameList;
-    fi
-    if [ ! -z $(pm list packages -f com.mohjang | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.mohjang" $GameList;
-    fi
-    if [ ! -z $(pm list packages -f com.dmi | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.dmi" $GameList;
-    fi
-    if [ ! -z $(pm list packages -f com.herogames | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-        echo "com.herogames" $GameList;
-    fi
-    # if [ ! -z $(pm list packages -f com. | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ];then
-    #     echo "com." $GameList;
+    # if [ ! -z $(pm list packages -f jp.konami | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "jp.konami" "$GameList" ) ];then
+    #     sed -i "1a  jp.konami" $GameList;
+    # fi
+    # if [ ! -z $(pm list packages -f org.gamesamba | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "org.gamesamba" "$GameList" ) ];then
+    #     sed -i "1a  org.gamesamba" $GameList;
+    # fi
+    # if [ ! -z $(pm list packages -f com.skizze | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.skizze" "$GameList" ) ];then
+    #     sed -i "1a  com.skizze" $GameList;
+    # fi
+    # if [ ! -z $(pm list packages -f com.vitotechnology | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.vitotechnology" "$GameList" ) ];then
+    #     sed -i "1a  com.vitotechnology" $GameList;
+    # fi
+    # if [ ! -z $(pm list packages -f com.mohjang | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.mohjang" "$GameList" ) ];then
+    #     sed -i "1a  com.mohjang" $GameList;
+    # fi
+    # if [ ! -z $(pm list packages -f com.dmi | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.dmi" "$GameList" ) ];then
+    #     sed -i "1a  com.dmi" $GameList;
+    # fi
+    # if [ ! -z $(pm list packages -f com.herogames | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.herogames" "$GameList" ) ];then
+    #     sed -i "1a  com.herogames" $GameList;
+    # fi
+    # if [ ! -z $(pm list packages -f com. | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com." "$GameList" ) ];then
+    #     sed -i "1a  com." $GameList;
     # fi
     # new method add game
     # dts
@@ -285,6 +285,62 @@ GetAppAndGames(){
             usleep 100000
         fi
     done 
+    # jp.konami
+    for konamiGame in `pm list packages -3 | grep 'jp.konami' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $konamiGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$konamiGame" "$GameList" ) ];then
+            sed -i "1a  $konamiGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # org.gamesamba
+    for gamesambaGame in `pm list packages -3 | grep 'org.gamesamba' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $gamesambaGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$gamesambaGame" "$GameList" ) ];then
+            sed -i "1a  $gamesambaGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # skizze
+    for skizzeGame in `pm list packages -3 | grep 'com.skizze' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $skizzeGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$skizzeGame" "$GameList" ) ];then
+            sed -i "1a  $skizzeGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # vitotechnology
+    for vitotechnologyGame in `pm list packages -3 | grep 'com.vitotechnology' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $vitotechnologyGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$vitotechnologyGame" "$GameList" ) ];then
+            sed -i "1a  $vitotechnologyGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # mohjang
+    for mohjangGame in `pm list packages -3 | grep 'com.mohjang' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $mohjangGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$mohjangGame" "$GameList" ) ];then
+            sed -i "1a  $mohjangGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # dmi
+    for dmiGame in `pm list packages -3 | grep 'com.dmi' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $dmiGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$dmiGame" "$GameList" ) ];then
+            sed -i "1a  $dmiGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # herogames
+    for herogamesGame in `pm list packages -3 | grep 'com.herogames' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $herogamesGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$herogamesGame" "$GameList" ) ];then
+            sed -i "1a  $herogamesGame" $GameList;
+            usleep 100000
+        fi
+    done 
 
 
     # auto add to game list end
@@ -299,7 +355,7 @@ GetAppAndGames(){
         do 
             if [ -z "$( grep "$listApp" "$listAppPath" )" ];then
                 checkApp=$(pm list packages -f $listApp | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g')
-                nameApp=$(aapt d badging $checkApp | awk -F: ' $1 == "application-label" {print $2}' | sed "s/'*//g")
+                nameApp=$(aapt d badging "$checkApp" | awk -F: ' $1 == "application-label" {print $2}' | sed "s/'*//g")
                 # adb shell /data/local/tmp/aapt-arm-pie d badging $pkg | awk -F: ' $1 == "application-label" {print $2}' 
                 sed -i "1a  $listApp ($nameApp)"  $listAppPath  ;
                 usleep 100000
@@ -948,7 +1004,6 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
     for ZramConf in vm.dirty_ratio vm.dirty_background_ratio vm.swappiness vm.drop_caches vm.vfs_cache_pressure
     do
         if [ -z $(echo $ZramConf | grep "compact_memory") ];then
-            echo "$ZramConf";
             GetPath="$(echo "$PathModulConfig/backup/zram_$ZramConf" | awk '{ print $1".txt" }')"
             GetData="$(sysctl $ZramConf | awk '{ print $3 }')"
             if [ ! -e $GetPath ]; then
