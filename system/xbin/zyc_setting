@@ -699,6 +699,7 @@ ListMenu(){
             echo $hijauHitam"refresh list game and app after save setting :p"$ResetWarna
         fi
         echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
+        echo "current : page 6"
     fi
     if [ "$page" == "1" ];then
         echo "np > go to page $(($page+1))";
