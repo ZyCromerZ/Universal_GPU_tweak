@@ -751,6 +751,10 @@ runScript(){
                 echo "use Zram default system setting" | tee -a $saveLog > /dev/null 2>&1 
                 echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
             fi
+            if [ "$SetZramTo" == "0" ];then
+                setprop zyc.change.zrm == "udah"
+                StopZramSet="iya"
+            fi
             if [ "$(getprop zyc.change.zrm)" == "belom" ];then
                 if [ "$StopZramSet" == "kaga" ];then
                     if [ -e /dev/block/zram0 ]; then
