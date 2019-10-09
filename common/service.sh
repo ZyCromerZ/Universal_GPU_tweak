@@ -902,17 +902,61 @@ runScript(){
             fi
         fi
     fi
-    echo "adding youtube 4k,suggested by @WhySakura" > /dev/null 2>&1 ;
-    setprop sys.display-size '3840x2160' > /dev/null 2>&1 ;
-    echo "done . . ." > /dev/null 2>&1 ;
-    echo "add video optimizer,suggested by @WhySakura" > /dev/null 2>&1 ;
-    setprop media.stagefright.enable-http 'true' > /dev/null 2>&1 ;
-    setprop media.stagefright.enable-player 'true' > /dev/null 2>&1 ;
-    setprop media.stagefright.enable-meta 'true' > /dev/null 2>&1 ;
-    setprop media.stagefright.enable-aac 'true' > /dev/null 2>&1 ;
-    setprop media.stagefright.enable-qcp 'true' > /dev/null 2>&1 ;
-    setprop media.stagefright.enable-scan 'true' > /dev/null 2>&1 ;
-    setprop media.stagefright.enable-record 'true' > /dev/null 2>&1 ;
+    if [ "$(getprop zyc.change.prop)" == "belom" ];then
+        setprop zyc.change.prop "udah" 
+        echo "adding youtube 4k,suggested by @WhySakura"  | tee -a $saveLog 
+        setprop sys.display-size '3840x2160' > /dev/null 2>&1 ;
+        echo "done . . ."  | tee -a $saveLog 
+        echo "add video optimizer,suggested by @WhySakura" > /dev/null 2>&1 ;
+        setprop media.stagefright.enable-http 'true' > /dev/null 2>&1 ;
+        setprop media.stagefright.enable-player 'true' > /dev/null 2>&1 ;
+        setprop media.stagefright.enable-meta 'true' > /dev/null 2>&1 ;
+        setprop media.stagefright.enable-aac 'true' > /dev/null 2>&1 ;
+        setprop media.stagefright.enable-qcp 'true' > /dev/null 2>&1 ;
+        setprop media.stagefright.enable-scan 'true' > /dev/null 2>&1 ;
+        setprop media.stagefright.enable-record 'true' > /dev/null 2>&1 ;
+        echo "done . . ."  | tee -a $saveLog 
+        echo "tweak smooth ui" | tee -a $saveLog 
+        setprop debug.sf.latch_unsignaled 1  > /dev/null 2>&1 ;
+        setprop debug.sf.disable_backpressure 1  > /dev/null 2>&1 ;
+        setprop ro.sys.fw.dex2oat_thread_count 4  > /dev/null 2>&1 ;
+        setprop dalvik.vm.boot-dex2oat-threads 8  > /dev/null 2>&1 ;
+        setprop dalvik.vm.dex2oat-threads 4  > /dev/null 2>&1 ;
+        setprop dalvik.vm.image-dex2oat-threads 4  > /dev/null 2>&1 ;
+        setprop dalvik.vm.dex2oat-filter speed  > /dev/null 2>&1 ;
+        setprop dalvik.vm.image-dex2oat-filter speed  > /dev/null 2>&1 ;
+        setprop dalvik.vm.heapgrowthlimit 256m  > /dev/null 2>&1 ;
+        setprop dalvik.vm.heapstartsize 8m  > /dev/null 2>&1 ;
+        setprop dalvik.vm.heapsize 512m  > /dev/null 2>&1 ;
+        setprop dalvik.vm.heaptargetutilization 0.75  > /dev/null 2>&1 ;
+        setprop dalvik.vm.heapminfree 512k  > /dev/null 2>&1 ;
+        setprop dalvik.vm.heapmaxfree 8m  > /dev/null 2>&1 ;
+        echo "done . . ." | tee -a $saveLog 
+        echo "something request from @WhySakura"| tee -a $saveLog 
+        setprop debug.egl.swapinterval 120  > /dev/null 2>&1 ;
+        setprop sys.use_fifo_ui 1  > /dev/null 2>&1 ;
+        echo "done . . ."
+        echo "add responsive touch "
+        setprop touch.deviceType touchScreen > /dev/null 2>&1 ;
+        setprop touch.orientationAware 1 > /dev/null 2>&1 ;
+        setprop touch.size.calibration diameter > /dev/null 2>&1 ;
+        setprop touch.size.scale 1 > /dev/null 2>&1 ;
+        setprop touch.size.bias 0 > /dev/null 2>&1 ;
+        setprop touch.size.isSummed 0 > /dev/null 2>&1 ;
+        setprop touch.pressure.calibration amplitude > /dev/null 2>&1 ;
+        setprop touch.pressure.scale 0.001 > /dev/null 2>&1 ;
+        setprop touch.orientation.calibration none > /dev/null 2>&1 ;
+        setprop touch.distance.calibration none > /dev/null 2>&1 ;
+        setprop touch.distance.scale 0
+        setprop touch.coverage.calibration box > /dev/null 2>&1 ;
+        setprop touch.gestureMode spots > /dev/null 2>&1 ;
+        setprop MultitouchSettleInterval 1ms > /dev/null 2>&1 ;
+        setprop MultitouchMinDistance 1px > /dev/null 2>&1 ;
+        setprop TapInterval 1ms > /dev/null 2>&1 ;
+        setprop TapSlop 1px1 > /dev/null 2>&1 ;
+        echo "done . . . "
+        echo "  --- --- --- --- --- " | tee -a $saveLog 
+    fi
     echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog > /dev/null 2>&1 ;
     echo "  --- --- --- --- --->> " | tee -a $saveLog > /dev/null 2>&1 
 }

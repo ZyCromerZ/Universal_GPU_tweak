@@ -111,6 +111,7 @@ if [ ! -z "$1" ];then
             echo 'system' > $PathModulConfig/mode_render.txt
             echo 'system' > $PathModulConfig/fsync_mode.txt
             setprop ram_management.change "belom"
+            setprop zyc.change.prop "belom"
         fi
     fi
 fi;
@@ -338,6 +339,14 @@ GetAppAndGames(){
     do
         if [ ! -z $(pm list packages -f $herogamesGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$herogamesGame" "$GameList" ) ];then
             sed -i "1a  $herogamesGame" $GameList;
+            usleep 100000
+        fi
+    done 
+    # playfungame
+    for playfungameGame in `pm list packages -3 | grep 'com.playfungame' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f $playfungameGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$playfungameGame" "$GameList" ) ];then
+            sed -i "1a  $playfungameGame" $GameList;
             usleep 100000
         fi
     done 
