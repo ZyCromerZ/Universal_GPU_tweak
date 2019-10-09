@@ -745,7 +745,7 @@ runScript(){
             if [ "$(getprop ram_management.change)" == "belom" ];then
                 if [ "$StopZramSet" == "kaga" ];then
                     if [ -e /dev/block/zram0 ]; then
-                        setprop ram_management.change "udah"
+                        setprop ram_management.change "udah"  > /dev/null 2>&1 
                         FixSize=$(echo $SetZramTo |  sed "s/-*//g" )
                         GetSwapNow=$(getprop zram.disksize |  sed "s/-*//g" )
                         if [ "$FixSize" != "$GetSwapNow" ];then
@@ -754,11 +754,11 @@ runScript(){
                             echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog > /dev/null 2>&1 ;
                             echo "Set Zram to $SetZramTo Bytes . . ." | tee -a $saveLog > /dev/null 2>&1 ;
                             echo "and Swapinnes to $Swapinnes . . ." | tee -a $saveLog > /dev/null 2>&1 ;
-                            $PathBusyBox/swapoff "/dev/block/zram0"
+                            $PathBusyBox/swapoff "/dev/block/zram0"  > /dev/null 2>&1 
                             usleep 100000
                             echo "1" > /sys/block/zram0/reset
                             echo "$FixSize" > /sys/block/zram0/disksize | tee -a $saveLog > /dev/null 2>&1 ;
-                            $PathBusyBox/mkswap "/dev/block/zram0"
+                            $PathBusyBox/mkswap "/dev/block/zram0"  > /dev/null 2>&1 
                             usleep 100000
                             # setprop ro.config.zram true
                             # setprop ro.config.zram.support true
@@ -825,9 +825,13 @@ runScript(){
             else
                 echo "Note : better to use universal gms doze :D" | tee -a $Path/ZyC_GmsDoze.log 
                 # source script from gms doze universal 1.7.3
+                pm disable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceiver | tee -a $Path/ZyC_GmsDoze.log;
                 cmd appops set com.google.android.gms BOOT_COMPLETED ignore | tee -a $Path/ZyC_GmsDoze.log;
                 cmd appops set com.google.android.gms AUTO_START ignore | tee -a $Path/ZyC_GmsDoze.log;
-                pm disable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceiver | tee -a $Path/ZyC_GmsDoze.log;
+                cmd appops set com.google.android.ims BOOT_COMPLETED ignore | tee -a $Path/ZyC_GmsDoze.log;
+                cmd appops set com.google.android.ims WAKE_LOCK ignore | tee -a $Path/ZyC_GmsDoze.log;
+                cmd appops set com.google.android.ims AUTO_START ignore | tee -a $Path/ZyC_GmsDoze.log;
+                cmd appops set com.google.android.ims WAKE_LOCK ignore | tee -a $Path/ZyC_GmsDoze.log;
                 # Stop unnecessary GMS and restart it on boot (dorimanx)
                 if [ "$($GetBusyBox pidof com.google.android.gms | wc -l)" -eq "1" ]; then
                     $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms) | tee -a $Path/ZyC_GmsDoze.log;
@@ -847,6 +851,11 @@ runScript(){
                 su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log;
                 su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log;
                 su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log;
+                su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log;
+                su -c "pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity" | tee -a $Path/ZyC_GmsDoze.log;
+                su -c "pm enable com.google.android.gsf/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log;
+                su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log;
+                su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log;
                 su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsReceiver" | tee -a $Path/ZyC_GmsDoze.log;
                 su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsService" | tee -a $Path/ZyC_GmsDoze.log;
                 su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsTaskService" | tee -a $Path/ZyC_GmsDoze.log;

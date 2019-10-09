@@ -464,10 +464,10 @@ How to update v3.33 version and above
 1.) Same as above
 
 
-How to update versions v3 - v3.33
-1.) Set to off mode
+How to reset module config
+1.) Set to off mode,and wait 3s
 2.) Delete the modul_mantul or zyc_turbo_config folder (just check it inside internal memory)
-3.) just flash via magisk
+3.) reboot
 4.) Done
 
 
@@ -476,38 +476,11 @@ How to set a special module version 3.33 and above:
 Open a terminal type
 su
 zyc_setting
+type the code (example aix,anmx dll)
+type e or 0 and then y for exit
 
 2.) Only to run auto / ai mode (do this if folder zyc_ai not available inside internal/modul_mantul/zyc_mod/)
 zyc_auto
-
-
-If for the previous version 3.32 to 3 (the latest can also only not recomended) there are several ways, namely:
-1.) The first way, just to run the module
-su
-zyc_start
-
-
-2.) The second way, run the module and change the module mode
-zyc_start namamode
-
-
-3.) The third way, run the module and change the module mode + rendering mode
-zyc_start namamode namarender
-
-
-4.) The fourth way, change the rendering mode
-zyc_render
-namarender
-
-
-5.) The fifth way, change the module mode
-zyc_mode
-namamode
-
-
-6.) The sixth method, just run the module
-zyc_turbo
-
 
 For module config files in the zyc_turbo_config folder (ignore if file does not exist)
 
@@ -521,28 +494,44 @@ For module config files in the zyc_turbo_config folder (ignore if file does not 
   Value = 0 (disable) [recommendation] / 1 (enable)
 
 
-- fsync_mode.txy
+- fsync_mode.txt
   Disable fsync can improve game fps, if you find a bug in the launcher, enable it!
-  Values ​​= 0 (disable) [recommendation] / 1 (enable)
+  Values ​​= 0 (disable) / 1 (enable) / system ( use default system setting ) / auto( disable when modules use turbo mode )
 
 
 - GpuBooster.txt
   For the adrenoboost value setting, if the kernel supports adrenoboost, though.
-  Value = 0 (disable) / 1 (low) / 2 (medium) / 3 (high) / 4 (set automatically) [recommendation]
+  Value = 0 (disable) / 1 (low) / 2 (medium) / 3 (high) / tweak (set automatically) [recommendation]
 
 
 - mode_render.txt
   For the cell phone rendering mode settings, there are some ROMs that don't support the rendering mode settings, you can set them here
-  Value = opengl (OpenGL) / skiagl (OpenGL SKIA) / skiavk (VULKAN)
+  Value = opengl (OpenGL) / skiagl (OpenGL SKIA) / skiavk (VULKAN)/system(use menggunakan settingan awal)
 
 
 - status_modul.txt
   for the module mode settings, there are 3 settings
-  Value = off (on) / on / turbo (fastest mode)
+  Value = off (on) / on / turbo (fastest mode) / lag (slow mode,automatic on if screen state off + use ai doze)
 
 
 - total_fps.txt
   For the set fps, but i tested it but does not work , leave 0 
+
+- gms_doze.txt
+  Setting for fix google play service battery drain
+  Value = 0( off )/1( on )
+
+- swapinnes.txt
+  Setting swappiness for using swap/zram memory (kalau pakai zram/swap)
+  Value = max : 100,min : 1,disable : 0
+
+- zram.txt
+  Setting total swap/zram memory (kalau pakai zram/swap)
+  Value = 0 : disable, 1 (1gb) - 4 (4 gb)
+
+- zram_optimizer.txt
+  Setting optimize config swap/zram memory (kalau pakai zram/swap)
+  Value = 0 ( use default system ), 1 ( use tweak )
 
 
 - fastcharge.txt
@@ -588,6 +577,22 @@ For module config files in the zyc_ai folder (ignore the missing files)
 - ai_notif_mode_running.txt
   For setting ai notification led when module on turbo mode + ai mode on (lights up based on wait_time_on.txt)
   Value=0 (off) / 1 (vibration method 1) / 2 (notification method 2) / 3 (notification metode 3) / 4 (notification metode 4)
+
+- ai_notif_mode_running_status.txt
+  for setting notif led ai turned on based game / status module when mode turbo
+  Value=0 ( off ) / 1 ( turned on when module on mode turbo ) / 2 ( turned on when playing game )
+
+- ai_change.txt
+  for setting ai for ai change mode based game ony, gpu usage only, or both
+  Value=1( based gpu usage ) / 2 ( based game ) / 3 ( both )
+
+- ai_doze.txt
+  for setting ai to force device deepsleep faster,but notidication was late
+  Value=off/on
+
+- doze_state.txt
+  for see doze ai status
+  do not modify this,just for ai doze status
 
 and i cannot explain for another (new) configs,i dont have a time to explain it sorry ,please open zyc_setting in your terminal app for modify some config 
 
@@ -635,55 +640,28 @@ Cara install v3
 4.) Done
 
 
-Cara update versi v3.33 ke atas
+Cara update 
 1.) Sama kaya di atas
 
 
-Cara update versi v3 - v3.33 
-1.) Set ke mode off
+Cara reset module
+1.) Set ke mode off,dan tunggu 3s
 2.) Delete folder modul_mantul ato zyc_turbo_config (ada di internal cek aja)
-3.) Langsung flash via magisk
+3.) reboot
 4.) Done
 
 
-Cara setting modul khusus versi 3.33 ke atas :
+Cara setting modul :
 1.) Cara pertama,setting modul
 Buka terminal ketik
 su
 zyc_setting
+ketik kodenya yg muncul (kaya aix,anmx dll)
+ketik e atau 0 terus y untuk keluar
 
 
 2.) Hanya untuk menjalankan mode auto/ai (lakukan cara ini kalo folder zyc_ai kaga ada dalem internal/modul_mantul/zyc_mod/)
 zyc_auto
-
-
-
-Kalau untuk versi sebelumnya 3.32 sampai 3 ( terbaru juga bisa cuma not recomen ) ada beberapa cara,yaitu :
-1.) Cara pertama,hanya untuk menjalakan modul
-su
-zyc_start
-
-
-2.) Cara kedua,menjalankan modul dan ganti mode modul
-zyc_start namamode
-
-
-3.) Cara ketiga,menjalankan modul dan ganti mode modul + mode render
-zyc_start namamode namarender
-
-
-4.) Cara keempat,ganti mode render
-zyc_render
-namarender
-
-
-5.) Cara kelima,ganti mode modul
-zyc_mode
-namamode
-
-
-6.) Cara keenam,hanya menjalankan modul
-zyc_turbo
 
 
 Untuk file config modul dalam folder zyc_turbo_config (abaikan kalo file ada tidak ada)
@@ -698,27 +676,27 @@ Untuk file config modul dalam folder zyc_turbo_config (abaikan kalo file ada tid
   Valuenya = 0(disable)[rekomendasi]/1(enable)
 
 
-- fsync_mode.txy
+- fsync_mode.txt
   Disable fsync bisa meningkatkan fps game,kalo nemu bug di launchernya enable ini !
-  Valuenya = 0(disable)[rekomendasi]/1(enable)
+  Valuenya = 0(disable)/1(enable)/system(use menggunakan settingan awal)/auto(disable ketika masuk mode turbo)
 
 
 
 - GpuBooster.txt
   Buat setting value adrenoboost nya,kalo kernel support adrenoboost sih.
-  Value = 0(disable)/1(low)/2(medium)/3(high)/4(di atur otomatis)[rekomendasi]
+  Value = 0(disable)/1(low)/2(medium)/3(high)/tweak(di atur otomatis)[rekomendasi]
 
 
 
 - mode_render.txt
   Buat setting mode render hp nya,ada beberapa rom yg gak support buat setting mode render,bisa setting di sini
-  Value = opengl(OpenGL)/skiagl(OpenGL SKIA)/skiavk(VULKAN)
+  Value = opengl(OpenGL)/skiagl(OpenGL SKIA)/skiavk(VULKAN)/system(use menggunakan settingan awal)
 
 
 
 - status_modul.txt
   buat setting mode modul,ada 3 pengaturan
-  Value = off(mati)/on(hidup)/turbo(mode paling cepat)
+  Value = off(mati)/on(hidup)/turbo(mode paling cepat)/lag(mode lambat,auto on kalau layar hp mati + pakai ai doze)
 
 
 
@@ -730,6 +708,22 @@ Untuk file config modul dalam folder zyc_turbo_config (abaikan kalo file ada tid
 - fastcharge.txt
   Setting fastcharge kalo hp situ support
   Value = 0(menggunakan settingan system)/1(tweak gw mencoba untuk mengaktifkan fastcharge di hp nya)
+ 
+- gms_doze.txt
+  Setting untuk fix google play service yg bikin boros battery
+  Value = 0( ga pake ni fitur )/1( pake ni fitur)
+
+- swapinnes.txt
+  Setting swappiness untuk memakan swap/zram memory (kalau pakai zram/swap)
+  Value = max : 100,min : 1,disable : 0
+
+- zram.txt
+  Setting total swap/zram memory (kalau pakai zram/swap)
+  Value = 0 : disable, 1 (1gb) - 4 (4 gb)
+
+- zram_optimizer.txt
+  Setting mengoptimalkan configs swap/zram memory (kalau pakai zram/swap)
+  Value = 0 ( pake default system ), 1 ( pake tweak )
 
 
 
@@ -771,6 +765,22 @@ Untuk file config modul dalam folder zyc_ai ( abaikan kalo file tidak ada )
 - ai_notif_mode_running.txt
   Untuk setting notif led ai ketika modul di mode turbo + ai menyala (menyala berdasarkan wait_time_on.txt)
   Value=0(mati)/1(mode metode 1)/2(notif metode 2)/3(notif metode 3)/4(notif metode 4)
+
+- ai_notif_mode_running_status.txt
+  Untuk setting notif led ai mau menyala berdasarkan game / status modul di mode turbo
+  Value=0( mati )/1( menyala pada saat mode turbo )/2( menyala pada saat main game )
+
+- ai_change.txt
+  Untuk setting ai untuk merubah mode berdasarkan game,penggunakan gpu, atau dua duanya
+  Value=1( berdasarkan penggunaan gpu )/2( berdasarkan penggunaan game )/3( bersarkan game & penggunaan gpu )
+
+- ai_doze.txt
+  Untuk setting ai untuk memaksa device agar masuk mode deepsleep lebih cepat,tapi notif bakal telat masuk
+  Value=off/on
+
+- doze_state.txt
+  Untuk melihat status doze ai
+  ga usah di edit,biar ai ga broken
 
 maap,gw ga bisa menjelaskan fungsi dari file config yg baru,ga ada waktu buat buat nya 
 
