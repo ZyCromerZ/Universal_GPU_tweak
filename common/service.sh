@@ -166,6 +166,12 @@ runScript(){
     fi
     ZramOptimizer=$(cat $PathModulConfig/zram_optimizer.txt)
 
+    # dns
+    if [ ! -e $PathModulConfig/dns.txt ]; then
+        MissingFile="iya"
+    fi
+    GetDnsType=$(cat $PathModulConfig/dns.txt)
+
     if [ ! -e $PathModulConfig/notes_en.txt ]; then
         # echo "please read this xD \nyou can set mode.txt to:\n- off \n- on \n- turbo \nvalue must same as above without'-'\n\nchange mode_render.txt to:\n-  opengl \n-  skiagl \n-  skiavk \n\n note:\n-skiavk = Vulkan \n-skiagl = OpenGL (SKIA)\ndont edit total_fps.txt still not tested" > $PathModulConfig/notes.txt
         MissingFile="iya"
@@ -581,108 +587,111 @@ runScript(){
 
     # custom ram managent start
         if [ "$FromTerminal" == "ya" ];then
-            if [ "$CustomRam" == '0' ];then
-                    # echo "coming_soon :D"| tee -a $saveLog > /dev/null 2>&1 ;
-                    echo "not use custom ram management,using stock ram management" | tee -a $saveLog > /dev/null 2>&1 ;
-                    if [ -e $PathModulConfig/backup/ram_enable_adaptive_lmk.txt ];then
-                        chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-                        echo $(cat "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt") > "/sys/module/lowmemorykiller/parameters/enable_adaptive_lmk"
-                        chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-                        setprop lmk.autocalc false
-                        if [ "$(cat "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt")" == "1" ];then
-                            setprop lmk.autocalc true
-                        else
+            if [ "$(getprop zyc.change.rm)" == "belom" ];then
+                if [ "$CustomRam" == '0' ];then
+                        # echo "coming_soon :D"| tee -a $saveLog > /dev/null 2>&1 ;
+                        echo "not use custom ram management,using stock ram management" | tee -a $saveLog > /dev/null 2>&1 ;
+                        if [ -e $PathModulConfig/backup/ram_enable_adaptive_lmk.txt ];then
+                            chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
+                            echo $(cat "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt") > "/sys/module/lowmemorykiller/parameters/enable_adaptive_lmk"
+                            chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
                             setprop lmk.autocalc false
+                            if [ "$(cat "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt")" == "1" ];then
+                                setprop lmk.autocalc true
+                            else
+                                setprop lmk.autocalc false
+                            fi
+                            rm $PathModulConfig/backup/ram_enable_adaptive_lmk.txt
                         fi
-                        rm $PathModulConfig/backup/ram_enable_adaptive_lmk.txt
-                    fi
-                    if [ -e $PathModulConfig/backup/ram_debug_level.txt ];then
-                        echo $(cat "$PathModulConfig/backup/ram_debug_level.txt") > "/sys/module/lowmemorykiller/parameters/debug_level"
-                        chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
-                        chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
-                        rm $PathModulConfig/backup/ram_debug_level.txt
-                    fi
-                    if [ -e $PathModulConfig/backup/ram_adj.txt ];then
+                        if [ -e $PathModulConfig/backup/ram_debug_level.txt ];then
+                            echo $(cat "$PathModulConfig/backup/ram_debug_level.txt") > "/sys/module/lowmemorykiller/parameters/debug_level"
+                            chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
+                            chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
+                            rm $PathModulConfig/backup/ram_debug_level.txt
+                        fi
+                        if [ -e $PathModulConfig/backup/ram_adj.txt ];then
+                            chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
+                            echo $(cat "$PathModulConfig/backup/ram_adj.txt") > "/sys/module/lowmemorykiller/parameters/adj"
+                            chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
+                            rm $PathModulConfig/backup/ram_adj.txt
+                        fi
+                        if [ -e $PathModulConfig/backup/ram_minfree.txt ];then
+                            chmod 0666 /sys/module/lowmemorykiller/parameters/minfree;
+                            echo $(cat "$PathModulConfig/backup/ram_minfree.txt") > "/sys/module/lowmemorykiller/parameters/minfree"
+                            chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
+                            rm $PathModulConfig/backup/ram_minfree.txt
+                        fi
+                        # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog > /dev/null 2>&1 ;
+                else
+                    sh $ModulPath/ZyC_Turbo/initialize.sh & wait > /dev/null 2>&1
+                    echo "using custom ram management method $CustomRam" | tee -a $saveLog > /dev/null 2>&1 ;
+                    StopModify="no"
+                    GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
+                    if [ "$CustomRam" == "1" ]; then # Method 1
+                        ForegroundApp=$((((GetTotalRam*2/100)*1024)/4))
+                        VisibleApp=$((((GetTotalRam*3/100)*1024)/4))
+                        SecondaryServer=$((((GetTotalRam*5/100)*1024)/4))
+                        HiddenApp=$((((GetTotalRam*6/100)*1024)/4))
+                        ContentProvider=$((((GetTotalRam*10/100)*1024)/4))
+                        EmptyApp=$((((GetTotalRam*12/100)*1024)/4))
+                    elif [ "$CustomRam" == "2" ]; then # Method 2
+                        ForegroundApp=$((((GetTotalRam*3/100)*1024)/4))
+                        VisibleApp=$((((GetTotalRam*4/100)*1024)/4))
+                        SecondaryServer=$((((GetTotalRam*5/100)*1024)/4))
+                        HiddenApp=$((((GetTotalRam*7/100)*1024)/4))
+                        ContentProvider=$((((GetTotalRam*11/100)*1024)/4))
+                        EmptyApp=$((((GetTotalRam*15/100)*1024)/4))
+                    elif [ "$CustomRam" == "3" ]; then # Method 3
+                        ForegroundApp=$((((GetTotalRam*4/100)*1024)/4))
+                        VisibleApp=$((((GetTotalRam*5/100)*1024)/4))
+                        SecondaryServer=$((((GetTotalRam*6/100)*1024)/4))
+                        HiddenApp=$((((GetTotalRam*7/100)*1024)/4))
+                        ContentProvider=$((((GetTotalRam*12/100)*1024)/4))
+                        EmptyApp=$((((GetTotalRam*15/100)*1024)/4))
+                    elif [ "$CustomRam" == "4" ]; then # Method 4 (for 3gb ram variant)
+                        ForegroundApp=$((((GetTotalRam*6/100)*1024)/4))
+                        VisibleApp=$((((GetTotalRam*7/100)*1024)/4))
+                        SecondaryServer=$((((GetTotalRam*8/100)*1024)/4))
+                        HiddenApp=$((((GetTotalRam*10/100)*1024)/4))
+                        ContentProvider=$((((GetTotalRam*15/100)*1024)/4))
+                        EmptyApp=$((((GetTotalRam*19/100)*1024)/4))         
+                    else   
+                        echo "method not found" | tee -a $saveLog > /dev/null 2>&1 ;
+                        StopModify="yes"
+                    fi;
+                    if [ $StopModify == "no" ];then
+                        if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ]; then
+                            chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
+                            echo "0" > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
+                            chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
+                            setprop lmk.autocalc false
+                            #  echo "* Adaptive LMK = Disabled *" |  tee -a $LOG;
+                        fi;
+                        if [ -e /sys/module/lowmemorykiller/parameters/debug_level ]; then
+                            chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
+                            echo "0" > /sys/module/lowmemorykiller/parameters/debug_level
+                            chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
+                            #  echo "* LMK Debug Level = Disabled *" |  tee -a $LOG;
+                        fi;
+
                         chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
-                        echo $(cat "$PathModulConfig/backup/ram_adj.txt") > "/sys/module/lowmemorykiller/parameters/adj"
-                        chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
-                        rm $PathModulConfig/backup/ram_adj.txt
-                    fi
-                    if [ -e $PathModulConfig/backup/ram_minfree.txt ];then
                         chmod 0666 /sys/module/lowmemorykiller/parameters/minfree;
-                        echo $(cat "$PathModulConfig/backup/ram_minfree.txt") > "/sys/module/lowmemorykiller/parameters/minfree"
+                        echo "0,120,230,415,910,1000" > /sys/module/lowmemorykiller/parameters/adj
+                        echo "$ForegroundApp,$VisibleApp,$SecondaryServer,$HiddenApp,$ContentProvider,$EmptyApp" > /sys/module/lowmemorykiller/parameters/minfree
                         chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
-                        rm $PathModulConfig/backup/ram_minfree.txt
-                    fi
-                    # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog > /dev/null 2>&1 ;
-            else
-                sh $ModulPath/ZyC_Turbo/initialize.sh & wait > /dev/null 2>&1
-                echo "using custom ram management method $CustomRam" | tee -a $saveLog > /dev/null 2>&1 ;
-                StopModify="no"
-                GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
-                if [ "$CustomRam" == "1" ]; then # Method 1
-                    ForegroundApp=$((((GetTotalRam*2/100)*1024)/4))
-                    VisibleApp=$((((GetTotalRam*3/100)*1024)/4))
-                    SecondaryServer=$((((GetTotalRam*5/100)*1024)/4))
-                    HiddenApp=$((((GetTotalRam*6/100)*1024)/4))
-                    ContentProvider=$((((GetTotalRam*10/100)*1024)/4))
-                    EmptyApp=$((((GetTotalRam*12/100)*1024)/4))
-                elif [ "$CustomRam" == "2" ]; then # Method 2
-                    ForegroundApp=$((((GetTotalRam*3/100)*1024)/4))
-                    VisibleApp=$((((GetTotalRam*4/100)*1024)/4))
-                    SecondaryServer=$((((GetTotalRam*5/100)*1024)/4))
-                    HiddenApp=$((((GetTotalRam*7/100)*1024)/4))
-                    ContentProvider=$((((GetTotalRam*11/100)*1024)/4))
-                    EmptyApp=$((((GetTotalRam*15/100)*1024)/4))
-                elif [ "$CustomRam" == "3" ]; then # Method 3
-                    ForegroundApp=$((((GetTotalRam*4/100)*1024)/4))
-                    VisibleApp=$((((GetTotalRam*5/100)*1024)/4))
-                    SecondaryServer=$((((GetTotalRam*6/100)*1024)/4))
-                    HiddenApp=$((((GetTotalRam*7/100)*1024)/4))
-                    ContentProvider=$((((GetTotalRam*12/100)*1024)/4))
-                    EmptyApp=$((((GetTotalRam*15/100)*1024)/4))
-                elif [ "$CustomRam" == "4" ]; then # Method 4 (for 3gb ram variant)
-                    ForegroundApp=$((((GetTotalRam*6/100)*1024)/4))
-                    VisibleApp=$((((GetTotalRam*7/100)*1024)/4))
-                    SecondaryServer=$((((GetTotalRam*8/100)*1024)/4))
-                    HiddenApp=$((((GetTotalRam*10/100)*1024)/4))
-                    ContentProvider=$((((GetTotalRam*15/100)*1024)/4))
-                    EmptyApp=$((((GetTotalRam*19/100)*1024)/4))         
-                else   
-                    echo "method not found" | tee -a $saveLog > /dev/null 2>&1 ;
-                    StopModify="yes"
+                        chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
+
+                        minFreeSet=$(($GetTotalRam*4))
+
+                        sysctl -e -w vm.min_free_kbytes=$minFreeSet > /dev/null 2>&1 ;
+                        if [ -e /proc/sys/vm/extra_free_kbytes ]; then
+                            setprop sys.sysctl.extra_free_kbytes $minFreeSet > /dev/null 2>&1 ;
+                        fi;
+                    fi;
+                    # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog > /dev/null 2>&1 ;
                 fi;
-                if [ $StopModify == "no" ];then
-                    if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ]; then
-                        chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-                        echo "0" > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
-                        chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-                        setprop lmk.autocalc false
-                        #  echo "* Adaptive LMK = Disabled *" |  tee -a $LOG;
-                    fi;
-                    if [ -e /sys/module/lowmemorykiller/parameters/debug_level ]; then
-                        chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
-                        echo "0" > /sys/module/lowmemorykiller/parameters/debug_level
-                        chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
-                        #  echo "* LMK Debug Level = Disabled *" |  tee -a $LOG;
-                    fi;
-
-                    chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
-                    chmod 0666 /sys/module/lowmemorykiller/parameters/minfree;
-                    echo "0,120,230,415,910,1000" > /sys/module/lowmemorykiller/parameters/adj
-                    echo "$ForegroundApp,$VisibleApp,$SecondaryServer,$HiddenApp,$ContentProvider,$EmptyApp" > /sys/module/lowmemorykiller/parameters/minfree
-                    chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
-                    chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
-
-                    minFreeSet=$(($GetTotalRam*4))
-
-                    sysctl -e -w vm.min_free_kbytes=$minFreeSet > /dev/null 2>&1 ;
-                    if [ -e /proc/sys/vm/extra_free_kbytes ]; then
-                        setprop sys.sysctl.extra_free_kbytes $minFreeSet > /dev/null 2>&1 ;
-                    fi;
-                fi;
-                # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog > /dev/null 2>&1 ;
-            fi;
+                setprop zyc.change.rm "udah"
+            fi
             echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
         fi
     # custom ram managent end
@@ -725,9 +734,9 @@ runScript(){
                 SetZramTo="8589934592‬"
             elif [ "$CustomZram" == "0" ];then
             #  disable zram 
-                if [ "$(getprop ram_management.change)" == "belom" ];then
+                if [ "$(getprop zyc.change.zrm)" == "belom" ];then
                     if [ -e /dev/block/zram0 ]; then
-                        setprop ram_management.change "udah"
+                        setprop zyc.change.zrm "udah"
                         StopZramSet="iya"
                         echo 'disable Zram done .' | tee -a $saveLog > /dev/null 2>&1 ;
                         $GetBusyBox swapoff /dev/block/zram0  > /dev/null 2>&1 
@@ -742,10 +751,10 @@ runScript(){
                 echo "use Zram default system setting" | tee -a $saveLog > /dev/null 2>&1 
                 echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
             fi
-            if [ "$(getprop ram_management.change)" == "belom" ];then
+            if [ "$(getprop zyc.change.zrm)" == "belom" ];then
                 if [ "$StopZramSet" == "kaga" ];then
                     if [ -e /dev/block/zram0 ]; then
-                        setprop ram_management.change "udah"  > /dev/null 2>&1 
+                        setprop zyc.change.zrm "udah"  > /dev/null 2>&1 
                         FixSize=$(echo $SetZramTo |  sed "s/-*//g" )
                         GetSwapNow=$(getprop zram.disksize |  sed "s/-*//g" )
                         if [ "$FixSize" != "$GetSwapNow" ];then
@@ -821,55 +830,55 @@ runScript(){
                 fi;
             done;
             if [ "$GetBusyBox" == "none " ];then
-                echo "GMS Doze fail . . ." | tee -a $Path/ZyC_GmsDoze.log 
+                echo "GMS Doze fail . . ." | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
             else
-                echo "Note : better to use universal gms doze :D" | tee -a $Path/ZyC_GmsDoze.log 
+                echo "Note : better to use universal gms doze :D" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
                 # source script from gms doze universal 1.7.3
-                pm disable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceiver | tee -a $Path/ZyC_GmsDoze.log;
-                cmd appops set com.google.android.gms BOOT_COMPLETED ignore | tee -a $Path/ZyC_GmsDoze.log;
-                cmd appops set com.google.android.gms AUTO_START ignore | tee -a $Path/ZyC_GmsDoze.log;
-                cmd appops set com.google.android.ims BOOT_COMPLETED ignore | tee -a $Path/ZyC_GmsDoze.log;
-                cmd appops set com.google.android.ims WAKE_LOCK ignore | tee -a $Path/ZyC_GmsDoze.log;
-                cmd appops set com.google.android.ims AUTO_START ignore | tee -a $Path/ZyC_GmsDoze.log;
-                cmd appops set com.google.android.ims WAKE_LOCK ignore | tee -a $Path/ZyC_GmsDoze.log;
+                pm disable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceiver | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                cmd appops set com.google.android.gms BOOT_COMPLETED ignore | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                cmd appops set com.google.android.gms AUTO_START ignore | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                cmd appops set com.google.android.ims BOOT_COMPLETED ignore | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                cmd appops set com.google.android.ims WAKE_LOCK ignore | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                cmd appops set com.google.android.ims AUTO_START ignore | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                cmd appops set com.google.android.ims WAKE_LOCK ignore | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
                 # Stop unnecessary GMS and restart it on boot (dorimanx)
                 if [ "$($GetBusyBox pidof com.google.android.gms | wc -l)" -eq "1" ]; then
-                    $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms) | tee -a $Path/ZyC_GmsDoze.log;
+                    $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms) | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
                 fi;
                 if [ "$($GetBusyBox pidof com.google.android.gms.wearable | wc -l)" -eq "1" ]; then
-                    $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.wearable) | tee -a $Path/ZyC_GmsDoze.log;
+                    $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.wearable) | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
                 fi;
                 if [ "$($GetBusyBox pidof com.google.android.gms.persistent | wc -l)" -eq "1" ]; then
-                    $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.persistent) | tee -a $Path/ZyC_GmsDoze.log;
+                    $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.persistent) | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
                 fi;
                 if [ "$($GetBusyBox pidof com.google.android.gms.unstable | wc -l)" -eq "1" ]; then
-                    $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.unstable) | tee -a $Path/ZyC_GmsDoze.log;
+                    $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.unstable) | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
                 fi;
-                su -c "pm enable com.google.android.gms/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gms/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$ActiveReceiver" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gsf/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsReceiver" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsService" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsTaskService" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.service.AnalyticsService" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gms/com.google.android.gms.chimera.PersistentIntentOperationService" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gms/com.google.android.gms.clearcut.debug.ClearcutDebugDumpService" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gms/com.google.android.gms.common.stats.GmsCoreStatsService" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceiver" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.AppMeasurementJobService" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.AppMeasurementInstallReferrerReceiver" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementReceiver" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementService" | tee -a $Path/ZyC_GmsDoze.log;
-                su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.service.MeasurementBrokerService" | tee -a $Path/ZyC_GmsDoze.log;
-                echo "GMS Doze done . . ." | tee -a $Path/ZyC_GmsDoze.log 
+                su -c "pm enable com.google.android.gms/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gms/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$ActiveReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gsf/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsTaskService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.service.AnalyticsService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gms/com.google.android.gms.chimera.PersistentIntentOperationService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gms/com.google.android.gms.clearcut.debug.ClearcutDebugDumpService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gms/com.google.android.gms.common.stats.GmsCoreStatsService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.AppMeasurementJobService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.AppMeasurementInstallReferrerReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.service.MeasurementBrokerService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                echo "GMS Doze done . . ." | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
             fi
         fi
         if [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ];then
@@ -905,9 +914,10 @@ runScript(){
     if [ "$(getprop zyc.change.prop)" == "belom" ];then
         setprop zyc.change.prop "udah" 
         echo "adding youtube 4k,suggested by @WhySakura"  | tee -a $saveLog 
-        setprop sys.display-size '3840x2160' > /dev/null 2>&1 ;
+        setprop sys.display-size '3840x2160' | tee -a $saveLog > /dev/null 2>&1 ;
         echo "done . . ."  | tee -a $saveLog 
-        echo "add video optimizer,suggested by @WhySakura" > /dev/null 2>&1 ;
+        echo "  --- --- --- --- --- " | tee -a $saveLog 
+        echo "add video optimizer,suggested by @WhySakura" | tee -a $saveLog > /dev/null 2>&1 ;
         setprop media.stagefright.enable-http 'true' > /dev/null 2>&1 ;
         setprop media.stagefright.enable-player 'true' > /dev/null 2>&1 ;
         setprop media.stagefright.enable-meta 'true' > /dev/null 2>&1 ;
@@ -916,6 +926,7 @@ runScript(){
         setprop media.stagefright.enable-scan 'true' > /dev/null 2>&1 ;
         setprop media.stagefright.enable-record 'true' > /dev/null 2>&1 ;
         echo "done . . ."  | tee -a $saveLog 
+        echo "  --- --- --- --- --- " | tee -a $saveLog 
         echo "tweak smooth ui" | tee -a $saveLog 
         setprop debug.sf.latch_unsignaled 1  > /dev/null 2>&1 ;
         setprop debug.sf.disable_backpressure 1  > /dev/null 2>&1 ;
@@ -932,11 +943,13 @@ runScript(){
         setprop dalvik.vm.heapminfree 512k  > /dev/null 2>&1 ;
         setprop dalvik.vm.heapmaxfree 8m  > /dev/null 2>&1 ;
         echo "done . . ." | tee -a $saveLog 
+        echo "  --- --- --- --- --- " | tee -a $saveLog 
         echo "something request from @WhySakura"| tee -a $saveLog 
         setprop debug.egl.swapinterval 120  > /dev/null 2>&1 ;
         setprop sys.use_fifo_ui 1  > /dev/null 2>&1 ;
-        echo "done . . ."
-        echo "add responsive touch "
+        echo "done . . ." | tee -a $saveLog 
+        echo "  --- --- --- --- --- " | tee -a $saveLog 
+        echo "add responsive touch " | tee -a $saveLog 
         setprop touch.deviceType touchScreen > /dev/null 2>&1 ;
         setprop touch.orientationAware 1 > /dev/null 2>&1 ;
         setprop touch.size.calibration diameter > /dev/null 2>&1 ;
@@ -954,7 +967,182 @@ runScript(){
         setprop MultitouchMinDistance 1px > /dev/null 2>&1 ;
         setprop TapInterval 1ms > /dev/null 2>&1 ;
         setprop TapSlop 1px1 > /dev/null 2>&1 ;
-        echo "done . . . "
+        echo "done . . . " | tee -a $saveLog 
+        echo "  --- --- --- --- --- " | tee -a $saveLog 
+        echo "add audio . . ." | tee -a $saveLog 
+        setprop ro.camcorder.videoModes true  > /dev/null 2>&1
+        setprop ro.media.enc.hprof.vid.fps 65  > /dev/null 2>&1
+        setprop ro.media.dec.aud.wma.enabled 1  > /dev/null 2>&1
+        setprop ro.media.dec.vid.wmv.enabled 1  > /dev/null 2>&1
+        setprop ro.media.dec.aud.mp3.enabled 1  > /dev/null 2>&1
+        setprop ro.media.dec.vid.mp4.enabled 1  > /dev/null 2>&1
+        setprop ro.media.enc.aud.wma.enabled 1  > /dev/null 2>&1
+        setprop ro.media.enc.vid.wmv.enabled 1  > /dev/null 2>&1
+        setprop ro.media.enc.aud.mp3.enabled 1  > /dev/null 2>&1
+        setprop ro.media.enc.vid.mp4.enabled 1  > /dev/null 2>&1
+        setprop ro.media.dec.aud.flac.enabled 1  > /dev/null 2>&1
+        setprop ro.media.dec.vid.H.264.enabled 1  > /dev/null 2>&1
+        setprop ro.media.enc.aud.flac.enabled 1  > /dev/null 2>&1
+        setprop ro.media.enc.vid.H.264.enabled 1  > /dev/null 2>&1
+        setprop af.fast_track_multiplier 1  > /dev/null 2>&1
+        setprop ro.vendor.audio.soundtrigger nuance  > /dev/null 2>&1
+        setprop ro.vendor.audio.soundtrigger.lowpower false  > /dev/null 2>&1
+        setprop ro.vendor.audio.sdk.fluencetype none  > /dev/null 2>&1
+        setprop ro.vendor.audio.sdk.ssr false  > /dev/null 2>&1
+        setprop ro.vendor.audio.sos true  > /dev/null 2>&1
+        setprop persist.vendor.audio.fluence.voicecall true  > /dev/null 2>&1
+        setprop persist.vendor.audio.fluence.voicerec false  > /dev/null 2>&1
+        setprop persist.vendor.audio.fluence.speaker true  > /dev/null 2>&1
+        setprop persist.vendor.audio.ras.enabled false  > /dev/null 2>&1
+        setprop persist.vendor.audio.hifi.int_codec true  > /dev/null 2>&1
+        setprop persist.vendor.audio.hw.binder.size_kbyte 1024  > /dev/null 2>&1
+        setprop vendor.audio.adm.buffering.ms 2  > /dev/null 2>&1
+        setprop vendor.audio_hal.period_size 192  > /dev/null 2>&1
+        setprop vendor.audio.tunnel.encode false  > /dev/null 2>&1
+        setprop vendor.audio.offload.buffer.size.kb 64  > /dev/null 2>&1
+        setprop vendor.audio.offload.track.enable false  > /dev/null 2>&1
+        setprop vendor.voice.path.for.pcm.voip true  > /dev/null 2>&1
+        setprop vendor.audio.offload.multiaac.enable true  > /dev/null 2>&1
+        setprop vendor.audio.dolby.ds2.enabled false  > /dev/null 2>&1
+        setprop vendor.audio.dolby.ds2.hardbypass false  > /dev/null 2>&1
+        setprop vendor.audio.offload.multiple.enabled false  > /dev/null 2>&1
+        setprop vendor.audio.offload.passthrough false  > /dev/null 2>&1
+        setprop vendor.audio.offload.gapless.enabled true  > /dev/null 2>&1
+        setprop vendor.audio.safx.pbe.enabled true  > /dev/null 2>&1
+        setprop vendor.audio.parser.ip.buffer.size 262144  > /dev/null 2>&1
+        setprop vendor.audio.flac.sw.decoder.24bit true  > /dev/null 2>&1
+        setprop vendor.audio_hal.period_multiplier 3  > /dev/null 2>&1
+        setprop vendor.audio.use.sw.alac.decoder true  > /dev/null 2>&1
+        setprop vendor.audio.use.sw.ape.decoder true  > /dev/null 2>&1
+        setprop vendor.audio.hw.aac.encoder true  > /dev/null 2>&1
+        setprop vendor.fm.a2dp.conc.disabled true  > /dev/null 2>&1
+        setprop vendor.audio.noisy.broadcast.delay 600  > /dev/null 2>&1
+        setprop vendor.audio.offload.pstimeout.secs 3  > /dev/null 2>&1
+        setprop ro.audio.soundfx.dirac false  > /dev/null 2>&1
+        setprop audio.offload.min.duration.secs 30  > /dev/null 2>&1
+        setprop audio.offload.video true  > /dev/null 2>&1
+        setprop audio.deep_buffer.media true  > /dev/null 2>&1
+        setprop ro.af.client_heap_size_kbyte 7168  > /dev/null 2>&1
+        setprop ro.qc.sdk.audio.fluencetype none  > /dev/null 2>&1
+        setprop persist.radio.add_power_save 1  > /dev/null 2>&1
+        setprop persist.ril.uart.flowctrl 10  > /dev/null 2>&1
+        setprop persist.audio.fluence.voicerec true  > /dev/null 2>&1
+        setprop persist.audio.fluence.speaker false  > /dev/null 2>&1
+        setprop use.voice.path.for.pcm.voip true  > /dev/null 2>&1
+        echo "done " | tee -a $saveLog 
+        echo "  --- --- --- --- --- " | tee -a $saveLog 
+    fi
+ResetDns(){
+    ip6tables -P INPUT ACCEPT  > /dev/null 2>&1
+    ip6tables -P FORWARD ACCEPT  > /dev/null 2>&1
+    ip6tables -P OUTPUT ACCEPT  > /dev/null 2>&1
+    ip6tables -t nat -F  > /dev/null 2>&1
+    ip6tables -t mangle -F  > /dev/null 2>&1
+    ip6tables -F  > /dev/null 2>&1
+    ip6tables -X  > /dev/null 2>&1
+    iptables -P INPUT ACCEPT  > /dev/null 2>&1
+    iptables -P FORWARD ACCEPT  > /dev/null 2>&1
+    iptables -P OUTPUT ACCEPT  > /dev/null 2>&1
+    iptables -t nat -F  > /dev/null 2>&1
+    iptables -t mangle -F  > /dev/null 2>&1
+    iptables -F  > /dev/null 2>&1
+    iptables -X  > /dev/null 2>&1
+    resetprop net.eth0.dns1  > /dev/null 2>&1
+    resetprop net.eth0.dns2  > /dev/null 2>&1
+    resetprop net.dns1  > /dev/null 2>&1
+    resetprop net.dns2  > /dev/null 2>&1
+    resetprop net.ppp0.dns1  > /dev/null 2>&1
+    resetprop net.ppp0.dns2  > /dev/null 2>&1
+    resetprop net.rmnet0.dns1  > /dev/null 2>&1
+    resetprop net.rmnet0.dns2  > /dev/null 2>&1
+    resetprop net.rmnet1.dns1  > /dev/null 2>&1
+    resetprop net.rmnet1.dns2  > /dev/null 2>&1
+    resetprop net.rmnet2.dns1  > /dev/null 2>&1
+    resetprop net.rmnet2.dns2  > /dev/null 2>&1
+    resetprop net.pdpbr1.dns1  > /dev/null 2>&1
+    resetprop net.pdpbr1.dns2  > /dev/null 2>&1
+    resetprop net.wlan0.dns1  > /dev/null 2>&1
+    resetprop net.wlan0.dns2  > /dev/null 2>&1
+    resetprop 2001:4860:4860::8888 > /dev/null 2>&1 
+    resetprop 2001:4860:4860::8844 > /dev/null 2>&1 
+    resetprop 2606:4700:4700::1111 > /dev/null 2>&1 
+    resetprop 2606:4700:4700::1001 > /dev/null 2>&1 
+}
+    if [ "$(getprop zyc.change.dns)" == "belom" ];then
+        setprop zyc.change.dns 'udah'
+        if [ "$GetDnsType" == "cloudflare" ];then
+            echo "use cloudflare dns "| tee -a $saveLog
+            # reset
+            ResetDns
+            # reset
+            iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 1.1.1.1:53  > /dev/null 2>&1
+            iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 1.0.0.1:53  > /dev/null 2>&1
+            iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 1.1.1.1:53  > /dev/null 2>&1
+            iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 1.0.0.1:53  > /dev/null 2>&1
+            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  2606:4700:4700::1111  > /dev/null 2>&1
+            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  2606:4700:4700::1001  > /dev/null 2>&1
+            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  2606:4700:4700::1111  > /dev/null 2>&1
+            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  2606:4700:4700::1001  > /dev/null 2>&1
+            # SETPROP
+            setprop net.eth0.dns1 1.1.1.1  > /dev/null 2>&1
+            setprop net.eth0.dns2 1.0.0.1  > /dev/null 2>&1
+            setprop net.dns1 1.1.1.1  > /dev/null 2>&1
+            setprop net.dns2 1.0.0.1  > /dev/null 2>&1
+            setprop net.ppp0.dns1 1.1.1.1  > /dev/null 2>&1
+            setprop net.ppp0.dns2 1.0.0.1  > /dev/null 2>&1
+            setprop net.rmnet0.dns1 1.1.1.1  > /dev/null 2>&1
+            setprop net.rmnet0.dns2 1.0.0.1  > /dev/null 2>&1
+            setprop net.rmnet1.dns1 1.1.1.1  > /dev/null 2>&1
+            setprop net.rmnet1.dns2 1.0.0.1  > /dev/null 2>&1
+            setprop net.rmnet2.dns1 1.1.1.1  > /dev/null 2>&1
+            setprop net.rmnet2.dns2 1.0.0.1  > /dev/null 2>&1
+            setprop net.pdpbr1.dns1 1.1.1.1  > /dev/null 2>&1
+            setprop net.pdpbr1.dns2 1.0.0.1  > /dev/null 2>&1
+            setprop net.wlan0.dns1 1.1.1.1  > /dev/null 2>&1
+            setprop net.wlan0.dns2 1.0.0.1  > /dev/null 2>&1
+            setprop 2606:4700:4700::1111  > /dev/null 2>&1
+            setprop 2606:4700:4700::1001  > /dev/null 2>&1
+        elif [ "$GetDnsType" == "google" ];then
+            echo "use google dns "| tee -a $saveLog 
+            # reset
+            ResetDns
+            # reset
+            iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 8.8.8.8:53  > /dev/null 2>&1
+            iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 8.8.4.4:53  > /dev/null 2>&1
+            iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 8.8.8.8:53  > /dev/null 2>&1
+            iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 8.8.4.4:53  > /dev/null 2>&1
+            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination 2001:4860:4860:8888  > /dev/null 2>&1
+            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination 2001:4860:4860:8844  > /dev/null 2>&1
+            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination 2001:4860:4860:8888  > /dev/null 2>&1
+            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination 2001:4860:4860:8844  > /dev/null 2>&1
+            # SETPROP
+            setprop net.eth0.dns1 8.8.8.8  > /dev/null 2>&1
+            setprop net.eth0.dns2 8.8.4.4  > /dev/null 2>&1
+            setprop net.dns1 8.8.8.8  > /dev/null 2>&1
+            setprop net.dns2 8.8.4.4  > /dev/null 2>&1
+            setprop net.ppp0.dns1 8.8.8.8  > /dev/null 2>&1
+            setprop net.ppp0.dns2 8.8.4.4  > /dev/null 2>&1
+            setprop net.rmnet0.dns1 8.8.8.8  > /dev/null 2>&1
+            setprop net.rmnet0.dns2 8.8.4.4  > /dev/null 2>&1
+            setprop net.rmnet1.dns1 8.8.8.8  > /dev/null 2>&1
+            setprop net.rmnet1.dns2 8.8.4.4  > /dev/null 2>&1
+            setprop net.rmnet2.dns1 8.8.8.8  > /dev/null 2>&1
+            setprop net.rmnet2.dns2 8.8.4.4  > /dev/null 2>&1
+            setprop net.pdpbr1.dns1 8.8.8.8  > /dev/null 2>&1
+            setprop net.pdpbr1.dns2 8.8.4.4  > /dev/null 2>&1
+            setprop net.wlan0.dns1 8.8.8.8  > /dev/null 2>&1
+            setprop net.wlan0.dns2 8.8.4.4  > /dev/null 2>&1
+            setprop 2001:4860:4860::8888  > /dev/null 2>&1
+            setprop 2001:4860:4860::8844  > /dev/null 2>&1
+        else
+            if [ "$GetDnsType" != "system" ];then
+                echo "system" > "$PathModulConfig/dns.txt" > /dev/null 2>&1 
+            fi
+            echo "use system dns "| tee -a $saveLog 
+            # reset
+            ResetDns
+            # reset
+        fi
         echo "  --- --- --- --- --- " | tee -a $saveLog 
     fi
     echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog > /dev/null 2>&1 ;

@@ -110,8 +110,12 @@ if [ ! -z "$1" ];then
             echo $(getprop debug.hwui.renderer) > "$PathModulConfig/backup/gpu_render.txt"
             echo 'system' > $PathModulConfig/mode_render.txt
             echo 'system' > $PathModulConfig/fsync_mode.txt
-            setprop ram_management.change "belom"
+            setprop zyc.change.rm "belom"
+            setprop zyc.change.zrm "belom"
             setprop zyc.change.prop "belom"
+            setprop zyc.change.dns "belom"
+            # dns
+            # echo "system" > $PathModulConfig/dns.txt
         fi
     fi
 fi;
@@ -424,7 +428,10 @@ if [ "$FromTerminal" == "tidak" ];then
     if [ ! -e $PathModulConfig/zram_optimizer.txt ]; then
         echo '0' > $PathModulConfig/zram_optimizer.txt
     fi
-
+    # dns
+    if [ ! -e $PathModulConfig/dns.txt ]; then
+        echo "system" > $PathModulConfig/dns.txt
+    fi
     # Check notes version
     # SetModulVersion="3.36-71 BETA"
     SetModulVersion="$GetVersion"
@@ -469,8 +476,11 @@ How to install v3
 4.) Done
 
 
-How to update v3.33 version and above
-1.) Same as above
+How to update 
+1.) turn off ai,wait 3s
+2.) delete folder modul_mantul
+3.) flash new version
+4.) reboot
 
 
 How to reset module config
@@ -650,7 +660,10 @@ Cara install v3
 
 
 Cara update 
-1.) Sama kaya di atas
+1.) turn off ai,tunggu 3 detik
+2.) delete folder modul_mantul
+3.) flash modul terbaru
+4.) reboot
 
 
 Cara reset module

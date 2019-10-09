@@ -137,6 +137,11 @@ runScript(){
         MissingFile="iya"
     fi
 
+    # dns
+    if [ ! -e $PathModulConfig/dns.txt ]; then
+        MissingFile="iya"
+    fi
+    
     if [ ! -e $PathModulConfig/notes_en.txt ]; then
         # echo "please read this xD \nyou can set mode.txt to:\n- off \n- on \n- turbo \nvalue must same as above without'-'\n\nchange mode_render.txt to:\n-  opengl \n-  skiagl \n-  skiavk \n\n note:\n-skiavk = Vulkan \n-skiagl = OpenGL (SKIA)\ndont edit total_fps.txt still not tested" > $PathModulConfig/notes.txt
         MissingFile="iya"

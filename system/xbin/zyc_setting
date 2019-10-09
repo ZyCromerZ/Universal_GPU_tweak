@@ -181,6 +181,10 @@ GetSetting(){
         StatusEndGpuBefore=$(cat "$PathModulConfigAi/status_end_gpu.txt")
         StatusEndGpuNew=$(cat "$PathModulConfigAi/status_end_gpu.txt")
     fi
+    if [ -e $PathModulConfig/dns.txt ];then
+        DnsBefore=$(cat "$PathModulConfig/dns.txt")
+        DnsNew=$(cat "$PathModulConfig/dns.txt")
+    fi
 }
 RefreshList="tidak"
 RestartNotif="tidak"
@@ -689,6 +693,18 @@ ListMenu(){
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
+        if [ -e "$PathModulConfig/dns.txt" ];then
+            echo "<-- -- DNS Config -- -->"
+            echo "dnss > default dns"
+            echo "dnsc > use cloudflare dns"
+            echo "dnsg > use google dns"
+            if [ "$DnsBefore" != "$DnsNew" ];then
+                echo $putihHitam"this will set to : $DnsNew"$ResetWarna
+            else
+                echo $abuHitam"Current status : $DnsBefore"$ResetWarna
+            fi
+            echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
+        fi
         echo "<-- -- App and Game List Config -- -->"
         echo "sag > re-scan app and game list :D "
         echo "sal > to check app list install on your phone"
@@ -1080,6 +1096,21 @@ ListMenu(){
         AiDozeNew="on"
         usleep 100000
         ListMenu
+    elif [ $pilihan == "dnss" ];then
+        Perubahan="ya"
+        DnsNew="system"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "dnsc" ];then
+        Perubahan="ya"
+        DnsNew="cloudflare"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "dnsg" ];then
+        Perubahan="ya"
+        DnsNew="google"
+        usleep 100000
+        ListMenu
     elif [ $pilihan == "gux" ];then
         echo "how long (example : 1) ??"
         read getnumber
@@ -1136,6 +1167,7 @@ exitSetting(){
         do 
             kill -9 $GetTerminal > /dev/null 2>&1
         done
+        exit 0
     else
         page="1"
         GetSetting
@@ -1175,7 +1207,7 @@ saveSetting()
         echo "$GetModeRamNew" > $PathModulConfig/custom_ram_management.txt ; 
         GetModeRamBefore=$GetModeRamNew;
         RunTweak="iya"
-        setprop ram_management.change "belom"
+        setprop zyc.change.rm "belom"
     fi
     if [ "$GetModeAiBefore" != "$GetModeAiNew" ];then
         echo "$GetModeAiNew" > $PathModulConfigAi/ai_status.txt ; 
@@ -1210,6 +1242,7 @@ saveSetting()
         echo "$ZramNew" > $PathModulConfig/zram.txt ; 
         ZramBefore=$ZramNew;
         RunTweak="iya"
+        setprop zyc.change.zrm "belom"
     fi
     if [ "$swapinnesBefore" != "$swapinnesNew" ];then
         echo "$swapinnesNew" > $PathModulConfig/swapinnes.txt ; 
@@ -1239,7 +1272,13 @@ saveSetting()
     if [ "$StatusEndGpuBefore" != "$StatusEndGpuNew" ];then
         echo "$StatusEndGpuNew" > $PathModulConfigAi/status_end_gpu.txt ; 
         StatusEndGpuBefore=$StatusEndGpuNew;
-        # RunTweak="iya"ai_doze
+        # RunTweak="iya"ai_doze setprop
+    fi
+    if [ "$DnsBefore" != "$DnsNew" ];then
+        echo "$DnsNew" > $PathModulConfig/dns.txt ; 
+        DnsBefore=$DnsNew;
+        RunTweak="iya"
+        setprop zyc.change.dns "belom"
     fi
     if [ "$RunTweak" == "iya" ];then
         echo "--- --- --- --- ---"
