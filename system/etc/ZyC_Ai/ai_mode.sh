@@ -49,7 +49,7 @@ case "$GetVersion" in
 ;;
 *)
     echo "unsupported magisk version detected,fail" | tee -a $AiLog > /dev/null 2>&1 ;
-    exit -1;
+    exit 
 ;;
 esac
 if [ -d "/sys/class/kgsl/kgsl-3d0" ]; then
@@ -72,7 +72,7 @@ fi
 if [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ];then
     BASEDIR=/system/etc/ZyC_Ai
 else
-    exit -1;
+    exit 
 fi;
 runScript(){
     # check service sh config start
@@ -211,11 +211,11 @@ runScript(){
     if [ $MissingFile == "iya" ]; then
         sh $ModulPath/ZyC_Turbo/initialize.sh > /dev/null 2>&1
         if [ $fromBoot == "yes" ];then
-            sh /system/etc/ZyC_Ai/ai_mode.sh "fromBoot" & disown > /dev/null 2>&1;
+            nohup sh /system/etc/ZyC_Ai/ai_mode.sh "fromBoot" & > /dev/null 2>&1;
         else
-            sh /system/etc/ZyC_Ai/ai_mode.sh & disown > /dev/null 2>&1;
+            nohup sh /system/etc/ZyC_Ai/ai_mode.sh & > /dev/null 2>&1;
         fi
-        exit 0;
+        exit 
     fi
     StatusModul=$(cat "$PathModulConfig/status_modul.txt");
     getAppName()
@@ -243,7 +243,7 @@ runScript(){
         StatusModul="turbo"
         echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
         sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait > /dev/null 2>&1
-        sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
+        nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & > /dev/null 2>&1
         # usleep 5000000
     }
     setOff(){
@@ -253,7 +253,7 @@ runScript(){
         StatusModul="off"
         echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
         sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait > /dev/null 2>&1
-        sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
+        nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & > /dev/null 2>&1
     }
     setLag(){
         SetNotificationDozeOn
@@ -262,7 +262,7 @@ runScript(){
         StatusModul="lag"
         echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
         sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait > /dev/null 2>&1
-        sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" "doze" & disown > /dev/null 2>&1
+        nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" "doze" & > /dev/null 2>&1
     }
     setLagoff(){
         SetNotificationDozeOff
@@ -271,7 +271,7 @@ runScript(){
         StatusModul="off"
         echo "  --- --- --- --- ---  " | tee -a $AiLog > /dev/null 2>&1;
         sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait > /dev/null 2>&1
-        sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" "doze" & disown > /dev/null 2>&1
+        nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" "doze" & > /dev/null 2>&1
     }
     SetNotificationOn(){
         if [ "$NotifPath" != "none" ];then
@@ -305,13 +305,13 @@ runScript(){
     SetNotificationRunning(){
         if [ "$NotifPath" != "none" ] && [ "$(cat "$PathModulConfig/status_modul.txt")" == "turbo" ] && [ $StatusModul == "turbo" ];then
             if [ "$aiNotifRunning" == "1" ];then
-                sh $NotifPath "notif" "running" & disown > /dev/null 2>&1 
+                nohup sh $NotifPath "notif" "running" & > /dev/null 2>&1 
             elif [ "$aiNotifRunning" == "2" ];then
-                sh $NotifPath "notif" "running1" & disown > /dev/null 2>&1 
+                nohup sh $NotifPath "notif" "running1" & > /dev/null 2>&1 
             elif [ "$aiNotifRunning" == "3" ];then
-                sh $NotifPath "notif" "running2" & disown > /dev/null 2>&1 
+                nohup sh $NotifPath "notif" "running2" & > /dev/null 2>&1 
             elif [ "$aiNotifRunning" == "4" ];then
-                sh $NotifPath "notif" "running3" & disown > /dev/null 2>&1 
+                nohup sh $NotifPath "notif" "running3" & > /dev/null 2>&1 
             fi
         fi
     }
@@ -456,20 +456,20 @@ runScript(){
         echo "end at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
         echo "  --- --- --- --- --->> " | tee -a $AiLog > /dev/null 2>&1 ;
         echo '0' > $PathModulConfigAi/ai_status.txt
-        exit -1;
+        exit 
     elif [ $aiStatus == "0" ];then
         echo "cannot start . . ."  | tee -a $AiLog > /dev/null 2>&1 ;
         echo "please change ai status to 1 first" | tee -a $AiLog > /dev/null 2>&1 ;
         echo "end at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
         echo "  --- --- --- --- --->> " | tee -a $AiLog > /dev/null 2>&1 ;
-        exit -1; 
+        exit 
     else
         echo "cannot start . . ."  | tee -a $AiLog > /dev/null 2>&1 ;
         echo "ai status error . . ."  | tee -a $AiLog > /dev/null 2>&1 ;
         echo "end at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
         echo "  --- --- --- --- --->> " | tee -a $AiLog > /dev/null 2>&1 ;
         echo '0' > $PathModulConfigAi/ai_status.txt
-        exit -1;
+        exit 
     fi
     if [ $aiStatus == "2"  ];then
         if [ $StatusModul == "turbo" ];then
@@ -496,10 +496,8 @@ runScript(){
         echo "Continue running at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
         echo "module version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed 's/Version:*//g' )" | tee -a $AiLog > /dev/null 2>&1 ;
         echo "  --- --- --- --- --- " | tee -a $AiLog > /dev/null 2>&1 ;
-        sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & disown > /dev/null 2>&1
-        sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1
-    else
-        sh $BASEDIR/ai_mode.sh & disown > /dev/null 2>&1
+        fromBoot="no"
     fi
+    runScript
 }
 runScript 2>&1 | tee -a $Path/ZyC_Ai.running.log > /dev/null 2>&1 ;

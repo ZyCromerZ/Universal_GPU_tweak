@@ -114,6 +114,7 @@ if [ ! -z "$1" ];then
             setprop zyc.change.zrm "belom"
             setprop zyc.change.prop "belom"
             setprop zyc.change.dns "belom"
+            setprop zyc.change.render "belom"
             # dns
             # echo "system" > $PathModulConfig/dns.txt
         fi

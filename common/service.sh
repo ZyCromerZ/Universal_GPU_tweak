@@ -26,7 +26,7 @@ case "$GetVersion" in
 ;;
 *)
     echo "unsupported magisk version detected,fail"
-    exit -1;
+    exit;
 ;;
 esac
 FromTerminal="tidak";
@@ -183,11 +183,11 @@ runScript(){
         if [ "$MissingFile" == "iya" ]; then
             sh $ModulPath/ZyC_Turbo/initialize.sh & wait > /dev/null 2>&1
             if [ "$FromAi" == "ya" ];then
-                exit 0;
+                exit
             else
-                nohup sh $ModulPath/ZyC_Turbo/service.sh 
+                nohup sh $ModulPath/ZyC_Turbo/service.sh &
             fi
-            exit 0;
+            exit
         fi
     # end log backup
     SetOff(){
@@ -538,24 +538,27 @@ runScript(){
     # echo "ok beres dah . . .\n" | tee -a $saveLog > /dev/null 2>&1 ;
     # gpu render start
         if [ "$FromTerminal" == "ya" ];then
-            if [ "$RenderMode" == 'skiagl' ];then
-                setprop debug.hwui.renderer skiagl
-                echo "set render gpu to OpenGL (SKIA) done" | tee -a $saveLog > /dev/null 2>&1 ;
-            elif [ "$RenderMode" == 'skiavk' ];then
-                setprop debug.hwui.renderer skiavk
-                echo "set render gpu to Vulkan (SKIA) done" | tee -a $saveLog > /dev/null 2>&1 ;
-            elif [ "$RenderMode" == 'opengl' ];then
-                setprop debug.hwui.renderer opengl
-                echo "set render gpu to OpenGL default done" | tee -a $saveLog > /dev/null 2>&1 ;
-            else
-                GetBackupGPU=$(cat "$PathModulConfig/backup/gpu_render.txt")
-                if [ -z "$GetBackupGPU" ];then
-                    echo "system" > $PathModulConfig/mode_render.txt
-                    setprop debug.hwui.renderer "$GetBackupGPU"
-                    echo "set render gpu to system setting" | tee -a $saveLog > /dev/null 2>&1 ;
+            if [ "$(getprop zyc.change.render)" == "belom" ];then
+                if [ "$RenderMode" == 'skiagl' ];then
+                    setprop debug.hwui.renderer skiagl
+                    echo "set render gpu to OpenGL (SKIA) done" | tee -a $saveLog > /dev/null 2>&1 ;
+                elif [ "$RenderMode" == 'skiavk' ];then
+                    setprop debug.hwui.renderer skiavk
+                    echo "set render gpu to Vulkan (SKIA) done" | tee -a $saveLog > /dev/null 2>&1 ;
+                elif [ "$RenderMode" == 'opengl' ];then
+                    setprop debug.hwui.renderer opengl
+                    echo "set render gpu to OpenGL default done" | tee -a $saveLog > /dev/null 2>&1 ;
+                else
+                    GetBackupGPU=$(cat "$PathModulConfig/backup/gpu_render.txt")
+                    if [ -z "$GetBackupGPU" ];then
+                        echo "system" > $PathModulConfig/mode_render.txt
+                        setprop debug.hwui.renderer "$GetBackupGPU"
+                        echo "set render gpu to system setting" | tee -a $saveLog > /dev/null 2>&1 ;
+                    fi
                 fi
+                setprop zyc.change.render "udah"
+                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1  
             fi
-            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1  
         fi
     # gpu render end
 
@@ -839,12 +842,6 @@ runScript(){
                 echo "Note : better to use universal gms doze :D" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
                 # source script from gms doze universal 1.7.3
                 pm disable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceiver | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                cmd appops set com.google.android.gms BOOT_COMPLETED ignore | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                cmd appops set com.google.android.gms AUTO_START ignore | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                cmd appops set com.google.android.ims BOOT_COMPLETED ignore | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                cmd appops set com.google.android.ims WAKE_LOCK ignore | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                cmd appops set com.google.android.ims AUTO_START ignore | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                cmd appops set com.google.android.ims WAKE_LOCK ignore | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
                 # Stop unnecessary GMS and restart it on boot (dorimanx)
                 if [ "$($GetBusyBox pidof com.google.android.gms | wc -l)" -eq "1" ]; then
                     $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms) | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
@@ -892,17 +889,17 @@ runScript(){
                 if [ "$AiStatus" == "1" ];then
                     echo "starting ai mode . . . " | tee -a $saveLog > /dev/null 2>&1 
                     echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
-                    nohup sh $BASEDIR/ai_mode.sh "fromBoot"
+                    nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
                     exit
                 elif [ "$AiStatus" == "2" ];then
                     echo "re - run ai mode . . . " | tee -a $saveLog > /dev/null 2>&1 
                     echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
-                    nohup sh $BASEDIR/ai_mode.sh "fromBoot"
+                    nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
                     exit
                 elif [ "$AiStatus" == "3" ];then
                     echo "deactive ai mode . . . " | tee -a $saveLog > /dev/null 2>&1 
                     echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
-                    nohup sh $BASEDIR/ai_mode.sh "fromBoot"
+                    nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
                     exit
                 elif [ "$AiStatus" == "0" ];then
                     echo "ai status off"| tee -a $saveLog > /dev/null 2>&1 ;
@@ -1037,20 +1034,8 @@ runScript(){
         echo "  --- --- --- --- --- " | tee -a $saveLog 
     fi
 ResetDns(){
-    ip6tables -P INPUT ACCEPT  > /dev/null 2>&1
-    ip6tables -P FORWARD ACCEPT  > /dev/null 2>&1
-    ip6tables -P OUTPUT ACCEPT  > /dev/null 2>&1
     ip6tables -t nat -F  > /dev/null 2>&1
-    ip6tables -t mangle -F  > /dev/null 2>&1
-    ip6tables -F  > /dev/null 2>&1
-    ip6tables -X  > /dev/null 2>&1
-    iptables -P INPUT ACCEPT  > /dev/null 2>&1
-    iptables -P FORWARD ACCEPT  > /dev/null 2>&1
-    iptables -P OUTPUT ACCEPT  > /dev/null 2>&1
     iptables -t nat -F  > /dev/null 2>&1
-    iptables -t mangle -F  > /dev/null 2>&1
-    iptables -F  > /dev/null 2>&1
-    iptables -X  > /dev/null 2>&1
     resetprop net.eth0.dns1  > /dev/null 2>&1
     resetprop net.eth0.dns2  > /dev/null 2>&1
     resetprop net.dns1  > /dev/null 2>&1

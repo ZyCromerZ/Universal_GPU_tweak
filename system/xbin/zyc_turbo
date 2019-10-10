@@ -40,14 +40,14 @@ case "$GetVersion" in
 esac
 RunStatus="kaga"
 if [ ! -e /data/mod_path.txt ]; then
-    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" > /dev/null 2>&1
+    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" & wait > /dev/null 2>&1
 	RunStatus="iya"
 fi
 ModPath=$(cat /data/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
 PathModulConfig=$Path/ZyC_Turbo_config
 if [ $RunStatus == "kaga" ];then
-	sh $ModulPath/ZyC_Turbo/service.sh "Terminal" > /dev/null 2>&1
+	sh $ModulPath/ZyC_Turbo/service.sh "Terminal" & wait > /dev/null 2>&1
 fi
 mode=$(cat "$PathModulConfig/status_modul.txt");
 render=$(cat "$PathModulConfig/mode_render.txt");

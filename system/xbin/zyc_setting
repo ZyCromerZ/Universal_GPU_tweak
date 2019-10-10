@@ -1187,6 +1187,7 @@ saveSetting()
         echo "$GetModeRenderNew" > $PathModulConfig/mode_render.txt ; 
         GetModeRenderBefore=$GetModeRenderNew;
         RunTweak="iya"
+        setprop zyc.change.render "belom"
     fi
     if [ "$GetModeFCBefore" != "$GetModeFCNew" ];then
         echo "$GetModeFCNew" > $PathModulConfig/fastcharge.txt ; 
