@@ -840,45 +840,57 @@ runScript(){
                 echo "GMS Doze fail . . ." | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
             else
                 echo "Note : better to use universal gms doze :D" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                changeSE="tidak"
+                if [ "$(getenforce)" == "Enforcing" ];then
+                    changeSE="ya"
+                    setenforce 0
+                fi
                 # source script from gms doze universal 1.7.3
                 pm disable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceiver | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
                 # Stop unnecessary GMS and restart it on boot (dorimanx)
-                if [ "$($GetBusyBox pidof com.google.android.gms | wc -l)" -eq "1" ]; then
+                if [ "$($GetBusyBox pidof com.google.android.gms | wc -l)" -eq "1" ] && [ ! -z "$(pm list packages -f com.google.android.gms)" ] ; then
                     $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms) | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
                 fi;
-                if [ "$($GetBusyBox pidof com.google.android.gms.wearable | wc -l)" -eq "1" ]; then
+                if [ "$($GetBusyBox pidof com.google.android.gms.wearable | wc -l)" -eq "1" ] && [ ! -z "$(pm list packages -f com.google.android.gms.wearable)" ] ; then
                     $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.wearable) | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
                 fi;
-                if [ "$($GetBusyBox pidof com.google.android.gms.persistent | wc -l)" -eq "1" ]; then
+                if [ "$($GetBusyBox pidof com.google.android.gms.persistent | wc -l)" -eq "1" ] && [ ! -z "$(pm list packages -f com.google.android.gms.persistent)" ] ; then
                     $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.persistent) | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
                 fi;
-                if [ "$($GetBusyBox pidof com.google.android.gms.unstable | wc -l)" -eq "1" ]; then
+                if [ "$($GetBusyBox pidof com.google.android.gms.unstable | wc -l)" -eq "1" ] && [ ! -z "$(pm list packages -f com.google.android.gms.unstable)" ] ; then
                     $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.unstable) | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
                 fi;
-                su -c "pm enable com.google.android.gms/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gms/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$ActiveReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gsf/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsTaskService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.service.AnalyticsService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gms/com.google.android.gms.chimera.PersistentIntentOperationService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gms/com.google.android.gms.clearcut.debug.ClearcutDebugDumpService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gms/com.google.android.gms.common.stats.GmsCoreStatsService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.AppMeasurementJobService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.AppMeasurementInstallReferrerReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.service.MeasurementBrokerService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                if  [ ! -z "$(pm list packages -f com.google.android.gms)" ] ; then
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$ActiveReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsTaskService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.service.AnalyticsService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/com.google.android.gms.chimera.PersistentIntentOperationService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/com.google.android.gms.clearcut.debug.ClearcutDebugDumpService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/com.google.android.gms.common.stats.GmsCoreStatsService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.AppMeasurementJobService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.AppMeasurementInstallReferrerReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.service.MeasurementBrokerService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                fi
+                if  [ ! -z "$(pm list packages -f com.google.android.gsf)" ] ; then
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                fi
+                if [ "$changeSE" == "ya" ];then
+                    setenforce 1
+                fi
                 echo "GMS Doze done . . ." | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
             fi
         fi
@@ -1034,30 +1046,36 @@ runScript(){
         echo "  --- --- --- --- --- " | tee -a $saveLog 
     fi
 ResetDns(){
-    ip6tables -t nat -F  > /dev/null 2>&1
-    iptables -t nat -F  > /dev/null 2>&1
-    resetprop net.eth0.dns1  > /dev/null 2>&1
-    resetprop net.eth0.dns2  > /dev/null 2>&1
-    resetprop net.dns1  > /dev/null 2>&1
-    resetprop net.dns2  > /dev/null 2>&1
-    resetprop net.ppp0.dns1  > /dev/null 2>&1
-    resetprop net.ppp0.dns2  > /dev/null 2>&1
-    resetprop net.rmnet0.dns1  > /dev/null 2>&1
-    resetprop net.rmnet0.dns2  > /dev/null 2>&1
-    resetprop net.rmnet1.dns1  > /dev/null 2>&1
-    resetprop net.rmnet1.dns2  > /dev/null 2>&1
-    resetprop net.rmnet2.dns1  > /dev/null 2>&1
-    resetprop net.rmnet2.dns2  > /dev/null 2>&1
-    resetprop net.pdpbr1.dns1  > /dev/null 2>&1
-    resetprop net.pdpbr1.dns2  > /dev/null 2>&1
-    resetprop net.wlan0.dns1  > /dev/null 2>&1
-    resetprop net.wlan0.dns2  > /dev/null 2>&1
-    resetprop 2001:4860:4860::8888 > /dev/null 2>&1 
-    resetprop 2001:4860:4860::8844 > /dev/null 2>&1 
-    resetprop 2606:4700:4700::1111 > /dev/null 2>&1 
-    resetprop 2606:4700:4700::1001 > /dev/null 2>&1 
+    if [ "$FromTerminal" == "ya" ];then
+        ip6tables -t nat -F  > /dev/null 2>&1
+        iptables -t nat -F  > /dev/null 2>&1
+        resetprop net.eth0.dns1  > /dev/null 2>&1
+        resetprop net.eth0.dns2  > /dev/null 2>&1
+        resetprop net.dns1  > /dev/null 2>&1
+        resetprop net.dns2  > /dev/null 2>&1
+        resetprop net.ppp0.dns1  > /dev/null 2>&1
+        resetprop net.ppp0.dns2  > /dev/null 2>&1
+        resetprop net.rmnet0.dns1  > /dev/null 2>&1
+        resetprop net.rmnet0.dns2  > /dev/null 2>&1
+        resetprop net.rmnet1.dns1  > /dev/null 2>&1
+        resetprop net.rmnet1.dns2  > /dev/null 2>&1
+        resetprop net.rmnet2.dns1  > /dev/null 2>&1
+        resetprop net.rmnet2.dns2  > /dev/null 2>&1
+        resetprop net.pdpbr1.dns1  > /dev/null 2>&1
+        resetprop net.pdpbr1.dns2  > /dev/null 2>&1
+        resetprop net.wlan0.dns1  > /dev/null 2>&1
+        resetprop net.wlan0.dns2  > /dev/null 2>&1
+        resetprop 2001:4860:4860::8888 > /dev/null 2>&1 
+        resetprop 2001:4860:4860::8844 > /dev/null 2>&1 
+        resetprop 2606:4700:4700::1111 > /dev/null 2>&1 
+        resetprop 2606:4700:4700::1001 > /dev/null 2>&1 
+        resetprop 2a00:5a60::ad1:0ff:5353 > /dev/null 2>&1 
+        resetprop 2a00:5a60::ad2:0ff:5353 > /dev/null 2>&1 
+        resetprop 2001:67c:28a4:::5353 > /dev/null 2>&1 
+        resetprop 2001:67c:28a4:::5353 > /dev/null 2>&1 
+    fi
 }
-    if [ "$(getprop zyc.change.dns)" == "belom" ];then
+    if [ "$(getprop zyc.change.dns)" == "belom" ] ;then
         setprop zyc.change.dns 'udah'
         if [ "$GetDnsType" == "cloudflare" ];then
             echo "use cloudflare dns "| tee -a $saveLog
@@ -1068,10 +1086,10 @@ ResetDns(){
             iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 1.0.0.1:53  > /dev/null 2>&1
             iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 1.1.1.1:53  > /dev/null 2>&1
             iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 1.0.0.1:53  > /dev/null 2>&1
-            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  2606:4700:4700::1111  > /dev/null 2>&1
-            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  2606:4700:4700::1001  > /dev/null 2>&1
-            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  2606:4700:4700::1111  > /dev/null 2>&1
-            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  2606:4700:4700::1001  > /dev/null 2>&1
+            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1111]:53  > /dev/null 2>&1
+            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1001]:53  > /dev/null 2>&1
+            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1111]:53  > /dev/null 2>&1
+            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1001]:53  > /dev/null 2>&1
             # SETPROP
             setprop net.eth0.dns1 1.1.1.1  > /dev/null 2>&1
             setprop net.eth0.dns2 1.0.0.1  > /dev/null 2>&1
@@ -1123,6 +1141,70 @@ ResetDns(){
             setprop net.wlan0.dns2 8.8.4.4  > /dev/null 2>&1
             setprop 2001:4860:4860::8888  > /dev/null 2>&1
             setprop 2001:4860:4860::8844  > /dev/null 2>&1
+        elif [ "$GetDnsType" == "adguard" ];then
+            echo "use adguard dns "| tee -a $saveLog 
+            # reset
+            ResetDns
+            # reset
+            iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 176.103.130.130:5353  > /dev/null 2>&1
+            iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 176.103.130.131:5353  > /dev/null 2>&1
+            iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 176.103.130.130:5353  > /dev/null 2>&1
+            iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 176.103.130.131:5353  > /dev/null 2>&1
+            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad1:0ff]:5353  > /dev/null 2>&1
+            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad2:0ff]:5353  > /dev/null 2>&1
+            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad1:0ff]:5353  > /dev/null 2>&1
+            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad2:0ff]:5353  > /dev/null 2>&1  
+            # SETPROP
+            setprop net.eth0.dns1 176.103.130.130
+            setprop net.eth0.dns2 176.103.130.131
+            setprop net.dns1 176.103.130.130
+            setprop net.dns2 176.103.130.131
+            setprop net.ppp0.dns1 176.103.130.130
+            setprop net.ppp0.dns2 176.103.130.131
+            setprop net.rmnet0.dns1 176.103.130.130
+            setprop net.rmnet0.dns2 176.103.130.131
+            setprop net.rmnet1.dns1 176.103.130.130
+            setprop net.rmnet1.dns2 176.103.130.131
+            setprop net.rmnet2.dns1 176.103.130.130
+            setprop net.rmnet2.dns2 176.103.130.131
+            setprop net.pdpbr1.dns1 176.103.130.130
+            setprop net.pdpbr1.dns2 176.103.130.131
+            setprop net.wlan0.dns1 176.103.130.130
+            setprop net.wlan0.dns2 176.103.130.131
+            setprop 2a00:5a60::ad1:0ff:5353
+            setprop 2a00:5a60::ad2:0ff:5353
+        elif [ "$GetDnsType" == "uncensored" ];then
+            echo "use uncensored dns "| tee -a $saveLog 
+            # reset
+            ResetDns
+            # reset
+            iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 91.239.100.100:5353  > /dev/null 2>&1
+            iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 91.239.100.100:5353  > /dev/null 2>&1
+            iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 91.239.100.100:5353  > /dev/null 2>&1
+            iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 91.239.100.100:5353  > /dev/null 2>&1
+            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353  > /dev/null 2>&1
+            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353  > /dev/null 2>&1
+            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353  > /dev/null 2>&1
+            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353  > /dev/null 2>&1  
+            # SETPROP
+            setprop net.eth0.dns1 91.239.100.100
+            setprop net.eth0.dns2 91.239.100.100
+            setprop net.dns1 91.239.100.100
+            setprop net.dns2 91.239.100.100
+            setprop net.ppp0.dns1 91.239.100.100
+            setprop net.ppp0.dns2 91.239.100.100
+            setprop net.rmnet0.dns1 91.239.100.100
+            setprop net.rmnet0.dns2 91.239.100.100
+            setprop net.rmnet1.dns1 91.239.100.100
+            setprop net.rmnet1.dns2 91.239.100.100
+            setprop net.rmnet2.dns1 91.239.100.100
+            setprop net.rmnet2.dns2 91.239.100.100
+            setprop net.pdpbr1.dns1 91.239.100.100
+            setprop net.pdpbr1.dns2 91.239.100.100
+            setprop net.wlan0.dns1 91.239.100.100
+            setprop net.wlan0.dns2 91.239.100.100
+            setprop 2001:67c:28a4:::5353
+            setprop 2001:67c:28a4:::5353
         else
             if [ "$GetDnsType" != "system" ];then
                 echo "system" > "$PathModulConfig/dns.txt" > /dev/null 2>&1 

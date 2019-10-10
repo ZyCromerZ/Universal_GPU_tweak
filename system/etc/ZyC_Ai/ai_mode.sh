@@ -493,6 +493,7 @@ runScript(){
     if [ $fromBoot == "yes" ];then
         usleep 10000000
         sh $NotifPath "getar" "off" > /dev/null 2>&1 
+        nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & > /dev/null 2>&1
         echo "Continue running at : $(date +" %r")" | tee -a $AiLog > /dev/null 2>&1 ;
         echo "module version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed 's/Version:*//g' )" | tee -a $AiLog > /dev/null 2>&1 ;
         echo "  --- --- --- --- --- " | tee -a $AiLog > /dev/null 2>&1 ;

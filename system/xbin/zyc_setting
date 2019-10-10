@@ -698,6 +698,8 @@ ListMenu(){
             echo "dnss > default dns"
             echo "dnsc > use cloudflare dns"
             echo "dnsg > use google dns"
+            echo "dnsa > use adguard dns"
+            echo "dnsu > use uncensored dns"
             if [ "$DnsBefore" != "$DnsNew" ];then
                 echo $putihHitam"this will set to : $DnsNew"$ResetWarna
             else
@@ -1109,6 +1111,16 @@ ListMenu(){
     elif [ $pilihan == "dnsg" ];then
         Perubahan="ya"
         DnsNew="google"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "dnsa" ];then
+        Perubahan="ya"
+        DnsNew="adguard"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "dnsu" ];then
+        Perubahan="ya"
+        DnsNew="uncensored"
         usleep 100000
         ListMenu
     elif [ $pilihan == "gux" ];then
