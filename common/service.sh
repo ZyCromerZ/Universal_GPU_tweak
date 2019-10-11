@@ -143,6 +143,12 @@ runScript(){
     fi
     CustomRam=$(cat $PathModulConfig/custom_ram_management.txt)
 
+    
+    if [ ! -e $PathModulConfig/custom_ram_management_adj.txt ]; then
+         MissingFile="iya"
+    fi
+    CustomRamAdj=$(cat "$PathModulConfig/custom_ram_management_adj.txt")
+
     # GMS DOZE
     if [ ! -e $PathModulConfig/gms_doze.txt ]; then
         MissingFile="iya"
@@ -614,7 +620,9 @@ runScript(){
                         fi
                         if [ -e $PathModulConfig/backup/ram_adj.txt ];then
                             chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
-                            echo $(cat "$PathModulConfig/backup/ram_adj.txt") > "/sys/module/lowmemorykiller/parameters/adj"
+                            # echo $(cat "$PathModulConfig/backup/ram_adj.txt") > "/sys/module/lowmemorykiller/parameters/adj"
+                            #ADJ1=0; ADJ2=100; ADJ3=200; ADJ4=300; ADJ5=900; ADJ6=906 # STOCK
+                            echo "0,100,200,300,900,906" > /sys/module/lowmemorykiller/parameters/adj
                             chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
                             rm $PathModulConfig/backup/ram_adj.txt
                         fi
@@ -679,7 +687,16 @@ runScript(){
 
                         chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
                         chmod 0666 /sys/module/lowmemorykiller/parameters/minfree;
-                        echo "0,120,230,415,910,1000" > /sys/module/lowmemorykiller/parameters/adj
+                        # echo "0,120,230,415,910,1000" > /sys/module/lowmemorykiller/parameters/adj
+                        if [ "$CustomRamAdj" == "tweak" ];then
+                            if [ "$(cat "/sys/module/lowmemorykiller/parameters/adj")" != "0,110,220,355,850,1000" ];then
+                                echo "0,110,220,355,850,1000" > /sys/module/lowmemorykiller/parameters/adj
+                            fi
+                        else
+                            if [ "$(cat "/sys/module/lowmemorykiller/parameters/adj")" != "0,100,200,300,900,906" ];then
+                                echo "0,100,200,300,900,906" > /sys/module/lowmemorykiller/parameters/adj
+                            fi
+                        fi
                         echo "$ForegroundApp,$VisibleApp,$SecondaryServer,$HiddenApp,$ContentProvider,$EmptyApp" > /sys/module/lowmemorykiller/parameters/minfree
                         chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
                         chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
@@ -764,8 +781,8 @@ runScript(){
                         setprop zyc.change.zrm "udah"  > /dev/null 2>&1 
                         FixSize=$(echo $SetZramTo |  sed "s/-*//g" )
                         GetSwapNow=$(getprop zram.disksize |  sed "s/-*//g" )
+                        stop perfd
                         if [ "$FixSize" != "$GetSwapNow" ];then
-                            stop perfd
                             # echo "use Zram default system setting" | tee -a $saveLog > /dev/null 2>&1 
                             echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog > /dev/null 2>&1 ;
                             echo "Set Zram to $SetZramTo Bytes . . ." | tee -a $saveLog > /dev/null 2>&1 ;
@@ -779,27 +796,26 @@ runScript(){
                             # setprop ro.config.zram true
                             # setprop ro.config.zram.support true
                             setprop zram.disksize $SetZramTo
-                            if [ "$ZramOptimizer" == "1" ];then
-                                echo "echo optimize zram setting . . ." | tee -a $saveLog > /dev/null 2>&1 ;
-                                sysctl -e -w vm.swappiness=$Swapinnes  > /dev/null 2>&1 
-                                sysctl -e -w vm.dirty_ratio=5  > /dev/null 2>&1 
-                                sysctl -e -w vm.dirty_background_ratio=1  > /dev/null 2>&1 
-                                sysctl -e -w vm.drop_caches=3  > /dev/null 2>&1 
-                                sysctl -e -w vm.vfs_cache_pressure=100  > /dev/null 2>&1 
-                            else
-                                echo "use stock zram setting . . ." | tee -a $saveLog > /dev/null 2>&1 ;
-                                sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_ratio.txt")  > /dev/null 2>&1 
-                                sysctl -e -w vm.dirty_background_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_background_ratio.txt")  > /dev/null 2>&1 
-                                sysctl -e -w vm.drop_caches=$(cat "$PathModulConfig/backup/zram_vm.drop_caches.txt")  > /dev/null 2>&1 
-                                sysctl -e -w vm.vfs_cache_pressure=$(cat "$PathModulConfig/backup/zram_vm.vfs_cache_pressure.txt")  > /dev/null 2>&1 
-                            fi
                             $PathBusyBox/swapon "/dev/block/zram0"  > /dev/null 2>&1 
                             usleep 100000
-                            echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog > /dev/null 2>&1 ;
-                            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
-                            start perfd
                         fi
-                        
+                        if [ "$ZramOptimizer" == "1" ];then
+                            echo "echo optimize zram setting . . ." | tee -a $saveLog > /dev/null 2>&1 ;
+                            sysctl -e -w vm.swappiness=$Swapinnes  > /dev/null 2>&1 
+                            sysctl -e -w vm.dirty_ratio=5  > /dev/null 2>&1 
+                            sysctl -e -w vm.dirty_background_ratio=1  > /dev/null 2>&1 
+                            sysctl -e -w vm.drop_caches=3  > /dev/null 2>&1 
+                            sysctl -e -w vm.vfs_cache_pressure=100  > /dev/null 2>&1 
+                        else
+                            echo "use stock zram setting . . ." | tee -a $saveLog > /dev/null 2>&1 ;
+                            sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_ratio.txt")  > /dev/null 2>&1 
+                            sysctl -e -w vm.dirty_background_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_background_ratio.txt")  > /dev/null 2>&1 
+                            sysctl -e -w vm.drop_caches=$(cat "$PathModulConfig/backup/zram_vm.drop_caches.txt")  > /dev/null 2>&1 
+                            sysctl -e -w vm.vfs_cache_pressure=$(cat "$PathModulConfig/backup/zram_vm.vfs_cache_pressure.txt")  > /dev/null 2>&1 
+                        fi
+                        start perfd
+                        echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog > /dev/null 2>&1 ;
+                        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
                     fi;
                 fi
             fi
@@ -822,108 +838,6 @@ runScript(){
     if [ "$GetMode" == 'turbo' ];then
         echo "NOTE: just tell you if you use this mode your battery will litle drain" | tee -a $saveLog > /dev/null 2>&1 ;
     fi;
-    if [ "$FromTerminal" == "tidak" ];then
-        #fix gms :p
-        if [ "$GMSDoze" == "1" ];then
-            GetBusyBox="none"
-            if [ -e $Path/ZyC_GmsDoze.log ];then
-                rm $Path/ZyC_GmsDoze.log
-            fi
-            for i in /system/bin /system/xbin /sbin /su/xbin; do
-                if [ "$GetBusyBox" == "none" ]; then
-                    if [ -f $i/busybox ]; then
-                        GetBusyBox=$i/busybox;
-                    fi;
-                fi;
-            done;
-            if [ "$GetBusyBox" == "none " ];then
-                echo "GMS Doze fail . . ." | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-            else
-                echo "Note : better to use universal gms doze :D" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                changeSE="tidak"
-                if [ "$(getenforce)" == "Enforcing" ];then
-                    changeSE="ya"
-                    setenforce 0
-                fi
-                # source script from gms doze universal 1.7.3
-                pm disable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceiver | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                # Stop unnecessary GMS and restart it on boot (dorimanx)
-                if [ "$($GetBusyBox pidof com.google.android.gms | wc -l)" -eq "1" ] && [ ! -z "$(pm list packages -f com.google.android.gms)" ] ; then
-                    $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms) | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                fi;
-                if [ "$($GetBusyBox pidof com.google.android.gms.wearable | wc -l)" -eq "1" ] && [ ! -z "$(pm list packages -f com.google.android.gms.wearable)" ] ; then
-                    $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.wearable) | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                fi;
-                if [ "$($GetBusyBox pidof com.google.android.gms.persistent | wc -l)" -eq "1" ] && [ ! -z "$(pm list packages -f com.google.android.gms.persistent)" ] ; then
-                    $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.persistent) | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                fi;
-                if [ "$($GetBusyBox pidof com.google.android.gms.unstable | wc -l)" -eq "1" ] && [ ! -z "$(pm list packages -f com.google.android.gms.unstable)" ] ; then
-                    $GetBusyBox kill $($GetBusyBox pidof com.google.android.gms.unstable) | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                fi;
-                if  [ ! -z "$(pm list packages -f com.google.android.gms)" ] ; then
-                    su -c "pm enable com.google.android.gms/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$ActiveReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.AnalyticsTaskService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gms/com.google.android.gms.analytics.service.AnalyticsService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gms/com.google.android.gms.chimera.PersistentIntentOperationService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gms/com.google.android.gms.clearcut.debug.ClearcutDebugDumpService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gms/com.google.android.gms.common.stats.GmsCoreStatsService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.AppMeasurementJobService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.AppMeasurementInstallReferrerReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.PackageMeasurementService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gms/com.google.android.gms.measurement.service.MeasurementBrokerService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                fi
-                if  [ ! -z "$(pm list packages -f com.google.android.gsf)" ] ; then
-                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-                fi
-                if [ "$changeSE" == "ya" ];then
-                    setenforce 1
-                fi
-                echo "GMS Doze done . . ." | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
-            fi
-        fi
-        if [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ];then
-            BASEDIR=/system/etc/ZyC_Ai
-            if [ -e $PathModulConfigAi/ai_status.txt ]; then
-                AiStatus=$(cat "$PathModulConfigAi/ai_status.txt")
-                if [ "$AiStatus" == "1" ];then
-                    echo "starting ai mode . . . " | tee -a $saveLog > /dev/null 2>&1 
-                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
-                    nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
-                    exit
-                elif [ "$AiStatus" == "2" ];then
-                    echo "re - run ai mode . . . " | tee -a $saveLog > /dev/null 2>&1 
-                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
-                    nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
-                    exit
-                elif [ "$AiStatus" == "3" ];then
-                    echo "deactive ai mode . . . " | tee -a $saveLog > /dev/null 2>&1 
-                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
-                    nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
-                    exit
-                elif [ "$AiStatus" == "0" ];then
-                    echo "ai status off"| tee -a $saveLog > /dev/null 2>&1 ;
-                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
-                else
-                    echo "ai status error,set to 0"| tee -a $saveLog > /dev/null 2>&1 ;
-                    echo '0' > "$PathModulConfigAi/ai_status.txt"
-                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
-                fi
-            fi
-        fi
-    fi
     if [ "$(getprop zyc.change.prop)" == "belom" ];then
         setprop zyc.change.prop "udah" 
         echo "adding youtube 4k,suggested by @WhySakura"  | tee -a $saveLog 
@@ -1045,36 +959,36 @@ runScript(){
         echo "done " | tee -a $saveLog 
         echo "  --- --- --- --- --- " | tee -a $saveLog 
     fi
-ResetDns(){
-    if [ "$FromTerminal" == "ya" ];then
-        ip6tables -t nat -F  > /dev/null 2>&1
-        iptables -t nat -F  > /dev/null 2>&1
-        resetprop net.eth0.dns1  > /dev/null 2>&1
-        resetprop net.eth0.dns2  > /dev/null 2>&1
-        resetprop net.dns1  > /dev/null 2>&1
-        resetprop net.dns2  > /dev/null 2>&1
-        resetprop net.ppp0.dns1  > /dev/null 2>&1
-        resetprop net.ppp0.dns2  > /dev/null 2>&1
-        resetprop net.rmnet0.dns1  > /dev/null 2>&1
-        resetprop net.rmnet0.dns2  > /dev/null 2>&1
-        resetprop net.rmnet1.dns1  > /dev/null 2>&1
-        resetprop net.rmnet1.dns2  > /dev/null 2>&1
-        resetprop net.rmnet2.dns1  > /dev/null 2>&1
-        resetprop net.rmnet2.dns2  > /dev/null 2>&1
-        resetprop net.pdpbr1.dns1  > /dev/null 2>&1
-        resetprop net.pdpbr1.dns2  > /dev/null 2>&1
-        resetprop net.wlan0.dns1  > /dev/null 2>&1
-        resetprop net.wlan0.dns2  > /dev/null 2>&1
-        resetprop 2001:4860:4860::8888 > /dev/null 2>&1 
-        resetprop 2001:4860:4860::8844 > /dev/null 2>&1 
-        resetprop 2606:4700:4700::1111 > /dev/null 2>&1 
-        resetprop 2606:4700:4700::1001 > /dev/null 2>&1 
-        resetprop 2a00:5a60::ad1:0ff:5353 > /dev/null 2>&1 
-        resetprop 2a00:5a60::ad2:0ff:5353 > /dev/null 2>&1 
-        resetprop 2001:67c:28a4:::5353 > /dev/null 2>&1 
-        resetprop 2001:67c:28a4:::5353 > /dev/null 2>&1 
-    fi
-}
+    ResetDns(){
+        if [ "$FromTerminal" == "ya" ];then
+            ip6tables -t nat -F  > /dev/null 2>&1
+            iptables -t nat -F  > /dev/null 2>&1
+            resetprop net.eth0.dns1  > /dev/null 2>&1
+            resetprop net.eth0.dns2  > /dev/null 2>&1
+            resetprop net.dns1  > /dev/null 2>&1
+            resetprop net.dns2  > /dev/null 2>&1
+            resetprop net.ppp0.dns1  > /dev/null 2>&1
+            resetprop net.ppp0.dns2  > /dev/null 2>&1
+            resetprop net.rmnet0.dns1  > /dev/null 2>&1
+            resetprop net.rmnet0.dns2  > /dev/null 2>&1
+            resetprop net.rmnet1.dns1  > /dev/null 2>&1
+            resetprop net.rmnet1.dns2  > /dev/null 2>&1
+            resetprop net.rmnet2.dns1  > /dev/null 2>&1
+            resetprop net.rmnet2.dns2  > /dev/null 2>&1
+            resetprop net.pdpbr1.dns1  > /dev/null 2>&1
+            resetprop net.pdpbr1.dns2  > /dev/null 2>&1
+            resetprop net.wlan0.dns1  > /dev/null 2>&1
+            resetprop net.wlan0.dns2  > /dev/null 2>&1
+            resetprop 2001:4860:4860::8888 > /dev/null 2>&1 
+            resetprop 2001:4860:4860::8844 > /dev/null 2>&1 
+            resetprop 2606:4700:4700::1111 > /dev/null 2>&1 
+            resetprop 2606:4700:4700::1001 > /dev/null 2>&1 
+            resetprop 2a00:5a60::ad1:0ff:5353 > /dev/null 2>&1 
+            resetprop 2a00:5a60::ad2:0ff:5353 > /dev/null 2>&1 
+            resetprop 2001:67c:28a4:::5353 > /dev/null 2>&1 
+            resetprop 2001:67c:28a4:::5353 > /dev/null 2>&1 
+        fi
+    }
     if [ "$(getprop zyc.change.dns)" == "belom" ] ;then
         setprop zyc.change.dns 'udah'
         if [ "$GetDnsType" == "cloudflare" ];then
@@ -1214,17 +1128,224 @@ ResetDns(){
             ResetDns
             # reset
         fi
+        if [ "$GetDnsType" != "system" ];then
+            sysctl -e -w net.ipv4.tcp_low_latency=0
+            sysctl -e -w net.ipv4.tcp_dsack=1
+            sysctl -e -w net.ipv4.tcp_ecn=2
+            sysctl -e -w net.ipv4.tcp_timestamps=1
+            sysctl -e -w net.ipv4.tcp_window_scaling=1
+            sysctl -e -w net.ipv4.tcp_sack=1
+            sysctl -e -w net.ipv4.ip_forward=1
+        fi
         echo "  --- --- --- --- --- " | tee -a $saveLog 
+    fi
+    if [ "$FromTerminal" == "tidak" ];then
+        #fix gms :p
+        if [ "$GMSDoze" == "1" ];then
+            GetBusyBox="none"
+            if [ -e $Path/ZyC_GmsDoze.log ];then
+                rm $Path/ZyC_GmsDoze.log
+            fi
+            for i in /system/bin /system/xbin /sbin /su/xbin; do
+                if [ "$GetBusyBox" == "none" ]; then
+                    if [ -f $i/busybox ]; then
+                        GetBusyBox=$i/busybox;
+                    fi;
+                fi;
+            done;
+            if [ "$GetBusyBox" == "none " ];then
+                echo "GMS Doze fail . . ." | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+            else
+                echo "Note : better to use universal gms doze :D" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                changeSE="tidak"
+                if [ "$(getenforce)" == "Enforcing" ];then
+                    changeSE="ya"
+                    setenforce 0
+                fi
+                pm disable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceiver | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                pm disable com.google.android.gms/com.google.android.gms.auth.managed.admin.DeviceAdminReceiver | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                if  [ ! -z "$(pm list packages -f com.google.android.gms)" ] ; then
+                    su -c "pm enable com.google.android.gms/.ads.social.GcmSchedulerWakeupService"  | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/.analytics.AnalyticsService"  | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/.analytics.service.PlayLogMonitorIntervalService"  | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService"  | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$ActiveReceiver"  | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$Receiver"  | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$SecretCodeReceiver"  | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateActivity"  | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                fi
+                if  [ ! -z "$(pm list packages -f com.google.android.gsf)" ] ; then
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$Receiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+                fi
+                if [ "$changeSE" == "ya" ];then
+                    setenforce 1
+                fi
+                if [ -e $MODPATH/system/etc/sysconfig/google.xml.fixed ]; then
+                    if [ "$(cat "$MODPATH/system/etc/sysconfig/google.xml.fixed" )" != "$(cat "$MODPATH/system/etc/sysconfig/google.xml" )" ];then
+                        cp -af "$MODPATH/system/etc/sysconfig/google.xml.fixed" $MODPATH/system/etc/sysconfig/google.xml 
+                    fi
+                fi
+                if [ -e $MODPATH/system/product/etc/sysconfig/google.xml.fixed ]; then
+                    if [ "$(cat "$MODPATH/system/product/etc/sysconfig/google.xml.fixed" )" != "$(cat "$MODPATH/system/product/etc/sysconfig/google.xml" )" ];then
+                        cp -af "$MODPATH/system/product/etc/sysconfig/google.xml.fixed" $MODPATH/system/product/etc/sysconfig/google.xml 
+                    fi
+                fi
+                if [ -e $MODPATH/system/system/product/etc/sysconfig/google.xml.fixed ]; then
+                    if [ "$(cat "$MODPATH/system/system/product/etc/sysconfig/google.xml.fixed" )" != "$(cat "$MODPATH/system/system/product/etc/sysconfig/google.xml" )" ];then
+                        cp -af "$MODPATH/system/system/product/etc/sysconfig/google.xml.fixed" $MODPATH/system/system/product/etc/sysconfig/google.xml 
+                    fi
+                fi
+                echo "GMS Doze done . . ." | tee -a $Path/ZyC_GmsDoze.log > /dev/null 2>&1
+            fi
+        else
+            if [ -e $MODPATH/system/etc/sysconfig/google.xml.ori ]; then
+                if [ "$(cat "$MODPATH/system/etc/sysconfig/google.xml.ori" )" != "$(cat "$MODPATH/system/etc/sysconfig/google.xml" )" ];then
+                    cp -af "$MODPATH/system/etc/sysconfig/google.xml.ori" $MODPATH/system/etc/sysconfig/google.xml 
+                fi
+            fi
+            if [ -e $MODPATH/system/product/etc/sysconfig/google.xml.ori ]; then
+                if [ "$(cat "$MODPATH/system/product/etc/sysconfig/google.xml.ori" )" != "$(cat "$MODPATH/system/product/etc/sysconfig/google.xml" )" ];then
+                    cp -af "$MODPATH/system/product/etc/sysconfig/google.xml.ori" $MODPATH/system/product/etc/sysconfig/google.xml 
+                fi
+            fi
+            if [ -e $MODPATH/system/system/product/etc/sysconfig/google.xml.ori ]; then
+                if [ "$(cat "$MODPATH/system/system/product/etc/sysconfig/google.xml.ori" )" != "$(cat "$MODPATH/system/system/product/etc/sysconfig/google.xml" )" ];then
+                    cp -af "$MODPATH/system/system/product/etc/sysconfig/google.xml.ori" $MODPATH/system/system/product/etc/sysconfig/google.xml 
+                fi
+            fi
+        fi
+        if [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ];then
+            BASEDIR=/system/etc/ZyC_Ai
+            if [ -e $PathModulConfigAi/ai_status.txt ]; then
+                AiStatus=$(cat "$PathModulConfigAi/ai_status.txt")
+                if [ "$AiStatus" == "1" ];then
+                    echo "starting ai mode . . . " | tee -a $saveLog > /dev/null 2>&1 
+                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                    nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
+                    exit
+                elif [ "$AiStatus" == "2" ];then
+                    echo "re - run ai mode . . . " | tee -a $saveLog > /dev/null 2>&1 
+                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                    nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
+                    exit
+                elif [ "$AiStatus" == "3" ];then
+                    echo "deactive ai mode . . . " | tee -a $saveLog > /dev/null 2>&1 
+                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                    nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
+                    exit
+                elif [ "$AiStatus" == "0" ];then
+                    echo "ai status off"| tee -a $saveLog > /dev/null 2>&1 ;
+                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                else
+                    echo "ai status error,set to 0"| tee -a $saveLog > /dev/null 2>&1 ;
+                    echo '0' > "$PathModulConfigAi/ai_status.txt"
+                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                fi
+            fi
+        fi
     fi
     echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog > /dev/null 2>&1 ;
     echo "  --- --- --- --- --->> " | tee -a $saveLog > /dev/null 2>&1 
+    exit
 }
-if [ -z "$1" ];then
-    if [ -e $Path/ZyC_Turbo.running.log  ];then
-        rm $Path/ZyC_Turbo.running.log
-    fi
-    if [ -e $Path/ZyC_Ai.running.log  ];then
-        rm $Path/ZyC_Ai.running.log
-    fi
-fi
 runScript 2>&1 | tee -a $Path/ZyC_Turbo.running.log > /dev/null 2>&1 ;
+# # Optimize io scheduler# =========
+# for z in $ZRM; 
+# do  
+#     if [ -e $i/queue/rotational ]; then  
+#         echo "0" > $i/queue/rotational; 
+#     fi;  
+#     if [ -e $i/queue/iostats ]; then  
+#         echo "0" > $i/queue/iostats; fi;  
+#     if [ -e $i/queue/rq_affinity ]; then  
+#         echo "1" > $i/queue/rq_affinity; fi;  
+#     if [ -e $i/queue/read_ahead_kb ]; then  
+#         echo "512" > $i/queue/read_ahead_kb; fi;  
+#     if [ -e $i/queue/max_sectors_kb ]; then  
+#         echo "512" > $i/queue/max_sectors_kb; # default: 127 
+#     fi; 
+# done; 
+# for i in $STL $BML $MMC $MTD; do  
+#     if [ -e $i/queue/scheduler ]; then  
+#         echo $scheduler > $i/queue/scheduler; fi;  
+#     if [ -e $i/queue/rotational ]; then  
+#         echo "0" > $i/queue/rotational; fi;  
+#     if [ -e $i/queue/iostats ]; then  
+#         echo "0" > $i/queue/iostats; fi;  
+#     if [ -e $i/queue/rq_affinity ]; then  
+#         echo "1" > $i/queue/rq_affinity;  
+#     fi;  
+#     if [ -e $i/queue/read_ahead_kb ]; then  
+#         echo "1024" > $i/queue/read_ahead_kb; # default: 128 fi;  
+#     if [ -e $i/queue/max_sectors_kb ]; then  
+#         echo "1024" > $i/queue/max_sectors_kb; # default: 512 
+#     fi;  
+#     if [ -e $i/queue/nr_requests ]; then  
+#         echo "128" > $i/queue/nr_requests; # default: 128 
+#     fi;  
+#     if [ -e $i/queue/iosched/writes_starved ]; then  
+#         echo "1" > $i/queue/iosched/writes_starved; fi;  
+#     if [ -e $i/queue/iosched/back_seek_max ]; then  
+#         echo "16384" > $i/queue/iosched/back_seek_max; # default: 16384 
+#     fi;  
+#     if [ -e $i/queue/iosched/max_budget_async_rq ]; then  
+#         echo "2" > $i/queue/iosched/max_budget_async_rq; # default: 4 
+#     fi;  
+#     if [ -e $i/queue/iosched/back_seek_penalty ]; then  
+#         echo "1" > $i/queue/iosched/back_seek_penalty; # default: 2 fi;  
+#     if [ -e $i/queue/iosched/fifo_expire_sync ]; then  
+#         echo "125" > $i/queue/iosched/fifo_expire_sync; # default: 125 fi;  
+#     if [ -e $i/queue/iosched/timeout_sync ]; then  
+#         echo "4" > $i/queue/iosched/timeout_sync; # default: HZ / 8 fi;  
+#     if [ -e $i/queue/iosched/fifo_expire_async ]; then  
+#         echo "250" > $i/queue/iosched/fifo_expire_async; # default: 250 fi;  
+#     if [ -e $i/queue/iosched/timeout_async ]; then  
+#         echo "2" > $i/queue/iosched/timeout_async; # default: HZ / 25 fi;  
+#     if [ -e $i/queue/iosched/slice_idle ]; then  
+#         echo "2" > $i/queue/iosched/slice_idle; # default: 8 fi;  
+#     if [ -e $i/queue/iosched/quantum ]; then  
+#         echo "8" > $i/queue/iosched/quantum; # default: 4 fi;  
+#     if [ -e $i/queue/iosched/slice_async_rq ]; then  
+#         echo "2" > $i/queue/iosched/slice_async_rq; # default: 2 fi;  
+#     if [ -e $i/queue/iosched/fifo_batch ]; then  
+#         echo "1" > $i/queue/iosched/fifo_batch; 
+#     fi;  
+#     if [ -e $i/queue/iosched/rev_penalty ]; then  
+#         echo "1" > $i/queue/iosched/rev_penalty; 
+#     fi;  
+#     if [ -e $i/queue/iosched/low_latency ]; then  
+#         echo "1" > $i/queue/iosched/low_latency; 
+#     fi; 
+# done;
+# setprop persist.sys.use_dithering 1;
+# setprop persist.sys.ui.hw true;
+# setprop hwui.render_dirty_regions false;
+# setprop windowsmgr.max_events_per_sec 120;
+# setprop profiler.force_disable_err_rpt 1;
+# setprop profiler.force_disable_ulog 1;
+# setprop debug.performance.tuning 1;
+# setprop video.accelerate.hw 1;
+# setprop debug.sf.hw 1;
+# setprop ro.telephony.call_ring.delay 1000;
+# setprop wifi.supplicant_scan_interval 180;
+# setprop windowsmgr.max_events_per_sec 60;
+# setprop ro.media.dec.jpeg.memcap 20000000;
+# setprop ro.media.enc.jpeg.quality 90,80,70;
+# setprop dalvik.vm.startheapsize 12m;
+# setprop dalvik.vm.heapsize 32m;
+# sysctl -w kernel.sem="500 512000 100 2048";
+# sysctl -w kernel.shmmax="268435456";
+# #/system/xbin/echo "8" > /proc/sys/vm/page-cluster;
+# ##/system/xbin/echo "1" > /proc/sys/kernel/sched_compat_yield;
+# #/system/xbin/echo "0" > /proc/sys/kernel/sched_child_runs_first;
+# #/system/xbin/echo "256000" > /proc/sys/kernel/sched_shares_ratelimit;
+# #/system/xbin/echo "64000" > /proc/sys/kernel/msgmni;
+# #/system/xbin/echo "64000" > /proc/sys/kernel/msgmax;
+# #/system/xbin/echo "500 512000 64 2048" > /proc/sys/kernel/sem;
+# #/system/xbin/echo "5000" > /proc/sys/kernel/threads-max;
+# /system/xbin/echo "1" > /proc/sys/vm/oom_kill_allocating_task;
+# /system/xbin/echo "0" > /proc/sys/vm/panic_on_oom;

@@ -212,7 +212,7 @@ if [ ! -z "$1" ];then
                 echo "0" > $GetLedPath/green/brightness
             fi;
             sleep 2
-            if [ -z "$( acpi -a | grep "on-line" | grep 1 )" ];then
+            if [ -z "$( acpi -a | grep "on-line" | grep 1 )" ] || [ -z "$( acpi -a | grep "on-line" | grep 2 )" ];then
                 echo "0" > $GetLedPath/red/brightness
                 echo "0" > $GetLedPath/green/brightness
                 if [ -e /sys/class/leds/blue/brightness ];then

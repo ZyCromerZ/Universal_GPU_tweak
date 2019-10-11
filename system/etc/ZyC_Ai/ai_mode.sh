@@ -350,9 +350,9 @@ runScript(){
         DozeConfig="$(cat $PathModulConfigAi/ai_doze.txt)"
         DozeState="$(cat "$DozeStatePath")"
         if [ "$DozeConfig" == "on" ];then
-            GetScreenStateNFC="$( dumpsys nfc | grep 'mScreenState=' | sed 's/mScreenState=*//g' )"
-            GetScreenStateOF="$( dumpsys display | grep "mScreenState" | sed 's/mScreenState=*//g'  )"
-            GetScreenStateTF="$( dumpsys power | grep "mHoldingDisplaySuspendBlocker" | sed 's/mHoldingDisplaySuspendBlocker=*//g' )"
+            GetScreenStateNFC="$( dumpsys nfc | grep 'mScreenState=' | sed 's/mScreenState=*//g' )"  > /dev/null 2>&1 ;
+            GetScreenStateOF="$( dumpsys display | grep "mScreenState" | sed 's/mScreenState=*//g'  )"  > /dev/null 2>&1 ;
+            GetScreenStateTF="$( dumpsys power | grep "mHoldingDisplaySuspendBlocker" | sed 's/mHoldingDisplaySuspendBlocker=*//g' )"  > /dev/null 2>&1 ;
             StatusLayar="gak tau"
             if [ "$GetScreenStateNFC" == "ON_LOCKED" ] || [ "$GetScreenStateNFC" == "ON_UNLOCKED" ] || [ "$GetScreenStateNFC" == "OFF_LOCKED" ] || [ "$GetScreenStateNFC" == "OFF_UNLOCKED" ];then
                 if [ "$StatusLayar" == "gak tau" ];then
@@ -499,6 +499,7 @@ runScript(){
         echo "  --- --- --- --- --- " | tee -a $AiLog > /dev/null 2>&1 ;
         fromBoot="no"
     fi
-    runScript
+    nohup sh $BASEDIR/ai_mode.sh &
+    exit
 }
 runScript 2>&1 | tee -a $Path/ZyC_Ai.running.log > /dev/null 2>&1 ;

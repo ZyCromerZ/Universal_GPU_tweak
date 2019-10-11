@@ -125,6 +125,10 @@ GetSetting(){
         GetModeRamBefore=$(cat "$PathModulConfig/custom_ram_management.txt")
         GetModeRamNew=$(cat "$PathModulConfig/custom_ram_management.txt")
     fi
+    if [ -e $PathModulConfig/custom_ram_management_adj.txt ];then
+        GetModeRamAdjBefore=$(cat "$PathModulConfig/custom_ram_management_adj.txt")
+        GetModeRamAdjNew=$(cat "$PathModulConfig/custom_ram_management_adj.txt")
+    fi
     if [ -e $PathModulConfigAi/ai_status.txt ];then
         GetModeAiBefore=$(cat "$PathModulConfigAi/ai_status.txt")
         GetModeAiNew=$(cat "$PathModulConfigAi/ai_status.txt")
@@ -348,6 +352,10 @@ SideTweak(){
         echo "      (method for open multi app & game at same time)"
         echo "rm4 > use ram management method 4"
         echo "      (method for extreme app and gaming)"
+        if [ "$TypeOpen" == "1" ];then
+            echo "rads > use adj system (recomended)"
+            echo "radt > use adj tweak "
+        fi
         echo " NOTE : rm4 force ram not close app"
         echo "        while running on background"
         if [ "$GetModeRamBefore" != "$GetModeRamNew" ];then
@@ -361,6 +369,13 @@ SideTweak(){
                 echo $hijauHitam"current status : use system "$ResetWarna
             else 
                 echo $merahHitam"current status : method $GetModeRamNew"$ResetWarna
+            fi
+        fi
+        if [ "$TypeOpen" == "1" ];then
+            if [ "$GetModeRamAdjBefore" != "$GetModeRamAdjNew" ];then
+                echo $merahPutih"this will set to adj : $GetModeRamAdjNew"$ResetWarna
+            else
+                echo $hijauHitam"current status adj : $GetModeRamAdjBefore "$ResetWarna
             fi
         fi
         echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
@@ -761,6 +776,9 @@ ListMenu(){
             typeMenu="4"
             AppGet
         fi
+        if [ "$typeMenu" == "e" ] || [ "$typeMenu" == "0" ];then
+            exitSetting
+        fi 
     fi
     
     echo "back > goto main menu"
@@ -896,6 +914,16 @@ ListMenu(){
     elif [ $pilihan == "rm4" ];then
         Perubahan="ya"
         GetModeRamNew="4"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "rads" ];then
+        Perubahan="ya"
+        GetModeRamAdjNew="system"
+        usleep 100000
+        ListMenu
+    elif [ $pilihan == "radt" ];then
+        Perubahan="ya"
+        GetModeRamAdjNew="tweak"
         usleep 100000
         ListMenu
     elif [ $pilihan == "aix" ];then
@@ -1236,6 +1264,12 @@ saveSetting()
         echo "$GetModeAdrenoNew" > $PathModulConfig/GpuBooster.txt ; 
         GetModeAdrenoBefore=$GetModeAdrenoNew;
         RunTweak="iya"
+    fi
+    if [ "$GetModeRamBefore" != "$GetModeRamNew" ];then
+        echo "$GetModeRamNew" > $PathModulConfig/custom_ram_management.txt ; 
+        GetModeRamBefore=$GetModeRamNew;
+        RunTweak="iya"
+        setprop zyc.change.rm "belom"
     fi
     if [ "$GetModeRamBefore" != "$GetModeRamNew" ];then
         echo "$GetModeRamNew" > $PathModulConfig/custom_ram_management.txt ; 

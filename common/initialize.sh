@@ -413,6 +413,9 @@ if [ "$FromTerminal" == "tidak" ];then
     if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
         echo '0' > $PathModulConfig/custom_ram_management.txt
     fi
+    if [ ! -e $PathModulConfig/custom_ram_management_adj.txt ]; then
+        echo 'stock' > $PathModulConfig/custom_ram_management_adj.txt
+    fi
     # GMS DOZE
     if [ ! -e $PathModulConfig/gms_doze.txt ]; then
         echo '0' > $PathModulConfig/gms_doze.txt

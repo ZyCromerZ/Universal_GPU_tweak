@@ -170,7 +170,7 @@ set_permissions() {
   # The following is the default rule, DO NOT remove
   # set_perm_recursive $MODPATH 0 0 0755 0644
   bin=xbin
-  if [ ! -d $SYS/xbin ]; then
+  if [ ! -d system/xbin ]; then
     bin=bin
     mkdir $MODPATH/system/$bin
     mv $MODPATH/system/xbin/* $MODPATH/system/$bin
@@ -180,9 +180,58 @@ set_permissions() {
     rm -rf $MODPATH/system/bin/*
     rmdir $MODPATH/system/bin
   fi
+  if [ ! -e  /system/etc/sysconfig/google.xml ]; then
+    rm -rf $MODPATH/system/etc/sysconfig/*
+    rmdir $MODPATH/system/etc/sysconfig
+  else
+    # mkdir /system/etc/sysconfig
+    if [ -e /system/etc/sysconfig/google.xml.ori ];then
+      cp -af /system/etc/sysconfig/google.xml.ori $MODPATH/system/etc/sysconfig/google.xml.ori
+      cp -af /system/etc/sysconfig/google.xml.ori $MODPATH/system/etc/sysconfig/google.xml
+    else 
+      cp -af /system/etc/sysconfig/google.xml $MODPATH/system/etc/sysconfig/google.xml.ori
+      cp -af /system/etc/sysconfig/google.xml $MODPATH/system/etc/sysconfig/google.xml 
+    fi
+    # rm -rf $MODPATH/system/etc/sysconfig/*
+  fi
+  if [ ! -e  /system/product/etc/sysconfig/google.xml ]; then
+    rm -rf $MODPATH/system/product/*
+    rmdir $MODPATH/system/product
+  else
+    if [ -e /system/product/etc/sysconfig/google.xml.ori ];then
+      cp -af /system/product/etc/sysconfig/google.xml.ori $MODPATH/system/product/etc/sysconfig/google.xml.ori
+      cp -af /system/product/etc/sysconfig/google.xml.ori $MODPATH/system/product/etc/sysconfig/google.xml 
+    else
+      cp -af /system/product/etc/sysconfig/google.xml $MODPATH/system/product/etc/sysconfig/google.xml.ori
+      cp -af /system/product/etc/sysconfig/google.xml $MODPATH/system/product/etc/sysconfig/google.xml 
+    fi
+    # rm -rf $MODPATH/system/product/*
+  fi
+  if [ ! -e  /system/system/product/etc/sysconfig/google.xml ]; then
+    rm -rf $MODPATH/system/system/*
+    rmdir $MODPATH/system/system
+  else
+    if [ -e /system/system/product/etc/sysconfig/google.xml.ori ];then
+      cp -af /system/system/product/etc/sysconfig/google.xml.ori $MODPATH/system/system/product/etc/sysconfig/google.xml.ori
+      cp -af /system/system/product/etc/sysconfig/google.xml.ori $MODPATH/system/system/product/etc/sysconfig/google.xml
+    else
+      cp -af /system/system/product/etc/sysconfig/google.xml $MODPATH/system/system/product/etc/sysconfig/google.xml.ori
+      cp -af /system/system/product/etc/sysconfig/google.xml $MODPATH/system/system/product/etc/sysconfig/google.xml
+    fi
+    # rm -rf $MODPATH/system/system/*
+  fi
   set_perm_recursive $MODPATH                   0 0 0755 0777
   set_perm_recursive $MODPATH/system/$bin       0 0 0755 0777
   set_perm_recursive $MODPATH/system/etc/ZyC_Ai 0 0 0755 0777
+  if [ -e  /system/etc/sysconfig/google.xml ]; then
+     set_perm_recursive $MODPATH/system/etc/sysconfig 0 0 0755 0644
+  fi
+  if [ -e  /system/product/etc/sysconfig/google.xml ]; then
+     set_perm_recursive $MODPATH/system/product 0 0 0755 0644
+  fi
+  if [ -e  /system/system/product/etc/sysconfig/google.xml ]; then
+     set_perm_recursive $MODPATH/system/system 0 0 0755 0644
+  fi
   # Here are some examples:
   # set_perm_recursive  $MODPATH/system/lib       0     0       0755      0644
   # set_perm  $MODPATH/system/bin/app_process32   0     2000    0755      u:object_r:zygote_exec:s0
