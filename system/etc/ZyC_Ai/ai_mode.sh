@@ -497,7 +497,7 @@ runScript(){
     fi
     #notification when turbo mode end
     if [ $fromBoot == "yes" ];then
-        usleep 5000000
+        # usleep 5000000
         nohup sh $NotifPath "getar" "off" &
         sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait 
         nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & 

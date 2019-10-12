@@ -626,7 +626,7 @@ runScript(){
             if [ "$(getprop zyc.change.rm)" == "belom" ];then
                 if [ "$CustomRam" == '0' ];then
                         # echo "coming_soon :D"| tee -a $saveLog > /dev/null 2>&1 ;
-                        if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ] && [ -e /sys/module/lowmemorykiller/parameters/debug_level ]; then
+                        if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ]; then
                             echo "not use custom ram management,using stock ram management" | tee -a $saveLog > /dev/null 2>&1 ;
                             chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
                             echo "1" > "/sys/module/lowmemorykiller/parameters/enable_adaptive_lmk"
@@ -653,6 +653,9 @@ runScript(){
                             chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
                             rm $PathModulConfig/backup/ram_minfree.txt
                         fi
+                        if [ -e $PathModulConfig/backup/zram_vm.min_free_kbytes.txt ];then
+                            sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.min_free_kbytes.txt")  > /dev/null 2>&1 
+                        fi
                         # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog > /dev/null 2>&1 ;
                 else
                     sh $ModulPath/ZyC_Turbo/initialize.sh & wait > /dev/null 2>&1
@@ -660,27 +663,34 @@ runScript(){
                     StopModify="no"
                     GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
                     if [ "$CustomRam" == "1" ]; then # Method 1
+                        ForegroundApp=$((((GetTotalRam*1/100)*1024)/4))
+                        VisibleApp=$((((GetTotalRam*2/100)*1024)/4))
+                        SecondaryServer=$((((GetTotalRam*3/100)*1024)/4))
+                        HiddenApp=$((((GetTotalRam*4/100)*1024)/4))
+                        ContentProvider=$((((GetTotalRam*8/100)*1024)/4))
+                        EmptyApp=$((((GetTotalRam*10/100)*1024)/4))
+                    elif [ "$CustomRam" == "2" ]; then # Method 2
                         ForegroundApp=$((((GetTotalRam*2/100)*1024)/4))
                         VisibleApp=$((((GetTotalRam*3/100)*1024)/4))
                         SecondaryServer=$((((GetTotalRam*5/100)*1024)/4))
                         HiddenApp=$((((GetTotalRam*6/100)*1024)/4))
                         ContentProvider=$((((GetTotalRam*10/100)*1024)/4))
                         EmptyApp=$((((GetTotalRam*12/100)*1024)/4))
-                    elif [ "$CustomRam" == "2" ]; then # Method 2
+                    elif [ "$CustomRam" == "3" ]; then # Method 3
                         ForegroundApp=$((((GetTotalRam*3/100)*1024)/4))
                         VisibleApp=$((((GetTotalRam*4/100)*1024)/4))
                         SecondaryServer=$((((GetTotalRam*5/100)*1024)/4))
                         HiddenApp=$((((GetTotalRam*7/100)*1024)/4))
                         ContentProvider=$((((GetTotalRam*11/100)*1024)/4))
                         EmptyApp=$((((GetTotalRam*15/100)*1024)/4))
-                    elif [ "$CustomRam" == "3" ]; then # Method 3
+                    elif [ "$CustomRam" == "4" ]; then # Method 4
                         ForegroundApp=$((((GetTotalRam*4/100)*1024)/4))
                         VisibleApp=$((((GetTotalRam*5/100)*1024)/4))
                         SecondaryServer=$((((GetTotalRam*6/100)*1024)/4))
                         HiddenApp=$((((GetTotalRam*7/100)*1024)/4))
                         ContentProvider=$((((GetTotalRam*12/100)*1024)/4))
                         EmptyApp=$((((GetTotalRam*15/100)*1024)/4))
-                    elif [ "$CustomRam" == "4" ]; then # Method 4 (for 3gb ram variant)
+                    elif [ "$CustomRam" == "5" ]; then # Method 5
                         ForegroundApp=$((((GetTotalRam*6/100)*1024)/4))
                         VisibleApp=$((((GetTotalRam*7/100)*1024)/4))
                         SecondaryServer=$((((GetTotalRam*8/100)*1024)/4))
@@ -694,7 +704,7 @@ runScript(){
                     if [ $StopModify == "no" ];then
                         if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ]; then
                             chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-                            if [ "$CustomRam" -le "2" ];then
+                            if [ "$CustomRam" -le "4" ];then
                                 echo "1" > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
                             else
                                 echo "0" > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
@@ -725,11 +735,13 @@ runScript(){
                         chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
 
                         minFreeSet=$(($GetTotalRam*4))
-
+                        stop perfd
                         sysctl -e -w vm.min_free_kbytes=$minFreeSet > /dev/null 2>&1 ;
                         if [ -e /proc/sys/vm/extra_free_kbytes ]; then
-                            setprop sys.sysctl.extra_free_kbytes $minFreeSet > /dev/null 2>&1 ;
+                            sysctl -e -w vm.min_free_kbytes=$(($minFreeSet/2)) > /dev/null 2>&1 ;
+                            setprop sys.sysctl.extra_free_kbytes $(($minFreeSet/2)) > /dev/null 2>&1 ;
                         fi;
+                        start perfd
                     fi;
                     # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog > /dev/null 2>&1 ;
                 fi;
@@ -800,11 +812,11 @@ runScript(){
             fi
             if [ "$(getprop zyc.change.zrm)" == "belom" ];then
                 if [ "$StopZramSet" == "kaga" ];then
+                    stop perfd
                     if [ -e /dev/block/zram0 ]; then
                         setprop zyc.change.zrm "udah"  > /dev/null 2>&1 
                         FixSize=$(echo $SetZramTo |  sed "s/-*//g" )
                         GetSwapNow=$(getprop zram.disksize |  sed "s/-*//g" )
-                        stop perfd
                         if [ "$FixSize" != "$GetSwapNow" ];then
                             # echo "use Zram default system setting" | tee -a $saveLog > /dev/null 2>&1 
                             echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog > /dev/null 2>&1 ;
@@ -822,24 +834,31 @@ runScript(){
                             $PathBusyBox/swapon "/dev/block/zram0"  > /dev/null 2>&1 
                             usleep 100000
                         fi
-                        if [ "$ZramOptimizer" == "1" ];then
-                            echo "echo optimize zram setting . . ." | tee -a $saveLog > /dev/null 2>&1 ;
-                            sysctl -e -w vm.swappiness=$Swapinnes  > /dev/null 2>&1 
-                            sysctl -e -w vm.dirty_ratio=5  > /dev/null 2>&1 
-                            sysctl -e -w vm.dirty_background_ratio=1  > /dev/null 2>&1 
-                            sysctl -e -w vm.drop_caches=3  > /dev/null 2>&1 
-                            sysctl -e -w vm.vfs_cache_pressure=100  > /dev/null 2>&1 
-                        else
-                            echo "use stock zram setting . . ." | tee -a $saveLog > /dev/null 2>&1 ;
-                            sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_ratio.txt")  > /dev/null 2>&1 
-                            sysctl -e -w vm.dirty_background_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_background_ratio.txt")  > /dev/null 2>&1 
-                            sysctl -e -w vm.drop_caches=$(cat "$PathModulConfig/backup/zram_vm.drop_caches.txt")  > /dev/null 2>&1 
-                            sysctl -e -w vm.vfs_cache_pressure=$(cat "$PathModulConfig/backup/zram_vm.vfs_cache_pressure.txt")  > /dev/null 2>&1 
-                        fi
-                        start perfd
-                        echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog > /dev/null 2>&1 ;
-                        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
                     fi;
+                    if [ "$ZramOptimizer" == "1" ];then
+                        echo "echo optimize zram setting . . ." | tee -a $saveLog > /dev/null 2>&1 ;
+                        sysctl -e -w vm.swappiness=$Swapinnes  > /dev/null 2>&1 
+                        # $GetRam=$(free -g | awk '/Mem:/{print $2}');
+                        # $FinalRam=$((GetRam+1));
+                        # if [ $FinalRam -ge 3 ];then
+                            sysctl -e -w vm.dirty_ratio 15
+                            sysctl -e -w vm.dirty_background_ratio 3
+                        # else
+                        #     sysctl -e -w vm.dirty_ratio 20
+                        #     sysctl -e -w vm.dirty_background_ratio 5
+                        # fi
+                        sysctl -e -w vm.drop_caches=2  > /dev/null 2>&1 
+                        sysctl -e -w vm.vfs_cache_pressure=100  > /dev/null 2>&1 
+                    else
+                        echo "use stock zram setting . . ." | tee -a $saveLog > /dev/null 2>&1 ;
+                        sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_ratio.txt")  > /dev/null 2>&1 
+                        sysctl -e -w vm.dirty_background_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_background_ratio.txt")  > /dev/null 2>&1 
+                        sysctl -e -w vm.drop_caches=$(cat "$PathModulConfig/backup/zram_vm.drop_caches.txt")  > /dev/null 2>&1 
+                        sysctl -e -w vm.vfs_cache_pressure=$(cat "$PathModulConfig/backup/zram_vm.vfs_cache_pressure.txt")  > /dev/null 2>&1 
+                    fi
+                    start perfd
+                    echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog > /dev/null 2>&1 ;
+                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
                 fi
             fi
         fi

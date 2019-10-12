@@ -349,18 +349,20 @@ SideTweak(){
         echo "<-- -- Ram management Config -- -->"
         echo "rms > use system ram management"
         echo "rm1 > use ram management method 1 "
-        echo "      (method for light use)"
-        echo "rm2 > use ram management method 2"
+        echo "      (method for light use/more free ram)"
+        echo "rm2 > use ram management method 2 "
+        echo "      (method for standar)"
+        echo "rm3 > use ram management method 3"
         echo "      (method for open some app at same time)"
-        echo "rm3 > use ram management method 3 "
+        echo "rm4 > use ram management method 4 "
         echo "      (method for open multi app & game at same time)"
-        echo "rm4 > use ram management method 4"
+        echo "rm5 > use ram management method 5"
         echo "      (method for extreme app and gaming)"
         if [ "$TypeOpen" == "1" ];then
             echo "rads > use adj system (recomended)"
             echo "radt > use adj tweak "
         fi
-        echo " NOTE : rm4 force ram not close app"
+        echo " NOTE : rm5 force ram not close app"
         echo "        while running on background"
         if [ "$GetModeRamBefore" != "$GetModeRamNew" ];then
             if [ "$GetModeRamNew" == "0" ];then
@@ -741,6 +743,7 @@ AppGet(){
     echo "sag > re-scan app and game list :D "
     echo "sal > to check app list install on your phone"
     echo "sgl > to check game list for trigger ai to mode turbo faster"
+    echo "mag > manual add games"
     if [ "$RefreshList" == "sudah" ];then
         echo $hijauHitam"refresh list game and app done . . . :p"$ResetWarna
     elif [ "$RefreshList" == "iya" ];then
@@ -769,10 +772,12 @@ ListMenu(){
             echo "s/save > save setting"
             # echo "0 > exit"
         fi
-        echo "0/e > exit"
+        echo "0/e/exit > exit setting"
         echo "chose tweak :"
         read getModeTweak
         clear
+        echo "Version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )"
+        echo "list menu : "
         if [ "$getModeTweak" == "1" ];then
             typeMenu="1"
             MainTweak
@@ -785,7 +790,7 @@ ListMenu(){
         elif [ "$getModeTweak" == "4" ];then
             typeMenu="4"
             AppGet
-        elif [ "$getModeTweak" == "e" ] || [ "$getModeTweak" == "0" ];then
+        elif [ "$getModeTweak" == "e" ] || [ "$getModeTweak" == "0" ] || [ "$getModeTweak" == "exit" ];then
             exitSetting
         else
             echo "input error"
@@ -806,140 +811,145 @@ ListMenu(){
         echo "s/save > save setting"
         # echo "0 > exit"
     fi
-    echo "0/e > exit"
+    echo "0/e/exit > exit setting"
     read pilihan
     clear
-    if [ $pilihan == "mx" ];then
+    if [ "$pilihan" == "mx" ];then
         Perubahan="ya"
         GetModeNew="off"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "my" ];then
+    elif [ "$pilihan" == "my" ];then
         Perubahan="ya"
         GetModeNew="on"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "mt" ];then
+    elif [ "$pilihan" == "mt" ];then
         Perubahan="ya"
         GetModeNew="turbo"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "lm" ];then
+    elif [ "$pilihan" == "lm" ];then
         Perubahan="ya"
         GetModeNew="lag"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "srd" ];then
+    elif [ "$pilihan" == "srd" ];then
         Perubahan="ya"
         GetModeRenderNew="system"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "opd" ];then
+    elif [ "$pilihan" == "opd" ];then
         Perubahan="ya"
         GetModeRenderNew="opengl"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "ops" ];then
+    elif [ "$pilihan" == "ops" ];then
         Perubahan="ya"
         GetModeRenderNew="skiagl"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "vkn" ];then
+    elif [ "$pilihan" == "vkn" ];then
         Perubahan="ya"
         GetModeRenderNew="skiavk"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "fs" ];then
+    elif [ "$pilihan" == "fs" ];then
         Perubahan="ya"
         GetModeFCNew="system"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "fy" ];then
+    elif [ "$pilihan" == "fy" ];then
         Perubahan="ya"
         GetModeFCNew="1"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "fcs" ];then
+    elif [ "$pilihan" == "fcs" ];then
         Perubahan="ya"
         GetModeFsyncNew="system"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "fcx" ];then
+    elif [ "$pilihan" == "fcx" ];then
         Perubahan="ya"
         GetModeFsyncNew="0"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "fcy" ];then
+    elif [ "$pilihan" == "fcy" ];then
         Perubahan="ya"
         GetModeFsyncNew="1"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "fca" ];then
+    elif [ "$pilihan" == "fca" ];then
         Perubahan="ya"
         GetModeFsyncNew="auto"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "adx" ];then
+    elif [ "$pilihan" == "adx" ];then
         Perubahan="ya"
         GetModeAdrenoNew="0"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "adl" ];then
+    elif [ "$pilihan" == "adl" ];then
         Perubahan="ya"
         GetModeAdrenoNew="1"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "adm" ];then
+    elif [ "$pilihan" == "adm" ];then
         Perubahan="ya"
         GetModeAdrenoNew="2"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "adh" ];then
+    elif [ "$pilihan" == "adh" ];then
         Perubahan="ya"
         GetModeAdrenoNew="3"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "adt" ];then
+    elif [ "$pilihan" == "adt" ];then
         Perubahan="ya"
         GetModeAdrenoNew="tweak"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "rms" ];then
+    elif [ "$pilihan" == "rms" ];then
         Perubahan="ya"
         GetModeRamNew="0"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "rm1" ];then
+    elif [ "$pilihan" == "rm1" ];then
         Perubahan="ya"
         GetModeRamNew="1"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "rm2" ];then
+    elif [ "$pilihan" == "rm2" ];then
         Perubahan="ya"
         GetModeRamNew="2"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "rm3" ];then
+    elif [ "$pilihan" == "rm3" ];then
         Perubahan="ya"
         GetModeRamNew="3"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "rm4" ];then
+    elif [ "$pilihan" == "rm4" ];then
         Perubahan="ya"
         GetModeRamNew="4"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "rads" ];then
+    elif [ "$pilihan" == "rm5" ];then
+        Perubahan="ya"
+        GetModeRamNew="5"
+        usleep 100000
+        ListMenu
+    elif [ "$pilihan" == "rads" ];then
         Perubahan="ya"
         GetModeRamAdjNew="system"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "radt" ];then
+    elif [ "$pilihan" == "radt" ];then
         Perubahan="ya"
         GetModeRamAdjNew="tweak"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "aix" ];then
+    elif [ "$pilihan" == "aix" ];then
         Perubahan="ya"
         # GetModeAiNew="1"
         if [ $GetModeAiBefore == "2" ];then
@@ -949,22 +959,22 @@ ListMenu(){
         fi
         usleep 100000
         ListMenu
-    elif [ $pilihan == "acu" ];then
+    elif [ "$pilihan" == "acu" ];then
         Perubahan="ya"
         GetModeAiCNew="1"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "ace" ];then
+    elif [ "$pilihan" == "ace" ];then
         Perubahan="ya"
         GetModeAiCNew="2"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "acb" ];then
+    elif [ "$pilihan" == "acb" ];then
         Perubahan="ya"
         GetModeAiCNew="3"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "aiy" ];then
+    elif [ "$pilihan" == "aiy" ];then
         Perubahan="ya"
         if [ $GetModeAiBefore == "0" ];then
             GetModeAiNew="1"
@@ -974,91 +984,96 @@ ListMenu(){
         fi
         usleep 100000
         ListMenu
-    elif [ $pilihan == "anx" ];then
+    elif [ "$pilihan" == "anx" ];then
         Perubahan="ya"
         GetModeAiNotifNew="0"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "anv" ];then
+    elif [ "$pilihan" == "anv" ];then
         Perubahan="ya"
         GetModeAiNotifNew="1"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "an1" ];then
+    elif [ "$pilihan" == "an1" ];then
         Perubahan="ya"
         GetModeAiNotifNew="2"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "an2" ];then
+    elif [ "$pilihan" == "an2" ];then
         Perubahan="ya"
         GetModeAiNotifNew="3"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "anmx" ];then
+    elif [ "$pilihan" == "an3" ];then
+        Perubahan="ya"
+        GetModeAiNotifNew="4"
+        usleep 100000
+        ListMenu
+    elif [ "$pilihan" == "anmx" ];then
         Perubahan="ya"
         GetModeAiNotifRunningNew="0"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "anm1" ];then
+    elif [ "$pilihan" == "anm1" ];then
         Perubahan="ya"
         GetModeAiNotifRunningNew="1"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "anm2" ];then
+    elif [ "$pilihan" == "anm2" ];then
         Perubahan="ya"
         GetModeAiNotifRunningNew="2"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "anm3" ];then
+    elif [ "$pilihan" == "anm3" ];then
         Perubahan="ya"
         GetModeAiNotifRunningNew="3"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "anm4" ];then
+    elif [ "$pilihan" == "anm4" ];then
         Perubahan="ya"
         GetModeAiNotifRunningNew="4"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "ansx" ];then
+    elif [ "$pilihan" == "ansx" ];then
         Perubahan="ya"
         GetModeAiNotifRunningStatusNew="0"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "ans1" ];then
+    elif [ "$pilihan" == "ans1" ];then
         Perubahan="ya"
         GetModeAiNotifRunningStatusNew="1"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "ans2" ];then
+    elif [ "$pilihan" == "ans2" ];then
         Perubahan="ya"
         GetModeAiNotifRunningStatusNew="2"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "wtx" ];then
+    elif [ "$pilihan" == "wtx" ];then
         echo "how long (example : 1) ??"
         read getnumber
         waitTimeOffNew=$getnumber
         Perubahan="ya"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "wty" ];then
+    elif [ "$pilihan" == "wty" ];then
         echo "how long (example : 1) ??"
         read getnumber
         waitTimeOnNew=$getnumber
         Perubahan="ya"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "gdx" ];then
+    elif [ "$pilihan" == "gdx" ];then
         Perubahan="ya"
         GmsDozeNew="0"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "gdy" ];then
+    elif [ "$pilihan" == "gdy" ];then
         Perubahan="ya"
         GmsDozeNew="1"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "sag" ];then
+    elif [ "$pilihan" == "sag" ];then
         Perubahan="ya"
         echo "scan now (y/wsc/n)?"
         echo "y=yes,wsc=when save changes,n=no"
@@ -1077,26 +1092,62 @@ ListMenu(){
         fi
         usleep 1000000
         ListMenu
-    elif [ $pilihan == "sal" ];then
+    elif [ "$pilihan" == "sal" ];then
         Perubahan="ya"
         cat "$PathModulConfigAi/list_app_package_detected.txt"
         echo "Press any key to continue . . . ."
         read -n 3 -s -r 
         usleep 100000
         ListMenu
-    elif [ $pilihan == "sgl" ];then
+    elif [ "$pilihan" == "sgl" ];then
         Perubahan="ya"
         cat "$PathModulConfigAi/list_app_auto_turbo.txt"
         echo "Press any key to continue . . . ."
         read -n 3 -s -r 
         usleep 100000
         ListMenu
-    elif [ $pilihan == "zrx" ];then
+    elif [ "$pilihan" == "mal" ];then
+        Perubahan="ya"
+        NoApp=1
+        GetApp=$ModPath/zyc_app_list.txt
+        if [ -e $GetApp ];then
+            rm $GetApp
+        fi
+        changeSE="tidak"
+        if [ "$(getenforce)" == "Enforcing" ];then
+            changeSE="ya"
+            setenforce 0
+        fi
+        for appList in `pm list package -3 | sed 's/package:*//g'`
+        do
+            if [ -z $( grep "$appList" "$PathModulConfigAi/list_app_auto_turbo.txt" ) ];then
+                nameApp=$(aapt d badging "$appList" | awk -F: ' $1 == "application-label" {print $2}' | sed "s/'*//g")
+                echo "[ $NoApp ] $appList ( $nameApp )" | tee -a $GetApp
+                NoApp=$(($NoApp+1))
+            fi
+        done
+        if [ "$changeSE" == "ya" ];then
+            setenforce 1
+        fi
+        echo 'please input number only'
+        echo 'example 1 3 5 23'
+        read InputNo
+        for Getdata in $InputNo
+        do
+            # cat $GetApp | grep "[ 2 ]";
+            echo $(cat $GetApp | awk -F '\\[ '"$Getdata"' ]' '{print $2}' | sed 's/(.*//') ;
+            sed -i "1a  $konamiGame" $PathModulConfigAi/list_app_auto_turbo.txt;
+        done
+        rm $GetApp
+        echo 'done . . '
+        usleep 100000
+        ListMenu
+    elif [ "$pilihan" == "zrx" ];then
         Perubahan="ya"
         ZramNew="0"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "zrc" ];then
+    elif [ "$pilihan" == "zrc" ];then
         Perubahan="ya"
         echo '--- --- --- ---'
         echo 'set swap/zram to ?'
@@ -1110,12 +1161,12 @@ ListMenu(){
         fi
         usleep 100000
         ListMenu
-    elif [ $pilihan == "zrs" ];then
+    elif [ "$pilihan" == "zrs" ];then
         Perubahan="ya"
         ZramNew="system"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "csw" ];then
+    elif [ "$pilihan" == "csw" ];then
         Perubahan="ya"
         echo '--- --- --- ---'
         echo 'set swappiness to ?'
@@ -1130,52 +1181,52 @@ ListMenu(){
         fi
         usleep 100000
         ListMenu
-    elif [ $pilihan == "vmx" ];then
+    elif [ "$pilihan" == "vmx" ];then
         Perubahan="ya"
         ZramOptimizerNew="0"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "vmy" ];then
+    elif [ "$pilihan" == "vmy" ];then
         Perubahan="ya"
         ZramOptimizerNew="1"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "fdax" ];then
+    elif [ "$pilihan" == "fdax" ];then
         Perubahan="ya"
         AiDozeNew="off"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "fday" ];then
+    elif [ "$pilihan" == "fday" ];then
         Perubahan="ya"
         AiDozeNew="on"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "dnss" ];then
+    elif [ "$pilihan" == "dnss" ];then
         Perubahan="ya"
         DnsNew="system"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "dnsc" ];then
+    elif [ "$pilihan" == "dnsc" ];then
         Perubahan="ya"
         DnsNew="cloudflare"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "dnsg" ];then
+    elif [ "$pilihan" == "dnsg" ];then
         Perubahan="ya"
         DnsNew="google"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "dnsa" ];then
+    elif [ "$pilihan" == "dnsa" ];then
         Perubahan="ya"
         DnsNew="adguard"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "dnsu" ];then
+    elif [ "$pilihan" == "dnsu" ];then
         Perubahan="ya"
         DnsNew="uncensored"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "cdns" ];then
+    elif [ "$pilihan" == "cdns" ];then
         Perubahan="ya"
         clear
         if [ "$DnsBefore" != "system" ];then
@@ -1226,43 +1277,41 @@ ListMenu(){
         read -n 3 -s -r 
         usleep 100000
         ListMenu
-    elif [ $pilihan == "gux" ];then
+    elif [ "$pilihan" == "gux" ];then
         echo "how long (example : 1) ??"
         read getnumber
         Perubahan="ya"
         StatusStartGpuNew="$getnumber"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "gun" ];then
+    elif [ "$pilihan" == "gun" ];then
         echo "how long (example : 1) ??"
         read getnumber
         Perubahan="ya"
         StatusEndGpuNew="$getnumber"
         usleep 100000
         ListMenu
-    elif [ $pilihan == "0" ];then
+    elif [ "$pilihan" == "0" ] || [ "$pilihan" == "e" ] || [ "$pilihan" == "exit" ];then
         exitSetting
-    elif [ $pilihan == "e" ];then
-        exitSetting
-    elif [ $pilihan == "back" ];then
+    elif [ "$pilihan" == "back" ];then
         typeMenu="none"
         ListMenu
-    elif [ $pilihan == "adv" ];then
+    elif [ "$pilihan" == "adv" ];then
         TypeOpen="1"
         ListMenu
-    elif [ $pilihan == "bsc" ];then
+    elif [ "$pilihan" == "bsc" ];then
         TypeOpen="0"
         ListMenu
     else 
         if [ $Perubahan == "ya" ];then
-            if [ $pilihan == "s" ];then
+            if [ "$pilihan" == "s" ];then
                 savedata="yes"
-            elif [ $pilihan == "save" ];then
+            elif [ "$pilihan" == "save" ];then
                 savedata="yes"
             else
                 savedata="no"
             fi
-            if [ $savedata == "yes" ];then
+            if [ "$savedata" == "yes" ];then
                 saveSetting
             fi
         fi
@@ -1276,7 +1325,7 @@ exitSetting(){
     clear
     echo "exit (y/n)?"
     read keluar
-    if [ $keluar == "y" ];then
+    if [ "$keluar" == "y" ];then
         if [ "$RestartNotif" == "iya" ];then
             echo " please restart to take effect for gms doze fix . . . ."
         fi
