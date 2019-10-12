@@ -687,7 +687,7 @@ AITwek(){
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
-        if [ "$GetModeAiBefore" == "1" ] || [ "$GetModeAiBefore" == "3" ];then
+        if [ "$GetModeAiCBefore" == "1" ] || [ "$GetModeAiCBefore" == "3" ];then
             if [ -e "$PathModulConfigAi/status_start_gpu.txt" ];then
                 echo "<-- -- AI max gpu usage for switch to mode turbo Config -- -->"
                 if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ];then
@@ -703,7 +703,7 @@ AITwek(){
                 echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
             fi
         fi
-        if [ "$GetModeAiBefore" == "1" ] || [ "$GetModeAiBefore" == "3" ];then
+        if [ "$GetModeAiCBefore" == "1" ] || [ "$GetModeAiCBefore" == "3" ];then
             if [ -e "$PathModulConfigAi/status_end_gpu.txt" ];then
                 echo "<-- -- AI min gpu usage for switch to mode off Config -- -->"
                 if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ];then
@@ -761,7 +761,6 @@ ListMenu(){
     elif [ "$typeMenu" == "4" ];then
         AppGet
     else
-        TypeOpen="0"
         echo "1 > main config"
         echo "2 > ai config"
         echo "3 > side config"
@@ -777,21 +776,21 @@ ListMenu(){
         if [ "$getModeTweak" == "1" ];then
             typeMenu="1"
             MainTweak
-        fi
-        if [ "$getModeTweak" == "2" ];then
+        elif [ "$getModeTweak" == "2" ];then
             typeMenu="2"
             AITwek
-        fi
-        if [ "$getModeTweak" == "3" ];then
+        elif [ "$getModeTweak" == "3" ];then
             typeMenu="3"
             SideTweak
-        fi
-        if [ "$getModeTweak" == "4" ];then
+        elif [ "$getModeTweak" == "4" ];then
             typeMenu="4"
             AppGet
-        fi
-        if [ "$typeMenu" == "e" ] || [ "$typeMenu" == "0" ];then
+        elif [ "$getModeTweak" == "e" ] || [ "$getModeTweak" == "0" ];then
             exitSetting
+        else
+            echo "input error"
+            sleep 2
+            ListMenu
         fi 
     fi
     
