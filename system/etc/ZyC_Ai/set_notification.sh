@@ -1,3 +1,4 @@
+#!/system/bin/sh
 # Created By : ZyCromerZ
 # tweak gpu
 # this is for notification type :p
@@ -7,11 +8,11 @@ if [ ! -z "$1" ];then
     getType=$1
     getMethod=$2
     if [ "$getType" == "getar" ];then
-        if [ $getMethod == "off" ];then
+        if [ "$getMethod" == "off" ];then
             echo 200 > /sys/class/timed_output/vibrator/enable
             usleep 400000
             echo 100 > /sys/class/timed_output/vibrator/enable
-        elif [ $getMethod == "on" ];then
+        elif [ "$getMethod" == "on" ];then
             echo 400 > /sys/class/timed_output/vibrator/enable
         fi
     elif [ "$getType" == "notif" ];then
@@ -190,12 +191,36 @@ if [ ! -z "$1" ];then
                 echo "0" > $GetLedPath/green/brightness
                 usleep 500000
                 echo "255" > $GetLedPath/red/brightness
+            elif [ "$getMethod" == "onvibrate" ];then
+                #on kedip
+                echo 3000 > /sys/class/timed_output/vibrator/enable
+                echo "0" > $GetLedPath/red/brightness
+                echo "0" > $GetLedPath/green/brightness
+                for CounTotal in 1 2 3 4 5
+                do
+                    for Ledslight in red yellow green
+                    do
+                        if [ "$Ledslight" == "red" ];then
+                            echo "255" > $GetLedPath/red/brightness
+                            echo "0" > $GetLedPath/green/brightness
+                        fi
+                        if [ "$Ledslight" == "yellow" ];then
+                            echo "70" > $GetLedPath/green/brightness
+                            echo "255" > $GetLedPath/red/brightness
+                        fi
+                        if [ "$Ledslight" == "green" ];then
+                            echo "0" > $GetLedPath/red/brightness
+                            echo "255" > $GetLedPath/green/brightness
+                        fi
+                        usleep 200000
+                    done
+                done
             fi;
             NoNotif="yes"
             if [ "$GetRed" != "0" ] && [ "$GetGreen" != "0" ];then
                 NoNotif="no"
             fi;
-            if [ $NoNotif == "no" ];then
+            if [ "$NoNotif" == "no" ];then
                 usleep 400000
                 echo "0" > $GetLedPath/red/brightness
                 echo "0" > $GetLedPath/green/brightness
@@ -212,7 +237,7 @@ if [ ! -z "$1" ];then
                 echo "0" > $GetLedPath/green/brightness
             fi;
             sleep 2
-            if [ -z "$( acpi -a | grep "on-line" | grep 1 )" ] || [ -z "$( acpi -a | grep "on-line" | grep 2 )" ];then
+            if [ -z "$( acpi -a | grep "on-line" | grep 1 )" ] || [ -z "$( acpi -a | grep "on-line" | grep 2 )" ] || [ -z "$( acpi -a | grep "on-line" | grep 0 )" ];then
                 echo "0" > $GetLedPath/red/brightness
                 echo "0" > $GetLedPath/green/brightness
                 if [ -e /sys/class/leds/blue/brightness ];then

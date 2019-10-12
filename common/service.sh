@@ -1,10 +1,11 @@
+#!/system/bin/sh
 # Created By : ZyCromerZ
 # tweak gpu
 # you can try on off my feature
 # prepare function
 # sleep 2s
 magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
-GetVersion=$($magisk -c | grep -Eo '[1-9]{2}\.[0-9]+')
+GetVersion=$($magisk -c | grep -Eo '[0-9]{2}\.[0-9]+')
 case "$GetVersion" in
 '15.'[1-9]*) # Version 15.1 - 15.9
 	ModulPath=/sbin/.core/img
@@ -24,8 +25,11 @@ case "$GetVersion" in
 '19.'[0-9a-zA-Z]*) # Version 19.x
 	ModulPath=/data/adb/modules
 ;;
+'20.'[0-9a-zA-Z]*) # Version 20.x
+	ModulPath=/data/adb/modules
+;;
 *)
-    echo "unsupported magisk version detected,fail"
+    echo "unsupported magisk version detected,fail" | tee -a $Path/ZyC_Turbo.running.log 
     exit;
 ;;
 esac
@@ -36,7 +40,7 @@ if [ ! -z "$1" ];then
         FromTerminal="ya";
     fi
 fi
-if [ $FromTerminal == "tidak" ];then
+if [ "$FromTerminal" == "tidak" ];then
     sh $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait > /dev/null 2>&1
     usleep 5000000
     sh $ModulPath/ZyC_Turbo/initialize.sh "FromTerminal" & wait > /dev/null 2>&1
@@ -84,9 +88,9 @@ runScript(){
     echo "<<--- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1
     echo "starting modules . . ." | tee -a $saveLog > /dev/null 2>&1
     echo "Version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" > /dev/null 2>&1
-    if [ $FromTerminal == "tidak" ];then
+    if [ "$FromTerminal" == "tidak" ];then
         echo "running with boot detected" | tee -a $saveLog > /dev/null 2>&1
-    elif [ $FromAi == "ya" ];then
+    elif [ "$FromAi" == "ya" ];then
         echo "running with ai detected" | tee -a $saveLog > /dev/null 2>&1
     else
         echo "running without boot detected" | tee -a $saveLog > /dev/null 2>&1
@@ -227,6 +231,9 @@ runScript(){
         if [ -e $NyariGPU/max_pwrlevel ]; then
             echo $(cat "$PathModulConfig/backup/gpu_max_pwrlevel.txt") > "$NyariGPU/max_pwrlevel"
         fi
+        if [ -e $NyariGPU/max_pwrlevel ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_min_pwrlevel.txt") > "$NyariGPU/min_pwrlevel"
+        fi
         if [ -e $NyariGPU/devfreq/adrenoboost ]; then
             echo $(cat "$PathModulConfig/backup/gpu_adrenoboost.txt") > "$NyariGPU/devfreq/adrenoboost"
         fi
@@ -261,7 +268,6 @@ runScript(){
         if [ "$NyariGPU" != '' ];then
             if [ -e $NyariGPU/max_pwrlevel ]; then
                 echo "0" > "$NyariGPU/max_pwrlevel"
-                echo "0" > "$NyariGPU/max_pwrlevel"
             fi
             if [ -e $NyariGPU/devfreq/adrenoboost ]; then
                 echo "2" > "$NyariGPU/devfreq/adrenoboost"
@@ -276,6 +282,12 @@ runScript(){
         echo 'use "turbo" setting. . .' | tee -a $saveLog > /dev/null 2>&1 ;
         setprop persist.sys.NV_FPSLIMIT 120
         if  [ $NyariGPU != '' ];then
+            if [ -e $NyariGPU/min_pwrlevel ]; then
+                if [ -e $NyariGPU/num_pwrlevels ];then
+                    numPwrlevels=$(cat $NyariGPU/num_pwrlevels)
+                    echo $(($numPwrlevels-2)) > "$NyariGPU/min_pwrlevel"
+                fi
+            fi
             if [ -e $NyariGPU/devfreq/adrenoboost ]; then
                 echo "3" > "$NyariGPU/devfreq/adrenoboost"
             fi
@@ -349,6 +361,21 @@ runScript(){
         if [ "$NyariGPU" != '' ];then
             if [ -e $NyariGPU/devfreq/adrenoboost ]; then
                 echo "0" > "$NyariGPU/devfreq/adrenoboost"
+            fi
+            if [ -e $NyariGPU/max_pwrlevel ]; then
+                if [ -e $NyariGPU/num_pwrlevels ];then
+                    numPwrlevels=$(cat $NyariGPU/num_pwrlevels)
+                    echo $((($numPwrlevels/2)-1)) > "$NyariGPU/max_pwrlevel"
+                fi
+            fi
+            if [ -e $NyariGPU/min_pwrlevel ]; then
+                if [ -e $NyariGPU/num_pwrlevels ];then
+                    numPwrlevels=$(cat $NyariGPU/num_pwrlevels)
+                    echo $(($numPwrlevels-1)) > "$NyariGPU/min_pwrlevel"
+                fi
+            fi
+            if [ -e $NyariGPU/max_pwrlevel ]; then
+                echo "0" > "$NyariGPU/max_pwrlevel"
             fi
             if [ -e "$NyariGPU/throttling" ]; then
                 echo "1" > $NyariGPU/throttling
@@ -599,26 +626,20 @@ runScript(){
             if [ "$(getprop zyc.change.rm)" == "belom" ];then
                 if [ "$CustomRam" == '0' ];then
                         # echo "coming_soon :D"| tee -a $saveLog > /dev/null 2>&1 ;
-                        echo "not use custom ram management,using stock ram management" | tee -a $saveLog > /dev/null 2>&1 ;
-                        if [ -e $PathModulConfig/backup/ram_enable_adaptive_lmk.txt ];then
+                        if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ] && [ -e /sys/module/lowmemorykiller/parameters/debug_level ]; then
+                            echo "not use custom ram management,using stock ram management" | tee -a $saveLog > /dev/null 2>&1 ;
                             chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-                            echo $(cat "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt") > "/sys/module/lowmemorykiller/parameters/enable_adaptive_lmk"
+                            echo "1" > "/sys/module/lowmemorykiller/parameters/enable_adaptive_lmk"
                             chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-                            setprop lmk.autocalc false
-                            if [ "$(cat "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt")" == "1" ];then
-                                setprop lmk.autocalc true
-                            else
-                                setprop lmk.autocalc false
-                            fi
-                            rm $PathModulConfig/backup/ram_enable_adaptive_lmk.txt
+                            setprop lmk.autocalc true
                         fi
-                        if [ -e $PathModulConfig/backup/ram_debug_level.txt ];then
-                            echo $(cat "$PathModulConfig/backup/ram_debug_level.txt") > "/sys/module/lowmemorykiller/parameters/debug_level"
+                        if [ -e $PathModulConfig/backup/ram_debug_level.txt ] && [ -e /sys/module/lowmemorykiller/parameters/debug_level ];then
                             chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
+                            echo "$(cat "$PathModulConfig/backup/ram_debug_level.txt")" > "/sys/module/lowmemorykiller/parameters/debug_level"
                             chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
-                            rm $PathModulConfig/backup/ram_debug_level.txt
+                            # rm $PathModulConfig/backup/ram_debug_level.txt
                         fi
-                        if [ -e $PathModulConfig/backup/ram_adj.txt ];then
+                        if [ -e $PathModulConfig/backup/ram_adj.txt ] && [ -e /sys/module/lowmemorykiller/parameters/adj ];then
                             chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
                             # echo $(cat "$PathModulConfig/backup/ram_adj.txt") > "/sys/module/lowmemorykiller/parameters/adj"
                             #ADJ1=0; ADJ2=100; ADJ3=200; ADJ4=300; ADJ5=900; ADJ6=906 # STOCK
@@ -626,9 +647,9 @@ runScript(){
                             chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
                             rm $PathModulConfig/backup/ram_adj.txt
                         fi
-                        if [ -e $PathModulConfig/backup/ram_minfree.txt ];then
+                        if [ -e $PathModulConfig/backup/ram_minfree.txt ] && [ -e /sys/module/lowmemorykiller/parameters/minfree ];then
                             chmod 0666 /sys/module/lowmemorykiller/parameters/minfree;
-                            echo $(cat "$PathModulConfig/backup/ram_minfree.txt") > "/sys/module/lowmemorykiller/parameters/minfree"
+                            echo "$(cat "$PathModulConfig/backup/ram_minfree.txt")" > "/sys/module/lowmemorykiller/parameters/minfree"
                             chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
                             rm $PathModulConfig/backup/ram_minfree.txt
                         fi
@@ -673,16 +694,18 @@ runScript(){
                     if [ $StopModify == "no" ];then
                         if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ]; then
                             chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-                            echo "0" > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
+                            if [ "$CustomRam" -le "2" ];then
+                                echo "1" > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
+                            else
+                                echo "0" > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
+                            fi
                             chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
                             setprop lmk.autocalc false
-                            #  echo "* Adaptive LMK = Disabled *" |  tee -a $LOG;
                         fi;
                         if [ -e /sys/module/lowmemorykiller/parameters/debug_level ]; then
                             chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
                             echo "0" > /sys/module/lowmemorykiller/parameters/debug_level
                             chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
-                            #  echo "* LMK Debug Level = Disabled *" |  tee -a $LOG;
                         fi;
 
                         chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
@@ -854,25 +877,8 @@ runScript(){
         setprop media.stagefright.enable-record 'true' > /dev/null 2>&1 ;
         echo "done . . ."  | tee -a $saveLog 
         echo "  --- --- --- --- --- " | tee -a $saveLog 
-        echo "tweak smooth ui" | tee -a $saveLog 
-        setprop debug.sf.latch_unsignaled 1  > /dev/null 2>&1 ;
-        setprop debug.sf.disable_backpressure 1  > /dev/null 2>&1 ;
-        setprop ro.sys.fw.dex2oat_thread_count 4  > /dev/null 2>&1 ;
-        setprop dalvik.vm.boot-dex2oat-threads 8  > /dev/null 2>&1 ;
-        setprop dalvik.vm.dex2oat-threads 4  > /dev/null 2>&1 ;
-        setprop dalvik.vm.image-dex2oat-threads 4  > /dev/null 2>&1 ;
-        setprop dalvik.vm.dex2oat-filter speed  > /dev/null 2>&1 ;
-        setprop dalvik.vm.image-dex2oat-filter speed  > /dev/null 2>&1 ;
-        setprop dalvik.vm.heapgrowthlimit 256m  > /dev/null 2>&1 ;
-        setprop dalvik.vm.heapstartsize 8m  > /dev/null 2>&1 ;
-        setprop dalvik.vm.heapsize 512m  > /dev/null 2>&1 ;
-        setprop dalvik.vm.heaptargetutilization 0.75  > /dev/null 2>&1 ;
-        setprop dalvik.vm.heapminfree 512k  > /dev/null 2>&1 ;
-        setprop dalvik.vm.heapmaxfree 8m  > /dev/null 2>&1 ;
-        echo "done . . ." | tee -a $saveLog 
-        echo "  --- --- --- --- --- " | tee -a $saveLog 
         echo "something request from @WhySakura"| tee -a $saveLog 
-        setprop debug.egl.swapinterval 120  > /dev/null 2>&1 ;
+        setprop debug.egl.swapinterval 60  > /dev/null 2>&1 ;
         setprop sys.use_fifo_ui 1  > /dev/null 2>&1 ;
         echo "done . . ." | tee -a $saveLog 
         echo "  --- --- --- --- --- " | tee -a $saveLog 
@@ -895,68 +901,6 @@ runScript(){
         setprop TapInterval 1ms > /dev/null 2>&1 ;
         setprop TapSlop 1px1 > /dev/null 2>&1 ;
         echo "done . . . " | tee -a $saveLog 
-        echo "  --- --- --- --- --- " | tee -a $saveLog 
-        echo "add audio . . ." | tee -a $saveLog 
-        setprop ro.camcorder.videoModes true  > /dev/null 2>&1
-        setprop ro.media.enc.hprof.vid.fps 65  > /dev/null 2>&1
-        setprop ro.media.dec.aud.wma.enabled 1  > /dev/null 2>&1
-        setprop ro.media.dec.vid.wmv.enabled 1  > /dev/null 2>&1
-        setprop ro.media.dec.aud.mp3.enabled 1  > /dev/null 2>&1
-        setprop ro.media.dec.vid.mp4.enabled 1  > /dev/null 2>&1
-        setprop ro.media.enc.aud.wma.enabled 1  > /dev/null 2>&1
-        setprop ro.media.enc.vid.wmv.enabled 1  > /dev/null 2>&1
-        setprop ro.media.enc.aud.mp3.enabled 1  > /dev/null 2>&1
-        setprop ro.media.enc.vid.mp4.enabled 1  > /dev/null 2>&1
-        setprop ro.media.dec.aud.flac.enabled 1  > /dev/null 2>&1
-        setprop ro.media.dec.vid.H.264.enabled 1  > /dev/null 2>&1
-        setprop ro.media.enc.aud.flac.enabled 1  > /dev/null 2>&1
-        setprop ro.media.enc.vid.H.264.enabled 1  > /dev/null 2>&1
-        setprop af.fast_track_multiplier 1  > /dev/null 2>&1
-        setprop ro.vendor.audio.soundtrigger nuance  > /dev/null 2>&1
-        setprop ro.vendor.audio.soundtrigger.lowpower false  > /dev/null 2>&1
-        setprop ro.vendor.audio.sdk.fluencetype none  > /dev/null 2>&1
-        setprop ro.vendor.audio.sdk.ssr false  > /dev/null 2>&1
-        setprop ro.vendor.audio.sos true  > /dev/null 2>&1
-        setprop persist.vendor.audio.fluence.voicecall true  > /dev/null 2>&1
-        setprop persist.vendor.audio.fluence.voicerec false  > /dev/null 2>&1
-        setprop persist.vendor.audio.fluence.speaker true  > /dev/null 2>&1
-        setprop persist.vendor.audio.ras.enabled false  > /dev/null 2>&1
-        setprop persist.vendor.audio.hifi.int_codec true  > /dev/null 2>&1
-        setprop persist.vendor.audio.hw.binder.size_kbyte 1024  > /dev/null 2>&1
-        setprop vendor.audio.adm.buffering.ms 2  > /dev/null 2>&1
-        setprop vendor.audio_hal.period_size 192  > /dev/null 2>&1
-        setprop vendor.audio.tunnel.encode false  > /dev/null 2>&1
-        setprop vendor.audio.offload.buffer.size.kb 64  > /dev/null 2>&1
-        setprop vendor.audio.offload.track.enable false  > /dev/null 2>&1
-        setprop vendor.voice.path.for.pcm.voip true  > /dev/null 2>&1
-        setprop vendor.audio.offload.multiaac.enable true  > /dev/null 2>&1
-        setprop vendor.audio.dolby.ds2.enabled false  > /dev/null 2>&1
-        setprop vendor.audio.dolby.ds2.hardbypass false  > /dev/null 2>&1
-        setprop vendor.audio.offload.multiple.enabled false  > /dev/null 2>&1
-        setprop vendor.audio.offload.passthrough false  > /dev/null 2>&1
-        setprop vendor.audio.offload.gapless.enabled true  > /dev/null 2>&1
-        setprop vendor.audio.safx.pbe.enabled true  > /dev/null 2>&1
-        setprop vendor.audio.parser.ip.buffer.size 262144  > /dev/null 2>&1
-        setprop vendor.audio.flac.sw.decoder.24bit true  > /dev/null 2>&1
-        setprop vendor.audio_hal.period_multiplier 3  > /dev/null 2>&1
-        setprop vendor.audio.use.sw.alac.decoder true  > /dev/null 2>&1
-        setprop vendor.audio.use.sw.ape.decoder true  > /dev/null 2>&1
-        setprop vendor.audio.hw.aac.encoder true  > /dev/null 2>&1
-        setprop vendor.fm.a2dp.conc.disabled true  > /dev/null 2>&1
-        setprop vendor.audio.noisy.broadcast.delay 600  > /dev/null 2>&1
-        setprop vendor.audio.offload.pstimeout.secs 3  > /dev/null 2>&1
-        setprop ro.audio.soundfx.dirac false  > /dev/null 2>&1
-        setprop audio.offload.min.duration.secs 30  > /dev/null 2>&1
-        setprop audio.offload.video true  > /dev/null 2>&1
-        setprop audio.deep_buffer.media true  > /dev/null 2>&1
-        setprop ro.af.client_heap_size_kbyte 7168  > /dev/null 2>&1
-        setprop ro.qc.sdk.audio.fluencetype none  > /dev/null 2>&1
-        setprop persist.radio.add_power_save 1  > /dev/null 2>&1
-        setprop persist.ril.uart.flowctrl 10  > /dev/null 2>&1
-        setprop persist.audio.fluence.voicerec true  > /dev/null 2>&1
-        setprop persist.audio.fluence.speaker false  > /dev/null 2>&1
-        setprop use.voice.path.for.pcm.voip true  > /dev/null 2>&1
-        echo "done " | tee -a $saveLog 
         echo "  --- --- --- --- --- " | tee -a $saveLog 
     fi
     ResetDns(){
@@ -1021,8 +965,8 @@ runScript(){
             setprop net.pdpbr1.dns2 1.0.0.1  > /dev/null 2>&1
             setprop net.wlan0.dns1 1.1.1.1  > /dev/null 2>&1
             setprop net.wlan0.dns2 1.0.0.1  > /dev/null 2>&1
-            setprop 2606:4700:4700::1111  > /dev/null 2>&1
-            setprop 2606:4700:4700::1001  > /dev/null 2>&1
+            setprop 2606:4700:4700::1111 '' > /dev/null 2>&1
+            setprop 2606:4700:4700::1001 ''  > /dev/null 2>&1
         elif [ "$GetDnsType" == "google" ];then
             echo "use google dns "| tee -a $saveLog 
             # reset
@@ -1053,8 +997,8 @@ runScript(){
             setprop net.pdpbr1.dns2 8.8.4.4  > /dev/null 2>&1
             setprop net.wlan0.dns1 8.8.8.8  > /dev/null 2>&1
             setprop net.wlan0.dns2 8.8.4.4  > /dev/null 2>&1
-            setprop 2001:4860:4860::8888  > /dev/null 2>&1
-            setprop 2001:4860:4860::8844  > /dev/null 2>&1
+            setprop 2001:4860:4860::8888 ''  > /dev/null 2>&1
+            setprop 2001:4860:4860::8844 ''  > /dev/null 2>&1
         elif [ "$GetDnsType" == "adguard" ];then
             echo "use adguard dns "| tee -a $saveLog 
             # reset
@@ -1069,24 +1013,24 @@ runScript(){
             ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad1:0ff]:5353  > /dev/null 2>&1
             ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad2:0ff]:5353  > /dev/null 2>&1  
             # SETPROP
-            setprop net.eth0.dns1 176.103.130.130
-            setprop net.eth0.dns2 176.103.130.131
-            setprop net.dns1 176.103.130.130
-            setprop net.dns2 176.103.130.131
-            setprop net.ppp0.dns1 176.103.130.130
-            setprop net.ppp0.dns2 176.103.130.131
-            setprop net.rmnet0.dns1 176.103.130.130
-            setprop net.rmnet0.dns2 176.103.130.131
-            setprop net.rmnet1.dns1 176.103.130.130
-            setprop net.rmnet1.dns2 176.103.130.131
-            setprop net.rmnet2.dns1 176.103.130.130
-            setprop net.rmnet2.dns2 176.103.130.131
-            setprop net.pdpbr1.dns1 176.103.130.130
-            setprop net.pdpbr1.dns2 176.103.130.131
-            setprop net.wlan0.dns1 176.103.130.130
-            setprop net.wlan0.dns2 176.103.130.131
-            setprop 2a00:5a60::ad1:0ff:5353
-            setprop 2a00:5a60::ad2:0ff:5353
+            setprop net.eth0.dns1 176.103.130.130 > /dev/null 2>&1
+            setprop net.eth0.dns2 176.103.130.131 > /dev/null 2>&1
+            setprop net.dns1 176.103.130.130 > /dev/null 2>&1
+            setprop net.dns2 176.103.130.131 > /dev/null 2>&1
+            setprop net.ppp0.dns1 176.103.130.130 > /dev/null 2>&1
+            setprop net.ppp0.dns2 176.103.130.131 > /dev/null 2>&1
+            setprop net.rmnet0.dns1 176.103.130.130 > /dev/null 2>&1
+            setprop net.rmnet0.dns2 176.103.130.131 > /dev/null 2>&1
+            setprop net.rmnet1.dns1 176.103.130.130 > /dev/null 2>&1
+            setprop net.rmnet1.dns2 176.103.130.131 > /dev/null 2>&1
+            setprop net.rmnet2.dns1 176.103.130.130 > /dev/null 2>&1
+            setprop net.rmnet2.dns2 176.103.130.131 > /dev/null 2>&1
+            setprop net.pdpbr1.dns1 176.103.130.130 > /dev/null 2>&1
+            setprop net.pdpbr1.dns2 176.103.130.131 > /dev/null 2>&1
+            setprop net.wlan0.dns1 176.103.130.130 > /dev/null 2>&1
+            setprop net.wlan0.dns2 176.103.130.131 > /dev/null 2>&1
+            setprop 2a00:5a60::ad1:0ff:5353 '' > /dev/null 2>&1
+            setprop 2a00:5a60::ad2:0ff:5353 '' > /dev/null 2>&1
         elif [ "$GetDnsType" == "uncensored" ];then
             echo "use uncensored dns "| tee -a $saveLog 
             # reset
@@ -1101,24 +1045,24 @@ runScript(){
             ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353  > /dev/null 2>&1
             ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353  > /dev/null 2>&1  
             # SETPROP
-            setprop net.eth0.dns1 91.239.100.100
-            setprop net.eth0.dns2 91.239.100.100
-            setprop net.dns1 91.239.100.100
-            setprop net.dns2 91.239.100.100
-            setprop net.ppp0.dns1 91.239.100.100
-            setprop net.ppp0.dns2 91.239.100.100
-            setprop net.rmnet0.dns1 91.239.100.100
-            setprop net.rmnet0.dns2 91.239.100.100
-            setprop net.rmnet1.dns1 91.239.100.100
-            setprop net.rmnet1.dns2 91.239.100.100
-            setprop net.rmnet2.dns1 91.239.100.100
-            setprop net.rmnet2.dns2 91.239.100.100
-            setprop net.pdpbr1.dns1 91.239.100.100
-            setprop net.pdpbr1.dns2 91.239.100.100
-            setprop net.wlan0.dns1 91.239.100.100
-            setprop net.wlan0.dns2 91.239.100.100
-            setprop 2001:67c:28a4:::5353
-            setprop 2001:67c:28a4:::5353
+            setprop net.eth0.dns1 91.239.100.100 > /dev/null 2>&1 > /dev/null 2>&1
+            setprop net.eth0.dns2 91.239.100.100 > /dev/null 2>&1 > /dev/null 2>&1
+            setprop net.dns1 91.239.100.100 > /dev/null 2>&1 > /dev/null 2>&1
+            setprop net.dns2 91.239.100.100 > /dev/null 2>&1 > /dev/null 2>&1
+            setprop net.ppp0.dns1 91.239.100.100 > /dev/null 2>&1 > /dev/null 2>&1
+            setprop net.ppp0.dns2 91.239.100.100 > /dev/null 2>&1 > /dev/null 2>&1
+            setprop net.rmnet0.dns1 91.239.100.100 > /dev/null 2>&1
+            setprop net.rmnet0.dns2 91.239.100.100 > /dev/null 2>&1
+            setprop net.rmnet1.dns1 91.239.100.100 > /dev/null 2>&1
+            setprop net.rmnet1.dns2 91.239.100.100 > /dev/null 2>&1
+            setprop net.rmnet2.dns1 91.239.100.100 > /dev/null 2>&1
+            setprop net.rmnet2.dns2 91.239.100.100 > /dev/null 2>&1
+            setprop net.pdpbr1.dns1 91.239.100.100 > /dev/null 2>&1
+            setprop net.pdpbr1.dns2 91.239.100.100 > /dev/null 2>&1
+            setprop net.wlan0.dns1 91.239.100.100 > /dev/null 2>&1
+            setprop net.wlan0.dns2 91.239.100.100 > /dev/null 2>&1
+            setprop 2001:67c:28a4:::5353 '' > /dev/null 2>&1
+            setprop 2001:67c:28a4:::5353 '' > /dev/null 2>&1
         else
             if [ "$GetDnsType" != "system" ];then
                 echo "system" > "$PathModulConfig/dns.txt" > /dev/null 2>&1 
@@ -1253,99 +1197,3 @@ runScript(){
     exit
 }
 runScript 2>&1 | tee -a $Path/ZyC_Turbo.running.log > /dev/null 2>&1 ;
-# # Optimize io scheduler# =========
-# for z in $ZRM; 
-# do  
-#     if [ -e $i/queue/rotational ]; then  
-#         echo "0" > $i/queue/rotational; 
-#     fi;  
-#     if [ -e $i/queue/iostats ]; then  
-#         echo "0" > $i/queue/iostats; fi;  
-#     if [ -e $i/queue/rq_affinity ]; then  
-#         echo "1" > $i/queue/rq_affinity; fi;  
-#     if [ -e $i/queue/read_ahead_kb ]; then  
-#         echo "512" > $i/queue/read_ahead_kb; fi;  
-#     if [ -e $i/queue/max_sectors_kb ]; then  
-#         echo "512" > $i/queue/max_sectors_kb; # default: 127 
-#     fi; 
-# done; 
-# for i in $STL $BML $MMC $MTD; do  
-#     if [ -e $i/queue/scheduler ]; then  
-#         echo $scheduler > $i/queue/scheduler; fi;  
-#     if [ -e $i/queue/rotational ]; then  
-#         echo "0" > $i/queue/rotational; fi;  
-#     if [ -e $i/queue/iostats ]; then  
-#         echo "0" > $i/queue/iostats; fi;  
-#     if [ -e $i/queue/rq_affinity ]; then  
-#         echo "1" > $i/queue/rq_affinity;  
-#     fi;  
-#     if [ -e $i/queue/read_ahead_kb ]; then  
-#         echo "1024" > $i/queue/read_ahead_kb; # default: 128 fi;  
-#     if [ -e $i/queue/max_sectors_kb ]; then  
-#         echo "1024" > $i/queue/max_sectors_kb; # default: 512 
-#     fi;  
-#     if [ -e $i/queue/nr_requests ]; then  
-#         echo "128" > $i/queue/nr_requests; # default: 128 
-#     fi;  
-#     if [ -e $i/queue/iosched/writes_starved ]; then  
-#         echo "1" > $i/queue/iosched/writes_starved; fi;  
-#     if [ -e $i/queue/iosched/back_seek_max ]; then  
-#         echo "16384" > $i/queue/iosched/back_seek_max; # default: 16384 
-#     fi;  
-#     if [ -e $i/queue/iosched/max_budget_async_rq ]; then  
-#         echo "2" > $i/queue/iosched/max_budget_async_rq; # default: 4 
-#     fi;  
-#     if [ -e $i/queue/iosched/back_seek_penalty ]; then  
-#         echo "1" > $i/queue/iosched/back_seek_penalty; # default: 2 fi;  
-#     if [ -e $i/queue/iosched/fifo_expire_sync ]; then  
-#         echo "125" > $i/queue/iosched/fifo_expire_sync; # default: 125 fi;  
-#     if [ -e $i/queue/iosched/timeout_sync ]; then  
-#         echo "4" > $i/queue/iosched/timeout_sync; # default: HZ / 8 fi;  
-#     if [ -e $i/queue/iosched/fifo_expire_async ]; then  
-#         echo "250" > $i/queue/iosched/fifo_expire_async; # default: 250 fi;  
-#     if [ -e $i/queue/iosched/timeout_async ]; then  
-#         echo "2" > $i/queue/iosched/timeout_async; # default: HZ / 25 fi;  
-#     if [ -e $i/queue/iosched/slice_idle ]; then  
-#         echo "2" > $i/queue/iosched/slice_idle; # default: 8 fi;  
-#     if [ -e $i/queue/iosched/quantum ]; then  
-#         echo "8" > $i/queue/iosched/quantum; # default: 4 fi;  
-#     if [ -e $i/queue/iosched/slice_async_rq ]; then  
-#         echo "2" > $i/queue/iosched/slice_async_rq; # default: 2 fi;  
-#     if [ -e $i/queue/iosched/fifo_batch ]; then  
-#         echo "1" > $i/queue/iosched/fifo_batch; 
-#     fi;  
-#     if [ -e $i/queue/iosched/rev_penalty ]; then  
-#         echo "1" > $i/queue/iosched/rev_penalty; 
-#     fi;  
-#     if [ -e $i/queue/iosched/low_latency ]; then  
-#         echo "1" > $i/queue/iosched/low_latency; 
-#     fi; 
-# done;
-# setprop persist.sys.use_dithering 1;
-# setprop persist.sys.ui.hw true;
-# setprop hwui.render_dirty_regions false;
-# setprop windowsmgr.max_events_per_sec 120;
-# setprop profiler.force_disable_err_rpt 1;
-# setprop profiler.force_disable_ulog 1;
-# setprop debug.performance.tuning 1;
-# setprop video.accelerate.hw 1;
-# setprop debug.sf.hw 1;
-# setprop ro.telephony.call_ring.delay 1000;
-# setprop wifi.supplicant_scan_interval 180;
-# setprop windowsmgr.max_events_per_sec 60;
-# setprop ro.media.dec.jpeg.memcap 20000000;
-# setprop ro.media.enc.jpeg.quality 90,80,70;
-# setprop dalvik.vm.startheapsize 12m;
-# setprop dalvik.vm.heapsize 32m;
-# sysctl -w kernel.sem="500 512000 100 2048";
-# sysctl -w kernel.shmmax="268435456";
-# #/system/xbin/echo "8" > /proc/sys/vm/page-cluster;
-# ##/system/xbin/echo "1" > /proc/sys/kernel/sched_compat_yield;
-# #/system/xbin/echo "0" > /proc/sys/kernel/sched_child_runs_first;
-# #/system/xbin/echo "256000" > /proc/sys/kernel/sched_shares_ratelimit;
-# #/system/xbin/echo "64000" > /proc/sys/kernel/msgmni;
-# #/system/xbin/echo "64000" > /proc/sys/kernel/msgmax;
-# #/system/xbin/echo "500 512000 64 2048" > /proc/sys/kernel/sem;
-# #/system/xbin/echo "5000" > /proc/sys/kernel/threads-max;
-# /system/xbin/echo "1" > /proc/sys/vm/oom_kill_allocating_task;
-# /system/xbin/echo "0" > /proc/sys/vm/panic_on_oom;

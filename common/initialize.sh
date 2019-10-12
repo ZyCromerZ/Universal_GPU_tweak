@@ -1,3 +1,4 @@
+#!/system/bin/sh
 # Created By : ZyCromerZ
 # tweak gpu
 # you can try on off my feature
@@ -6,7 +7,7 @@
 # MODDIR=${0%/*}
 # for service.sh
 magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
-GetVersion=$($magisk -c | grep -Eo '[1-9]{2}\.[0-9]+')
+GetVersion=$($magisk -c | grep -Eo '[0-9]{2}\.[0-9]+')
 case "$GetVersion" in
 '15.'[1-9]*) # Version 15.1 - 15.9
 	ModulPath=/sbin/.core/img
@@ -26,9 +27,12 @@ case "$GetVersion" in
 '19.'[0-9a-zA-Z]*) # Version 19.x
 	ModulPath=/data/adb/modules
 ;;
+'20.'[0-9a-zA-Z]*) # Version 20.x
+	ModulPath=/data/adb/modules
+;;
 *)
     echo "unsupported magisk version detected,fail"
-    exit -1;
+    exit
 ;;
 esac
 GetVersion="$(cat "$ModulPath/ZyC_Turbo/module.prop" | grep "version=Version" | sed 's/version=Version*//g')"
@@ -95,6 +99,7 @@ if [ ! -z "$1" ];then
         FromTerminal="skip"
     fi
     if [ "$1" == "boot" ];then
+        sleep 10
         ModPath=$(cat /data/mod_path.txt)
         if [ "$ModPath" != "" ];then
             Path=$ModPath/modul_mantul/ZyC_mod
@@ -131,12 +136,12 @@ if [ ! -d $Path/ZyC_Turbo_config ]; then
     mkdir -p $Path/ZyC_Turbo_config
 fi
 PathModulConfig=$Path/ZyC_Turbo_config
+changeSE="tidak"
+if [ "$(getenforce)" == "Enforcing" ];then
+    changeSE="ya"
+    setenforce 0
+fi
 GetAppAndGames(){
-    changeSE="tidak"
-    if [ "$(getenforce)" == "Enforcing" ];then
-        changeSE="ya"
-        setenforce 0
-    fi
     # auto add to game list start
     GameList=$PathModulConfigAi/list_app_auto_turbo.txt
     if [ ! -e $PathModulConfigAi/list_app_auto_turbo.txt ]; then
@@ -182,182 +187,167 @@ GetAppAndGames(){
 
     for dtsGame in `pm list packages -3 | grep 'com.dts' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $dtsGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$dtsGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$dtsGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$dtsGame" "$GameList" ) ];then
             sed -i "1a  $dtsGame" $GameList;
-            usleep 100000
         fi
     done 
     # gamedreamer
     for gamedreamerGame in `pm list packages -3 | grep 'com.gamedreamer' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $gamedreamerGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$gamedreamerGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$gamedreamerGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$gamedreamerGame" "$GameList" ) ];then
             sed -i "1a  $gamedreamerGame" $GameList;
-            usleep 100000
         fi
     done 
     # nekki
     for nekkiGame in `pm list packages -3 | grep 'com.nekki' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $nekkiGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$nekkiGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$nekkiGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$nekkiGame" "$GameList" ) ];then
             sed -i "1a  $nekkiGame" $GameList;
-            usleep 100000
         fi
     done 
     # rekoo
     for rekooGame in `pm list packages -3 | grep 'com.rekoo' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $rekooGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$rekooGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$rekooGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$rekooGame" "$GameList" ) ];then
             sed -i "1a  $rekooGame" $GameList;
-            usleep 100000
         fi
     done 
     # tencent
     for tencentGame in `pm list packages -3 | grep 'com.tencent' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $tencentGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$tencentGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$tencentGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$tencentGame" "$GameList" ) ];then
             sed -i "1a  $tencentGame" $GameList;
-            usleep 100000
         fi
     done 
     # garena
     for garenaGame in `pm list packages -3 | grep 'com.garena' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $garenaGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$garenaGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$garenaGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$garenaGame" "$GameList" ) ];then
             sed -i "1a  $garenaGame" $GameList;
-            usleep 100000
         fi
     done 
     # netease
     for neteaseGame in `pm list packages -3 | grep 'com.netease' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $neteaseGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$neteaseGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$neteaseGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$neteaseGame" "$GameList" ) ];then
             sed -i "1a  $neteaseGame" $GameList;
-            usleep 100000
         fi
     done 
     # ea
     for eaGame in `pm list packages -3 | grep 'com.ea' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $eaGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$eaGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$eaGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$eaGame" "$GameList" ) ];then
             sed -i "1a  $eaGame" $GameList;
-            usleep 100000
         fi
     done 
     # gameloft
     for gameloftGame in `pm list packages -3 | grep 'com.gameloft' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $gameloftGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$gameloftGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$gameloftGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$gameloftGame" "$GameList" ) ];then
             sed -i "1a  $gameloftGame" $GameList;
-            usleep 100000
         fi
     done 
     # nermarble
     for netmarbleGame in `pm list packages -3 | grep 'com.netmarble' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $netmarbleGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$netmarbleGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$netmarbleGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$netmarbleGame" "$GameList" ) ];then
             sed -i "1a  $netmarbleGame" $GameList;
-            usleep 100000
         fi
     done 
     # activision
     for activisionGame in `pm list packages -3 | grep 'com.activision' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $activisionGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$activisionGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$activisionGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$activisionGame" "$GameList" ) ];then
             sed -i "1a  $activisionGame" $GameList;
-            usleep 100000
         fi
     done 
     # miHoYo
     for miHoYoGame in `pm list packages -3 | grep 'com.miHoYo' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $miHoYoGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$miHoYoGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$miHoYoGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$miHoYoGame" "$GameList" ) ];then
             sed -i "1a  $miHoYoGame" $GameList;
-            usleep 100000
         fi
     done 
     # theonegames
     for theonegamesGame in `pm list packages -3 | grep 'com.theonegames' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $theonegamesGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$theonegamesGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$theonegamesGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$theonegamesGame" "$GameList" ) ];then
             sed -i "1a  $theonegamesGame" $GameList;
-            usleep 100000
         fi
     done 
     # squareenixmontreal
     for squareenixmontrealGame in `pm list packages -3 | grep 'com.squareenixmontreal' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $squareenixmontrealGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$squareenixmontrealGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$squareenixmontrealGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$squareenixmontrealGame" "$GameList" ) ];then
             sed -i "1a  $squareenixmontrealGame" $GameList;
-            usleep 100000
         fi
     done 
     # jp.konami
     for konamiGame in `pm list packages -3 | grep 'jp.konami' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $konamiGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$konamiGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$konamiGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$konamiGame" "$GameList" ) ];then
             sed -i "1a  $konamiGame" $GameList;
-            usleep 100000
         fi
     done 
     # org.gamesamba
     for gamesambaGame in `pm list packages -3 | grep 'org.gamesamba' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $gamesambaGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$gamesambaGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$gamesambaGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$gamesambaGame" "$GameList" ) ];then
             sed -i "1a  $gamesambaGame" $GameList;
-            usleep 100000
         fi
     done 
     # skizze
     for skizzeGame in `pm list packages -3 | grep 'com.skizze' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $skizzeGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$skizzeGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$skizzeGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$skizzeGame" "$GameList" ) ];then
             sed -i "1a  $skizzeGame" $GameList;
-            usleep 100000
         fi
     done 
     # vitotechnology
     for vitotechnologyGame in `pm list packages -3 | grep 'com.vitotechnology' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $vitotechnologyGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$vitotechnologyGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$vitotechnologyGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$vitotechnologyGame" "$GameList" ) ];then
             sed -i "1a  $vitotechnologyGame" $GameList;
-            usleep 100000
         fi
     done 
     # mohjang
     for mohjangGame in `pm list packages -3 | grep 'com.mohjang' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $mohjangGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$mohjangGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$mohjangGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$mohjangGame" "$GameList" ) ];then
             sed -i "1a  $mohjangGame" $GameList;
-            usleep 100000
         fi
     done 
     # dmi
     for dmiGame in `pm list packages -3 | grep 'com.dmi' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $dmiGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$dmiGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$dmiGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$dmiGame" "$GameList" ) ];then
             sed -i "1a  $dmiGame" $GameList;
-            usleep 100000
         fi
     done 
     # herogames
     for herogamesGame in `pm list packages -3 | grep 'com.herogames' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $herogamesGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$herogamesGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$herogamesGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$herogamesGame" "$GameList" ) ];then
             sed -i "1a  $herogamesGame" $GameList;
-            usleep 100000
         fi
     done 
     # playfungame
     for playfungameGame in `pm list packages -3 | grep 'com.playfungame' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f $playfungameGame | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$playfungameGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$playfungameGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$playfungameGame" "$GameList" ) ];then
             sed -i "1a  $playfungameGame" $GameList;
-            usleep 100000
+        fi
+    done 
+    # supercell
+    for supercellGame in `pm list packages -3 | grep 'com.supercell' | awk -F= '{sub("package:","");print $1}'`
+    do
+        if [ ! -z $(pm list packages -f "$supercellGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$supercellGame" "$GameList" ) ];then
+            sed -i "1a  $supercellGame" $GameList;
         fi
     done 
 
 
-    # auto add to game list end
+    # auto add to game list end 
     # Get App list start
     listAppPath=$PathModulConfigAi/list_app_package_detected.txt
     if [ ! -e $PathModulConfigAi/list_app_package_detected.txt ]; then
@@ -368,16 +358,13 @@ GetAppAndGames(){
     for listApp in ` pm list packages -3 | awk -F= '{sub("package:","");print $1}'` 
         do 
             if [ -z "$( grep "$listApp" "$listAppPath" )" ];then
-                checkApp=$(pm list packages -f $listApp | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g')
+                checkApp=$(pm list packages -f "$listApp" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g')
                 nameApp=$(aapt d badging "$checkApp" | awk -F: ' $1 == "application-label" {print $2}' | sed "s/'*//g")
                 # adb shell /data/local/tmp/aapt-arm-pie d badging $pkg | awk -F: ' $1 == "application-label" {print $2}' 
                 sed -i "1a  $listApp ($nameApp)"  $listAppPath  ;
-                usleep 100000
+
             fi
     done
-    if [ "$changeSE" == "ya" ];then
-        setenforce 1
-    fi
     # Get App list end
 }
 if [ "$FromTerminal" == "tidak" ];then
@@ -827,14 +814,12 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
     if [ ! -e $PathModulConfig/backup/gpu_render.txt ]; then
         echo $(getprop debug.hwui.renderer) > "$PathModulConfig/backup/gpu_render.txt"
         backup="pake"
-        usleep 100000
     fi
     #val gpu nya
     if [ ! -e $PathModulConfig/backup/gpu_throttling.txt ]; then
         if [ -e $NyariGPU/throttling ]; then
             echo $(cat "$NyariGPU/throttling") > "$PathModulConfig/backup/gpu_throttling.txt"
             backup="pake"
-            usleep 100000
         fi
     fi
 
@@ -842,7 +827,6 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
         if [ -e $NyariGPU/force_no_nap ]; then
             echo $(cat "$NyariGPU/force_no_nap") > "$PathModulConfig/backup/gpu_force_no_nap.txt"
             backup="pake"
-            usleep 100000
         fi
     fi
 
@@ -850,7 +834,6 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
         if [ -e $NyariGPU/force_bus_on ]; then
             echo $(cat "$NyariGPU/force_bus_on") > "$PathModulConfig/backup/gpu_force_bus_on.txt"
             backup="pake"
-            usleep 100000
         fi
     fi
 
@@ -858,7 +841,6 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
         if [ -e $NyariGPU/force_clk_on ]; then
             echo $(cat "$NyariGPU/force_clk_on") > "$PathModulConfig/backup/gpu_force_clk_on.txt"
             backup="pake"
-            usleep 100000
         fi
     fi
 
@@ -866,7 +848,6 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
         if [ -e $NyariGPU/force_rail_on ]; then
             echo $(cat "$NyariGPU/force_rail_on") > "$PathModulConfig/backup/gpu_force_rail_on.txt"
             backup="pake"
-            usleep 100000
         fi
     fi
 
@@ -874,7 +855,6 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
         if [ -e $NyariGPU/bus_split ]; then
             echo $(cat "$NyariGPU/bus_split") > "$PathModulConfig/backup/gpu_bus_split.txt"
             backup="pake"
-            usleep 100000
         fi
     fi
 
@@ -882,7 +862,12 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
         if [ -e $NyariGPU/max_pwrlevel ]; then
             echo $(cat "$NyariGPU/max_pwrlevel") > "$PathModulConfig/backup/gpu_max_pwrlevel.txt"
             backup="pake"
-            usleep 100000
+        fi
+    fi
+    if [ ! -e $PathModulConfig/backup/gpu_min_pwrlevel.txt ]; then
+        if [ -e $NyariGPU/min_pwrlevel ]; then
+            echo $(cat "$NyariGPU/min_pwrlevel") > "$PathModulConfig/backup/gpu_min_pwrlevel.txt"
+            backup="pake"
         fi
     fi
 
@@ -890,7 +875,6 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
         if [ -e $NyariGPU/devfreq/adrenoboost ]; then
             echo $(cat "$NyariGPU/devfreq/adrenoboost") > "$PathModulConfig/backup/gpu_adrenoboost.txt"
             backup="pake"
-            usleep 100000
         fi
     fi
 
@@ -898,7 +882,6 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
         if [ -e $NyariGPU/devfreq/thermal_pwrlevel ]; then
             echo $(cat "$NyariGPU/devfreq/thermal_pwrlevel") > "$PathModulConfig/backup/gpu_thermal_pwrlevel.txt"
             backup="pake"
-            usleep 100000
         fi
     fi
 
@@ -907,7 +890,6 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
         if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
             echo $(cat  "/sys/kernel/dyn_fsync/Dyn_fsync_active") > "$PathModulConfig/backup/misc_Dyn_fsync_active.txt"
             backup="pake"
-            usleep 100000
         fi
     fi
 
@@ -915,7 +897,6 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
         if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
             echo $(cat  "/sys/class/misc/fsynccontrol/fsync_enabled") > "$PathModulConfig/backup/misc_class_fsync_enabled.txt"
             backup="pake"
-            usleep 100000
         fi 
     fi
 
@@ -923,7 +904,6 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
         if [ -e /sys/module/sync/parameters/fsync ]; then
             echo $(cat  "/sys/module/sync/parameters/fsync") > "$PathModulConfig/backup/misc_fsync.txt"
             backup="pake"
-            usleep 100000
         fi
     fi
 
@@ -931,7 +911,6 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
         if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
             echo $(cat  "/sys/module/sync/parameters/fsync_enabled") > "$PathModulConfig/backup/misc_module_fsync_enabled.txt"
             backup="pake"
-            usleep 100000
         fi
     fi
     # log prop bakcup :D
@@ -940,98 +919,84 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
     if [ ! -e $PathModulConfig/backup/prop_debug.atrace.tags.enableflags.txt ]; then
         echo $(getprop  debug.atrace.tags.enableflags) > "$PathModulConfig/backup/prop_debug.atrace.tags.enableflags.txt"
         backup="pake"
-        usleep 100000
     fi
 
     # profiler.force_disable_ulog=true
     if [ ! -e $PathModulConfig/backup/prop_profiler.force_disable_ulog.txt ]; then
         echo $(getprop  profiler.force_disable_ulog) > "$PathModulConfig/backup/prop_profiler.force_disable_ulog.txt"
         backup="pake"
-        usleep 100000
     fi
 
     # profiler.force_disable_err_rpt=true
     if [ ! -e $PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt ]; then
         echo $(getprop  profiler.force_disable_err_rpt) > "$PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt"
         backup="pake"
-        usleep 100000
     fi
 
     # profiler.force_disable_err_rpt=1
     if [ ! -e $PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt ]; then
         echo $(getprop  profiler.force_disable_err_rpt) > "$PathModulConfig/backup/prop_profiler.force_disable_err_rpt.txt"
         backup="pake"
-        usleep 100000
     fi
 
     # ro.config.nocheckin=1
     if [ ! -e $PathModulConfig/backup/prop_ro.config.nocheckin.txt ]; then
         echo $(getprop  ro.config.nocheckin) > "$PathModulConfig/backup/prop_ro.config.nocheckin.txt"
         backup="pake"
-        usleep 100000
     fi
 
     # debugtool.anrhistory=0
     if [ ! -e $PathModulConfig/backup/prop_debugtool.anrhistory.txt ]; then
         echo $(getprop  debugtool.anrhistory) > "$PathModulConfig/backup/prop_debugtool.anrhistory.txt"
         backup="pake"
-        usleep 100000
     fi
 
     # sys.display-size
     if [ ! -e $PathModulConfig/backup/prop_sys.display-size.txt ]; then
         echo $(getprop  sys.display-size) > "$PathModulConfig/backup/prop_sys.display-size.txt"
         backup="pake"
-        usleep 100000
     fi
 
     # media.stagefright.enable-http
     if [ ! -e $PathModulConfig/backup/prop_media.stagefright.enable-http.txt ]; then
         echo $(getprop  media.stagefright.enable-http) > "$PathModulConfig/backup/prop_media.stagefright.enable-http.txt"
         backup="pake"
-        usleep 100000
     fi
 
     # media.stagefright.enable-player
     if [ ! -e $PathModulConfig/backup/prop_media.stagefright.enable-player.txt ]; then
         echo $(getprop  media.stagefright.enable-player) > "$PathModulConfig/backup/prop_media.stagefright.enable-player.txt"
         backup="pake"
-        usleep 100000
     fi
 
     # media.stagefright.enable-meta
     if [ ! -e $PathModulConfig/backup/prop_media.stagefright.enable-meta.txt ]; then
         echo $(getprop  media.stagefright.enable-meta) > "$PathModulConfig/backup/prop_media.stagefright.enable-meta.txt"
         backup="pake"
-        usleep 100000
     fi
 
     # media.stagefright.enable-aac
     if [ ! -e $PathModulConfig/backup/prop_media.stagefright.enable-aac.txt ]; then
         echo $(getprop  media.stagefright.enable-aac) > "$PathModulConfig/backup/prop_media.stagefright.enable-aac.txt"
         backup="pake"
-        usleep 100000
     fi
 
     # media.stagefright.enable-qcp
     if [ ! -e $PathModulConfig/backup/prop_media.stagefright.enable-qcp.txt ]; then
         echo $(getprop  media.stagefright.enable-qcp) > "$PathModulConfig/backup/prop_media.stagefright.enable-qcp.txt"
         backup="pake"
-        usleep 100000
     fi
 
     # media.stagefright.enable-scan
     if [ ! -e $PathModulConfig/backup/prop_media.stagefright.enable-scan.txt ]; then
         echo $(getprop  media.stagefright.enable-scan) > "$PathModulConfig/backup/prop_media.stagefright.enable-scan.txt"
         backup="pake"
-        usleep 100000
     fi
 
     # media.stagefright.enable-record
     if [ ! -e $PathModulConfig/backup/prop_media.stagefright.enable-record.txt ]; then
         echo $(getprop  media.stagefright.enable-record) > "$PathModulConfig/backup/prop_media.stagefright.enable-record.txt"
         backup="pake"
-        usleep 100000
     fi
     
     # backup data dolo boss end
@@ -1045,9 +1010,8 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
             if [ ! -e $GetPath ]; then
                 echo "$GetData" > "$GetPath"
                 backup="pake"
-                usleep 100000
+
             fi
-            usleep 100000
         fi 
     done
     if [ -e $PathModulConfig/backup/zram_disksize.txt ];then
@@ -1108,66 +1072,52 @@ elif [ "$FromTerminal" == "ya" ];then
         if [ ! -e $PathModulConfig/backup/prop_ro.com.google.locationfeatures.txt ]; then
             echo $(getprop  ro.com.google.locationfeatures) > "$PathModulConfig/backup/prop_ro.com.google.locationfeatures.txt"
             backup="pake"
-            usleep 100000
         fi
 
         # ro.com.google.networklocation=0
         if [ ! -e $PathModulConfig/backup/prop_ro.com.google.networklocation.txt ]; then
             echo $(getprop  ro.com.google.networklocation) > "$PathModulConfig/backup/prop_ro.com.google.networklocation.txt"
             backup="pake"
-            usleep 100000
         fi
 
         # profiler.debugmonitor=false
         if [ ! -e $PathModulConfig/backup/prop_profiler.debugmonitor.txt ]; then
             echo $(getprop  profiler.debugmonitor) > "$PathModulConfig/backup/prop_profiler.debugmonitor.txt"
             backup="pake"
-            usleep 100000
         fi
 
         # profiler.launch=false
         if [ ! -e $PathModulConfig/backup/prop_profiler.launch.txt ]; then
             echo $(getprop  profiler.launch) > "$PathModulConfig/backup/prop_profiler.launch.txt"
             backup="pake"
-            usleep 100000
         fi
 
         # profiler.hung.dumpdobugreport=false
         if [ ! -e $PathModulConfig/backup/prop_profiler.hung.dumpdobugreport.txt ]; then
             echo $(getprop  profiler.hung.dumpdobugreport) > "$PathModulConfig/backup/prop_profiler.hung.dumpdobugreport.txt"
             backup="pake"
-            usleep 100000
         fi
 
         # persist.service.pcsync.enable=0
         if [ ! -e $PathModulConfig/backup/prop_persist.service.pcsync.enable.txt ]; then
             echo $(getprop  persist.service.pcsync.enable) > "$PathModulConfig/backup/prop_persist.service.pcsync.enable.txt"
             backup="pake"
-            usleep 100000
         fi
 
         # persist.service.lgospd.enable=0
         if [ ! -e $PathModulConfig/backup/prop_persist.service.lgospd.enable.txt ]; then
             echo $(getprop  persist.service.lgospd.enable) > "$PathModulConfig/backup/prop_persist.service.lgospd.enable.txt"
             backup="pake"
-            usleep 100000
         fi
 
         # persist.sys.purgeable_assets=1
         if [ ! -e $PathModulConfig/backup/prop_persist.sys.purgeable_assets.txt ]; then
             echo $(getprop  persist.sys.purgeable_assets) > "$PathModulConfig/backup/prop_persist.sys.purgeable_assets.txt"
             backup="pake"
-            usleep 100000
         fi
     fi
     # ram management 
     if [ "$(cat $PathModulConfig/custom_ram_management.txt)" != "0" ];then
-        if [ ! -e $PathModulConfig/backup/ram_enable_adaptive_lmk.txt ];then
-            if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ];then
-                echo $(cat "/sys/module/lowmemorykiller/parameters/enable_adaptive_lmk") > "$PathModulConfig/backup/ram_enable_adaptive_lmk.txt"  
-                backup="pake"
-            fi
-        fi
         if [ ! -e $PathModulConfig/backup/ram_debug_level.txt ];then
             if [ -e /sys/module/lowmemorykiller/parameters/debug_level ];then
                 echo $(cat "/sys/module/lowmemorykiller/parameters/debug_level") > "$PathModulConfig/backup/ram_debug_level.txt"  
@@ -1190,4 +1140,7 @@ elif [ "$FromTerminal" == "ya" ];then
 fi
 if [ $GenerateApp == "ya" ];then
     GetAppAndGames
+fi
+if [ "$changeSE" == "ya" ];then
+    setenforce 1
 fi
