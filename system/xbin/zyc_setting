@@ -24,7 +24,7 @@ if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
     echo $merahHitam"please type 'su' first -_-"$ResetWarna
     echo ""
     echo "Exit after :"
-    for timeExit in 3s 2s 1s 0s ;
+    for timeExit in 3s 2s 1s ;
     do
         echo "$timeExit"
         usleep 1000000
@@ -1106,7 +1106,7 @@ ListMenu(){
         read -n 3 -s -r 
         usleep 100000
         ListMenu
-    elif [ "$pilihan" == "mal" ];then
+    elif [ "$pilihan" == "mag" ];then
         Perubahan="ya"
         NoApp=1
         GetApp=$ModPath/zyc_app_list.txt
@@ -1121,7 +1121,8 @@ ListMenu(){
         for appList in `pm list package -3 | sed 's/package:*//g'`
         do
             if [ -z $( grep "$appList" "$PathModulConfigAi/list_app_auto_turbo.txt" ) ];then
-                nameApp=$(aapt d badging "$appList" | awk -F: ' $1 == "application-label" {print $2}' | sed "s/'*//g")
+                checkApp=$(pm list packages -f "$appList" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g')
+                nameApp=$(aapt d badging "$checkApp" | awk -F: ' $1 == "application-label" {print $2}' | sed "s/'*//g")
                 echo "[ $NoApp ] $appList ( $nameApp )" | tee -a $GetApp
                 NoApp=$(($NoApp+1))
             fi
@@ -1331,7 +1332,7 @@ exitSetting(){
         fi
         echo "selamat tinggal :v "
         echo "Exit after :"
-        for timeExit in 3s 2s 1s 0s ;
+        for timeExit in 3s 2s 1s ;
         do
             echo "$timeExit"
             usleep 1000000
