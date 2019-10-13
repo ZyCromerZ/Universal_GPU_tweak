@@ -3,6 +3,7 @@
 # tweak gpu
 # this is for auto mode :v 
 # prepare function
+# kampet
 StillRunning="yes"
 fromBoot="no"
 if [ "$1" == "fromBoot" ];then
@@ -77,8 +78,6 @@ runScript(){
     fi
     if [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ];then
         BASEDIR=/system/etc/ZyC_Ai
-    else
-        exit 
     fi;
     MissingFile="kaga"
     # check service sh config start
@@ -225,7 +224,6 @@ runScript(){
         else
             nohup sh /system/etc/ZyC_Ai/ai_mode.sh & 
         fi
-        exit 
     fi
     StatusModul=$(cat "$PathModulConfig/status_modul.txt");
     getAppName()
@@ -512,7 +510,6 @@ runScript(){
         echo '0' > $PathModulConfigAi/ai_status.txt
         StillRunning="no"
     fi
-    
 }
 ErrorGet=$(runScript 2>&1 1>/dev/null)
 if [ ! -z "$ErrorGet" ];then

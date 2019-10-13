@@ -4,6 +4,8 @@
 # you can try on off my feature
 # prepare function
 # sleep 2s
+# sialan
+RunAi="No"
 if [ ! -e /data/mod_path.txt ]; then
     sh $ModulPath/ZyC_Turbo/initialize.sh & wait
 fi
@@ -192,12 +194,6 @@ runScript(){
         if [ "$MissingFile" == "iya" ]; then
             sh $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
             sh $ModulPath/ZyC_Turbo/initialize.sh & wait
-            if [ "$FromAi" == "ya" ];then
-                exit
-            else
-                nohup sh $ModulPath/ZyC_Turbo/service.sh &
-            fi
-            exit
         fi
     # end log backup
     SetOff(){
@@ -1188,54 +1184,15 @@ runScript(){
                 if [ "$AiStatus" == "1" ];then
                     echo "starting ai mode . . . " | tee -a $saveLog
                     echo "  --- --- --- --- --- " | tee -a $saveLog
-                    if [ -e "$PathModulConfigAi/ai_status.txt" ];then
-                        rm $PathModulConfigAi/list_app_auto_turbo.txt
-                        if [ -e "$PathModulConfigAi/wait_time_off.txt" ];then
-                            sleep "$(cat "$PathModulConfigAi/wait_time_off.txt")"
-                        else
-                            sleep 3
-                        fi
-                        sleep 1
-                        if [ ! -e "$PathModulConfigAi/list_app_auto_turbo.txt" ];then
-                            sh $ModulPath/ZyC_Turbo/initialize.sh "App" & wait
-                            nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
-                        fi
-                    fi
-                    exit
+                    RunAi="Yes"
                 elif [ "$AiStatus" == "2" ];then
                     echo "re - run ai mode . . . " | tee -a $saveLog
                     echo "  --- --- --- --- --- " | tee -a $saveLog
-                    if [ -e "$PathModulConfigAi/ai_status.txt" ];then
-                        rm $PathModulConfigAi/list_app_auto_turbo.txt
-                        if [ -e "$PathModulConfigAi/wait_time_off.txt" ];then
-                            sleep "$(cat "$PathModulConfigAi/wait_time_off.txt")"
-                        else
-                            sleep 3
-                        fi
-                        sleep 1
-                        if [ ! -e "$PathModulConfigAi/list_app_auto_turbo.txt" ];then
-                            sh $ModulPath/ZyC_Turbo/initialize.sh "App" & wait
-                            nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
-                        fi
-                    fi
-                    exit
+                    RunAi="Yes"
                 elif [ "$AiStatus" == "3" ];then
                     echo "deactive ai mode . . . " | tee -a $saveLog
                     echo "  --- --- --- --- --- " | tee -a $saveLog
-                    if [ -e "$PathModulConfigAi/ai_status.txt" ];then
-                        rm $PathModulConfigAi/list_app_auto_turbo.txt
-                        if [ -e "$PathModulConfigAi/wait_time_off.txt" ];then
-                            sleep "$(cat "$PathModulConfigAi/wait_time_off.txt")"
-                        else
-                            sleep 3
-                        fi
-                        sleep 1
-                        if [ ! -e "$PathModulConfigAi/list_app_auto_turbo.txt" ];then
-                            sh $ModulPath/ZyC_Turbo/initialize.sh "App" & wait
-                            nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
-                        fi
-                    fi
-                    exit
+                    RunAi="Yes"
                 elif [ "$AiStatus" == "0" ];then
                     echo "ai status off"| tee -a $saveLog;
                     echo "  --- --- --- --- --- " | tee -a $saveLog
@@ -1247,11 +1204,14 @@ runScript(){
             fi
         fi
     fi
-    echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog;
-    echo "  --- --- --- --- --->> " | tee -a $saveLog
 }
 ErrorGet=$(runScript 2>&1 1>/dev/null)
 if [ ! -z "$ErrorGet" ];then
     echo -e $ErrorGet | tee -a $Path/ZyC_Turbo.running.log ;
 fi
+if [ "$RunAi" == "Yes" ];then
+    nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
+fi
+echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog;
+echo "  --- --- --- --- --->> " | tee -a $saveLog
 exit
