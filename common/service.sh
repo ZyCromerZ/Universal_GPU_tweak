@@ -4,36 +4,41 @@
 # you can try on off my feature
 # prepare function
 # sleep 2s
+if [ ! -e /data/mod_path.txt ]; then
+    sh $ModulPath/ZyC_Turbo/initialize.sh & wait
+fi
+ModPath=$(cat /data/mod_path.txt)
+Path=$ModPath/modul_mantul/ZyC_mod
+magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
+GetVersion=$($magisk -c | grep -Eo '[0-9]{2}\.[0-9]+')
+case "$GetVersion" in
+'15.'[1-9]*) # Version 15.1 - 15.9
+    ModulPath=/sbin/.core/img
+;;
+'16.'[1-9]*) # Version 16.1 - 16.9
+    ModulPath=/sbin/.core/img
+;;
+'17.'[1-3]*) # Version 17.1 - 17.3
+    ModulPath=/sbin/.core/img
+;;
+'17.'[4-9]*) # Version 17.4 - 17.9
+    ModulPath=/sbin/.magisk/img
+;;
+'18.'[0-9]*) # Version 18.x
+    ModulPath=/sbin/.magisk/img
+;;
+'19.'[0-9a-zA-Z]*) # Version 19.x
+    ModulPath=/data/adb/modules
+;;
+'20.'[0-9a-zA-Z]*) # Version 20.x
+    ModulPath=/data/adb/modules
+;;
+*)
+    echo "unsupported magisk version detected,fail" | tee -a $Path/ZyC_Turbo.running.log 
+    exit;
+;;
+esac
 runScript(){
-    magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
-    GetVersion=$($magisk -c | grep -Eo '[0-9]{2}\.[0-9]+')
-    case "$GetVersion" in
-    '15.'[1-9]*) # Version 15.1 - 15.9
-        ModulPath=/sbin/.core/img
-    ;;
-    '16.'[1-9]*) # Version 16.1 - 16.9
-        ModulPath=/sbin/.core/img
-    ;;
-    '17.'[1-3]*) # Version 17.1 - 17.3
-        ModulPath=/sbin/.core/img
-    ;;
-    '17.'[4-9]*) # Version 17.4 - 17.9
-        ModulPath=/sbin/.magisk/img
-    ;;
-    '18.'[0-9]*) # Version 18.x
-        ModulPath=/sbin/.magisk/img
-    ;;
-    '19.'[0-9a-zA-Z]*) # Version 19.x
-        ModulPath=/data/adb/modules
-    ;;
-    '20.'[0-9a-zA-Z]*) # Version 20.x
-        ModulPath=/data/adb/modules
-    ;;
-    *)
-        echo "unsupported magisk version detected,fail" | tee -a $Path/ZyC_Turbo.running.log 
-        exit;
-    ;;
-    esac
     FromTerminal="tidak";
     FromAi="tidak"
     if [ ! -z "$1" ];then
@@ -42,9 +47,9 @@ runScript(){
         fi
     fi
     if [ "$FromTerminal" == "tidak" ];then
-        sh $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait > /dev/null 2>&1
+        sh $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
         usleep 5000000
-        sh $ModulPath/ZyC_Turbo/initialize.sh "FromTerminal" & wait > /dev/null 2>&1
+        sh $ModulPath/ZyC_Turbo/initialize.sh & wait
     fi;
     if [ ! -z "$2" ];then
         if [ "$2" == "Ai" ];then
@@ -66,12 +71,6 @@ runScript(){
     fi
     MissingFile="kaga"
     # Path=/sdcard/modul_mantul/ZyC_mod
-    if [ ! -e /data/mod_path.txt ]; then
-        echo "/data/media/0" > /data/mod_path.txt
-    fi
-    ModPath=$(cat /data/mod_path.txt)
-
-    Path=$ModPath/modul_mantul/ZyC_mod
     if [ ! -d $Path/ZyC_Ai ]; then
         MissingFile="iya"
     fi
@@ -81,7 +80,7 @@ runScript(){
     fi
     PathModulConfig=$Path/ZyC_Turbo_config
 
-    if [ -e $Path/ZyC_Turbo.log ]; then
+    if [ -e "$Path/ZyC_Turbo.log" ]; then
         rm $Path/ZyC_Turbo.log
     fi
     saveLog=$Path/ZyC_Turbo.log
@@ -97,101 +96,102 @@ runScript(){
     fi
     echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1
     # status modul
-    if [ ! -e $PathModulConfig/status_modul.txt ]; then
+    if [ ! -e "$PathModulConfig/status_modul.txt" ]; then
         MissingFile="iya"
     fi
-    GetMode=$(cat $PathModulConfig/status_modul.txt)
+    GetMode=$(cat "$PathModulConfig/status_modul.txt")
 
     # mode render
-    if [ ! -e $PathModulConfig/mode_render.txt ]; then
+    if [ ! -e "$PathModulConfig/mode_render.txt" ]; then
         MissingFile="iya"
     fi
-    RenderMode=$(cat $PathModulConfig/mode_render.txt)
+    RenderMode=$(cat "$PathModulConfig/mode_render.txt")
 
     # max fps nya
-    if [ ! -e $PathModulConfig/total_fps.txt ]; then
+    if [ ! -e "$PathModulConfig/total_fps.txt" ]; then
         MissingFile="iya"
     fi
-    SetRefreshRate=$(cat $PathModulConfig/total_fps.txt)
+    SetRefreshRate=$(cat "$PathModulConfig/total_fps.txt")
 
     # Status Log nya
-    if [ ! -e $PathModulConfig/disable_log_system.txt ]; then
+    if [ ! -e "$PathModulConfig/disable_log_system.txt" ]; then
         MissingFile="iya"
     fi
-    LogStatus=$(cat $PathModulConfig/disable_log_system.txt)
+    LogStatus=$(cat "$PathModulConfig/disable_log_system.txt")
 
     # fast charging
-    if [ ! -e $PathModulConfig/fastcharge.txt ]; then
+    if [ ! -e "$PathModulConfig/fastcharge.txt" ]; then
         MissingFile="iya"
     fi
-    FastCharge=$(cat $PathModulConfig/fastcharge.txt)
+    FastCharge=$(cat "$PathModulConfig/fastcharge.txt")
 
     # setting adrenoboost
     GpuBooster="not found"
     if [ -e $NyariGPU/devfreq/adrenoboost ];then
-        if [ ! -e $PathModulConfig/GpuBooster.txt ]; then
+        if [ ! -e "$PathModulConfig/GpuBooster.txt" ]; then
             MissingFile="iya"
         fi
-        GpuBooster=$(cat $PathModulConfig/GpuBooster.txt)
+        GpuBooster=$(cat "$PathModulConfig/GpuBooster.txt")
     fi
 
     # setting fsync
-    if [ ! -e $PathModulConfig/fsync_mode.txt ]; then
+    if [ ! -e "$PathModulConfig/fsync_mode.txt" ]; then
         MissingFile="iya"
     fi
-    fsyncMode=$(cat $PathModulConfig/fsync_mode.txt)
+    fsyncMode=$(cat "$PathModulConfig/fsync_mode.txt")
 
     # setting custom Ram Management
-    if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
+    if [ ! -e "$PathModulConfig/custom_ram_management.txt" ]; then
         MissingFile="iya"
     fi
-    CustomRam=$(cat $PathModulConfig/custom_ram_management.txt)
+    CustomRam=$(cat "$PathModulConfig/custom_ram_management.txt")
 
     
-    if [ ! -e $PathModulConfig/custom_ram_management_adj.txt ]; then
+    if [ ! -e "$PathModulConfig/custom_ram_management_adj.txt" ]; then
          MissingFile="iya"
     fi
     CustomRamAdj=$(cat "$PathModulConfig/custom_ram_management_adj.txt")
 
     # GMS DOZE
-    if [ ! -e $PathModulConfig/gms_doze.txt ]; then
+    if [ ! -e "$PathModulConfig/gms_doze.txt" ]; then
         MissingFile="iya"
     fi
-    GMSDoze=$(cat $PathModulConfig/gms_doze.txt)
+    GMSDoze=$(cat "$PathModulConfig/gms_doze.txt")
 
     # Zram
-    if [ ! -e $PathModulConfig/zram.txt ]; then
+    if [ ! -e "$PathModulConfig/zram.txt" ]; then
         MissingFile="iya"
     fi
-    CustomZram=$(cat $PathModulConfig/zram.txt)
+    CustomZram=$(cat "$PathModulConfig/zram.txt")
     # swappiness
-    if [ ! -e $PathModulConfig/swapinnes.txt ]; then
+    if [ ! -e "$PathModulConfig/swapinnes.txt" ]; then
         MissingFile="iya"
     fi
-    Swapinnes=$(cat $PathModulConfig/swapinnes.txt)
+    Swapinnes=$(cat "$PathModulConfig/swapinnes.txt")
 
     # optimize zram
-    if [ ! -e $PathModulConfig/zram_optimizer.txt ]; then
+    if [ ! -e "$PathModulConfig/zram_optimizer.txt" ]; then
         MissingFile="iya"
     fi
-    ZramOptimizer=$(cat $PathModulConfig/zram_optimizer.txt)
+    ZramOptimizer=$(cat "$PathModulConfig/zram_optimizer.txt")
 
     # dns
-    if [ ! -e $PathModulConfig/dns.txt ]; then
+    if [ ! -e "$PathModulConfig/dns.txt" ]; then
         MissingFile="iya"
     fi
-    GetDnsType=$(cat $PathModulConfig/dns.txt)
+    GetDnsType=$(cat "$PathModulConfig/dns.txt")
 
-    if [ ! -e $PathModulConfig/notes_en.txt ]; then
+    if [ ! -e "$PathModulConfig/notes_en.txt" ]; then
         # echo "please read this xD \nyou can set mode.txt to:\n- off \n- on \n- turbo \nvalue must same as above without'-'\n\nchange mode_render.txt to:\n-  opengl \n-  skiagl \n-  skiavk \n\n note:\n-skiavk = Vulkan \n-skiagl = OpenGL (SKIA)\ndont edit total_fps.txt still not tested" > $PathModulConfig/notes.txt
         MissingFile="iya"
     fi
-    if [ ! -e $PathModulConfig/notes_id.txt ]; then
+    if [ ! -e "$PathModulConfig/notes_id.txt" ]; then
         MissingFile="iya"
     fi
     # log backup nya
         if [ "$MissingFile" == "iya" ]; then
-            sh $ModulPath/ZyC_Turbo/initialize.sh & wait > /dev/null 2>&1
+            sh $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
+            sh $ModulPath/ZyC_Turbo/initialize.sh & wait
             if [ "$FromAi" == "ya" ];then
                 exit
             else
@@ -281,10 +281,10 @@ runScript(){
         #fps limit ke 120
         echo 'use "turbo" setting. . .' | tee -a $saveLog;
         setprop persist.sys.NV_FPSLIMIT 120
-        if  [ $NyariGPU != '' ];then
+        if  [ "$NyariGPU" != '' ];then
             if [ -e $NyariGPU/min_pwrlevel ]; then
                 if [ -e $NyariGPU/num_pwrlevels ];then
-                    numPwrlevels=$(cat $NyariGPU/num_pwrlevels)
+                    numPwrlevels=$(cat "$NyariGPU/num_pwrlevels")
                     echo $(($numPwrlevels-2)) > "$NyariGPU/min_pwrlevel"
                 fi
             fi
@@ -364,13 +364,13 @@ runScript(){
             fi
             if [ -e $NyariGPU/max_pwrlevel ]; then
                 if [ -e $NyariGPU/num_pwrlevels ];then
-                    numPwrlevels=$(cat $NyariGPU/num_pwrlevels)
+                    numPwrlevels=$(cat "$NyariGPU/num_pwrlevels")
                     echo $((($numPwrlevels/2)-1)) > "$NyariGPU/max_pwrlevel"
                 fi
             fi
             if [ -e $NyariGPU/min_pwrlevel ]; then
                 if [ -e $NyariGPU/num_pwrlevels ];then
-                    numPwrlevels=$(cat $NyariGPU/num_pwrlevels)
+                    numPwrlevels=$(cat "$NyariGPU/num_pwrlevels")
                     echo $(($numPwrlevels-1)) > "$NyariGPU/min_pwrlevel"
                 fi
             fi
@@ -399,25 +399,25 @@ runScript(){
     }
     systemFsync(){
         echo 'use fsync system setting . . .' | tee -a $saveLog;
-        if [ ! -e $PathModulConfig/backup/misc_Dyn_fsync_active.txt ]; then
+        if [ ! -e "$PathModulConfig/backup/misc_Dyn_fsync_active".txt ]; then
             if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
                 echo $(cat  "$PathModulConfig/backup/misc_Dyn_fsync_active.txt") > /sys/kernel/dyn_fsync/Dyn_fsync_active
             fi
         fi
 
-        if [ ! -e $PathModulConfig/backup/misc_class_fsync_enabled.txt ]; then
+        if [ ! -e "$PathModulConfig/backup/misc_class_fsync_enabled".txt ]; then
             if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
                 echo $(cat  "$PathModulConfig/backup/misc_class_fsync_enabled.txt") > /sys/class/misc/fsynccontrol/fsync_enabled
             fi 
         fi
 
-        if [ ! -e $PathModulConfig/backup/misc_fsync.txt ]; then
+        if [ ! -e "$PathModulConfig/backup/misc_fsync".txt ]; then
             if [ -e /sys/module/sync/parameters/fsync ]; then
                 echo $(cat  "$PathModulConfig/backup/misc_fsync.txt") > /sys/module/sync/parameters/fsync
             fi
         fi
 
-        if [ ! -e $PathModulConfig/backup/misc_module_fsync_enabled.txt ]; then
+        if [ ! -e "$PathModulConfig/backup/misc_module_fsync_enabled".txt ]; then
             if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
                 echo $(cat  "$PathModulConfig/backup/misc_module_fsync_enabled.txt") > /sys/module/sync/parameters/fsync_enabled
             fi
@@ -633,13 +633,13 @@ runScript(){
                             chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
                             setprop lmk.autocalc true
                         fi
-                        if [ -e $PathModulConfig/backup/ram_debug_level.txt ] && [ -e /sys/module/lowmemorykiller/parameters/debug_level ];then
+                        if [ -e "$PathModulConfig/backup/ram_debug_level".txt ] && [ -e /sys/module/lowmemorykiller/parameters/debug_level ];then
                             chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
                             echo "$(cat "$PathModulConfig/backup/ram_debug_level.txt")" > "/sys/module/lowmemorykiller/parameters/debug_level"
                             chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
                             # rm $PathModulConfig/backup/ram_debug_level.txt
                         fi
-                        if [ -e $PathModulConfig/backup/ram_adj.txt ] && [ -e /sys/module/lowmemorykiller/parameters/adj ];then
+                        if [ -e "$PathModulConfig/backup/ram_adj".txt ] && [ -e /sys/module/lowmemorykiller/parameters/adj ];then
                             chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
                             # echo $(cat "$PathModulConfig/backup/ram_adj.txt") > "/sys/module/lowmemorykiller/parameters/adj"
                             #ADJ1=0; ADJ2=100; ADJ3=200; ADJ4=300; ADJ5=900; ADJ6=906 # STOCK
@@ -647,18 +647,18 @@ runScript(){
                             chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
                             rm $PathModulConfig/backup/ram_adj.txt
                         fi
-                        if [ -e $PathModulConfig/backup/ram_minfree.txt ] && [ -e /sys/module/lowmemorykiller/parameters/minfree ];then
+                        if [ -e "$PathModulConfig/backup/ram_minfree".txt ] && [ -e /sys/module/lowmemorykiller/parameters/minfree ];then
                             chmod 0666 /sys/module/lowmemorykiller/parameters/minfree;
                             echo "$(cat "$PathModulConfig/backup/ram_minfree.txt")" > "/sys/module/lowmemorykiller/parameters/minfree"
                             chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
                             rm $PathModulConfig/backup/ram_minfree.txt
                         fi
-                        if [ -e $PathModulConfig/backup/zram_vm.min_free_kbytes.txt ];then
+                        if [ -e "$PathModulConfig/backup/zram_vm".min_free_kbytes.txt ];then
                             sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.min_free_kbytes.txt") 
                         fi
                         # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog;
-                else
-                    sh $ModulPath/ZyC_Turbo/initialize.sh & wait > /dev/null 2>&1
+                else 
+                    sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
                     echo "using custom ram management method $CustomRam" | tee -a $saveLog;
                     StopModify="no"
                     GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
@@ -701,7 +701,7 @@ runScript(){
                         echo "method not found" | tee -a $saveLog;
                         StopModify="yes"
                     fi;
-                    if [ $StopModify == "no" ];then
+                    if [ "$StopModify" == "no" ];then
                         if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ]; then
                             chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
                             if [ "$CustomRam" -le "4" ];then
@@ -840,7 +840,7 @@ runScript(){
                         sysctl -e -w vm.swappiness=$Swapinnes 
                         # $GetRam=$(free -g | awk '/Mem:/{print $2}');
                         # $FinalRam=$((GetRam+1));
-                        # if [ $FinalRam -ge 3 ];then
+                        # if [ "$FinalRam" -ge 3 ];then
                             sysctl -e -w vm.dirty_ratio=15
                             sysctl -e -w vm.dirty_background_ratio=3
                         # else
@@ -963,10 +963,10 @@ runScript(){
             iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 1.0.0.1:53
             iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 1.1.1.1:53
             iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 1.0.0.1:53
-            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1111]:53
-            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1001]:53
-            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1111]:53
-            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1001]:53
+            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1111]:53 > /dev/null 2>&1
+            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1001]:53 > /dev/null 2>&1
+            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1111]:53 > /dev/null 2>&1
+            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1001]:53 > /dev/null 2>&1
             # SETPROP
             setprop net.eth0.dns1 1.1.1.1
             setprop net.eth0.dns2 1.0.0.1
@@ -1059,10 +1059,10 @@ runScript(){
             iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 91.239.100.100:5353
             iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 91.239.100.100:5353
             iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 91.239.100.100:5353
-            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353
-            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353
-            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353
-            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353  
+            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353 > /dev/null 2>&1
+            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353 > /dev/null 2>&1
+            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353 > /dev/null 2>&1
+            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353 > /dev/null 2>&1
             # SETPROP
             setprop net.eth0.dns1 91.239.100.100> /dev/null 2>&1
             setprop net.eth0.dns2 91.239.100.100> /dev/null 2>&1
@@ -1106,7 +1106,7 @@ runScript(){
         #fix gms :p
         if [ "$GMSDoze" == "1" ];then
             GetBusyBox="none"
-            if [ -e $Path/ZyC_GmsDoze.log ];then
+            if [ -e "$Path/ZyC_GmsDoze.log" ];then
                 rm $Path/ZyC_GmsDoze.log
             fi
             for i in /system/bin /system/xbin /sbin /su/xbin; do
@@ -1183,22 +1183,58 @@ runScript(){
         fi
         if [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ];then
             BASEDIR=/system/etc/ZyC_Ai
-            if [ -e $PathModulConfigAi/ai_status.txt ]; then
-                AiStatus=$(cat "$PathModulConfigAi/ai_status.txt")
+            if [ -e "$PathModulConfigAi/ai_status.txt" ]; then
+                AiStatus="$(cat "$PathModulConfigAi/ai_status.txt")"
                 if [ "$AiStatus" == "1" ];then
                     echo "starting ai mode . . . " | tee -a $saveLog
                     echo "  --- --- --- --- --- " | tee -a $saveLog
-                    nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
+                    if [ -e "$PathModulConfigAi/ai_status.txt" ];then
+                        rm $PathModulConfigAi/list_app_auto_turbo.txt
+                        if [ -e "$PathModulConfigAi/wait_time_off.txt" ];then
+                            sleep "$(cat "$PathModulConfigAi/wait_time_off.txt")"
+                        else
+                            sleep 3
+                        fi
+                        sleep 1
+                        if [ ! -e "$PathModulConfigAi/list_app_auto_turbo.txt" ];then
+                            sh $ModulPath/ZyC_Turbo/initialize.sh "App" & wait
+                            nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
+                        fi
+                    fi
                     exit
                 elif [ "$AiStatus" == "2" ];then
                     echo "re - run ai mode . . . " | tee -a $saveLog
                     echo "  --- --- --- --- --- " | tee -a $saveLog
-                    nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
+                    if [ -e "$PathModulConfigAi/ai_status.txt" ];then
+                        rm $PathModulConfigAi/list_app_auto_turbo.txt
+                        if [ -e "$PathModulConfigAi/wait_time_off.txt" ];then
+                            sleep "$(cat "$PathModulConfigAi/wait_time_off.txt")"
+                        else
+                            sleep 3
+                        fi
+                        sleep 1
+                        if [ ! -e "$PathModulConfigAi/list_app_auto_turbo.txt" ];then
+                            sh $ModulPath/ZyC_Turbo/initialize.sh "App" & wait
+                            nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
+                        fi
+                    fi
                     exit
                 elif [ "$AiStatus" == "3" ];then
                     echo "deactive ai mode . . . " | tee -a $saveLog
                     echo "  --- --- --- --- --- " | tee -a $saveLog
-                    nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
+                    if [ -e "$PathModulConfigAi/ai_status.txt" ];then
+                        rm $PathModulConfigAi/list_app_auto_turbo.txt
+                        if [ -e "$PathModulConfigAi/wait_time_off.txt" ];then
+                            sleep "$(cat "$PathModulConfigAi/wait_time_off.txt")"
+                        else
+                            sleep 3
+                        fi
+                        sleep 1
+                        if [ ! -e "$PathModulConfigAi/list_app_auto_turbo.txt" ];then
+                            sh $ModulPath/ZyC_Turbo/initialize.sh "App" & wait
+                            nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
+                        fi
+                    fi
                     exit
                 elif [ "$AiStatus" == "0" ];then
                     echo "ai status off"| tee -a $saveLog;
@@ -1215,5 +1251,7 @@ runScript(){
     echo "  --- --- --- --- --->> " | tee -a $saveLog
 }
 ErrorGet=$(runScript 2>&1 1>/dev/null)
-echo $ErrorGet | tee -a $Path/ZyC_Turbo.running.log ;
+if [ ! -z "$ErrorGet" ];then
+    echo -e $ErrorGet | tee -a $Path/ZyC_Turbo.running.log ;
+fi
 exit

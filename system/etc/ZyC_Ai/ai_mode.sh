@@ -3,60 +3,61 @@
 # tweak gpu
 # this is for auto mode :v 
 # prepare function
+StillRunning="yes"
+fromBoot="no"
+if [ "$1" == "fromBoot" ];then
+    fromBoot="yes"
+    usleep 5000000
+fi
+MAGISKTMP=$ModulPath/ZyC_Turbo
+if [ ! -e /data/mod_path.txt ]; then
+    sh $ModulPath/ZyC_Turbo/initialize.sh & wait
+fi
+ModPath=$(cat /data/mod_path.txt)
+Path=$ModPath/modul_mantul/ZyC_mod
+PathModulConfigAi=$Path/ZyC_Ai
+if [ ! -d $Path/ZyC_Ai ]; then
+    mkdir -p $Path/ZyC_Ai
+fi
+PathModulConfig=$Path/ZyC_Turbo_config
+if [ ! -d $Path/ZyC_Turbo_config ]; then
+    mkdir -p $Path/ZyC_Turbo_config
+fi
+# Log AI
+# if [ -e $Path/Niqua.log ]; then
+#     #rm $Path/Niqua.log
+# fi
+AiLog=$Path/ZyC_Ai.log
+magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
+GetVersion=$($magisk -c | grep -Eo '[0-9]{2}\.[0-9]+')
+case "$GetVersion" in
+'15.'[1-9]*) # Version 15.1 - 15.9
+    ModulPath=/sbin/.core/img
+;;
+'16.'[1-9]*) # Version 16.1 - 16.9
+    ModulPath=/sbin/.core/img
+;;
+'17.'[1-3]*) # Version 17.1 - 17.3
+    ModulPath=/sbin/.core/img
+;;
+'17.'[4-9]*) # Version 17.4 - 17.9
+    ModulPath=/sbin/.magisk/img
+;;
+'18.'[0-9]*) # Version 18.x
+    ModulPath=/sbin/.magisk/img
+;;
+'19.'[0-9a-zA-Z]*) # Version 19.x
+    ModulPath=/data/adb/modules
+;;
+'20.'[0-9a-zA-Z]*) # Version 20.x
+    ModulPath=/data/adb/modules
+;;
+*)
+    echo "unsupported magisk version detected,fail" | tee -a $AiLog
+    exit 
+;;
+esac
 runScript(){
-    fromBoot="no"
-    if [ "$1" == "fromBoot" ];then
-        fromBoot="yes"
-        usleep 5000000
-    fi
-    MAGISKTMP=$ModulPath/ZyC_Turbo
-    if [ ! -e /data/mod_path.txt ]; then
-        sh $ModulPath/ZyC_Turbo/initialize.sh & wait
-    fi
-    ModPath=$(cat /data/mod_path.txt)
-    Path=$ModPath/modul_mantul/ZyC_mod
-    if [ ! -d $Path/ZyC_Ai ]; then
-        mkdir -p $Path/ZyC_Ai
-    fi
-    PathModulConfig=$Path/ZyC_Turbo_config
-    if [ ! -d $Path/ZyC_Turbo_config ]; then
-        mkdir -p $Path/ZyC_Turbo_config
-    fi
-    PathModulConfigAi=$Path/ZyC_Ai
-    # Log AI
-    # if [ -e $Path/Niqua.log ]; then
-    #     #rm $Path/Niqua.log
-    # fi
-    AiLog=$Path/ZyC_Ai.log
-    magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
-    GetVersion=$($magisk -c | grep -Eo '[0-9]{2}\.[0-9]+')
-    case "$GetVersion" in
-    '15.'[1-9]*) # Version 15.1 - 15.9
-        ModulPath=/sbin/.core/img
-    ;;
-    '16.'[1-9]*) # Version 16.1 - 16.9
-        ModulPath=/sbin/.core/img
-    ;;
-    '17.'[1-3]*) # Version 17.1 - 17.3
-        ModulPath=/sbin/.core/img
-    ;;
-    '17.'[4-9]*) # Version 17.4 - 17.9
-        ModulPath=/sbin/.magisk/img
-    ;;
-    '18.'[0-9]*) # Version 18.x
-        ModulPath=/sbin/.magisk/img
-    ;;
-    '19.'[0-9a-zA-Z]*) # Version 19.x
-        ModulPath=/data/adb/modules
-    ;;
-    '20.'[0-9a-zA-Z]*) # Version 20.x
-        ModulPath=/data/adb/modules
-    ;;
-    *)
-        echo "unsupported magisk version detected,fail" | tee -a $AiLog
-        exit 
-    ;;
-    esac
     if [ -d "/sys/class/kgsl/kgsl-3d0" ]; then
         NyariGPU="/sys/class/kgsl/kgsl-3d0"
     elif [ -d "/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0" ]; then
@@ -79,86 +80,90 @@ runScript(){
     else
         exit 
     fi;
+    MissingFile="kaga"
     # check service sh config start
-    # status modul
-    if [ ! -e $PathModulConfig/status_modul.txt ]; then
-        MissingFile="iya"
-    fi
-    # mode render
-    if [ ! -e $PathModulConfig/mode_render.txt ]; then
-        MissingFile="iya"
-    fi
-
-    # max fps nya
-    if [ ! -e $PathModulConfig/total_fps.txt ]; then
-        MissingFile="iya"
-    fi
-
-    # Status Log nya
-    if [ ! -e $PathModulConfig/disable_log_system.txt ]; then
-        MissingFile="iya"
-    fi
-
-    # fast charging
-    if [ ! -e $PathModulConfig/fastcharge.txt ]; then
-        MissingFile="iya"
-    fi
-
-    # setting adrenoboost
-    GpuBooster="not found"
-    if [ -e $NyariGPU/devfreq/adrenoboost ];then
-        if [ ! -e $PathModulConfig/GpuBooster.txt ]; then
+        if [ ! -e $PathModulConfig/status_modul.txt ]; then
             MissingFile="iya"
         fi
-    fi
 
-    # setting fsync
-    if [ ! -e $PathModulConfig/fsync_mode.txt ]; then
-        MissingFile="iya"
-    fi
+        # mode render
+        if [ ! -e $PathModulConfig/mode_render.txt ]; then
+            MissingFile="iya"
+        fi
 
-    # setting custom Ram Management
-    if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
-        MissingFile="iya"
-    fi
+        # max fps nya
+        if [ ! -e $PathModulConfig/total_fps.txt ]; then
+            MissingFile="iya"
+        fi
 
-    # GMS DOZE
-    if [ ! -e $PathModulConfig/gms_doze.txt ]; then
-        MissingFile="iya"
-    fi
+        # Status Log nya
+        if [ ! -e $PathModulConfig/disable_log_system.txt ]; then
+            MissingFile="iya"
+        fi
 
-    # Zram
-    if [ ! -e $PathModulConfig/zram.txt ]; then
-        MissingFile="iya"
-    fi
-    # swappiness
-    if [ ! -e $PathModulConfig/swapinnes.txt ]; then
-        MissingFile="iya"
-    fi
+        # fast charging
+        if [ ! -e $PathModulConfig/fastcharge.txt ]; then
+            MissingFile="iya"
+        fi
 
-    # optimize zram
-    if [ ! -e $PathModulConfig/zram_optimizer.txt ]; then
-        MissingFile="iya"
-    fi
+        # setting adrenoboost
+        if [ -e $NyariGPU/devfreq/adrenoboost ];then
+            if [ ! -e $PathModulConfig/GpuBooster.txt ]; then
+                MissingFile="iya"
+            fi
+        fi
 
-    # dns
-    if [ ! -e $PathModulConfig/dns.txt ]; then
-        MissingFile="iya"
-    fi
-    
-    if [ ! -e $PathModulConfig/notes_en.txt ]; then
-        # echo "please read this xD \nyou can set mode.txt to:\n- off \n- on \n- turbo \nvalue must same as above without'-'\n\nchange mode_render.txt to:\n-  opengl \n-  skiagl \n-  skiavk \n\n note:\n-skiavk = Vulkan \n-skiagl = OpenGL (SKIA)\ndont edit total_fps.txt still not tested" > $PathModulConfig/notes.txt
-        MissingFile="iya"
-    fi
-    if [ ! -e $PathModulConfig/notes_id.txt ]; then
-        MissingFile="iya"
-    fi
+        # setting fsync
+        if [ ! -e $PathModulConfig/fsync_mode.txt ]; then
+            MissingFile="iya"
+        fi
+
+        # setting custom Ram Management
+        if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
+            MissingFile="iya"
+        fi
+
+        
+        if [ ! -e $PathModulConfig/custom_ram_management_adj.txt ]; then
+            MissingFile="iya"
+        fi
+
+        # GMS DOZE
+        if [ ! -e $PathModulConfig/gms_doze.txt ]; then
+            MissingFile="iya"
+        fi
+
+        # Zram
+        if [ ! -e $PathModulConfig/zram.txt ]; then
+            MissingFile="iya"
+        fi
+        # swappiness
+        if [ ! -e $PathModulConfig/swapinnes.txt ]; then
+            MissingFile="iya"
+        fi
+
+        # optimize zram
+        if [ ! -e $PathModulConfig/zram_optimizer.txt ]; then
+            MissingFile="iya"
+        fi
+
+        # dns
+        if [ ! -e $PathModulConfig/dns.txt ]; then
+            MissingFile="iya"
+        fi
+
+        if [ ! -e $PathModulConfig/notes_en.txt ]; then
+            # echo "please read this xD \nyou can set mode.txt to:\n- off \n- on \n- turbo \nvalue must same as above without'-'\n\nchange mode_render.txt to:\n-  opengl \n-  skiagl \n-  skiavk \n\n note:\n-skiavk = Vulkan \n-skiagl = OpenGL (SKIA)\ndont edit total_fps.txt still not tested" > $PathModulConfig/notes.txt
+            MissingFile="iya"
+        fi
+        if [ ! -e $PathModulConfig/notes_id.txt ]; then
+            MissingFile="iya"
+        fi
     # check service.sh config done
     NotifPath="none"
     if [ -e "/system/etc/ZyC_Ai/set_notification.sh" ];then
         NotifPath=/system/etc/ZyC_Ai/set_notification.sh
     fi
-    MissingFile="kaga"
     # App trigger start
     if [ ! -e $PathModulConfigAi/list_app_auto_turbo.txt ]; then
         MissingFile="iya"
@@ -212,9 +217,10 @@ runScript(){
     fi
     aiNotifRunningStatus=$(cat "$PathModulConfigAi/ai_notif_mode_running_status.txt");
     # Set Ai Notif Mode End
-    if [ $MissingFile == "iya" ]; then
+    if [ "$MissingFile" == "iya" ]; then
         sh $ModulPath/ZyC_Turbo/initialize.sh & wait
-        if [ $fromBoot == "yes" ];then
+        if [ "$fromBoot" == "yes" ];then
+            sh $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
             nohup sh /system/etc/ZyC_Ai/ai_mode.sh "fromBoot" & 
         else
             nohup sh /system/etc/ZyC_Ai/ai_mode.sh & 
@@ -309,7 +315,7 @@ runScript(){
         fi
     }
     SetNotificationRunning(){
-        if [ "$NotifPath" != "none" ] && [ "$(cat "$PathModulConfig/status_modul.txt")" == "turbo" ] && [ $StatusModul == "turbo" ];then
+        if [ "$NotifPath" != "none" ] && [ "$(cat "$PathModulConfig/status_modul.txt")" == "turbo" ] && [ "$StatusModul" == "turbo" ];then
             if [ "$aiNotifRunning" == "1" ];then
                 sh $NotifPath "notif" "running" & wait
             elif [ "$aiNotifRunning" == "2" ];then
@@ -351,9 +357,8 @@ runScript(){
         # OFF_UNLOCKED
         # OFF_LOCKED
         # ON_LOCKED
-        # echo "$GetScreenState at : $(date +" %r")" | tee -a $AiLog
         DozeStatePath=$PathModulConfigAi/doze_state.txt
-        DozeConfig="$(cat $PathModulConfigAi/ai_doze.txt)"
+        DozeConfig="$(cat "$PathModulConfigAi/ai_doze.txt")"
         DozeState="$(cat "$DozeStatePath")"
         if [ "$DozeConfig" == "on" ];then
             GetScreenStateNFC="$( dumpsys nfc | grep 'mScreenState=' | sed 's/mScreenState=*//g' )" 
@@ -412,24 +417,24 @@ runScript(){
             if [ "$aiChange" == "1" ];then
                 GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
                 GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
-                if [ "$GpuStatus" -ge "$GpuStart" ] && [ $StatusModul != "turbo" ];then
+                if [ "$GpuStatus" -ge "$GpuStart" ] && [ "$StatusModul" != "turbo" ];then
                     setTurbo & wait
-                elif [ "$GpuStatus" -le "$GpuStop" ] && [ $StatusModul != "off" ];then
+                elif [ "$GpuStatus" -le "$GpuStop" ] && [ "$StatusModul" != "off" ];then
                     setOff & wait
                 fi
             elif [ "$aiChange" == "2" ];then
                 GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1)
-                if [ ! -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ] && [ $StatusModul == "off" ];then
+                if [ ! -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ] && [ "$StatusModul" == "off" ];then
                     echo "found $GetPackageApp on your setting . . ." | tee -a $AiLog
                     setTurbo & wait
-                elif  [ $StatusModul == "turbo" ] && [ -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
+                elif  [ "$StatusModul" == "turbo" ] && [ -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
                     setOff & wait
                 fi
             elif [ "$aiChange" == "3" ];then
                 if [ "$StatusModul" == "off" ];then
                     GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1)
                     if [ ! -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
-                        if [ $StatusModul != "turbo" ];then
+                        if [ "$StatusModul" != "turbo" ];then
                             echo "found $GetPackageApp on your setting . . ." | tee -a $AiLog
                             setTurbo & wait
                         fi
@@ -437,7 +442,7 @@ runScript(){
                         GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
                         GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
                         if [ "$GpuStatus" -ge "$GpuStart" ];then
-                            if [ $StatusModul != "turbo" ];then
+                            if [ "$StatusModul" != "turbo" ];then
                                 setTurbo & wait
                             fi
                         fi
@@ -447,7 +452,7 @@ runScript(){
                         GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
                         GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
                     if [ "$GpuStatus" -le "$GpuStop" ];then
-                        if [ $StatusModul != "off" ];then
+                        if [ "$StatusModul" != "off" ];then
                             GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1)
                             if [ -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
                                 setOff & wait
@@ -458,7 +463,7 @@ runScript(){
             fi
         fi
         if [ "$aiStatus" == "2"  ];then
-            if [ $StatusModul == "turbo" ];then
+            if [ "$StatusModul" == "turbo" ];then
                 sleep "$waitTimeOn"
             else
                 sleep "$waitTimeOff"
@@ -470,13 +475,13 @@ runScript(){
         elif [ "$aiNotifRunningStatus" == "2" ] && [ "$StatusModul" == "turbo" ];then
             GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1)
             if [ ! -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
-                if [ $StatusModul == "turbo" ];then
+                if [ "$StatusModul" == "turbo" ];then
                     SetNotificationRunning
                 fi
             fi   
         fi
         #notification when turbo mode end
-        if [ $fromBoot == "yes" ];then
+        if [ "$fromBoot" == "yes" ];then
             usleep 5000000
             sh $NotifPath "getar" "off" & wait
             sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait 
@@ -487,29 +492,33 @@ runScript(){
                 echo "  --- --- --- --- --- " | tee -a $AiLog
             fi
         fi
-        nohup sh $BASEDIR/ai_mode.sh &
     elif [ "$aiStatus" == "3" ];then
         echo 'stoping ai mode . . .'  | tee -a $AiLog
         echo "end at : $(date +" %r")" | tee -a $AiLog
         echo "  --- --- --- --- --->> " | tee -a $AiLog
         echo '0' > $PathModulConfigAi/ai_status.txt
-        # exit 
+        StillRunning="no"
     elif [ "$aiStatus" == "0" ];then
         echo "cannot start . . ."  | tee -a $AiLog
         echo "please change ai status to 1 first" | tee -a $AiLog
         echo "end at : $(date +" %r")" | tee -a $AiLog
         echo "  --- --- --- --- --->> " | tee -a $AiLog
-        # exit 
+        StillRunning="no"
     else
         echo "cannot start . . ."  | tee -a $AiLog
         echo "ai status error . . ."  | tee -a $AiLog
         echo "end at : $(date +" %r")" | tee -a $AiLog
         echo "  --- --- --- --- --->> " | tee -a $AiLog
         echo '0' > $PathModulConfigAi/ai_status.txt
-        # exit 
+        StillRunning="no"
     fi
     
 }
 ErrorGet=$(runScript 2>&1 1>/dev/null)
-echo $ErrorGet | tee -a $Path/ZyC_Ai.running.log
+if [ ! -z "$ErrorGet" ];then
+    echo -e  $ErrorGet | tee -a $Path/ZyC_Ai.running.log
+fi
+if [ "$StillRunning" == "yes" ];then
+        nohup sh $BASEDIR/ai_mode.sh &
+fi
 exit

@@ -382,7 +382,7 @@ if [ "$FromTerminal" == "tidak" ];then
     fi
     # Status Log nya
     if [ ! -e $PathModulConfig/disable_log_system.txt ]; then
-        echo 'system' > $PathModulConfig/disable_log_system.txt
+        echo '1' > $PathModulConfig/disable_log_system.txt
     fi
     # fast charging
     if [ ! -e $PathModulConfig/fastcharge.txt ]; then
@@ -985,7 +985,7 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
         fi 
     done
     if [ -e $PathModulConfig/backup/zram_disksize.txt ];then
-        if [ "$(cat $PathModulConfig/backup/zram_disksize.txt)" == "0" ];then
+        if [ "$(cat "$PathModulConfig/backup/zram_disksize.txt")" == "0" ];then
             rm $PathModulConfig/backup/zram_disksize.txt
         fi
     fi
@@ -1037,7 +1037,7 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
     fi
 elif [ "$FromTerminal" == "ya" ];then
     # disable log
-    if [ "$(cat $PathModulConfig/disable_log_system.txt)" == '1' ];then
+    if [ "$(cat "$PathModulConfig/disable_log_system.txt")" == '1' ];then
         # ro.com.google.locationfeatures=0
         if [ ! -e $PathModulConfig/backup/prop_ro.com.google.locationfeatures.txt ]; then
             echo $(getprop  ro.com.google.locationfeatures) > "$PathModulConfig/backup/prop_ro.com.google.locationfeatures.txt"
@@ -1079,7 +1079,7 @@ elif [ "$FromTerminal" == "ya" ];then
         fi
     fi
     # ram management 
-    if [ "$(cat $PathModulConfig/custom_ram_management.txt)" != "0" ];then
+    if [ "$(cat "$PathModulConfig/custom_ram_management.txt")" != "0" ];then
         if [ ! -e $PathModulConfig/backup/ram_debug_level.txt ];then
             if [ -e /sys/module/lowmemorykiller/parameters/debug_level ];then
                 echo $(cat "/sys/module/lowmemorykiller/parameters/debug_level") > "$PathModulConfig/backup/ram_debug_level.txt"  
