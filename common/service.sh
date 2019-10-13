@@ -4,87 +4,87 @@
 # you can try on off my feature
 # prepare function
 # sleep 2s
-magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
-GetVersion=$($magisk -c | grep -Eo '[0-9]{2}\.[0-9]+')
-case "$GetVersion" in
-'15.'[1-9]*) # Version 15.1 - 15.9
-	ModulPath=/sbin/.core/img
-;;
-'16.'[1-9]*) # Version 16.1 - 16.9
-	ModulPath=/sbin/.core/img
-;;
-'17.'[1-3]*) # Version 17.1 - 17.3
-	ModulPath=/sbin/.core/img
-;;
-'17.'[4-9]*) # Version 17.4 - 17.9
-	ModulPath=/sbin/.magisk/img
-;;
-'18.'[0-9]*) # Version 18.x
-	ModulPath=/sbin/.magisk/img
-;;
-'19.'[0-9a-zA-Z]*) # Version 19.x
-	ModulPath=/data/adb/modules
-;;
-'20.'[0-9a-zA-Z]*) # Version 20.x
-	ModulPath=/data/adb/modules
-;;
-*)
-    echo "unsupported magisk version detected,fail" | tee -a $Path/ZyC_Turbo.running.log 
-    exit;
-;;
-esac
-FromTerminal="tidak";
-FromAi="tidak"
-if [ ! -z "$1" ];then
-    if [ "$1" == "Terminal" ];then
-        FromTerminal="ya";
-    fi
-fi
-if [ "$FromTerminal" == "tidak" ];then
-    sh $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait > /dev/null 2>&1
-    usleep 5000000
-    sh $ModulPath/ZyC_Turbo/initialize.sh "FromTerminal" & wait > /dev/null 2>&1
-fi;
-if [ ! -z "$2" ];then
-    if [ "$2" == "Ai" ];then
-        FromAi="ya";
-    fi
-fi;
-if [ -d "/sys/class/kgsl/kgsl-3d0" ]; then
-    NyariGPU="/sys/class/kgsl/kgsl-3d0"
-elif [ -d "/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0" ]; then
-    NyariGPU="/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0"
-elif [ -d "/sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0" ]; then
-    NyariGPU="/sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
-elif [ -d "/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0" ]; then
-    NyariGPU="/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
-elif [ -d "/sys/devices/platform/*.gpu/devfreq/*.gpu" ]; then
-    NyariGPU="/sys/devices/platform/*.gpu/devfreq/*.gpu"
-else
-    NyariGPU='';
-fi
-MissingFile="kaga"
-# Path=/sdcard/modul_mantul/ZyC_mod
-if [ ! -e /data/mod_path.txt ]; then
-    echo "/data/media/0" > /data/mod_path.txt
-fi
-ModPath=$(cat /data/mod_path.txt)
-
-Path=$ModPath/modul_mantul/ZyC_mod
-if [ ! -d $Path/ZyC_Ai ]; then
-    MissingFile="iya"
-fi
-PathModulConfigAi=$Path/ZyC_Ai
-if [ ! -d $Path/ZyC_Turbo_config ]; then
-    MissingFile="iya"
-fi
-PathModulConfig=$Path/ZyC_Turbo_config
-
-if [ -e $Path/ZyC_Turbo.log ]; then
-    rm $Path/ZyC_Turbo.log
-fi
-saveLog=$Path/ZyC_Turbo.log
 runScript(){
+    magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
+    GetVersion=$($magisk -c | grep -Eo '[0-9]{2}\.[0-9]+')
+    case "$GetVersion" in
+    '15.'[1-9]*) # Version 15.1 - 15.9
+        ModulPath=/sbin/.core/img
+    ;;
+    '16.'[1-9]*) # Version 16.1 - 16.9
+        ModulPath=/sbin/.core/img
+    ;;
+    '17.'[1-3]*) # Version 17.1 - 17.3
+        ModulPath=/sbin/.core/img
+    ;;
+    '17.'[4-9]*) # Version 17.4 - 17.9
+        ModulPath=/sbin/.magisk/img
+    ;;
+    '18.'[0-9]*) # Version 18.x
+        ModulPath=/sbin/.magisk/img
+    ;;
+    '19.'[0-9a-zA-Z]*) # Version 19.x
+        ModulPath=/data/adb/modules
+    ;;
+    '20.'[0-9a-zA-Z]*) # Version 20.x
+        ModulPath=/data/adb/modules
+    ;;
+    *)
+        echo "unsupported magisk version detected,fail" | tee -a $Path/ZyC_Turbo.running.log 
+        exit;
+    ;;
+    esac
+    FromTerminal="tidak";
+    FromAi="tidak"
+    if [ ! -z "$1" ];then
+        if [ "$1" == "Terminal" ];then
+            FromTerminal="ya";
+        fi
+    fi
+    if [ "$FromTerminal" == "tidak" ];then
+        sh $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait > /dev/null 2>&1
+        usleep 5000000
+        sh $ModulPath/ZyC_Turbo/initialize.sh "FromTerminal" & wait > /dev/null 2>&1
+    fi;
+    if [ ! -z "$2" ];then
+        if [ "$2" == "Ai" ];then
+            FromAi="ya";
+        fi
+    fi;
+    if [ -d "/sys/class/kgsl/kgsl-3d0" ]; then
+        NyariGPU="/sys/class/kgsl/kgsl-3d0"
+    elif [ -d "/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0" ]; then
+        NyariGPU="/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0"
+    elif [ -d "/sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0" ]; then
+        NyariGPU="/sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
+    elif [ -d "/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0" ]; then
+        NyariGPU="/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
+    elif [ -d "/sys/devices/platform/*.gpu/devfreq/*.gpu" ]; then
+        NyariGPU="/sys/devices/platform/*.gpu/devfreq/*.gpu"
+    else
+        NyariGPU='';
+    fi
+    MissingFile="kaga"
+    # Path=/sdcard/modul_mantul/ZyC_mod
+    if [ ! -e /data/mod_path.txt ]; then
+        echo "/data/media/0" > /data/mod_path.txt
+    fi
+    ModPath=$(cat /data/mod_path.txt)
+
+    Path=$ModPath/modul_mantul/ZyC_mod
+    if [ ! -d $Path/ZyC_Ai ]; then
+        MissingFile="iya"
+    fi
+    PathModulConfigAi=$Path/ZyC_Ai
+    if [ ! -d $Path/ZyC_Turbo_config ]; then
+        MissingFile="iya"
+    fi
+    PathModulConfig=$Path/ZyC_Turbo_config
+
+    if [ -e $Path/ZyC_Turbo.log ]; then
+        rm $Path/ZyC_Turbo.log
+    fi
+    saveLog=$Path/ZyC_Turbo.log
     echo "<<--- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1
     echo "starting modules . . ." | tee -a $saveLog > /dev/null 2>&1
     echo "Version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" > /dev/null 2>&1
@@ -201,7 +201,7 @@ runScript(){
         fi
     # end log backup
     SetOff(){
-        echo 'revert setting . . .' | tee -a $saveLog > /dev/null 2>&1 ;
+        echo 'revert setting . . .' | tee -a $saveLog;
         #mengembalikan settingan ke asal :D
         setprop persist.sys.NV_FPSLIMIT 35 > /dev/null 2>&1
         resetprop --delete persist.sys.NV_FPSLIMIT > /dev/null 2>&1
@@ -252,11 +252,11 @@ runScript(){
         if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
             echo $(cat  "$PathModulConfig/backup/misc_module_fsync_enabled.txt") > "/sys/module/sync/parameters/fsync_enabled"
         fi
-        echo 'revert done . . .' | tee -a $saveLog > /dev/null 2>&1 ;
-        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+        echo 'revert done . . .' | tee -a $saveLog;
+        echo "  --- --- --- --- --- " | tee -a $saveLog
     }
     SetOn(){
-        echo 'use "on" setting. . .' | tee -a $saveLog > /dev/null 2>&1 ;
+        echo 'use "on" setting. . .' | tee -a $saveLog;
         #fps limit ke 90
         setprop persist.sys.NV_FPSLIMIT 90
         setprop persist.sys.NV_POWERMODE 1
@@ -273,13 +273,13 @@ runScript(){
                 echo "2" > "$NyariGPU/devfreq/adrenoboost"
             fi
         fi
-        echo 'use "on" done. . .' | tee -a $saveLog > /dev/null 2>&1 ;
-        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+        echo 'use "on" done. . .' | tee -a $saveLog;
+        echo "  --- --- --- --- --- " | tee -a $saveLog
 
     }
     SetTurbo(){
         #fps limit ke 120
-        echo 'use "turbo" setting. . .' | tee -a $saveLog > /dev/null 2>&1 ;
+        echo 'use "turbo" setting. . .' | tee -a $saveLog;
         setprop persist.sys.NV_FPSLIMIT 120
         if  [ $NyariGPU != '' ];then
             if [ -e $NyariGPU/min_pwrlevel ]; then
@@ -310,20 +310,20 @@ runScript(){
                 echo "1" > $NyariGPU/bus_split
             fi
         fi
-        echo 'use "turbo" done .' | tee -a $saveLog > /dev/null 2>&1 ;
-        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+        echo 'use "turbo" done .' | tee -a $saveLog;
+        echo "  --- --- --- --- --- " | tee -a $saveLog
     }
     fstrimDulu(){
-        echo "fstrim data cache & system, please wait" | tee -a $saveLog > /dev/null 2>&1 ;
-        fstrim -v /cache | tee -a $saveLog > /dev/null 2>&1 ;
-        fstrim -v /data | tee -a $saveLog > /dev/null 2>&1 ;
-        fstrim -v /system | tee -a $saveLog > /dev/null 2>&1 ;
-        echo "done ." | tee -a $saveLog > /dev/null 2>&1 ;
-        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+        echo "fstrim data cache & system, please wait" | tee -a $saveLog;
+        fstrim -v /cache | tee -a $saveLog;
+        fstrim -v /data | tee -a $saveLog;
+        fstrim -v /system | tee -a $saveLog;
+        echo "done ." | tee -a $saveLog;
+        echo "  --- --- --- --- --- " | tee -a $saveLog
     }
     disableFsync(){
         # disable fsync 
-        echo 'disable fsync . . .' | tee -a $saveLog > /dev/null 2>&1 ;
+        echo 'disable fsync . . .' | tee -a $saveLog;
         if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
             echo "0" > /sys/kernel/dyn_fsync/Dyn_fsync_active
         fi
@@ -336,12 +336,12 @@ runScript(){
         if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
             echo "N" > /sys/module/sync/parameters/fsync_enabled
         fi
-        echo 'disable done .' | tee -a $saveLog > /dev/null 2>&1 ;
-        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+        echo 'disable done .' | tee -a $saveLog;
+        echo "  --- --- --- --- --- " | tee -a $saveLog
     }
     enableFsync(){
         # enable fsync
-        echo 'enable fsync . . .' | tee -a $saveLog > /dev/null 2>&1 ;
+        echo 'enable fsync . . .' | tee -a $saveLog;
         if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
             echo "1" > /sys/kernel/dyn_fsync/Dyn_fsync_active
         fi
@@ -354,8 +354,8 @@ runScript(){
         if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
             echo "Y" > /sys/module/sync/parameters/fsync_enabled
         fi
-        echo 'enable done .' | tee -a $saveLog > /dev/null 2>&1 ;
-        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+        echo 'enable done .' | tee -a $saveLog;
+        echo "  --- --- --- --- --- " | tee -a $saveLog
     }
     LagMode(){
         if [ "$NyariGPU" != '' ];then
@@ -398,7 +398,7 @@ runScript(){
         fi
     }
     systemFsync(){
-        echo 'use fsync system setting . . .' | tee -a $saveLog > /dev/null 2>&1 ;
+        echo 'use fsync system setting . . .' | tee -a $saveLog;
         if [ ! -e $PathModulConfig/backup/misc_Dyn_fsync_active.txt ]; then
             if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
                 echo $(cat  "$PathModulConfig/backup/misc_Dyn_fsync_active.txt") > /sys/kernel/dyn_fsync/Dyn_fsync_active
@@ -422,12 +422,12 @@ runScript(){
                 echo $(cat  "$PathModulConfig/backup/misc_module_fsync_enabled.txt") > /sys/module/sync/parameters/fsync_enabled
             fi
         fi
-        echo 'use fsync system setting done .' | tee -a $saveLog > /dev/null 2>&1 ;
-        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+        echo 'use fsync system setting done .' | tee -a $saveLog;
+        echo "  --- --- --- --- --- " | tee -a $saveLog
     }
     disableLogSystem(){
     # Disable stats logging & monitoring
-        echo 'disable log and monitoring . . .' | tee -a $saveLog > /dev/null 2>&1 ;
+        echo 'disable log and monitoring . . .' | tee -a $saveLog;
         setprop debug.atrace.tags.enableflags 0 > /dev/null 2>&1
         setprop profiler.force_disable_ulog true > /dev/null 2>&1
         setprop profiler.force_disable_err_rpt true > /dev/null 2>&1
@@ -443,12 +443,12 @@ runScript(){
         setprop persist.service.pcsync.enable 0 > /dev/null 2>&1
         setprop persist.service.lgospd.enable 0 > /dev/null 2>&1
         setprop persist.sys.purgeable_assets 1 > /dev/null 2>&1
-        echo 'disable log and monitoring done .' | tee -a $saveLog > /dev/null 2>&1 ;
+        echo 'disable log and monitoring done .' | tee -a $saveLog;
         echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1
     }
     enableLogSystem(){
     # Enable stats logging & monitoring
-        echo 'enable log and monitoring . . .' | tee -a $saveLog > /dev/null 2>&1 ;
+        echo 'enable log and monitoring . . .' | tee -a $saveLog;
         setprop debug.atrace.tags.enableflags 1 > /dev/null 2>&1
         setprop profiler.force_disable_ulog false > /dev/null 2>&1
         setprop profiler.force_disable_err_rpt false > /dev/null 2>&1
@@ -464,21 +464,21 @@ runScript(){
         setprop persist.service.pcsync.enable 1 > /dev/null 2>&1
         setprop persist.service.lgospd.enable 1 > /dev/null 2>&1
         setprop persist.sys.purgeable_assets 0 > /dev/null 2>&1
-        echo 'enable log and monitoring done .' | tee -a $saveLog > /dev/null 2>&1 ;
-        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+        echo 'enable log and monitoring done .' | tee -a $saveLog;
+        echo "  --- --- --- --- --- " | tee -a $saveLog
     }
 
     # ngator mode start
         if [ "$GetMode" == 'off' ];then
             SetOff
-            echo "turn off tweak" | tee -a $saveLog > /dev/null 2>&1 ;
-            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+            echo "turn off tweak" | tee -a $saveLog;
+            echo "  --- --- --- --- --- " | tee -a $saveLog
         elif [ "$GetMode" == 'on' ];then
             SetOff
             SetOn
             # disableFsync
-            echo "setting to mode on" | tee -a $saveLog > /dev/null 2>&1 ;
-            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+            echo "setting to mode on" | tee -a $saveLog;
+            echo "  --- --- --- --- --- " | tee -a $saveLog
         elif [ "$GetMode" == 'turbo' ];then
             SetOn
             SetTurbo
@@ -486,24 +486,24 @@ runScript(){
             # disableThermal
             if [ "$fsyncMode" == "auto" ];then
                 disableFsync
-                echo "disable fysnc" | tee -a $saveLog > /dev/null 2>&1 ;
-                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                echo "disable fysnc" | tee -a $saveLog;
+                echo "  --- --- --- --- --- " | tee -a $saveLog
             fi
-            echo "swith to turbo mode" | tee -a $saveLog > /dev/null 2>&1 ;
-            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+            echo "swith to turbo mode" | tee -a $saveLog;
+            echo "  --- --- --- --- --- " | tee -a $saveLog
         elif [ "$GetMode" == 'lag' ];then
             # SetOff
             LagMode
             # disableFsync
-            echo "setting to mode lag" | tee -a $saveLog > /dev/null 2>&1 ;
-            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+            echo "setting to mode lag" | tee -a $saveLog;
+            echo "  --- --- --- --- --- " | tee -a $saveLog
         else
             SetOff
             # SetOn
             # disableFsync
-            echo "please read guide, mode $GetMode,not found autmatic set to mode off " | tee -a $saveLog > /dev/null 2>&1 ;
+            echo "please read guide, mode $GetMode,not found autmatic set to mode off " | tee -a $saveLog;
             echo 'off' > $PathModulConfig/status_modul.txt
-            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+            echo "  --- --- --- --- --- " | tee -a $saveLog
         fi
     # ngator mode end
 
@@ -511,19 +511,19 @@ runScript(){
         if [ "$FastCharge" == "1" ]; then
             if [ -e /sys/kernel/fast_charge/force_fast_charge ]; then
                 fcMethod="one";
-                echo "tying to enable fastcharging using first method" | tee -a $saveLog > /dev/null 2>&1 ;
+                echo "tying to enable fastcharging using first method" | tee -a $saveLog;
                 echo "2" > /sys/kernel/fast_charge/force_fast_charge
                 if [ "$(cat /sys/kernel/fast_charge/force_fast_charge)" == "0" ]; then
                     fcMethod="two";
-                    echo "tying to enable fastcharging using second method" | tee -a $saveLog > /dev/null 2>&1 ;
+                    echo "tying to enable fastcharging using second method" | tee -a $saveLog;
                     echo "1" > /sys/kernel/fast_charge/force_fast_charge
                 fi
                 if [ "$(cat /sys/kernel/fast_charge/force_fast_charge)" == "0" ]; then
-                    echo "fastcharge off,maybe your kernel/phone not support it" | tee -a $saveLog > /dev/null 2>&1 ;
+                    echo "fastcharge off,maybe your kernel/phone not support it" | tee -a $saveLog;
                 else
-                    echo "fastcharge on after use method $fcMethod" | tee -a $saveLog > /dev/null 2>&1 ;
+                    echo "fastcharge on after use method $fcMethod" | tee -a $saveLog;
                 fi
-                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                echo "  --- --- --- --- --- " | tee -a $saveLog
             fi
         fi  
     # enable fastcharge end
@@ -531,8 +531,8 @@ runScript(){
     # set fps ? start
         if [ "$SetRefreshRate" != "0" ];then
             setprop persist.sys.NV_FPSLIMIT $SetRefreshRate
-            echo "custom fps detected, set to $SetRefreshRate" | tee -a $saveLog > /dev/null 2>&1 ;
-            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+            echo "custom fps detected, set to $SetRefreshRate" | tee -a $saveLog;
+            echo "  --- --- --- --- --- " | tee -a $saveLog
         fi
     # set fps ? end
 
@@ -548,49 +548,49 @@ runScript(){
         if [ "$GpuBooster" != "not found" ];then
             if [ "$GpuBooster" == "0" ];then
                 echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
-                echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog > /dev/null 2>&1 ;
+                echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
             elif [ "$GpuBooster" == "1" ];then
                 echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
-                echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog > /dev/null 2>&1 ;
+                echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
             elif [ "$GpuBooster" == "2" ];then
                 echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
-                echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog > /dev/null 2>&1 ;
+                echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
             elif [ "$GpuBooster" == "3" ];then
                 echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
-                echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog > /dev/null 2>&1 ;
+                echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
             else
                 if [ "$GpuBooster" != "tweak" ];then
                     echo 'tweak' > $PathModulConfig/GpuBooster.txt
                 fi
-                echo "nice,use default this tweak GpuBoost" | tee -a $saveLog > /dev/null 2>&1 ;
+                echo "nice,use default this tweak GpuBoost" | tee -a $saveLog;
             fi
-            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+            echo "  --- --- --- --- --- " | tee -a $saveLog
         fi
     # gpu turbo end
 
-    # echo "ok beres dah . . .\n" | tee -a $saveLog > /dev/null 2>&1 ;
+    # echo "ok beres dah . . .\n" | tee -a $saveLog;
     # gpu render start
         if [ "$FromTerminal" == "ya" ];then
             if [ "$(getprop zyc.change.render)" == "belom" ];then
                 if [ "$RenderMode" == 'skiagl' ];then
                     setprop debug.hwui.renderer skiagl
-                    echo "set render gpu to OpenGL (SKIA) done" | tee -a $saveLog > /dev/null 2>&1 ;
+                    echo "set render gpu to OpenGL (SKIA) done" | tee -a $saveLog;
                 elif [ "$RenderMode" == 'skiavk' ];then
                     setprop debug.hwui.renderer skiavk
-                    echo "set render gpu to Vulkan (SKIA) done" | tee -a $saveLog > /dev/null 2>&1 ;
+                    echo "set render gpu to Vulkan (SKIA) done" | tee -a $saveLog;
                 elif [ "$RenderMode" == 'opengl' ];then
                     setprop debug.hwui.renderer opengl
-                    echo "set render gpu to OpenGL default done" | tee -a $saveLog > /dev/null 2>&1 ;
+                    echo "set render gpu to OpenGL default done" | tee -a $saveLog;
                 else
                     GetBackupGPU=$(cat "$PathModulConfig/backup/gpu_render.txt")
                     if [ -z "$GetBackupGPU" ];then
                         echo "system" > $PathModulConfig/mode_render.txt
                         setprop debug.hwui.renderer "$GetBackupGPU"
-                        echo "set render gpu to system setting" | tee -a $saveLog > /dev/null 2>&1 ;
+                        echo "set render gpu to system setting" | tee -a $saveLog;
                     fi
                 fi
                 setprop zyc.change.render "udah"
-                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1  
+                echo "  --- --- --- --- --- " | tee -a $saveLog 
             fi
         fi
     # gpu render end
@@ -599,22 +599,22 @@ runScript(){
         if [ "$FromTerminal" == "ya" ];then
             if [ "$fsyncMode" == "0" ];then
                 disableFsync
-                echo "custom fsync detected, set to disable" | tee -a $saveLog > /dev/null 2>&1 ;
-                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                echo "custom fsync detected, set to disable" | tee -a $saveLog;
+                echo "  --- --- --- --- --- " | tee -a $saveLog
             elif [ "$fsyncMode" == "1" ];then
                 enableFsync
-                echo "custom fsync detected, set to enable" | tee -a $saveLog > /dev/null 2>&1 ;
-                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                echo "custom fsync detected, set to enable" | tee -a $saveLog;
+                echo "  --- --- --- --- --- " | tee -a $saveLog
             elif [ "$fsyncMode" == "system" ];then
                 systemFsync
-                echo "use system fsync setting" | tee -a $saveLog > /dev/null 2>&1 ;
-                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                echo "use system fsync setting" | tee -a $saveLog;
+                echo "  --- --- --- --- --- " | tee -a $saveLog
             else
                 if [ "$fsyncMode" != "auto" ];then
                     systemFsync
-                    echo "fsync value error,set to by system" | tee -a $saveLog > /dev/null 2>&1 ;
+                    echo "fsync value error,set to by system" | tee -a $saveLog;
                     echo 'system' > $PathModulConfig/fsync_mode.txt
-                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                    echo "  --- --- --- --- --- " | tee -a $saveLog
                 fi
                 # disableFsync
             fi
@@ -625,9 +625,9 @@ runScript(){
         if [ "$FromTerminal" == "ya" ];then
             if [ "$(getprop zyc.change.rm)" == "belom" ];then
                 if [ "$CustomRam" == '0' ];then
-                        # echo "coming_soon :D"| tee -a $saveLog > /dev/null 2>&1 ;
+                        # echo "coming_soon :D"| tee -a $saveLog;
                         if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ]; then
-                            echo "not use custom ram management,using stock ram management" | tee -a $saveLog > /dev/null 2>&1 ;
+                            echo "not use custom ram management,using stock ram management" | tee -a $saveLog;
                             chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
                             echo "1" > "/sys/module/lowmemorykiller/parameters/enable_adaptive_lmk"
                             chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
@@ -654,35 +654,35 @@ runScript(){
                             rm $PathModulConfig/backup/ram_minfree.txt
                         fi
                         if [ -e $PathModulConfig/backup/zram_vm.min_free_kbytes.txt ];then
-                            sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.min_free_kbytes.txt")  > /dev/null 2>&1 
+                            sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.min_free_kbytes.txt") 
                         fi
-                        # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog > /dev/null 2>&1 ;
+                        # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog;
                 else
                     sh $ModulPath/ZyC_Turbo/initialize.sh & wait > /dev/null 2>&1
-                    echo "using custom ram management method $CustomRam" | tee -a $saveLog > /dev/null 2>&1 ;
+                    echo "using custom ram management method $CustomRam" | tee -a $saveLog;
                     StopModify="no"
                     GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
                     if [ "$CustomRam" == "1" ]; then # Method 1
                         ForegroundApp=$((((GetTotalRam*1/100)*1024)/4))
                         VisibleApp=$((((GetTotalRam*2/100)*1024)/4))
                         SecondaryServer=$((((GetTotalRam*3/100)*1024)/4))
-                        HiddenApp=$((((GetTotalRam*4/100)*1024)/4))
-                        ContentProvider=$((((GetTotalRam*8/100)*1024)/4))
-                        EmptyApp=$((((GetTotalRam*10/100)*1024)/4))
+                        HiddenApp=$((((GetTotalRam*5/100)*1024)/4))
+                        ContentProvider=$((((GetTotalRam*6/100)*1024)/4))
+                        EmptyApp=$((((GetTotalRam*7/100)*1024)/4))
                     elif [ "$CustomRam" == "2" ]; then # Method 2
                         ForegroundApp=$((((GetTotalRam*2/100)*1024)/4))
                         VisibleApp=$((((GetTotalRam*3/100)*1024)/4))
-                        SecondaryServer=$((((GetTotalRam*5/100)*1024)/4))
-                        HiddenApp=$((((GetTotalRam*6/100)*1024)/4))
-                        ContentProvider=$((((GetTotalRam*10/100)*1024)/4))
-                        EmptyApp=$((((GetTotalRam*12/100)*1024)/4))
+                        SecondaryServer=$((((GetTotalRam*4/100)*1024)/4))
+                        HiddenApp=$((((GetTotalRam*7/100)*1024)/4))
+                        ContentProvider=$((((GetTotalRam*8/100)*1024)/4))
+                        EmptyApp=$((((GetTotalRam*9/100)*1024)/4))
                     elif [ "$CustomRam" == "3" ]; then # Method 3
                         ForegroundApp=$((((GetTotalRam*3/100)*1024)/4))
                         VisibleApp=$((((GetTotalRam*4/100)*1024)/4))
                         SecondaryServer=$((((GetTotalRam*5/100)*1024)/4))
                         HiddenApp=$((((GetTotalRam*7/100)*1024)/4))
-                        ContentProvider=$((((GetTotalRam*11/100)*1024)/4))
-                        EmptyApp=$((((GetTotalRam*15/100)*1024)/4))
+                        ContentProvider=$((((GetTotalRam*10/100)*1024)/4))
+                        EmptyApp=$((((GetTotalRam*14/100)*1024)/4))
                     elif [ "$CustomRam" == "4" ]; then # Method 4
                         ForegroundApp=$((((GetTotalRam*4/100)*1024)/4))
                         VisibleApp=$((((GetTotalRam*5/100)*1024)/4))
@@ -694,11 +694,11 @@ runScript(){
                         ForegroundApp=$((((GetTotalRam*6/100)*1024)/4))
                         VisibleApp=$((((GetTotalRam*7/100)*1024)/4))
                         SecondaryServer=$((((GetTotalRam*8/100)*1024)/4))
-                        HiddenApp=$((((GetTotalRam*10/100)*1024)/4))
-                        ContentProvider=$((((GetTotalRam*15/100)*1024)/4))
-                        EmptyApp=$((((GetTotalRam*19/100)*1024)/4))         
+                        HiddenApp=$((((GetTotalRam*9/100)*1024)/4))
+                        ContentProvider=$((((GetTotalRam*14/100)*1024)/4))
+                        EmptyApp=$((((GetTotalRam*18/100)*1024)/4))         
                     else   
-                        echo "method not found" | tee -a $saveLog > /dev/null 2>&1 ;
+                        echo "method not found" | tee -a $saveLog;
                         StopModify="yes"
                     fi;
                     if [ $StopModify == "no" ];then
@@ -736,18 +736,18 @@ runScript(){
 
                         minFreeSet=$(($GetTotalRam*4))
                         stop perfd
-                        sysctl -e -w vm.min_free_kbytes=$minFreeSet > /dev/null 2>&1 ;
+                        sysctl -e -w vm.min_free_kbytes=$minFreeSet;
                         if [ -e /proc/sys/vm/extra_free_kbytes ]; then
-                            sysctl -e -w vm.min_free_kbytes=$(($minFreeSet/2)) > /dev/null 2>&1 ;
-                            setprop sys.sysctl.extra_free_kbytes $(($minFreeSet/2)) > /dev/null 2>&1 ;
+                            sysctl -e -w vm.min_free_kbytes=$(($minFreeSet/2));
+                            setprop sys.sysctl.extra_free_kbytes $(($minFreeSet/2));
                         fi;
                         start perfd
                     fi;
-                    # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog > /dev/null 2>&1 ;
+                    # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog;
                 fi;
                 setprop zyc.change.rm "udah"
             fi
-            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+            echo "  --- --- --- --- --- " | tee -a $saveLog
         fi
     # custom ram managent end
     # custom zram start
@@ -767,8 +767,8 @@ runScript(){
         done;
         if [ "$GetBusyBox" == "none" ];then
             StopZramSet="iya"
-            echo "need busybox to set Zram " | tee -a $saveLog > /dev/null 2>&1 
-            echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+            echo "need busybox to set Zram " | tee -a $saveLog
+            echo "  --- --- --- --- --- " | tee -a $saveLog
         else
             GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
             if [ "$CustomZram" == "1" ];then
@@ -793,18 +793,18 @@ runScript(){
                     if [ -e /dev/block/zram0 ]; then
                         setprop zyc.change.zrm "udah"
                         StopZramSet="iya"
-                        echo 'disable Zram done .' | tee -a $saveLog > /dev/null 2>&1 ;
-                        $GetBusyBox swapoff /dev/block/zram0  > /dev/null 2>&1 
-                        $GetBusyBox setprop zram.disksize 0  > /dev/null 2>&1 
-                        echo 'disable Zram done .' | tee -a $saveLog > /dev/null 2>&1 ;
-                        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                        echo 'disable Zram done .' | tee -a $saveLog;
+                        $GetBusyBox swapoff /dev/block/zram0 
+                        $GetBusyBox setprop zram.disksize 0 
+                        echo 'disable Zram done .' | tee -a $saveLog;
+                        echo "  --- --- --- --- --- " | tee -a $saveLog
                     fi;
                 fi
                 StopZramSet="iya"
             elif [ "$CustomZram" == "system" ];then
                 SetZramTo=$(cat "$PathModulConfig/backup/zram_disksize.txt")
-                echo "use Zram default system setting" | tee -a $saveLog > /dev/null 2>&1 
-                echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                echo "use Zram default system setting" | tee -a $saveLog
+                echo "  --- --- --- --- --- " | tee -a $saveLog
             fi
             if [ "$SetZramTo" == "0" ];then
                 setprop zyc.change.zrm == "udah"
@@ -814,51 +814,51 @@ runScript(){
                 if [ "$StopZramSet" == "kaga" ];then
                     stop perfd
                     if [ -e /dev/block/zram0 ]; then
-                        setprop zyc.change.zrm "udah"  > /dev/null 2>&1 
+                        setprop zyc.change.zrm "udah" 
                         FixSize=$(echo $SetZramTo |  sed "s/-*//g" )
                         GetSwapNow=$(getprop zram.disksize |  sed "s/-*//g" )
                         if [ "$FixSize" != "$GetSwapNow" ];then
-                            # echo "use Zram default system setting" | tee -a $saveLog > /dev/null 2>&1 
-                            echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog > /dev/null 2>&1 ;
-                            echo "Set Zram to $SetZramTo Bytes . . ." | tee -a $saveLog > /dev/null 2>&1 ;
-                            echo "and Swapinnes to $Swapinnes . . ." | tee -a $saveLog > /dev/null 2>&1 ;
-                            $PathBusyBox/swapoff "/dev/block/zram0"  > /dev/null 2>&1 
+                            # echo "use Zram default system setting" | tee -a $saveLog
+                            echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog;
+                            echo "Set Zram to $SetZramTo Bytes . . ." | tee -a $saveLog;
+                            echo "and Swapinnes to $Swapinnes . . ." | tee -a $saveLog;
+                            $PathBusyBox/swapoff "/dev/block/zram0" 
                             usleep 100000
                             echo "1" > /sys/block/zram0/reset
-                            echo "$FixSize" > /sys/block/zram0/disksize | tee -a $saveLog > /dev/null 2>&1 ;
-                            $PathBusyBox/mkswap "/dev/block/zram0"  > /dev/null 2>&1 
+                            echo "$FixSize" > /sys/block/zram0/disksize | tee -a $saveLog;
+                            $PathBusyBox/mkswap "/dev/block/zram0" 
                             usleep 100000
                             # setprop ro.config.zram true
                             # setprop ro.config.zram.support true
                             setprop zram.disksize $SetZramTo
-                            $PathBusyBox/swapon "/dev/block/zram0"  > /dev/null 2>&1 
+                            $PathBusyBox/swapon "/dev/block/zram0" 
                             usleep 100000
                         fi
                     fi;
                     if [ "$ZramOptimizer" == "1" ];then
-                        echo "echo optimize zram setting . . ." | tee -a $saveLog > /dev/null 2>&1 ;
-                        sysctl -e -w vm.swappiness=$Swapinnes  > /dev/null 2>&1 
+                        echo "echo optimize zram setting . . ." | tee -a $saveLog;
+                        sysctl -e -w vm.swappiness=$Swapinnes 
                         # $GetRam=$(free -g | awk '/Mem:/{print $2}');
                         # $FinalRam=$((GetRam+1));
                         # if [ $FinalRam -ge 3 ];then
-                            sysctl -e -w vm.dirty_ratio 15
-                            sysctl -e -w vm.dirty_background_ratio 3
+                            sysctl -e -w vm.dirty_ratio=15
+                            sysctl -e -w vm.dirty_background_ratio=3
                         # else
                         #     sysctl -e -w vm.dirty_ratio 20
                         #     sysctl -e -w vm.dirty_background_ratio 5
                         # fi
-                        sysctl -e -w vm.drop_caches=2  > /dev/null 2>&1 
-                        sysctl -e -w vm.vfs_cache_pressure=100  > /dev/null 2>&1 
+                        sysctl -e -w vm.drop_caches=2 
+                        sysctl -e -w vm.vfs_cache_pressure=100 
                     else
-                        echo "use stock zram setting . . ." | tee -a $saveLog > /dev/null 2>&1 ;
-                        sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_ratio.txt")  > /dev/null 2>&1 
-                        sysctl -e -w vm.dirty_background_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_background_ratio.txt")  > /dev/null 2>&1 
-                        sysctl -e -w vm.drop_caches=$(cat "$PathModulConfig/backup/zram_vm.drop_caches.txt")  > /dev/null 2>&1 
-                        sysctl -e -w vm.vfs_cache_pressure=$(cat "$PathModulConfig/backup/zram_vm.vfs_cache_pressure.txt")  > /dev/null 2>&1 
+                        echo "use stock zram setting . . ." | tee -a $saveLog;
+                        sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_ratio.txt") 
+                        sysctl -e -w vm.dirty_background_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_background_ratio.txt") 
+                        sysctl -e -w vm.drop_caches=$(cat "$PathModulConfig/backup/zram_vm.drop_caches.txt") 
+                        sysctl -e -w vm.vfs_cache_pressure=$(cat "$PathModulConfig/backup/zram_vm.vfs_cache_pressure.txt") 
                     fi
                     start perfd
-                    echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog > /dev/null 2>&1 ;
-                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                    echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog;
+                    echo "  --- --- --- --- --- " | tee -a $saveLog
                 fi
             fi
         fi
@@ -873,83 +873,83 @@ runScript(){
         enableLogSystem
     fi
     if [ "$GetMode" == 'off' ];then
-        echo "turn off tweak succeess :D"| tee -a $saveLog > /dev/null 2>&1 ;
+        echo "turn off tweak succeess :D"| tee -a $saveLog;
     else
-        echo "done,tweak has been turned on" | tee -a $saveLog > /dev/null 2>&1 ;
+        echo "done,tweak has been turned on" | tee -a $saveLog;
     fi;
     if [ "$GetMode" == 'turbo' ];then
-        echo "NOTE: just tell you if you use this mode your battery will litle drain" | tee -a $saveLog > /dev/null 2>&1 ;
+        echo "NOTE: just tell you if you use this mode your battery will litle drain" | tee -a $saveLog;
     fi;
     if [ "$(getprop zyc.change.prop)" == "belom" ];then
         setprop zyc.change.prop "udah" 
         echo "adding youtube 4k,suggested by @WhySakura"  | tee -a $saveLog 
-        setprop sys.display-size '3840x2160' | tee -a $saveLog > /dev/null 2>&1 ;
+        setprop sys.display-size '3840x2160' | tee -a $saveLog;
         echo "done . . ."  | tee -a $saveLog 
         echo "  --- --- --- --- --- " | tee -a $saveLog 
-        echo "add video optimizer,suggested by @WhySakura" | tee -a $saveLog > /dev/null 2>&1 ;
-        setprop media.stagefright.enable-http 'true' > /dev/null 2>&1 ;
-        setprop media.stagefright.enable-player 'true' > /dev/null 2>&1 ;
-        setprop media.stagefright.enable-meta 'true' > /dev/null 2>&1 ;
-        setprop media.stagefright.enable-aac 'true' > /dev/null 2>&1 ;
-        setprop media.stagefright.enable-qcp 'true' > /dev/null 2>&1 ;
-        setprop media.stagefright.enable-scan 'true' > /dev/null 2>&1 ;
-        setprop media.stagefright.enable-record 'true' > /dev/null 2>&1 ;
+        echo "add video optimizer,suggested by @WhySakura" | tee -a $saveLog;
+        setprop media.stagefright.enable-http 'true';
+        setprop media.stagefright.enable-player 'true';
+        setprop media.stagefright.enable-meta 'true';
+        setprop media.stagefright.enable-aac 'true';
+        setprop media.stagefright.enable-qcp 'true';
+        setprop media.stagefright.enable-scan 'true';
+        setprop media.stagefright.enable-record 'true';
         echo "done . . ."  | tee -a $saveLog 
         echo "  --- --- --- --- --- " | tee -a $saveLog 
         echo "something request from @WhySakura"| tee -a $saveLog 
-        setprop debug.egl.swapinterval 60  > /dev/null 2>&1 ;
-        setprop sys.use_fifo_ui 1  > /dev/null 2>&1 ;
+        setprop debug.egl.swapinterval 1 ;
+        setprop sys.use_fifo_ui 1 ;
         echo "done . . ." | tee -a $saveLog 
         echo "  --- --- --- --- --- " | tee -a $saveLog 
         echo "add responsive touch " | tee -a $saveLog 
-        setprop touch.deviceType touchScreen > /dev/null 2>&1 ;
-        setprop touch.orientationAware 1 > /dev/null 2>&1 ;
-        setprop touch.size.calibration diameter > /dev/null 2>&1 ;
-        setprop touch.size.scale 1 > /dev/null 2>&1 ;
-        setprop touch.size.bias 0 > /dev/null 2>&1 ;
-        setprop touch.size.isSummed 0 > /dev/null 2>&1 ;
-        setprop touch.pressure.calibration amplitude > /dev/null 2>&1 ;
-        setprop touch.pressure.scale 0.001 > /dev/null 2>&1 ;
-        setprop touch.orientation.calibration none > /dev/null 2>&1 ;
-        setprop touch.distance.calibration none > /dev/null 2>&1 ;
+        setprop touch.deviceType touchScreen;
+        setprop touch.orientationAware 1;
+        setprop touch.size.calibration diameter;
+        setprop touch.size.scale 1;
+        setprop touch.size.bias 0;
+        setprop touch.size.isSummed 0;
+        setprop touch.pressure.calibration amplitude;
+        setprop touch.pressure.scale 0.001;
+        setprop touch.orientation.calibration none;
+        setprop touch.distance.calibration none;
         setprop touch.distance.scale 0
-        setprop touch.coverage.calibration box > /dev/null 2>&1 ;
-        setprop touch.gestureMode spots > /dev/null 2>&1 ;
-        setprop MultitouchSettleInterval 1ms > /dev/null 2>&1 ;
-        setprop MultitouchMinDistance 1px > /dev/null 2>&1 ;
-        setprop TapInterval 1ms > /dev/null 2>&1 ;
-        setprop TapSlop 1px1 > /dev/null 2>&1 ;
+        setprop touch.coverage.calibration box;
+        setprop touch.gestureMode spots;
+        setprop MultitouchSettleInterval 1ms;
+        setprop MultitouchMinDistance 1px;
+        setprop TapInterval 1ms;
+        setprop TapSlop 1px1;
         echo "done . . . " | tee -a $saveLog 
         echo "  --- --- --- --- --- " | tee -a $saveLog 
     fi
     ResetDns(){
         if [ "$FromTerminal" == "ya" ];then
-            ip6tables -t nat -F  > /dev/null 2>&1
-            iptables -t nat -F  > /dev/null 2>&1
-            resetprop net.eth0.dns1  > /dev/null 2>&1
-            resetprop net.eth0.dns2  > /dev/null 2>&1
-            resetprop net.dns1  > /dev/null 2>&1
-            resetprop net.dns2  > /dev/null 2>&1
-            resetprop net.ppp0.dns1  > /dev/null 2>&1
-            resetprop net.ppp0.dns2  > /dev/null 2>&1
-            resetprop net.rmnet0.dns1  > /dev/null 2>&1
-            resetprop net.rmnet0.dns2  > /dev/null 2>&1
-            resetprop net.rmnet1.dns1  > /dev/null 2>&1
-            resetprop net.rmnet1.dns2  > /dev/null 2>&1
-            resetprop net.rmnet2.dns1  > /dev/null 2>&1
-            resetprop net.rmnet2.dns2  > /dev/null 2>&1
-            resetprop net.pdpbr1.dns1  > /dev/null 2>&1
-            resetprop net.pdpbr1.dns2  > /dev/null 2>&1
-            resetprop net.wlan0.dns1  > /dev/null 2>&1
-            resetprop net.wlan0.dns2  > /dev/null 2>&1
-            resetprop 2001:4860:4860::8888 > /dev/null 2>&1 
-            resetprop 2001:4860:4860::8844 > /dev/null 2>&1 
-            resetprop 2606:4700:4700::1111 > /dev/null 2>&1 
-            resetprop 2606:4700:4700::1001 > /dev/null 2>&1 
-            resetprop 2a00:5a60::ad1:0ff:5353 > /dev/null 2>&1 
-            resetprop 2a00:5a60::ad2:0ff:5353 > /dev/null 2>&1 
-            resetprop 2001:67c:28a4:::5353 > /dev/null 2>&1 
-            resetprop 2001:67c:28a4:::5353 > /dev/null 2>&1 
+            ip6tables -t nat -F
+            iptables -t nat -F
+            resetprop net.eth0.dns1
+            resetprop net.eth0.dns2
+            resetprop net.dns1
+            resetprop net.dns2
+            resetprop net.ppp0.dns1
+            resetprop net.ppp0.dns2
+            resetprop net.rmnet0.dns1
+            resetprop net.rmnet0.dns2
+            resetprop net.rmnet1.dns1
+            resetprop net.rmnet1.dns2
+            resetprop net.rmnet2.dns1
+            resetprop net.rmnet2.dns2
+            resetprop net.pdpbr1.dns1
+            resetprop net.pdpbr1.dns2
+            resetprop net.wlan0.dns1
+            resetprop net.wlan0.dns2
+            resetprop 2001:4860:4860::8888
+            resetprop 2001:4860:4860::8844
+            resetprop 2606:4700:4700::1111
+            resetprop 2606:4700:4700::1001
+            resetprop 2a00:5a60::ad1:0ff:5353
+            resetprop 2a00:5a60::ad2:0ff:5353
+            resetprop 2001:67c:28a4:::5353
+            resetprop 2001:67c:28a4:::5353
         fi
     }
     if [ "$(getprop zyc.change.dns)" == "belom" ] ;then
@@ -959,78 +959,78 @@ runScript(){
             # reset
             ResetDns
             # reset
-            iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 1.1.1.1:53  > /dev/null 2>&1
-            iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 1.0.0.1:53  > /dev/null 2>&1
-            iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 1.1.1.1:53  > /dev/null 2>&1
-            iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 1.0.0.1:53  > /dev/null 2>&1
-            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1111]:53  > /dev/null 2>&1
-            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1001]:53  > /dev/null 2>&1
-            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1111]:53  > /dev/null 2>&1
-            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1001]:53  > /dev/null 2>&1
+            iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 1.1.1.1:53
+            iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 1.0.0.1:53
+            iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 1.1.1.1:53
+            iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 1.0.0.1:53
+            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1111]:53
+            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1001]:53
+            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1111]:53
+            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1001]:53
             # SETPROP
-            setprop net.eth0.dns1 1.1.1.1  > /dev/null 2>&1
-            setprop net.eth0.dns2 1.0.0.1  > /dev/null 2>&1
-            setprop net.dns1 1.1.1.1  > /dev/null 2>&1
-            setprop net.dns2 1.0.0.1  > /dev/null 2>&1
-            setprop net.ppp0.dns1 1.1.1.1  > /dev/null 2>&1
-            setprop net.ppp0.dns2 1.0.0.1  > /dev/null 2>&1
-            setprop net.rmnet0.dns1 1.1.1.1  > /dev/null 2>&1
-            setprop net.rmnet0.dns2 1.0.0.1  > /dev/null 2>&1
-            setprop net.rmnet1.dns1 1.1.1.1  > /dev/null 2>&1
-            setprop net.rmnet1.dns2 1.0.0.1  > /dev/null 2>&1
-            setprop net.rmnet2.dns1 1.1.1.1  > /dev/null 2>&1
-            setprop net.rmnet2.dns2 1.0.0.1  > /dev/null 2>&1
-            setprop net.pdpbr1.dns1 1.1.1.1  > /dev/null 2>&1
-            setprop net.pdpbr1.dns2 1.0.0.1  > /dev/null 2>&1
-            setprop net.wlan0.dns1 1.1.1.1  > /dev/null 2>&1
-            setprop net.wlan0.dns2 1.0.0.1  > /dev/null 2>&1
+            setprop net.eth0.dns1 1.1.1.1
+            setprop net.eth0.dns2 1.0.0.1
+            setprop net.dns1 1.1.1.1
+            setprop net.dns2 1.0.0.1
+            setprop net.ppp0.dns1 1.1.1.1
+            setprop net.ppp0.dns2 1.0.0.1
+            setprop net.rmnet0.dns1 1.1.1.1
+            setprop net.rmnet0.dns2 1.0.0.1
+            setprop net.rmnet1.dns1 1.1.1.1
+            setprop net.rmnet1.dns2 1.0.0.1
+            setprop net.rmnet2.dns1 1.1.1.1
+            setprop net.rmnet2.dns2 1.0.0.1
+            setprop net.pdpbr1.dns1 1.1.1.1
+            setprop net.pdpbr1.dns2 1.0.0.1
+            setprop net.wlan0.dns1 1.1.1.1
+            setprop net.wlan0.dns2 1.0.0.1
             setprop 2606:4700:4700::1111 '' > /dev/null 2>&1
-            setprop 2606:4700:4700::1001 ''  > /dev/null 2>&1
+            setprop 2606:4700:4700::1001 ''
         elif [ "$GetDnsType" == "google" ];then
             echo "use google dns "| tee -a $saveLog 
             # reset
             ResetDns
             # reset
-            iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 8.8.8.8:53  > /dev/null 2>&1
-            iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 8.8.4.4:53  > /dev/null 2>&1
-            iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 8.8.8.8:53  > /dev/null 2>&1
-            iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 8.8.4.4:53  > /dev/null 2>&1
-            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination 2001:4860:4860:8888  > /dev/null 2>&1
-            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination 2001:4860:4860:8844  > /dev/null 2>&1
-            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination 2001:4860:4860:8888  > /dev/null 2>&1
-            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination 2001:4860:4860:8844  > /dev/null 2>&1
+            iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 8.8.8.8:53
+            iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 8.8.4.4:53
+            iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 8.8.8.8:53
+            iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 8.8.4.4:53
+            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination 2001:4860:4860:8888
+            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination 2001:4860:4860:8844
+            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination 2001:4860:4860:8888
+            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination 2001:4860:4860:8844
             # SETPROP
-            setprop net.eth0.dns1 8.8.8.8  > /dev/null 2>&1
-            setprop net.eth0.dns2 8.8.4.4  > /dev/null 2>&1
-            setprop net.dns1 8.8.8.8  > /dev/null 2>&1
-            setprop net.dns2 8.8.4.4  > /dev/null 2>&1
-            setprop net.ppp0.dns1 8.8.8.8  > /dev/null 2>&1
-            setprop net.ppp0.dns2 8.8.4.4  > /dev/null 2>&1
-            setprop net.rmnet0.dns1 8.8.8.8  > /dev/null 2>&1
-            setprop net.rmnet0.dns2 8.8.4.4  > /dev/null 2>&1
-            setprop net.rmnet1.dns1 8.8.8.8  > /dev/null 2>&1
-            setprop net.rmnet1.dns2 8.8.4.4  > /dev/null 2>&1
-            setprop net.rmnet2.dns1 8.8.8.8  > /dev/null 2>&1
-            setprop net.rmnet2.dns2 8.8.4.4  > /dev/null 2>&1
-            setprop net.pdpbr1.dns1 8.8.8.8  > /dev/null 2>&1
-            setprop net.pdpbr1.dns2 8.8.4.4  > /dev/null 2>&1
-            setprop net.wlan0.dns1 8.8.8.8  > /dev/null 2>&1
-            setprop net.wlan0.dns2 8.8.4.4  > /dev/null 2>&1
-            setprop 2001:4860:4860::8888 ''  > /dev/null 2>&1
-            setprop 2001:4860:4860::8844 ''  > /dev/null 2>&1
+            setprop net.eth0.dns1 8.8.8.8
+            setprop net.eth0.dns2 8.8.4.4
+            setprop net.dns1 8.8.8.8
+            setprop net.dns2 8.8.4.4
+            setprop net.ppp0.dns1 8.8.8.8
+            setprop net.ppp0.dns2 8.8.4.4
+            setprop net.rmnet0.dns1 8.8.8.8
+            setprop net.rmnet0.dns2 8.8.4.4
+            setprop net.rmnet1.dns1 8.8.8.8
+            setprop net.rmnet1.dns2 8.8.4.4
+            setprop net.rmnet2.dns1 8.8.8.8
+            setprop net.rmnet2.dns2 8.8.4.4
+            setprop net.pdpbr1.dns1 8.8.8.8
+            setprop net.pdpbr1.dns2 8.8.4.4
+            setprop net.wlan0.dns1 8.8.8.8
+            setprop net.wlan0.dns2 8.8.4.4
+            setprop 2001:4860:4860::8888 ''
+            setprop 2001:4860:4860::8844 ''
         elif [ "$GetDnsType" == "adguard" ];then
             echo "use adguard dns "| tee -a $saveLog 
             # reset
             ResetDns
             # reset
-            iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 176.103.130.130:5353  > /dev/null 2>&1
-            iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 176.103.130.131:5353  > /dev/null 2>&1
-            iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 176.103.130.130:5353  > /dev/null 2>&1
-            iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 176.103.130.131:5353  > /dev/null 2>&1
-            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad1:0ff]:5353  > /dev/null 2>&1
-            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad2:0ff]:5353  > /dev/null 2>&1
-            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad1:0ff]:5353  > /dev/null 2>&1
-            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad2:0ff]:5353  > /dev/null 2>&1  
+            iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 176.103.130.130:5353
+            iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 176.103.130.131:5353
+            iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 176.103.130.130:5353
+            iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 176.103.130.131:5353
+            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad1:0ff]:5353
+            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad2:0ff]:5353
+            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad1:0ff]:5353
+            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad2:0ff]:5353  
             # SETPROP
             setprop net.eth0.dns1 176.103.130.130 > /dev/null 2>&1
             setprop net.eth0.dns2 176.103.130.131 > /dev/null 2>&1
@@ -1055,21 +1055,21 @@ runScript(){
             # reset
             ResetDns
             # reset
-            iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 91.239.100.100:5353  > /dev/null 2>&1
-            iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 91.239.100.100:5353  > /dev/null 2>&1
-            iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 91.239.100.100:5353  > /dev/null 2>&1
-            iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 91.239.100.100:5353  > /dev/null 2>&1
-            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353  > /dev/null 2>&1
-            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353  > /dev/null 2>&1
-            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353  > /dev/null 2>&1
-            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353  > /dev/null 2>&1  
+            iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 91.239.100.100:5353
+            iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 91.239.100.100:5353
+            iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 91.239.100.100:5353
+            iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 91.239.100.100:5353
+            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353
+            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353
+            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353
+            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353  
             # SETPROP
-            setprop net.eth0.dns1 91.239.100.100 > /dev/null 2>&1 > /dev/null 2>&1
-            setprop net.eth0.dns2 91.239.100.100 > /dev/null 2>&1 > /dev/null 2>&1
-            setprop net.dns1 91.239.100.100 > /dev/null 2>&1 > /dev/null 2>&1
-            setprop net.dns2 91.239.100.100 > /dev/null 2>&1 > /dev/null 2>&1
-            setprop net.ppp0.dns1 91.239.100.100 > /dev/null 2>&1 > /dev/null 2>&1
-            setprop net.ppp0.dns2 91.239.100.100 > /dev/null 2>&1 > /dev/null 2>&1
+            setprop net.eth0.dns1 91.239.100.100> /dev/null 2>&1
+            setprop net.eth0.dns2 91.239.100.100> /dev/null 2>&1
+            setprop net.dns1 91.239.100.100> /dev/null 2>&1
+            setprop net.dns2 91.239.100.100> /dev/null 2>&1
+            setprop net.ppp0.dns1 91.239.100.100> /dev/null 2>&1
+            setprop net.ppp0.dns2 91.239.100.100> /dev/null 2>&1
             setprop net.rmnet0.dns1 91.239.100.100 > /dev/null 2>&1
             setprop net.rmnet0.dns2 91.239.100.100 > /dev/null 2>&1
             setprop net.rmnet1.dns1 91.239.100.100 > /dev/null 2>&1
@@ -1084,7 +1084,7 @@ runScript(){
             setprop 2001:67c:28a4:::5353 '' > /dev/null 2>&1
         else
             if [ "$GetDnsType" != "system" ];then
-                echo "system" > "$PathModulConfig/dns.txt" > /dev/null 2>&1 
+                echo "system" > "$PathModulConfig/dns.txt"
             fi
             echo "use system dns "| tee -a $saveLog 
             # reset
@@ -1186,33 +1186,34 @@ runScript(){
             if [ -e $PathModulConfigAi/ai_status.txt ]; then
                 AiStatus=$(cat "$PathModulConfigAi/ai_status.txt")
                 if [ "$AiStatus" == "1" ];then
-                    echo "starting ai mode . . . " | tee -a $saveLog > /dev/null 2>&1 
-                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                    echo "starting ai mode . . . " | tee -a $saveLog
+                    echo "  --- --- --- --- --- " | tee -a $saveLog
                     nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
                     exit
                 elif [ "$AiStatus" == "2" ];then
-                    echo "re - run ai mode . . . " | tee -a $saveLog > /dev/null 2>&1 
-                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                    echo "re - run ai mode . . . " | tee -a $saveLog
+                    echo "  --- --- --- --- --- " | tee -a $saveLog
                     nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
                     exit
                 elif [ "$AiStatus" == "3" ];then
-                    echo "deactive ai mode . . . " | tee -a $saveLog > /dev/null 2>&1 
-                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                    echo "deactive ai mode . . . " | tee -a $saveLog
+                    echo "  --- --- --- --- --- " | tee -a $saveLog
                     nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
                     exit
                 elif [ "$AiStatus" == "0" ];then
-                    echo "ai status off"| tee -a $saveLog > /dev/null 2>&1 ;
-                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                    echo "ai status off"| tee -a $saveLog;
+                    echo "  --- --- --- --- --- " | tee -a $saveLog
                 else
-                    echo "ai status error,set to 0"| tee -a $saveLog > /dev/null 2>&1 ;
+                    echo "ai status error,set to 0"| tee -a $saveLog;
                     echo '0' > "$PathModulConfigAi/ai_status.txt"
-                    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1 
+                    echo "  --- --- --- --- --- " | tee -a $saveLog
                 fi
             fi
         fi
     fi
-    echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog > /dev/null 2>&1 ;
-    echo "  --- --- --- --- --->> " | tee -a $saveLog > /dev/null 2>&1 
-    exit
+    echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog;
+    echo "  --- --- --- --- --->> " | tee -a $saveLog
 }
-runScript 2>&1 | tee -a $Path/ZyC_Turbo.running.log > /dev/null 2>&1 ;
+ErrorGet=$(runScript 2>&1 1>/dev/null)
+echo $ErrorGet | tee -a $Path/ZyC_Turbo.running.log ;
+exit

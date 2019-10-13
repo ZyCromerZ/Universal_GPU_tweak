@@ -1135,9 +1135,8 @@ ListMenu(){
         read InputNo
         for Getdata in $InputNo
         do
-            # cat $GetApp | grep "[ 2 ]";
-            echo "adding  $(cat $GetApp | awk -F '\\[ '"$Getdata"' ]' '{print $2}') to the game list"
-            GameName=$(cat $GetApp | awk -F '\\[ '"$Getdata"' ]' '{print $2}' | sed 's/(.*//') ;
+            GameName=$(cat $GetApp | awk -F '\\[ '"$Getdata"' ]' '{print $2}' | sed 's/(.*//' | tr -d '\040\011\012\015') ;
+            echo "adding $GameName to the game list"
             sed -i "1a  $GameName" $PathModulConfigAi/list_app_auto_turbo.txt;
         done
         rm $GetApp
@@ -1389,7 +1388,7 @@ saveSetting()
         setprop zyc.change.rm "belom"
     fi
     if [ "$GetModeRamAdjBefore" != "$GetModeRamAdjNew" ];then
-        echo "$GetModeRamAdjNew" > $PathModulConfig/custom_ram_management.txt ; 
+        echo "$GetModeRamAdjNew" > $PathModulConfig/custom_ram_management_adj.txt ; 
         GetModeRamAdjBefore=$GetModeRamAdjNew;
         RunTweak="iya"
         setprop zyc.change.rm "belom"

@@ -44,14 +44,14 @@ esac
 sh $ModulPath/ZyC_Turbo/initialize.sh "terminal" & wait
 RunStatus="kaga"
 if [ ! -e /data/mod_path.txt ]; then
-    nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" & 
+    sh $ModulPath/ZyC_Turbo/service.sh "Terminal" & wait
 	RunStatus="iya"
 fi
 ModPath=$(cat /data/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
 PathModulConfig=$Path/ZyC_Turbo_config
 if [ $RunStatus == "kaga" ];then
-	nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" & 
+	sh $ModulPath/ZyC_Turbo/service.sh "Terminal" & wait
 fi
 mode=$(cat "$PathModulConfig/status_modul.txt");
 render=$(cat "$PathModulConfig/mode_render.txt");
