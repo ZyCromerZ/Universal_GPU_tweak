@@ -5,7 +5,6 @@
 # prepare function
 # sleep 2s
 # sialan
-RunAi="No"
 if [ ! -e /data/mod_path.txt ]; then
     sh $ModulPath/ZyC_Turbo/initialize.sh & wait
 fi
@@ -40,52 +39,319 @@ case "$GetVersion" in
     exit;
 ;;
 esac
-runScript(){
-    FromTerminal="tidak";
-    FromAi="tidak"
-    if [ ! -z "$1" ];then
-        if [ "$1" == "Terminal" ];then
-            FromTerminal="ya";
-        fi
+FromTerminal="tidak";
+FromAi="tidak"
+if [ ! -z "$1" ];then
+    if [ "$1" == "Terminal" ];then
+        FromTerminal="ya";
     fi
-    if [ "$FromTerminal" == "tidak" ];then
-        sh $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
-        usleep 5000000
-        sh $ModulPath/ZyC_Turbo/initialize.sh & wait
-    fi;
-    if [ ! -z "$2" ];then
-        if [ "$2" == "Ai" ];then
-            FromAi="ya";
-        fi
-    fi;
-    if [ -d "/sys/class/kgsl/kgsl-3d0" ]; then
-        NyariGPU="/sys/class/kgsl/kgsl-3d0"
-    elif [ -d "/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0" ]; then
-        NyariGPU="/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0"
-    elif [ -d "/sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0" ]; then
-        NyariGPU="/sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
-    elif [ -d "/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0" ]; then
-        NyariGPU="/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
-    elif [ -d "/sys/devices/platform/*.gpu/devfreq/*.gpu" ]; then
-        NyariGPU="/sys/devices/platform/*.gpu/devfreq/*.gpu"
-    else
-        NyariGPU='';
+fi
+if [ "$FromTerminal" == "tidak" ];then
+    sh $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
+    usleep 5000000
+    sh $ModulPath/ZyC_Turbo/initialize.sh & wait
+fi;
+if [ ! -z "$2" ];then
+    if [ "$2" == "Ai" ];then
+        FromAi="ya";
     fi
-    MissingFile="kaga"
-    # Path=/sdcard/modul_mantul/ZyC_mod
-    if [ ! -d $Path/ZyC_Ai ]; then
-        MissingFile="iya"
-    fi
-    PathModulConfigAi=$Path/ZyC_Ai
-    if [ ! -d $Path/ZyC_Turbo_config ]; then
-        MissingFile="iya"
-    fi
-    PathModulConfig=$Path/ZyC_Turbo_config
+fi;
+if [ -d "/sys/class/kgsl/kgsl-3d0" ]; then
+    NyariGPU="/sys/class/kgsl/kgsl-3d0"
+elif [ -d "/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0" ]; then
+    NyariGPU="/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0"
+elif [ -d "/sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0" ]; then
+    NyariGPU="/sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
+elif [ -d "/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0" ]; then
+    NyariGPU="/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
+elif [ -d "/sys/devices/platform/*.gpu/devfreq/*.gpu" ]; then
+    NyariGPU="/sys/devices/platform/*.gpu/devfreq/*.gpu"
+else
+    NyariGPU='';
+fi
+MissingFile="kaga"
+# Path=/sdcard/modul_mantul/ZyC_mod
+if [ ! -d $Path/ZyC_Ai ]; then
+    MissingFile="iya"
+fi
+PathModulConfigAi=$Path/ZyC_Ai
+if [ ! -d $Path/ZyC_Turbo_config ]; then
+    MissingFile="iya"
+fi
+PathModulConfig=$Path/ZyC_Turbo_config
 
-    if [ -e "$Path/ZyC_Turbo.log" ]; then
-        rm $Path/ZyC_Turbo.log
+if [ -e "$Path/ZyC_Turbo.log" ]; then
+    rm $Path/ZyC_Turbo.log
+fi
+saveLog=$Path/ZyC_Turbo.log
+SetOff(){
+    echo 'revert setting . . .' | tee -a $saveLog;
+    #mengembalikan settingan ke asal :D
+    setprop persist.sys.NV_FPSLIMIT 35 > /dev/null 2>&1
+    resetprop --delete persist.sys.NV_FPSLIMIT > /dev/null 2>&1
+    resetprop --delete persist.sys.NV_POWERMODE > /dev/null 2>&1
+    resetprop --delete persist.sys.NV_PROFVER > /dev/null 2>&1
+    resetprop --delete persist.sys.NV_STEREOCTRL > /dev/null 2>&1
+    resetprop --delete persist.sys.NV_STEREOSEPCHG > /dev/null 2>&1
+    resetprop --delete persist.sys.NV_STEREOSEP > /dev/null 2>&1
+    if [ -e $NyariGPU/throttling ]; then
+        echo $(cat "$PathModulConfig/backup/gpu_throttling.txt") > "$NyariGPU/throttling"
     fi
-    saveLog=$Path/ZyC_Turbo.log
+    if [ -e $NyariGPU/force_no_nap ]; then
+        echo $(cat "$PathModulConfig/backup/gpu_force_no_nap.txt") > "$NyariGPU/force_no_nap"
+    fi
+    if [ -e $NyariGPU/force_bus_on ]; then
+        echo $(cat "$PathModulConfig/backup/gpu_force_bus_on.txt") > "$NyariGPU/force_bus_on"
+    fi
+    if [ -e $NyariGPU/force_clk_on ]; then
+        echo $(cat "$PathModulConfig/backup/gpu_force_clk_on.txt") > "$NyariGPU/force_clk_on"
+    fi
+    if [ -e $NyariGPU/force_rail_on ]; then
+        echo $(cat "$PathModulConfig/backup/gpu_force_rail_on.txt") > "$NyariGPU/force_rail_on"
+    fi
+    if [ -e $NyariGPU/bus_split ]; then
+        echo $(cat "$PathModulConfig/backup/gpu_bus_split.txt") > "$NyariGPU/bus_split"
+    fi
+    if [ -e $NyariGPU/max_pwrlevel ]; then
+        echo $(cat "$PathModulConfig/backup/gpu_max_pwrlevel.txt") > "$NyariGPU/max_pwrlevel"
+    fi
+    if [ -e $NyariGPU/max_pwrlevel ]; then
+        echo $(cat "$PathModulConfig/backup/gpu_min_pwrlevel.txt") > "$NyariGPU/min_pwrlevel"
+    fi
+    if [ -e $NyariGPU/devfreq/adrenoboost ]; then
+        echo $(cat "$PathModulConfig/backup/gpu_adrenoboost.txt") > "$NyariGPU/devfreq/adrenoboost"
+    fi
+    if [ -e $NyariGPU/devfreq/thermal_pwrlevel ]; then
+        echo $(cat "$PathModulConfig/backup/gpu_thermal_pwrlevel.txt") > "$NyariGPU/devfreq/thermal_pwrlevel"
+    fi
+    if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
+        echo $(cat  "$PathModulConfig/backup/misc_Dyn_fsync_active.txt") > "/sys/kernel/dyn_fsync/Dyn_fsync_active"
+    fi
+    if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
+        echo $(cat  "$PathModulConfig/backup/misc_class_fsync_enabled.txt") > "/sys/class/misc/fsynccontrol/fsync_enabled"
+    fi 
+    if [ -e /sys/module/sync/parameters/fsync ]; then
+        echo $(cat  "$PathModulConfig/backup/misc_fsync.txt") > "/sys/module/sync/parameters/fsync"
+    fi
+    if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
+        echo $(cat  "$PathModulConfig/backup/misc_module_fsync_enabled.txt") > "/sys/module/sync/parameters/fsync_enabled"
+    fi
+    echo 'revert done . . .' | tee -a $saveLog;
+    echo "  --- --- --- --- --- " | tee -a $saveLog
+}
+SetOn(){
+    echo 'use "on" setting. . .' | tee -a $saveLog;
+    #fps limit ke 90
+    setprop persist.sys.NV_FPSLIMIT 90
+    setprop persist.sys.NV_POWERMODE 1
+    setprop persist.sys.NV_PROFVER 15
+    setprop persist.sys.NV_STEREOCTRL 0
+    setprop persist.sys.NV_STEREOSEPCHG 0
+    setprop persist.sys.NV_STEREOSEP 20
+    # GPU TWEAK wajib lah biar kaga drop fps xD
+    if [ "$NyariGPU" != '' ];then
+        if [ -e $NyariGPU/max_pwrlevel ]; then
+            echo "0" > "$NyariGPU/max_pwrlevel"
+        fi
+        if [ -e $NyariGPU/devfreq/adrenoboost ]; then
+            echo "2" > "$NyariGPU/devfreq/adrenoboost"
+        fi
+    fi
+    echo 'use "on" done. . .' | tee -a $saveLog;
+    echo "  --- --- --- --- --- " | tee -a $saveLog
+
+}
+SetTurbo(){
+    #fps limit ke 120
+    echo 'use "turbo" setting. . .' | tee -a $saveLog;
+    setprop persist.sys.NV_FPSLIMIT 120
+    if  [ "$NyariGPU" != '' ];then
+        if [ -e $NyariGPU/min_pwrlevel ]; then
+            if [ -e $NyariGPU/num_pwrlevels ];then
+                numPwrlevels=$(cat "$NyariGPU/num_pwrlevels")
+                echo $(($numPwrlevels-2)) > "$NyariGPU/min_pwrlevel"
+            fi
+        fi
+        if [ -e $NyariGPU/devfreq/adrenoboost ]; then
+            echo "3" > "$NyariGPU/devfreq/adrenoboost"
+        fi
+        if [ -e "$NyariGPU/throttling" ]; then
+            echo "0" > $NyariGPU/throttling
+        fi
+        if [ -e "$NyariGPU/force_no_nap" ]; then
+            echo "0" > $NyariGPU/force_no_nap
+        fi
+        if [ -e "$NyariGPU/force_bus_on" ]; then
+            echo "0" > $NyariGPU/force_bus_on
+        fi
+        if [ -e "$NyariGPU/force_clk_on" ]; then
+            echo "0" > $NyariGPU/force_clk_on
+        fi
+        if [ -e "$NyariGPU/force_rail_on" ]; then
+            echo "0" > $NyariGPU/force_rail_on
+        fi
+        if [ -e "$NyariGPU/bus_split" ]; then
+            echo "1" > $NyariGPU/bus_split
+        fi
+    fi
+    echo 'use "turbo" done .' | tee -a $saveLog;
+    echo "  --- --- --- --- --- " | tee -a $saveLog
+}
+fstrimDulu(){
+    echo "fstrim data cache & system, please wait" | tee -a $saveLog;
+    fstrim -v /cache | tee -a $saveLog;
+    fstrim -v /data | tee -a $saveLog;
+    fstrim -v /system | tee -a $saveLog;
+    echo "done ." | tee -a $saveLog;
+    echo "  --- --- --- --- --- " | tee -a $saveLog
+}
+disableFsync(){
+    # disable fsync 
+    echo 'disable fsync . . .' | tee -a $saveLog;
+    if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
+        echo "0" > /sys/kernel/dyn_fsync/Dyn_fsync_active
+    fi
+    if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
+        echo "0" > /sys/class/misc/fsynccontrol/fsync_enabled
+    fi 
+    if [ -e /sys/module/sync/parameters/fsync ]; then
+        echo "0" > /sys/module/sync/parameters/fsync
+    fi
+    if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
+        echo "N" > /sys/module/sync/parameters/fsync_enabled
+    fi
+    echo 'disable done .' | tee -a $saveLog;
+    echo "  --- --- --- --- --- " | tee -a $saveLog
+}
+enableFsync(){
+    # enable fsync
+    echo 'enable fsync . . .' | tee -a $saveLog;
+    if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
+        echo "1" > /sys/kernel/dyn_fsync/Dyn_fsync_active
+    fi
+    if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
+        echo "1" > /sys/class/misc/fsynccontrol/fsync_enabled
+    fi 
+    if [ -e /sys/module/sync/parameters/fsync ]; then
+        echo "1" > /sys/module/sync/parameters/fsync
+    fi
+    if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
+        echo "Y" > /sys/module/sync/parameters/fsync_enabled
+    fi
+    echo 'enable done .' | tee -a $saveLog;
+    echo "  --- --- --- --- --- " | tee -a $saveLog
+}
+LagMode(){
+    if [ "$NyariGPU" != '' ];then
+        if [ -e $NyariGPU/devfreq/adrenoboost ]; then
+            echo "0" > "$NyariGPU/devfreq/adrenoboost"
+        fi
+        if [ -e $NyariGPU/max_pwrlevel ]; then
+            if [ -e $NyariGPU/num_pwrlevels ];then
+                numPwrlevels=$(cat "$NyariGPU/num_pwrlevels")
+                echo $((($numPwrlevels/2)-1)) > "$NyariGPU/max_pwrlevel"
+            fi
+        fi
+        if [ -e $NyariGPU/min_pwrlevel ]; then
+            if [ -e $NyariGPU/num_pwrlevels ];then
+                numPwrlevels=$(cat "$NyariGPU/num_pwrlevels")
+                echo $(($numPwrlevels-1)) > "$NyariGPU/min_pwrlevel"
+            fi
+        fi
+        if [ -e $NyariGPU/max_pwrlevel ]; then
+            echo "0" > "$NyariGPU/max_pwrlevel"
+        fi
+        if [ -e "$NyariGPU/throttling" ]; then
+            echo "1" > $NyariGPU/throttling
+        fi
+        if [ -e "$NyariGPU/force_no_nap" ]; then
+            echo "1" > $NyariGPU/force_no_nap
+        fi
+        if [ -e "$NyariGPU/force_bus_on" ]; then
+            echo "1" > $NyariGPU/force_bus_on
+        fi
+        if [ -e "$NyariGPU/force_clk_on" ]; then
+            echo "1" > $NyariGPU/force_clk_on
+        fi
+        if [ -e "$NyariGPU/force_rail_on" ]; then
+            echo "1" > $NyariGPU/force_rail_on
+        fi
+        if [ -e "$NyariGPU/bus_split" ]; then
+            echo "0" > $NyariGPU/bus_split
+        fi
+    fi
+}
+systemFsync(){
+    echo 'use fsync system setting . . .' | tee -a $saveLog;
+    if [ ! -e "$PathModulConfig/backup/misc_Dyn_fsync_active".txt ]; then
+        if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
+            echo $(cat  "$PathModulConfig/backup/misc_Dyn_fsync_active.txt") > /sys/kernel/dyn_fsync/Dyn_fsync_active
+        fi
+    fi
+
+    if [ ! -e "$PathModulConfig/backup/misc_class_fsync_enabled".txt ]; then
+        if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
+            echo $(cat  "$PathModulConfig/backup/misc_class_fsync_enabled.txt") > /sys/class/misc/fsynccontrol/fsync_enabled
+        fi 
+    fi
+
+    if [ ! -e "$PathModulConfig/backup/misc_fsync".txt ]; then
+        if [ -e /sys/module/sync/parameters/fsync ]; then
+            echo $(cat  "$PathModulConfig/backup/misc_fsync.txt") > /sys/module/sync/parameters/fsync
+        fi
+    fi
+
+    if [ ! -e "$PathModulConfig/backup/misc_module_fsync_enabled".txt ]; then
+        if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
+            echo $(cat  "$PathModulConfig/backup/misc_module_fsync_enabled.txt") > /sys/module/sync/parameters/fsync_enabled
+        fi
+    fi
+    echo 'use fsync system setting done .' | tee -a $saveLog;
+    echo "  --- --- --- --- --- " | tee -a $saveLog
+}
+disableLogSystem(){
+# Disable stats logging & monitoring
+    echo 'disable log and monitoring . . .' | tee -a $saveLog;
+    setprop debug.atrace.tags.enableflags 0 > /dev/null 2>&1
+    setprop profiler.force_disable_ulog true > /dev/null 2>&1
+    setprop profiler.force_disable_err_rpt true > /dev/null 2>&1
+    setprop profiler.force_disable_ulog 1 > /dev/null 2>&1
+    setprop profiler.force_disable_err_rpt 1 > /dev/null 2>&1
+    setprop ro.config.nocheckin 1 > /dev/null 2>&1
+    setprop debugtool.anrhistory 0 > /dev/null 2>&1
+    setprop ro.com.google.locationfeatures 0 > /dev/null 2>&1
+    setprop ro.com.google.networklocation 0 > /dev/null 2>&1
+    setprop profiler.debugmonitor false > /dev/null 2>&1
+    setprop profiler.launch false > /dev/null 2>&1
+    setprop profiler.hung.dumpdobugreport false > /dev/null 2>&1
+    setprop persist.service.pcsync.enable 0 > /dev/null 2>&1
+    setprop persist.service.lgospd.enable 0 > /dev/null 2>&1
+    setprop persist.sys.purgeable_assets 1 > /dev/null 2>&1
+    echo 'disable log and monitoring done .' | tee -a $saveLog;
+    echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1
+}
+enableLogSystem(){
+# Enable stats logging & monitoring
+    echo 'enable log and monitoring . . .' | tee -a $saveLog;
+    setprop debug.atrace.tags.enableflags 1 > /dev/null 2>&1
+    setprop profiler.force_disable_ulog false > /dev/null 2>&1
+    setprop profiler.force_disable_err_rpt false > /dev/null 2>&1
+    setprop profiler.force_disable_ulog 0 > /dev/null 2>&1
+    setprop profiler.force_disable_err_rpt 0 > /dev/null 2>&1
+    setprop ro.config.nocheckin 0 > /dev/null 2>&1
+    setprop debugtool.anrhistory 1 > /dev/null 2>&1
+    setprop ro.com.google.locationfeatures 1 > /dev/null 2>&1
+    setprop ro.com.google.networklocation 1 > /dev/null 2>&1
+    setprop profiler.debugmonitor true > /dev/null 2>&1
+    setprop profiler.launch true > /dev/null 2>&1
+    setprop profiler.hung.dumpdobugreport true > /dev/null 2>&1
+    setprop persist.service.pcsync.enable 1 > /dev/null 2>&1
+    setprop persist.service.lgospd.enable 1 > /dev/null 2>&1
+    setprop persist.sys.purgeable_assets 0 > /dev/null 2>&1
+    echo 'enable log and monitoring done .' | tee -a $saveLog;
+    echo "  --- --- --- --- --- " | tee -a $saveLog
+}
+runScript(){
     echo "<<--- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1
     echo "starting modules . . ." | tee -a $saveLog > /dev/null 2>&1
     echo "Version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" > /dev/null 2>&1
@@ -196,273 +462,6 @@ runScript(){
             sh $ModulPath/ZyC_Turbo/initialize.sh & wait
         fi
     # end log backup
-    SetOff(){
-        echo 'revert setting . . .' | tee -a $saveLog;
-        #mengembalikan settingan ke asal :D
-        setprop persist.sys.NV_FPSLIMIT 35 > /dev/null 2>&1
-        resetprop --delete persist.sys.NV_FPSLIMIT > /dev/null 2>&1
-        resetprop --delete persist.sys.NV_POWERMODE > /dev/null 2>&1
-        resetprop --delete persist.sys.NV_PROFVER > /dev/null 2>&1
-        resetprop --delete persist.sys.NV_STEREOCTRL > /dev/null 2>&1
-        resetprop --delete persist.sys.NV_STEREOSEPCHG > /dev/null 2>&1
-        resetprop --delete persist.sys.NV_STEREOSEP > /dev/null 2>&1
-        if [ -e $NyariGPU/throttling ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_throttling.txt") > "$NyariGPU/throttling"
-        fi
-        if [ -e $NyariGPU/force_no_nap ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_force_no_nap.txt") > "$NyariGPU/force_no_nap"
-        fi
-        if [ -e $NyariGPU/force_bus_on ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_force_bus_on.txt") > "$NyariGPU/force_bus_on"
-        fi
-        if [ -e $NyariGPU/force_clk_on ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_force_clk_on.txt") > "$NyariGPU/force_clk_on"
-        fi
-        if [ -e $NyariGPU/force_rail_on ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_force_rail_on.txt") > "$NyariGPU/force_rail_on"
-        fi
-        if [ -e $NyariGPU/bus_split ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_bus_split.txt") > "$NyariGPU/bus_split"
-        fi
-        if [ -e $NyariGPU/max_pwrlevel ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_max_pwrlevel.txt") > "$NyariGPU/max_pwrlevel"
-        fi
-        if [ -e $NyariGPU/max_pwrlevel ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_min_pwrlevel.txt") > "$NyariGPU/min_pwrlevel"
-        fi
-        if [ -e $NyariGPU/devfreq/adrenoboost ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_adrenoboost.txt") > "$NyariGPU/devfreq/adrenoboost"
-        fi
-        if [ -e $NyariGPU/devfreq/thermal_pwrlevel ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_thermal_pwrlevel.txt") > "$NyariGPU/devfreq/thermal_pwrlevel"
-        fi
-        if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
-            echo $(cat  "$PathModulConfig/backup/misc_Dyn_fsync_active.txt") > "/sys/kernel/dyn_fsync/Dyn_fsync_active"
-        fi
-        if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
-            echo $(cat  "$PathModulConfig/backup/misc_class_fsync_enabled.txt") > "/sys/class/misc/fsynccontrol/fsync_enabled"
-        fi 
-        if [ -e /sys/module/sync/parameters/fsync ]; then
-            echo $(cat  "$PathModulConfig/backup/misc_fsync.txt") > "/sys/module/sync/parameters/fsync"
-        fi
-        if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
-            echo $(cat  "$PathModulConfig/backup/misc_module_fsync_enabled.txt") > "/sys/module/sync/parameters/fsync_enabled"
-        fi
-        echo 'revert done . . .' | tee -a $saveLog;
-        echo "  --- --- --- --- --- " | tee -a $saveLog
-    }
-    SetOn(){
-        echo 'use "on" setting. . .' | tee -a $saveLog;
-        #fps limit ke 90
-        setprop persist.sys.NV_FPSLIMIT 90
-        setprop persist.sys.NV_POWERMODE 1
-        setprop persist.sys.NV_PROFVER 15
-        setprop persist.sys.NV_STEREOCTRL 0
-        setprop persist.sys.NV_STEREOSEPCHG 0
-        setprop persist.sys.NV_STEREOSEP 20
-        # GPU TWEAK wajib lah biar kaga drop fps xD
-        if [ "$NyariGPU" != '' ];then
-            if [ -e $NyariGPU/max_pwrlevel ]; then
-                echo "0" > "$NyariGPU/max_pwrlevel"
-            fi
-            if [ -e $NyariGPU/devfreq/adrenoboost ]; then
-                echo "2" > "$NyariGPU/devfreq/adrenoboost"
-            fi
-        fi
-        echo 'use "on" done. . .' | tee -a $saveLog;
-        echo "  --- --- --- --- --- " | tee -a $saveLog
-
-    }
-    SetTurbo(){
-        #fps limit ke 120
-        echo 'use "turbo" setting. . .' | tee -a $saveLog;
-        setprop persist.sys.NV_FPSLIMIT 120
-        if  [ "$NyariGPU" != '' ];then
-            if [ -e $NyariGPU/min_pwrlevel ]; then
-                if [ -e $NyariGPU/num_pwrlevels ];then
-                    numPwrlevels=$(cat "$NyariGPU/num_pwrlevels")
-                    echo $(($numPwrlevels-2)) > "$NyariGPU/min_pwrlevel"
-                fi
-            fi
-            if [ -e $NyariGPU/devfreq/adrenoboost ]; then
-                echo "3" > "$NyariGPU/devfreq/adrenoboost"
-            fi
-            if [ -e "$NyariGPU/throttling" ]; then
-                echo "0" > $NyariGPU/throttling
-            fi
-            if [ -e "$NyariGPU/force_no_nap" ]; then
-                echo "0" > $NyariGPU/force_no_nap
-            fi
-            if [ -e "$NyariGPU/force_bus_on" ]; then
-                echo "0" > $NyariGPU/force_bus_on
-            fi
-            if [ -e "$NyariGPU/force_clk_on" ]; then
-                echo "0" > $NyariGPU/force_clk_on
-            fi
-            if [ -e "$NyariGPU/force_rail_on" ]; then
-                echo "0" > $NyariGPU/force_rail_on
-            fi
-            if [ -e "$NyariGPU/bus_split" ]; then
-                echo "1" > $NyariGPU/bus_split
-            fi
-        fi
-        echo 'use "turbo" done .' | tee -a $saveLog;
-        echo "  --- --- --- --- --- " | tee -a $saveLog
-    }
-    fstrimDulu(){
-        echo "fstrim data cache & system, please wait" | tee -a $saveLog;
-        fstrim -v /cache | tee -a $saveLog;
-        fstrim -v /data | tee -a $saveLog;
-        fstrim -v /system | tee -a $saveLog;
-        echo "done ." | tee -a $saveLog;
-        echo "  --- --- --- --- --- " | tee -a $saveLog
-    }
-    disableFsync(){
-        # disable fsync 
-        echo 'disable fsync . . .' | tee -a $saveLog;
-        if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
-            echo "0" > /sys/kernel/dyn_fsync/Dyn_fsync_active
-        fi
-        if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
-            echo "0" > /sys/class/misc/fsynccontrol/fsync_enabled
-        fi 
-        if [ -e /sys/module/sync/parameters/fsync ]; then
-            echo "0" > /sys/module/sync/parameters/fsync
-        fi
-        if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
-            echo "N" > /sys/module/sync/parameters/fsync_enabled
-        fi
-        echo 'disable done .' | tee -a $saveLog;
-        echo "  --- --- --- --- --- " | tee -a $saveLog
-    }
-    enableFsync(){
-        # enable fsync
-        echo 'enable fsync . . .' | tee -a $saveLog;
-        if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
-            echo "1" > /sys/kernel/dyn_fsync/Dyn_fsync_active
-        fi
-        if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
-            echo "1" > /sys/class/misc/fsynccontrol/fsync_enabled
-        fi 
-        if [ -e /sys/module/sync/parameters/fsync ]; then
-            echo "1" > /sys/module/sync/parameters/fsync
-        fi
-        if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
-            echo "Y" > /sys/module/sync/parameters/fsync_enabled
-        fi
-        echo 'enable done .' | tee -a $saveLog;
-        echo "  --- --- --- --- --- " | tee -a $saveLog
-    }
-    LagMode(){
-        if [ "$NyariGPU" != '' ];then
-            if [ -e $NyariGPU/devfreq/adrenoboost ]; then
-                echo "0" > "$NyariGPU/devfreq/adrenoboost"
-            fi
-            if [ -e $NyariGPU/max_pwrlevel ]; then
-                if [ -e $NyariGPU/num_pwrlevels ];then
-                    numPwrlevels=$(cat "$NyariGPU/num_pwrlevels")
-                    echo $((($numPwrlevels/2)-1)) > "$NyariGPU/max_pwrlevel"
-                fi
-            fi
-            if [ -e $NyariGPU/min_pwrlevel ]; then
-                if [ -e $NyariGPU/num_pwrlevels ];then
-                    numPwrlevels=$(cat "$NyariGPU/num_pwrlevels")
-                    echo $(($numPwrlevels-1)) > "$NyariGPU/min_pwrlevel"
-                fi
-            fi
-            if [ -e $NyariGPU/max_pwrlevel ]; then
-                echo "0" > "$NyariGPU/max_pwrlevel"
-            fi
-            if [ -e "$NyariGPU/throttling" ]; then
-                echo "1" > $NyariGPU/throttling
-            fi
-            if [ -e "$NyariGPU/force_no_nap" ]; then
-                echo "1" > $NyariGPU/force_no_nap
-            fi
-            if [ -e "$NyariGPU/force_bus_on" ]; then
-                echo "1" > $NyariGPU/force_bus_on
-            fi
-            if [ -e "$NyariGPU/force_clk_on" ]; then
-                echo "1" > $NyariGPU/force_clk_on
-            fi
-            if [ -e "$NyariGPU/force_rail_on" ]; then
-                echo "1" > $NyariGPU/force_rail_on
-            fi
-            if [ -e "$NyariGPU/bus_split" ]; then
-                echo "0" > $NyariGPU/bus_split
-            fi
-        fi
-    }
-    systemFsync(){
-        echo 'use fsync system setting . . .' | tee -a $saveLog;
-        if [ ! -e "$PathModulConfig/backup/misc_Dyn_fsync_active".txt ]; then
-            if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
-                echo $(cat  "$PathModulConfig/backup/misc_Dyn_fsync_active.txt") > /sys/kernel/dyn_fsync/Dyn_fsync_active
-            fi
-        fi
-
-        if [ ! -e "$PathModulConfig/backup/misc_class_fsync_enabled".txt ]; then
-            if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
-                echo $(cat  "$PathModulConfig/backup/misc_class_fsync_enabled.txt") > /sys/class/misc/fsynccontrol/fsync_enabled
-            fi 
-        fi
-
-        if [ ! -e "$PathModulConfig/backup/misc_fsync".txt ]; then
-            if [ -e /sys/module/sync/parameters/fsync ]; then
-                echo $(cat  "$PathModulConfig/backup/misc_fsync.txt") > /sys/module/sync/parameters/fsync
-            fi
-        fi
-
-        if [ ! -e "$PathModulConfig/backup/misc_module_fsync_enabled".txt ]; then
-            if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
-                echo $(cat  "$PathModulConfig/backup/misc_module_fsync_enabled.txt") > /sys/module/sync/parameters/fsync_enabled
-            fi
-        fi
-        echo 'use fsync system setting done .' | tee -a $saveLog;
-        echo "  --- --- --- --- --- " | tee -a $saveLog
-    }
-    disableLogSystem(){
-    # Disable stats logging & monitoring
-        echo 'disable log and monitoring . . .' | tee -a $saveLog;
-        setprop debug.atrace.tags.enableflags 0 > /dev/null 2>&1
-        setprop profiler.force_disable_ulog true > /dev/null 2>&1
-        setprop profiler.force_disable_err_rpt true > /dev/null 2>&1
-        setprop profiler.force_disable_ulog 1 > /dev/null 2>&1
-        setprop profiler.force_disable_err_rpt 1 > /dev/null 2>&1
-        setprop ro.config.nocheckin 1 > /dev/null 2>&1
-        setprop debugtool.anrhistory 0 > /dev/null 2>&1
-        setprop ro.com.google.locationfeatures 0 > /dev/null 2>&1
-        setprop ro.com.google.networklocation 0 > /dev/null 2>&1
-        setprop profiler.debugmonitor false > /dev/null 2>&1
-        setprop profiler.launch false > /dev/null 2>&1
-        setprop profiler.hung.dumpdobugreport false > /dev/null 2>&1
-        setprop persist.service.pcsync.enable 0 > /dev/null 2>&1
-        setprop persist.service.lgospd.enable 0 > /dev/null 2>&1
-        setprop persist.sys.purgeable_assets 1 > /dev/null 2>&1
-        echo 'disable log and monitoring done .' | tee -a $saveLog;
-        echo "  --- --- --- --- --- " | tee -a $saveLog > /dev/null 2>&1
-    }
-    enableLogSystem(){
-    # Enable stats logging & monitoring
-        echo 'enable log and monitoring . . .' | tee -a $saveLog;
-        setprop debug.atrace.tags.enableflags 1 > /dev/null 2>&1
-        setprop profiler.force_disable_ulog false > /dev/null 2>&1
-        setprop profiler.force_disable_err_rpt false > /dev/null 2>&1
-        setprop profiler.force_disable_ulog 0 > /dev/null 2>&1
-        setprop profiler.force_disable_err_rpt 0 > /dev/null 2>&1
-        setprop ro.config.nocheckin 0 > /dev/null 2>&1
-        setprop debugtool.anrhistory 1 > /dev/null 2>&1
-        setprop ro.com.google.locationfeatures 1 > /dev/null 2>&1
-        setprop ro.com.google.networklocation 1 > /dev/null 2>&1
-        setprop profiler.debugmonitor true > /dev/null 2>&1
-        setprop profiler.launch true > /dev/null 2>&1
-        setprop profiler.hung.dumpdobugreport true > /dev/null 2>&1
-        setprop persist.service.pcsync.enable 1 > /dev/null 2>&1
-        setprop persist.service.lgospd.enable 1 > /dev/null 2>&1
-        setprop persist.sys.purgeable_assets 0 > /dev/null 2>&1
-        echo 'enable log and monitoring done .' | tee -a $saveLog;
-        echo "  --- --- --- --- --- " | tee -a $saveLog
-    }
 
     # ngator mode start
         if [ "$GetMode" == 'off' ];then
@@ -1177,41 +1176,37 @@ runScript(){
                 fi
             fi
         fi
-        if [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ];then
-            BASEDIR=/system/etc/ZyC_Ai
-            if [ -e "$PathModulConfigAi/ai_status.txt" ]; then
-                AiStatus="$(cat "$PathModulConfigAi/ai_status.txt")"
-                if [ "$AiStatus" == "1" ];then
-                    echo "starting ai mode . . . " | tee -a $saveLog
-                    echo "  --- --- --- --- --- " | tee -a $saveLog
-                    RunAi="Yes"
-                elif [ "$AiStatus" == "2" ];then
-                    echo "re - run ai mode . . . " | tee -a $saveLog
-                    echo "  --- --- --- --- --- " | tee -a $saveLog
-                    RunAi="Yes"
-                elif [ "$AiStatus" == "3" ];then
-                    echo "deactive ai mode . . . " | tee -a $saveLog
-                    echo "  --- --- --- --- --- " | tee -a $saveLog
-                    RunAi="Yes"
-                elif [ "$AiStatus" == "0" ];then
-                    echo "ai status off"| tee -a $saveLog;
-                    echo "  --- --- --- --- --- " | tee -a $saveLog
-                else
-                    echo "ai status error,set to 0"| tee -a $saveLog;
-                    echo '0' > "$PathModulConfigAi/ai_status.txt"
-                    echo "  --- --- --- --- --- " | tee -a $saveLog
-                fi
+    fi
+}
+runScript 2>&1 1>/dev/null | tee -a $Path/ZyC_Turbo.running.log ;
+if [ "$FromTerminal" == "tidak" ];then
+    if [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ];then
+        BASEDIR=/system/etc/ZyC_Ai
+        if [ -e "$PathModulConfigAi/ai_status.txt" ]; then
+            AiStatus="$(cat "$PathModulConfigAi/ai_status.txt")"
+            if [ "$AiStatus" == "1" ];then
+                echo "starting ai mode . . . " | tee -a $saveLog
+                echo "  --- --- --- --- --- " | tee -a $saveLog
+            elif [ "$AiStatus" == "2" ];then
+                echo "re - run ai mode . . . " | tee -a $saveLog
+                echo "  --- --- --- --- --- " | tee -a $saveLog
+            elif [ "$AiStatus" == "3" ];then
+                echo "deactive ai mode . . . " | tee -a $saveLog
+                echo "  --- --- --- --- --- " | tee -a $saveLog
+            elif [ "$AiStatus" == "0" ];then
+                echo "ai status off"| tee -a $saveLog;
+                echo "  --- --- --- --- --- " | tee -a $saveLog
+            else
+                echo "ai status error,set to 0"| tee -a $saveLog;
+                echo '0' > "$PathModulConfigAi/ai_status.txt"
+                echo "  --- --- --- --- --- " | tee -a $saveLog
             fi
         fi
     fi
-}
-ErrorGet=$(runScript 2>&1 1>/dev/null)
-if [ ! -z "$ErrorGet" ];then
-    echo -e $ErrorGet | tee -a $Path/ZyC_Turbo.running.log ;
-fi
-if [ "$RunAi" == "Yes" ];then
-    nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
+    if [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "2" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "3" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "1" ];then
+        nohup sh $BASEDIR/ai_mode.sh "fromBoot" &
+    fi
 fi
 echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog;
 echo "  --- --- --- --- --->> " | tee -a $saveLog
-exit
+exit 0

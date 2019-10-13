@@ -129,7 +129,7 @@ $POSTFSDATA && cp -af $TMPDIR/post-fs-data.sh $MODPATH/post-fs-data.sh
 
 # service mode scripts
 $LATESTARTSERVICE && cp -af $TMPDIR/service.sh $MODPATH/service.sh
-$LATESTARTSERVICE && cp -af $TMPDIR/initialize.sh $MODPATH/initialize.sh
+cp -af $TMPDIR/initialize.sh $MODPATH/initialize.sh
 
 # Handle replace folders
 for TARGET in $REPLACE; do
