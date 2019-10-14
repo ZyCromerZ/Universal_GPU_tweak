@@ -758,12 +758,12 @@ ListMenu(){
         echo "3 > side config"
         echo "4 > detected app and games config"
         if [ "$Perubahan" == "ya" ];then
-            echo "s/save > save setting"
+            echo "s > save setting"
             # echo "0 > exit"
         fi
-        echo "0/e/exit > exit setting"
-        echo "chose tweak config :"
-        read getModeTweak
+        echo "0/e > exit setting"
+        echo -n "chose tweak config :"
+        read -n 1 -s -r getModeTweak
         clear
         echo "Version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )"
         echo "list menu : "
@@ -779,13 +779,11 @@ ListMenu(){
         elif [ "$getModeTweak" == "4" ];then
             typeMenu="4"
             AppGet
-        elif [ "$getModeTweak" == "e" ] || [ "$getModeTweak" == "0" ] || [ "$getModeTweak" == "exit" ];then
+        elif [ "$getModeTweak" == "e" ] || [ "$getModeTweak" == "0" ];then
             exitSetting
         else
             if [ "$Perubahan" == "ya" ];then
-                if [ "$pilihan" == "s" ];then
-                    savedata="yes"
-                elif [ "$pilihan" == "save" ];then
+                if [ "$getModeTweak" == "s" ];then
                     savedata="yes"
                 else
                     savedata="no"
@@ -920,11 +918,11 @@ ListMenu(){
         echo 'you can set from 1 to 8'
         echo 'lower value more free ram (less app load)'
         echo 'highest value more app load(less free ram)'
-        echo 'set ram management fix to ?'
-        read GetChoice
-        if [ "$GetChoice" -le "8" ];then
-            GetModeRamNew=$GetChoice
-            echo "set to : method $GetChoice"
+        echo -n 'set ram management fix to : '
+        read -n 1 SetRmTo
+        if [ "$SetRmTo" -le "8" ] && [ "$SetRmTo" -ge "1" ];then
+            GetModeRamNew=$SetRmTo
+            echo "set to : method $SetRmTo"
         else
             echo "input error . . ."
         fi
@@ -1086,15 +1084,15 @@ ListMenu(){
     elif [ "$pilihan" == "sal" ];then
         Perubahan="ya"
         cat "$PathModulConfigAi/list_app_package_detected.txt"
-        echo "Press any key to continue . . . ."
-        read -n 3 -s -r 
+        echo -n "Press any key to continue . . . ."
+        read -n 1 -s -r 
         usleep 100000
         ListMenu
     elif [ "$pilihan" == "sgl" ];then
         Perubahan="ya"
         cat "$PathModulConfigAi/list_app_auto_turbo.txt"
-        echo "Press any key to continue . . . ."
-        read -n 3 -s -r 
+        echo -n "Press any key to continue . . . ."
+        read -n 1 -s -r 
         usleep 100000
         ListMenu
     elif [ "$pilihan" == "mag" ];then
@@ -1133,7 +1131,7 @@ ListMenu(){
         rm $GetApp
         echo 'done . . '
         usleep 100000
-        echo "Press any key to continue . . . ."
+        echo -n "Press any key to continue . . . ."
         read -n 3 -s -r 
         ListMenu
     elif [ "$pilihan" == "zrx" ];then
@@ -1146,10 +1144,10 @@ ListMenu(){
         echo '--- --- --- ---'
         echo 'set swap/zram to ?'
         echo 'you can set from 1 to 4'
-        read GetChoice
-        if [ "$GetChoice" -le "8" ];then
-            ZramNew=$GetChoice
-            echo "set to : $GetChoice Gb"
+        read SetSwap
+        if [ "$SetSwap" -le "8" ];then
+            ZramNew=$SetSwap
+            echo "set to : $SetSwap Gb"
         else
             echo "input error . . ."
         fi
@@ -1267,19 +1265,19 @@ ListMenu(){
         else
             echo "u are not use dns yet,please choose one. . ."
         fi
-        echo "Press any key to continue . . . ."
+        echo -n "Press any key to continue . . . ."
         read -n 3 -s -r 
         usleep 100000
         ListMenu
     elif [ "$pilihan" == "gux" ];then
-        echo "how long (example : 1) ??"
+        echo -n "how long (example : 1) : "
         read getnumber
         Perubahan="ya"
         StatusStartGpuNew="$getnumber"
         usleep 100000
         ListMenu
     elif [ "$pilihan" == "gun" ];then
-        echo "how long (example : 1) ??"
+        echo -n "how long (example : 1) : "
         read getnumber
         Perubahan="ya"
         StatusEndGpuNew="$getnumber"
@@ -1317,7 +1315,7 @@ ListMenu(){
 }
 exitSetting(){
     clear
-    echo "exit (y/n)?"
+    echo -n "exit (y/n) : "
     read keluar
     if [ "$keluar" == "y" ];then
         if [ "$RestartNotif" == "iya" ];then
