@@ -70,7 +70,7 @@ elif [ -d "/sys/devices/platform/*.gpu/devfreq/*.gpu" ]; then
 else
     NyariGPU='';
 fi
-if [ NyariGPU == '' ];then
+if [ "$NyariGPU" == '' ];then
     echo "gpu path not found" | tee -a $AiLog
     echo "but u cant use gpu tweak,but u can still use another feature :D" | tee -a $AiLog
 fi
@@ -201,133 +201,133 @@ SetNotificationDozeOn(){
 runScript(){
     MissingFile="kaga"
     # check service sh config start
-        if [ ! -e $PathModulConfig/status_modul.txt ]; then
+        if [ ! -e "$PathModulConfig/status_modul.txt" ]; then
             MissingFile="iya"
         fi
 
         # mode render
-        if [ ! -e $PathModulConfig/mode_render.txt ]; then
+        if [ ! -e "$PathModulConfig/mode_render.txt" ]; then
             MissingFile="iya"
         fi
 
         # max fps nya
-        if [ ! -e $PathModulConfig/total_fps.txt ]; then
+        if [ ! -e "$PathModulConfig/total_fps.txt" ]; then
             MissingFile="iya"
         fi
 
         # Status Log nya
-        if [ ! -e $PathModulConfig/disable_log_system.txt ]; then
+        if [ ! -e "$PathModulConfig/disable_log_system.txt" ]; then
             MissingFile="iya"
         fi
 
         # fast charging
-        if [ ! -e $PathModulConfig/fastcharge.txt ]; then
+        if [ ! -e "$PathModulConfig/fastcharge.txt" ]; then
             MissingFile="iya"
         fi
 
         # setting adrenoboost
         if [ -e $NyariGPU/devfreq/adrenoboost ];then
-            if [ ! -e $PathModulConfig/GpuBooster.txt ]; then
+            if [ ! -e "$PathModulConfig/GpuBooster.txt" ]; then
                 MissingFile="iya"
             fi
         fi
 
         # setting fsync
-        if [ ! -e $PathModulConfig/fsync_mode.txt ]; then
+        if [ ! -e "$PathModulConfig/fsync_mode.txt" ]; then
             MissingFile="iya"
         fi
 
         # setting custom Ram Management
-        if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
+        if [ ! -e "$PathModulConfig/custom_ram_management.txt" ]; then
             MissingFile="iya"
         fi
 
         
-        if [ ! -e $PathModulConfig/custom_ram_management_adj.txt ]; then
+        if [ ! -e "$PathModulConfig/custom_ram_management_adj.txt" ]; then
             MissingFile="iya"
         fi
 
         # GMS DOZE
-        if [ ! -e $PathModulConfig/gms_doze.txt ]; then
+        if [ ! -e "$PathModulConfig/gms_doze.txt" ]; then
             MissingFile="iya"
         fi
 
         # Zram
-        if [ ! -e $PathModulConfig/zram.txt ]; then
+        if [ ! -e "$PathModulConfig/zram.txt" ]; then
             MissingFile="iya"
         fi
         # swappiness
-        if [ ! -e $PathModulConfig/swapinnes.txt ]; then
+        if [ ! -e "$PathModulConfig/swapinnes.txt" ]; then
             MissingFile="iya"
         fi
 
         # optimize zram
-        if [ ! -e $PathModulConfig/zram_optimizer.txt ]; then
+        if [ ! -e "$PathModulConfig/zram_optimizer.txt" ]; then
             MissingFile="iya"
         fi
 
         # dns
-        if [ ! -e $PathModulConfig/dns.txt ]; then
+        if [ ! -e "$PathModulConfig/dns.txt" ]; then
             MissingFile="iya"
         fi
 
-        if [ ! -e $PathModulConfig/notes_en.txt ]; then
+        if [ ! -e "$PathModulConfig/notes_en.txt" ]; then
             # echo "please read this xD \nyou can set mode.txt to:\n- off \n- on \n- turbo \nvalue must same as above without'-'\n\nchange mode_render.txt to:\n-  opengl \n-  skiagl \n-  skiavk \n\n note:\n-skiavk = Vulkan \n-skiagl = OpenGL (SKIA)\ndont edit total_fps.txt still not tested" > $PathModulConfig/notes.txt
             MissingFile="iya"
         fi
-        if [ ! -e $PathModulConfig/notes_id.txt ]; then
+        if [ ! -e "$PathModulConfig/notes_id.txt" ]; then
             MissingFile="iya"
         fi
     # check service.sh config done
     # App trigger start
-    if [ ! -e $PathModulConfigAi/list_app_auto_turbo.txt ]; then
+    if [ ! -e "$PathModulConfigAi/list_app_auto_turbo.txt" ]; then
         MissingFile="iya"
     fi
     pathAppAutoTubo=$PathModulConfigAi/list_app_auto_turbo.txt
     # Get App list
-    if [ ! -e $PathModulConfigAi/list_app_package_detected.txt ]; then
+    if [ ! -e "$PathModulConfigAi/list_app_package_detected.txt" ]; then
         MissingFile="iya"
     fi
     GpuStart="$(cat "$PathModulConfigAi/status_start_gpu.txt")";
     # Gpu trigger start
-    if [ ! -e $PathModulConfigAi/status_start_gpu.txt ]; then
+    if [ ! -e "$PathModulConfigAi/status_start_gpu.txt" ]; then
         MissingFile="iya"
     fi
     GpuStart="$(cat "$PathModulConfigAi/status_start_gpu.txt")";
-    if [ ! -e $PathModulConfigAi/status_end_gpu.txt ]; then
+    if [ ! -e "$PathModulConfigAi/status_end_gpu.txt" ]; then
         MissingFile="iya"
     fi
     GpuStop="$(cat "$PathModulConfigAi/status_end_gpu.txt")";
     # Wait time when off
-    if [ ! -e $PathModulConfigAi/wait_time_off.txt ]; then
+    if [ ! -e "$PathModulConfigAi/wait_time_off.txt" ]; then
         MissingFile="iya"
     fi
     # Wait time when on
     waitTimeOff=$(cat "$PathModulConfigAi/wait_time_off.txt");
-    if [ ! -e $PathModulConfigAi/wait_time_on.txt ]; then
+    if [ ! -e "$PathModulConfigAi/wait_time_on.txt" ]; then
         MissingFile="iya"
     fi
     waitTimeOn=$(cat "$PathModulConfigAi/wait_time_on.txt");
     # Status 0=tidak aktif,1=aktif,2=sedang berjalan
-    if [ ! -e $PathModulConfigAi/ai_status.txt ]; then
+    if [ ! -e "$PathModulConfigAi/ai_status.txt" ]; then
         MissingFile="iya"
     fi
     aiStatus=$(cat "$PathModulConfigAi/ai_status.txt");
     # run when gaming only or based gpu sage or both
-    if [ ! -e $PathModulConfigAi/ai_change.txt ]; then
+    if [ ! -e "$PathModulConfigAi/ai_change.txt" ]; then
         MissingFile="iya"
     fi
     aiChange=$(cat "$PathModulConfigAi/ai_change.txt")
     # Set Ai Notif Mode Start
-    if [ ! -e $PathModulConfigAi/ai_notif_mode.txt ]; then
+    if [ ! -e "$PathModulConfigAi/ai_notif_mode.txt" ]; then
         MissingFile="iya"
     fi
     aiNotif=$(cat "$PathModulConfigAi/ai_notif_mode.txt");
-    if [ ! -e $PathModulConfigAi/ai_notif_mode_running.txt ]; then
+    if [ ! -e "$PathModulConfigAi/ai_notif_mode_running.txt" ]; then
         MissingFile="iya"
     fi
     aiNotifRunning=$(cat "$PathModulConfigAi/ai_notif_mode_running.txt");
-    if [ ! -e $PathModulConfigAi/ai_notif_mode_running_status.txt ]; then
+    if [ ! -e "$PathModulConfigAi/ai_notif_mode_running_status.txt" ]; then
         MissingFile="iya"
     fi
     aiNotifRunningStatus=$(cat "$PathModulConfigAi/ai_notif_mode_running_status.txt");
@@ -421,7 +421,7 @@ runScript(){
                 fi
             elif [ "$aiChange" == "2" ];then
                 GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1)
-                if [ ! -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ] && [ "$StatusModul" == "off" ];then
+                if [ ! -z "$(grep "$GetPackageApp" "$pathAppAutoTubo" )" ] && [ "$StatusModul" == "off" ];then
                     echo "found $GetPackageApp on your setting . . ." | tee -a $AiLog
                     setTurbo & wait
                 elif  [ "$StatusModul" == "turbo" ] && [ -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
@@ -430,7 +430,7 @@ runScript(){
             elif [ "$aiChange" == "3" ];then
                 if [ "$StatusModul" == "off" ];then
                     GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1)
-                    if [ ! -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
+                    if [ ! -z "$(grep "$GetPackageApp" "$pathAppAutoTubo" )" ];then
                         if [ "$StatusModul" != "turbo" ];then
                             echo "found $GetPackageApp on your setting . . ." | tee -a $AiLog
                             setTurbo & wait
@@ -451,7 +451,7 @@ runScript(){
                     if [ "$GpuStatus" -le "$GpuStop" ];then
                         if [ "$StatusModul" != "off" ];then
                             GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1)
-                            if [ -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
+                            if [ -z "$(grep "$GetPackageApp" "$pathAppAutoTubo" )" ];then
                                 setOff & wait
                             fi
                         fi

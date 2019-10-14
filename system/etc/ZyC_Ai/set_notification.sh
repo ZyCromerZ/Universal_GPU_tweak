@@ -226,7 +226,7 @@ if [ ! -z "$1" ];then
                 echo "0" > $GetLedPath/green/brightness
             fi;
             usleep 400000
-            if [ ! -z "$( acpi -a | grep "on-line" )" ];then
+            if [ "$( acpi -a | grep "on-line" | wc -l)" -gt "0" ];then
                 echo "$GetRed" > $GetLedPath/red/brightness
                 echo "$GetGreen" > $GetLedPath/green/brightness
                 if [ -e /sys/class/leds/blue/brightness ];then
@@ -236,14 +236,6 @@ if [ ! -z "$1" ];then
                 echo "0" > $GetLedPath/red/brightness
                 echo "0" > $GetLedPath/green/brightness
             fi;
-            sleep 2
-            if [ -z "$( acpi -a | grep "on-line" | grep 1 )" ] || [ -z "$( acpi -a | grep "on-line" | grep 2 )" ] || [ -z "$( acpi -a | grep "on-line" | grep 0 )" ];then
-                echo "0" > $GetLedPath/red/brightness
-                echo "0" > $GetLedPath/green/brightness
-                if [ -e /sys/class/leds/blue/brightness ];then
-                    echo "0" > $GetLedPath/blue/brightness
-                fi
-            fi
         fi;
     fi;
 fi;

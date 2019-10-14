@@ -348,22 +348,11 @@ SideTweak(){
     if [ -e "$PathModulConfig/custom_ram_management.txt" ];then
         echo "<-- -- Ram management Config -- -->"
         echo "rms > use system ram management"
-        echo "rm1 > use ram management method 1 "
-        echo "      (method for light use/more free ram)"
-        echo "rm2 > use ram management method 2 "
-        echo "      (method for standar)"
-        echo "rm3 > use ram management method 3"
-        echo "      (method for open some app at same time)"
-        echo "rm4 > use ram management method 4 "
-        echo "      (method for open multi app & game at same time)"
-        echo "rm5 > use ram management method 5"
-        echo "      (method for extreme app and gaming)"
+        echo "rmt > use ram management by tweak "
         if [ "$TypeOpen" == "1" ];then
             echo "rads > use adj system (recomended)"
             echo "radt > use adj tweak "
         fi
-        echo " NOTE : rm5 force ram not close app"
-        echo "        while running on background"
         if [ "$GetModeRamBefore" != "$GetModeRamNew" ];then
             if [ "$GetModeRamNew" == "0" ];then
                 echo $hijauPutih"this will set to : use system "$ResetWarna
@@ -768,12 +757,12 @@ ListMenu(){
         echo "2 > ai config"
         echo "3 > side config"
         echo "4 > detected app and games config"
-        if [ $Perubahan == "ya" ];then
+        if [ "$Perubahan" == "ya" ];then
             echo "s/save > save setting"
             # echo "0 > exit"
         fi
         echo "0/e/exit > exit setting"
-        echo "chose tweak :"
+        echo "chose tweak config :"
         read getModeTweak
         clear
         echo "Version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )"
@@ -793,6 +782,18 @@ ListMenu(){
         elif [ "$getModeTweak" == "e" ] || [ "$getModeTweak" == "0" ] || [ "$getModeTweak" == "exit" ];then
             exitSetting
         else
+            if [ "$Perubahan" == "ya" ];then
+                if [ "$pilihan" == "s" ];then
+                    savedata="yes"
+                elif [ "$pilihan" == "save" ];then
+                    savedata="yes"
+                else
+                    savedata="no"
+                fi
+                if [ "$savedata" == "yes" ];then
+                    saveSetting
+                fi
+            fi
             echo "input error"
             sleep 2
             ListMenu
@@ -807,7 +808,7 @@ ListMenu(){
             echo "bsc > show basic menu"
         fi
     fi
-    if [ $Perubahan == "ya" ];then
+    if [ "$Perubahan" == "ya" ];then
         echo "s/save > save setting"
         # echo "0 > exit"
     fi
@@ -914,29 +915,19 @@ ListMenu(){
         GetModeRamNew="0"
         usleep 100000
         ListMenu
-    elif [ "$pilihan" == "rm1" ];then
-        Perubahan="ya"
-        GetModeRamNew="1"
-        usleep 100000
-        ListMenu
-    elif [ "$pilihan" == "rm2" ];then
-        Perubahan="ya"
-        GetModeRamNew="2"
-        usleep 100000
-        ListMenu
-    elif [ "$pilihan" == "rm3" ];then
-        Perubahan="ya"
-        GetModeRamNew="3"
-        usleep 100000
-        ListMenu
-    elif [ "$pilihan" == "rm4" ];then
-        Perubahan="ya"
-        GetModeRamNew="4"
-        usleep 100000
-        ListMenu
-    elif [ "$pilihan" == "rm5" ];then
-        Perubahan="ya"
-        GetModeRamNew="5"
+    elif [ "$pilihan" == "rmt" ];then
+        echo '--- --- --- ---'
+        echo 'you can set from 1 to 8'
+        echo 'lower value more free ram (less app load)'
+        echo 'highest value more app load(less free ram)'
+        echo 'set ram management fix to ?'
+        read GetChoice
+        if [ "$GetChoice" -le "8" ];then
+            GetModeRamNew=$GetChoice
+            echo "set to : method $GetChoice"
+        else
+            echo "input error . . ."
+        fi
         usleep 100000
         ListMenu
     elif [ "$pilihan" == "rads" ];then
@@ -1306,7 +1297,7 @@ ListMenu(){
         TypeOpen="0"
         ListMenu
     else 
-        if [ $Perubahan == "ya" ];then
+        if [ "$Perubahan" == "ya" ];then
             if [ "$pilihan" == "s" ];then
                 savedata="yes"
             elif [ "$pilihan" == "save" ];then

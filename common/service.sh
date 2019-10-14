@@ -594,22 +594,16 @@ runScript(){
         if [ "$FromTerminal" == "ya" ];then
             if [ "$fsyncMode" == "0" ];then
                 disableFsync
-                echo "custom fsync detected, set to disable" | tee -a $saveLog;
-                echo "  --- --- --- --- --- " | tee -a $saveLog
             elif [ "$fsyncMode" == "1" ];then
                 enableFsync
-                echo "custom fsync detected, set to enable" | tee -a $saveLog;
-                echo "  --- --- --- --- --- " | tee -a $saveLog
             elif [ "$fsyncMode" == "system" ];then
                 systemFsync
-                echo "use system fsync setting" | tee -a $saveLog;
-                echo "  --- --- --- --- --- " | tee -a $saveLog
             else
                 if [ "$fsyncMode" != "auto" ];then
-                    systemFsync
                     echo "fsync value error,set to by system" | tee -a $saveLog;
-                    echo 'system' > $PathModulConfig/fsync_mode.txt
                     echo "  --- --- --- --- --- " | tee -a $saveLog
+                    echo 'system' > $PathModulConfig/fsync_mode.txt
+                    systemFsync
                 fi
                 # disableFsync
             fi
@@ -672,26 +666,47 @@ runScript(){
                         ContentProvider=$((((GetTotalRam*8/100)*1024)/4))
                         EmptyApp=$((((GetTotalRam*9/100)*1024)/4))
                     elif [ "$CustomRam" == "3" ]; then # Method 3
+                        ForegroundApp=$((((GetTotalRam*2/100)*1024)/4))
+                        VisibleApp=$((((GetTotalRam*3/100)*1024)/4))
+                        SecondaryServer=$((((GetTotalRam*5/100)*1024)/4))
+                        HiddenApp=$((((GetTotalRam*6/100)*1024)/4))
+                        ContentProvider=$((((GetTotalRam*10/100)*1024)/4))
+                        EmptyApp=$((((GetTotalRam*12/100)*1024)/4))
+                    elif [ "$CustomRam" == "4" ]; then # Method 4
                         ForegroundApp=$((((GetTotalRam*3/100)*1024)/4))
                         VisibleApp=$((((GetTotalRam*4/100)*1024)/4))
                         SecondaryServer=$((((GetTotalRam*5/100)*1024)/4))
                         HiddenApp=$((((GetTotalRam*7/100)*1024)/4))
                         ContentProvider=$((((GetTotalRam*10/100)*1024)/4))
                         EmptyApp=$((((GetTotalRam*14/100)*1024)/4))
-                    elif [ "$CustomRam" == "4" ]; then # Method 4
+                    elif [ "$CustomRam" == "5" ]; then # Method 5
+                        ForegroundApp=$((((GetTotalRam*3/100)*1024)/4))
+                        VisibleApp=$((((GetTotalRam*4/100)*1024)/4))
+                        SecondaryServer=$((((GetTotalRam*5/100)*1024)/4))
+                        HiddenApp=$((((GetTotalRam*7/100)*1024)/4))
+                        ContentProvider=$((((GetTotalRam*11/100)*1024)/4))
+                        EmptyApp=$((((GetTotalRam*15/100)*1024)/4))
+                    elif [ "$CustomRam" == "6" ]; then # Method 6
                         ForegroundApp=$((((GetTotalRam*4/100)*1024)/4))
                         VisibleApp=$((((GetTotalRam*5/100)*1024)/4))
                         SecondaryServer=$((((GetTotalRam*6/100)*1024)/4))
                         HiddenApp=$((((GetTotalRam*7/100)*1024)/4))
                         ContentProvider=$((((GetTotalRam*12/100)*1024)/4))
                         EmptyApp=$((((GetTotalRam*15/100)*1024)/4))
-                    elif [ "$CustomRam" == "5" ]; then # Method 5
+                    elif [ "$CustomRam" == "7" ]; then # Method 7
                         ForegroundApp=$((((GetTotalRam*6/100)*1024)/4))
                         VisibleApp=$((((GetTotalRam*7/100)*1024)/4))
                         SecondaryServer=$((((GetTotalRam*8/100)*1024)/4))
                         HiddenApp=$((((GetTotalRam*9/100)*1024)/4))
                         ContentProvider=$((((GetTotalRam*14/100)*1024)/4))
-                        EmptyApp=$((((GetTotalRam*18/100)*1024)/4))         
+                        EmptyApp=$((((GetTotalRam*18/100)*1024)/4))   
+                    elif  [ "$CustomRam" == "8" ]; then # Method 8
+                        ForegroundApp=$((((GetTotalRam*6/100)*1024)/4))
+                        VisibleApp=$((((GetTotalRam*7/100)*1024)/4))
+                        SecondaryServer=$((((GetTotalRam*8/100)*1024)/4))
+                        HiddenApp=$((((GetTotalRam*10/100)*1024)/4))
+                        ContentProvider=$((((GetTotalRam*15/100)*1024)/4))
+                        EmptyApp=$((((GetTotalRam*19/100)*1024)/4))        
                     else   
                         echo "method not found" | tee -a $saveLog;
                         StopModify="yes"
@@ -701,11 +716,12 @@ runScript(){
                             chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
                             if [ "$CustomRam" -le "4" ];then
                                 echo "1" > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
+                                setprop lmk.autocalc true
                             else
                                 echo "0" > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
+                                setprop lmk.autocalc false
                             fi
                             chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-                            setprop lmk.autocalc false
                         fi;
                         if [ -e /sys/module/lowmemorykiller/parameters/debug_level ]; then
                             chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
@@ -741,8 +757,8 @@ runScript(){
                     # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog;
                 fi;
                 setprop zyc.change.rm "udah"
+                echo "  --- --- --- --- --- " | tee -a $saveLog
             fi
-            echo "  --- --- --- --- --- " | tee -a $saveLog
         fi
     # custom ram managent end
     # custom zram start
