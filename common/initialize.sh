@@ -112,7 +112,6 @@ if [ ! -z "$1" ];then
                 mkdir -p $Path/ZyC_Turbo_config
             fi
             PathModulConfig=$Path/ZyC_Turbo_config
-            echo $(getprop debug.hwui.renderer) > "$PathModulConfig/backup/gpu_render.txt"
             echo 'system' > $PathModulConfig/mode_render.txt
             echo 'system' > $PathModulConfig/fsync_mode.txt
             setprop zyc.change.rm "belom"
