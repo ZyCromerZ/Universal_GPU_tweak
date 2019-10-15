@@ -744,6 +744,9 @@ AppGet(){
     echo "sal > to check app list install on your phone"
     echo "sgl > to check game list for trigger ai to mode turbo faster"
     echo "mag > manual add games"
+    if [ "$(getprop dalvik.vm.usejit)" == "true" ];then
+        echo "oap > app optimizer"
+    fi
     if [ "$RefreshList" == "sudah" ];then
         echo $hijauHitam"refresh list game and app done . . . :p"$ResetWarna
     elif [ "$RefreshList" == "iya" ];then
@@ -1303,6 +1306,33 @@ ListMenu(){
         Perubahan="ya"
         StatusEndGpuNew="$getnumber"
         usleep 100000
+        ListMenu
+    elif [ "$pilihan" == "oap" ];then
+        echo "all > all apps (include system)"
+        echo "app > installed app only"
+        echo "just enter to cancel"
+        echo -n "choose type optimizer : "
+        read AppOptimizerType
+        if [ "$AppOptimizerType" == "all"  ];then
+            echo "starting optimize all app"
+            cmd package compile -m speed -f -a -r
+        elif [ "$AppOptimizerType" == "app"  ];then
+            echo "starting optimize installed app"
+            if [ "$(getenforce)" == "Enforcing" ];then
+                changeSE="ya"
+                setenforce 0
+            fi
+            for appList in `pm list package -3 | sed 's/package:*//g'`
+            do
+                echo -n "$appList : "
+                cmd package compile -m speed -f "$appList" -r
+            done
+            if [ "$changeSE" == "ya" ];then
+                setenforce 1
+            fi
+        fi
+        echo -n "Press any key to continue . . . ."
+        read -n 3 -s -r 
         ListMenu
     elif [ "$pilihan" == "0" ] || [ "$pilihan" == "e" ] || [ "$pilihan" == "exit" ];then
         exitSetting

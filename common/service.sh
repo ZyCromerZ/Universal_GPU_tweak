@@ -1191,7 +1191,7 @@ runScript(){
             if [ "$(getprop dalvik.vm.usejit)" == "true" ];then
                 echo "optimize art cache " | tee -a $saveLog 
                 echo "optimize art cache started at $(date +"%d-%m-%Y %r")" | tee -a $Path/ZyC_Turbo.running.log 2>&1 1>/dev/null 2>/dev/null
-                echo $(cmd package compile -m speed -f -a 2>&1 1>/dev/null) 
+                echo $(cmd package bg-dexopt-job 2>&1 1>/dev/null) 
                 echo "done . . . " | tee -a $saveLog 
                 echo "  --- --- --- --- --- " | tee -a $saveLog 
                 echo "optimize art cache at end at $(date +"%d-%m-%Y %r")" | tee -a $Path/ZyC_Turbo.running.log 2>&1 1>/dev/null 2>/dev/null
