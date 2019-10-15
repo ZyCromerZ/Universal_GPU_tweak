@@ -119,7 +119,9 @@ setOff(){
     nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & 
 }
 setLag(){
-    SetNotificationDozeOn
+    if [ "$(cat "$PathModulConfigAi/ai_doze_notif.txt")" == "on" ];then
+        SetNotificationDozeOn
+    fi
     echo "set to lag mode at : $(date +" %r")" | tee -a $AiLog
     echo "lag" > $PathModulConfig/status_modul.txt
     StatusModul="lag"
@@ -128,7 +130,9 @@ setLag(){
     nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" "doze" &
 }
 setLagoff(){
-    SetNotificationDozeOff
+    if [ "$(cat "$PathModulConfigAi/ai_doze_notif.txt")" == "on" ];then
+        SetNotificationDozeOff
+    fi
     echo "revert back to off mode at : $(date +" %r")" | tee -a $AiLog
     echo "off" > $PathModulConfig/status_modul.txt
     StatusModul="off"
@@ -226,7 +230,7 @@ runScript(){
         fi
 
         # setting adrenoboost
-        if [ -e $NyariGPU/devfreq/adrenoboost ];then
+        if [ -e "$NyariGPU/devfreq/adrenoboost" ];then
             if [ ! -e "$PathModulConfig/GpuBooster.txt" ]; then
                 MissingFile="iya"
             fi
@@ -283,64 +287,73 @@ runScript(){
     if [ ! -e "$PathModulConfigAi/list_app_auto_turbo.txt" ]; then
         MissingFile="iya"
     fi
-    pathAppAutoTubo=$PathModulConfigAi/list_app_auto_turbo.txt
     # Get App list
     if [ ! -e "$PathModulConfigAi/list_app_package_detected.txt" ]; then
         MissingFile="iya"
     fi
-    GpuStart="$(cat "$PathModulConfigAi/status_start_gpu.txt")";
     # Gpu trigger start
     if [ ! -e "$PathModulConfigAi/status_start_gpu.txt" ]; then
         MissingFile="iya"
     fi
-    GpuStart="$(cat "$PathModulConfigAi/status_start_gpu.txt")";
     if [ ! -e "$PathModulConfigAi/status_end_gpu.txt" ]; then
         MissingFile="iya"
     fi
-    GpuStop="$(cat "$PathModulConfigAi/status_end_gpu.txt")";
     # Wait time when off
     if [ ! -e "$PathModulConfigAi/wait_time_off.txt" ]; then
         MissingFile="iya"
     fi
     # Wait time when on
-    waitTimeOff=$(cat "$PathModulConfigAi/wait_time_off.txt");
     if [ ! -e "$PathModulConfigAi/wait_time_on.txt" ]; then
         MissingFile="iya"
     fi
-    waitTimeOn=$(cat "$PathModulConfigAi/wait_time_on.txt");
     # Status 0=tidak aktif,1=aktif,2=sedang berjalan
     if [ ! -e "$PathModulConfigAi/ai_status.txt" ]; then
         MissingFile="iya"
     fi
-    aiStatus=$(cat "$PathModulConfigAi/ai_status.txt");
     # run when gaming only or based gpu sage or both
     if [ ! -e "$PathModulConfigAi/ai_change.txt" ]; then
         MissingFile="iya"
     fi
-    aiChange=$(cat "$PathModulConfigAi/ai_change.txt")
     # Set Ai Notif Mode Start
     if [ ! -e "$PathModulConfigAi/ai_notif_mode.txt" ]; then
         MissingFile="iya"
     fi
-    aiNotif=$(cat "$PathModulConfigAi/ai_notif_mode.txt");
     if [ ! -e "$PathModulConfigAi/ai_notif_mode_running.txt" ]; then
         MissingFile="iya"
     fi
-    aiNotifRunning=$(cat "$PathModulConfigAi/ai_notif_mode_running.txt");
     if [ ! -e "$PathModulConfigAi/ai_notif_mode_running_status.txt" ]; then
         MissingFile="iya"
     fi
-    aiNotifRunningStatus=$(cat "$PathModulConfigAi/ai_notif_mode_running_status.txt");
+    if [ ! -e "$PathModulConfigAi/doze_state.txt" ]; then
+        echo 'off' > "$PathModulConfigAi/doze_state.txt"
+    fi
+    if [ ! -e "$PathModulConfigAi/ai_doze.txt" ]; then
+        echo 'off' > "$PathModulConfigAi/ai_doze.txt"
+    fi
+    if [ ! -e "$PathModulConfigAi/ai_doze_notif.txt" ]; then
+        echo 'off' > "$PathModulConfigAi/ai_doze_notif.txt"
+    fi
     # Set Ai Notif Mode End
     if [ "$MissingFile" == "iya" ]; then
         sh $ModulPath/ZyC_Turbo/initialize.sh & wait
         if [ "$fromBoot" == "yes" ];then
             sh $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
-            nohup sh /system/etc/ZyC_Ai/ai_mode.sh "fromBoot" & 
+            return 0
         else
-            nohup sh /system/etc/ZyC_Ai/ai_mode.sh & 
+            return 0
         fi
     fi
+    pathAppAutoTubo=$PathModulConfigAi/list_app_auto_turbo.txt
+    GpuStart="$(cat "$PathModulConfigAi/status_start_gpu.txt")";
+    GpuStart="$(cat "$PathModulConfigAi/status_start_gpu.txt")";
+    GpuStop="$(cat "$PathModulConfigAi/status_end_gpu.txt")";
+    waitTimeOff=$(cat "$PathModulConfigAi/wait_time_off.txt");
+    waitTimeOn=$(cat "$PathModulConfigAi/wait_time_on.txt");
+    aiStatus=$(cat "$PathModulConfigAi/ai_status.txt");
+    aiChange=$(cat "$PathModulConfigAi/ai_change.txt")
+    aiNotif=$(cat "$PathModulConfigAi/ai_notif_mode.txt");
+    aiNotifRunning=$(cat "$PathModulConfigAi/ai_notif_mode_running.txt");
+    aiNotifRunningStatus=$(cat "$PathModulConfigAi/ai_notif_mode_running_status.txt");
     StatusModul=$(cat "$PathModulConfig/status_modul.txt");
     if [ "$aiStatus" == "1" ]; then
         echo "<<--- --- --- --- --- " | tee -a $AiLog
@@ -358,9 +371,9 @@ runScript(){
         DozeConfig="$(cat "$PathModulConfigAi/ai_doze.txt")"
         DozeState="$(cat "$DozeStatePath")"
         if [ "$DozeConfig" == "on" ];then
-            GetScreenStateNFC="$( dumpsys nfc | grep 'mScreenState=' | sed 's/mScreenState=*//g' )" 
-            GetScreenStateOF="$( dumpsys display | grep "mScreenState" | sed 's/mScreenState=*//g'  )" 
-            GetScreenStateTF="$( dumpsys power | grep "mHoldingDisplaySuspendBlocker" | sed 's/mHoldingDisplaySuspendBlocker=*//g' )" 
+            GetScreenStateNFC="$( dumpsys nfc | grep 'mScreenState=' | sed 's/mScreenState=*//g' 2>&1 2>/dev/null)" 
+            GetScreenStateOF="$( dumpsys display | grep "mScreenState" | sed 's/mScreenState=*//g' 2>&1 2>/dev/null)" 
+            GetScreenStateTF="$( dumpsys power | grep "mHoldingDisplaySuspendBlocker" | sed 's/mHoldingDisplaySuspendBlocker=*//g' 2>&1 2>/dev/null)" 
             StatusLayar="gak tau"
             if [ "$GetScreenStateNFC" == "ON_LOCKED" ] || [ "$GetScreenStateNFC" == "ON_UNLOCKED" ] || [ "$GetScreenStateNFC" == "OFF_LOCKED" ] || [ "$GetScreenStateNFC" == "OFF_UNLOCKED" ];then
                 if [ "$StatusLayar" == "gak tau" ];then
@@ -424,7 +437,7 @@ runScript(){
                 if [ ! -z "$(grep "$GetPackageApp" "$pathAppAutoTubo" )" ] && [ "$StatusModul" == "off" ];then
                     echo "found $GetPackageApp on your setting . . ." | tee -a $AiLog
                     setTurbo & wait
-                elif  [ "$StatusModul" == "turbo" ] && [ -z $(grep "$GetPackageApp" "$pathAppAutoTubo" ) ];then
+                elif  [ "$StatusModul" == "turbo" ] && [ -z "$(grep "$GetPackageApp" "$pathAppAutoTubo" )" ];then
                     setOff & wait
                 fi
             elif [ "$aiChange" == "3" ];then

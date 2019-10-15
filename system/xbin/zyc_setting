@@ -181,6 +181,10 @@ GetSetting(){
         AiDozeBefore=$(cat "$PathModulConfigAi/ai_doze.txt")
         AiDozeNew=$(cat "$PathModulConfigAi/ai_doze.txt")
     fi
+    if [ -e $PathModulConfigAi/ai_doze_notif.txt ];then
+        AiDozeNotifBefore=$(cat "$PathModulConfigAi/ai_doze_notif.txt")
+        AiDozeNotifNew=$(cat "$PathModulConfigAi/ai_doze_notif.txt")
+    fi
     if [ -e $PathModulConfigAi/status_start_gpu.txt ];then
         StatusStartGpuBefore=$(cat "$PathModulConfigAi/status_start_gpu.txt")
         StatusStartGpuNew=$(cat "$PathModulConfigAi/status_start_gpu.txt")
@@ -297,7 +301,7 @@ MainTweak(){
             echo "adh > set adreno boost to high"
             echo "adt > set adreno boost by tweak"
             if [ "$GetModeAdrenoBefore" != "$GetModeAdrenoNew" ];then
-            if [ $GetModeAdrenoNew == "0" ];then
+                if [ $GetModeAdrenoNew == "0" ];then
                     echo $hijauHitam"this will set to : off"$ResetWarna
                 elif [ $GetModeAdrenoNew == "1" ];then
                     echo $unguPutih"this will set to : low"$ResetWarna
@@ -715,10 +719,17 @@ AITwek(){
             if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ];then
                 echo "fdax > turn off ai force doze"
                 echo "fday > turn on ai force doze"
+                echo "fdnx > turn off notification ai force doze"
+                echo "fdny > turn on notification ai force doze"
                 if [ "$AiDozeBefore" != "$AiDozeNew" ];then
-                    echo $putihHitam"this will set to : $AiDozeNew"$ResetWarna
+                    echo $hijauPutih"ai force doze will set to : $AiDozeNew"$ResetWarna
                 else
-                    echo $abuHitam"Current status : $AiDozeBefore"$ResetWarna
+                    echo $putihHitam"Current doze status : $AiDozeBefore"$ResetWarna
+                fi
+                if [ "$AiDozeNotifBefore" != "$AiDozeNotifNew" ];then
+                    echo $hijauPutih"doze notification will set to : $AiDozeNotifNew"$ResetWarna
+                else
+                    echo $putihHitam"Current notification status : $AiDozeNotifBefore"$ResetWarna
                 fi
             else
                 echo "turn on ai first before setting this . . . ."
@@ -1193,6 +1204,16 @@ ListMenu(){
         AiDozeNew="on"
         usleep 100000
         ListMenu
+    elif [ "$pilihan" == "fdax" ];then
+        Perubahan="ya"
+        AiDozeNotifNew="off"
+        usleep 100000
+        ListMenu
+    elif [ "$pilihan" == "fday" ];then
+        Perubahan="ya"
+        AiDozeNotifNew="on"
+        usleep 100000
+        ListMenu
     elif [ "$pilihan" == "dnss" ];then
         Perubahan="ya"
         DnsNew="system"
@@ -1430,22 +1451,22 @@ saveSetting()
     if [ "$GetModeAiCBefore" != "$GetModeAiCNew" ];then
         echo "$GetModeAiCNew" > $PathModulConfigAi/ai_change.txt ; 
         GetModeAiCBefore=$GetModeAiCNew;
-        # RunTweak="iya"
     fi
     if [ "$AiDozeBefore" != "$AiDozeNew" ];then
         echo "$AiDozeNew" > $PathModulConfigAi/ai_doze.txt ; 
         AiDozeBefore=$AiDozeNew;
-        # RunTweak="iya"ai_doze
+    fi
+    if [ "$AiDozeNotifBefore" != "$AiDozeNotifNew" ];then
+        echo "$AiDozeNotifNew" > $PathModulConfigAi/ai_doze_notif.txt ; 
+        AiDozeNotifBefore=$AiDozeNotifNew;
     fi
     if [ "$StatusStartGpuBefore" != "$StatusStartGpuNew" ];then
         echo "$StatusStartGpuNew" > $PathModulConfigAi/status_start_gpu.txt ; 
         StatusStartGpuBefore=$StatusStartGpuNew;
-        # RunTweak="iya"ai_doze
     fi
     if [ "$StatusEndGpuBefore" != "$StatusEndGpuNew" ];then
         echo "$StatusEndGpuNew" > $PathModulConfigAi/status_end_gpu.txt ; 
         StatusEndGpuBefore=$StatusEndGpuNew;
-        # RunTweak="iya"ai_doze setprop
     fi
     if [ "$DnsBefore" != "$DnsNew" ];then
         echo "$DnsNew" > $PathModulConfig/dns.txt ; 

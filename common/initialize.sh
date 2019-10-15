@@ -119,6 +119,8 @@ if [ ! -z "$1" ];then
             setprop zyc.change.prop "belom"
             setprop zyc.change.dns "belom"
             setprop zyc.change.render "belom"
+            setprop zyc.art.optimizer "belom"
+            setprop zyc.status.fstrim "belom"
             # dns
             # echo "system" > $PathModulConfig/dns.txt
         fi
@@ -388,7 +390,7 @@ if [ "$FromTerminal" == "tidak" ];then
         echo 'system' > $PathModulConfig/fastcharge.txt
     fi
     # setting adrenoboost
-    if [ ! -e $PathModulConfig/GpuBooster.txt ] && [ -e $NyariGPU/devfreq/adrenoboost ]; then
+    if [ ! -e $PathModulConfig/GpuBooster.txt ] && [ -e "$NyariGPU/devfreq"/adrenoboost ]; then
         echo 's' > $PathModulConfig/GpuBooster.txt
     fi
     # setting fsync
@@ -815,60 +817,60 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
     fi
     #val gpu nya
     if [ ! -e $PathModulConfig/backup/gpu_throttling.txt ]; then
-        if [ -e $NyariGPU/throttling ]; then
+        if [ -e "$NyariGPU/throttling" ]; then
             echo $(cat "$NyariGPU/throttling") > "$PathModulConfig/backup/gpu_throttling.txt"
         fi
     fi
 
     if [ ! -e $PathModulConfig/backup/gpu_force_no_nap.txt ]; then
-        if [ -e $NyariGPU/force_no_nap ]; then
+        if [ -e "$NyariGPU/force_no_nap" ]; then
             echo $(cat "$NyariGPU/force_no_nap") > "$PathModulConfig/backup/gpu_force_no_nap.txt"
         fi
     fi
 
     if [ ! -e $PathModulConfig/backup/gpu_force_bus_on.txt ]; then
-        if [ -e $NyariGPU/force_bus_on ]; then
+        if [ -e "$NyariGPU/force_bus_on" ]; then
             echo $(cat "$NyariGPU/force_bus_on") > "$PathModulConfig/backup/gpu_force_bus_on.txt"
         fi
     fi
 
     if [ ! -e $PathModulConfig/backup/gpu_force_clk_on.txt ]; then
-        if [ -e $NyariGPU/force_clk_on ]; then
+        if [ -e "$NyariGPU/force_clk_on" ]; then
             echo $(cat "$NyariGPU/force_clk_on") > "$PathModulConfig/backup/gpu_force_clk_on.txt"
         fi
     fi
 
     if [ ! -e $PathModulConfig/backup/gpu_force_rail_on.txt ]; then
-        if [ -e $NyariGPU/force_rail_on ]; then
+        if [ -e "$NyariGPU/force_rail_on" ]; then
             echo $(cat "$NyariGPU/force_rail_on") > "$PathModulConfig/backup/gpu_force_rail_on.txt"
         fi
     fi
 
     if [ ! -e $PathModulConfig/backup/gpu_bus_split.txt ]; then
-        if [ -e $NyariGPU/bus_split ]; then
+        if [ -e "$NyariGPU/bus_split" ]; then
             echo $(cat "$NyariGPU/bus_split") > "$PathModulConfig/backup/gpu_bus_split.txt"
         fi
     fi
 
     if [ ! -e $PathModulConfig/backup/gpu_max_pwrlevel.txt ]; then
-        if [ -e $NyariGPU/max_pwrlevel ]; then
+        if [ -e "$NyariGPU/max_pwrlevel" ]; then
             echo $(cat "$NyariGPU/max_pwrlevel") > "$PathModulConfig/backup/gpu_max_pwrlevel.txt"
         fi
     fi
     if [ ! -e $PathModulConfig/backup/gpu_min_pwrlevel.txt ]; then
-        if [ -e $NyariGPU/min_pwrlevel ]; then
+        if [ -e "$NyariGPU/min_pwrlevel" ]; then
             echo $(cat "$NyariGPU/min_pwrlevel") > "$PathModulConfig/backup/gpu_min_pwrlevel.txt"
         fi
     fi
 
     if [ ! -e $PathModulConfig/backup/gpu_adrenoboost.txt ]; then
-        if [ -e $NyariGPU/devfreq/adrenoboost ]; then
+        if [ -e "$NyariGPU/devfreq"/adrenoboost ]; then
             echo $(cat "$NyariGPU/devfreq/adrenoboost") > "$PathModulConfig/backup/gpu_adrenoboost.txt"
         fi
     fi
 
     if [ ! -e $PathModulConfig/backup/gpu_thermal_pwrlevel.txt ]; then
-        if [ -e $NyariGPU/devfreq/thermal_pwrlevel ]; then
+        if [ -e "$NyariGPU/devfreq"/thermal_pwrlevel ]; then
             echo $(cat "$NyariGPU/devfreq/thermal_pwrlevel") > "$PathModulConfig/backup/gpu_thermal_pwrlevel.txt"
         fi
     fi
@@ -1033,6 +1035,9 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
     fi
     if [ ! -e $PathModulConfigAi/ai_doze.txt ]; then
         echo 'off' > "$PathModulConfigAi/ai_doze.txt"
+    fi
+    if [ ! -e $PathModulConfigAi/ai_doze_notif.txt ]; then
+        echo 'off' > "$PathModulConfigAi/ai_doze_notif.txt"
     fi
 elif [ "$FromTerminal" == "ya" ];then
     # disable log
