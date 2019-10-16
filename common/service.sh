@@ -451,7 +451,7 @@ runScript(){
 
     GetMode=$(cat "$PathModulConfig/status_modul.txt")
     RenderMode=$(cat "$PathModulConfig/mode_render.txt")
-    SetRefreshRate=$(cat "$PathModulConfig/total_fps.txt")
+    TotalFps=$(cat "$PathModulConfig/total_fps.txt")
     LogStatus=$(cat "$PathModulConfig/disable_log_system.txt")
     FastCharge=$(cat "$PathModulConfig/fastcharge.txt")
     fsyncMode=$(cat "$PathModulConfig/fsync_mode.txt")
@@ -481,7 +481,7 @@ runScript(){
             SetTurbo
             # disableFsync
             # disableThermal
-            if [ "$fsyncMode" == "auto" ];then
+            if [ "$fsyncMode" == "auto" ] && [ "$FromAi" == "ya" ];then
                 disableFsync
                 echo "disable fysnc" | tee -a $saveLog;
                 echo "  --- --- --- --- --- " | tee -a $saveLog
@@ -505,30 +505,33 @@ runScript(){
     # ngator mode end
 
     # enable fastcharge start
-        if [ "$FastCharge" == "1" ]; then
-            if [ -e /sys/kernel/fast_charge/force_fast_charge ]; then
-                fcMethod="one";
-                echo "tying to enable fastcharging using first method" | tee -a $saveLog;
-                echo "2" > /sys/kernel/fast_charge/force_fast_charge
-                if [ "$(cat /sys/kernel/fast_charge/force_fast_charge)" == "0" ]; then
-                    fcMethod="two";
-                    echo "tying to enable fastcharging using second method" | tee -a $saveLog;
-                    echo "1" > /sys/kernel/fast_charge/force_fast_charge
-                fi
-                if [ "$(cat /sys/kernel/fast_charge/force_fast_charge)" == "0" ]; then
-                    echo "fastcharge off,maybe your kernel/phone not support it" | tee -a $saveLog;
-                else
-                    echo "fastcharge on after use method $fcMethod" | tee -a $saveLog;
+        if [ "$(getprop zyc.status.fastcharge)" == "belom" ];then
+            if [ "$FastCharge" == "1" ]; then
+                setprop zyc.status.fastcharge "sudah"
+                if [ -e /sys/kernel/fast_charge/force_fast_charge ]; then
+                    fcMethod="one";
+                    echo "tying to enable fastcharging using first method" | tee -a $saveLog;
+                    echo "2" > /sys/kernel/fast_charge/force_fast_charge
+                    if [ "$(cat /sys/kernel/fast_charge/force_fast_charge)" == "0" ]; then
+                        fcMethod="two";
+                        echo "tying to enable fastcharging using second method" | tee -a $saveLog;
+                        echo "1" > /sys/kernel/fast_charge/force_fast_charge
+                    fi
+                    if [ "$(cat /sys/kernel/fast_charge/force_fast_charge)" == "0" ]; then
+                        echo "fastcharge off,maybe your kernel/phone not support it" | tee -a $saveLog;
+                    else
+                        echo "fastcharge on after use method $fcMethod" | tee -a $saveLog;
+                    fi
                 fi
                 echo "  --- --- --- --- --- " | tee -a $saveLog
-            fi
-        fi  
+            fi  
+        fi
     # enable fastcharge end
 
     # set fps ? start
-        if [ "$SetRefreshRate" != "0" ];then
-            setprop persist.sys.NV_FPSLIMIT $SetRefreshRate
-            echo "custom fps detected, set to $SetRefreshRate" | tee -a $saveLog;
+        if [ "$TotalFps" != "0" ] && [ "$GetMode" != 'turbo' ];then
+            setprop persist.sys.NV_FPSLIMIT $TotalFps
+            echo "custom fps detected, set to $TotalFps" | tee -a $saveLog;
             echo "  --- --- --- --- --- " | tee -a $saveLog
         fi
     # set fps ? end
@@ -857,10 +860,18 @@ runScript(){
                         sysctl -e -w vm.vfs_cache_pressure=100 
                     else
                         echo "use stock zram setting . . ." | tee -a $saveLog;
-                        sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_ratio.txt") 
-                        sysctl -e -w vm.dirty_background_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_background_ratio.txt") 
-                        sysctl -e -w vm.drop_caches=$(cat "$PathModulConfig/backup/zram_vm.drop_caches.txt") 
-                        sysctl -e -w vm.vfs_cache_pressure=$(cat "$PathModulConfig/backup/zram_vm.vfs_cache_pressure.txt") 
+                        if [ ! -z "$(cat $PathModulConfig/backup/zram_vm.dirty_ratio.txt)" ];then
+                            sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_ratio.txt") 
+                        fi
+                        if [ ! -z "$(cat $PathModulConfig/backup/zram_vm.dirty_background_ratio.txt)" ];then
+                            sysctl -e -w vm.dirty_background_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_background_ratio.txt") 
+                        fi
+                        if [ ! -z "$(cat $PathModulConfig/backup/zram_vm.drop_caches.txt)" ];then
+                            sysctl -e -w vm.drop_caches=$(cat "$PathModulConfig/backup/zram_vm.drop_caches.txt") 
+                        fi
+                        if [ ! -z "$(cat $PathModulConfig/backup/zram_vm.vfs_cache_pressure.txt)" ];then
+                            sysctl -e -w vm.vfs_cache_pressure=$(cat "$PathModulConfig/backup/zram_vm.vfs_cache_pressure.txt") 
+                        fi
                     fi
                     start perfd
                     echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog;

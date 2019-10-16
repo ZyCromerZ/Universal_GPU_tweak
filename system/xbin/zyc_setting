@@ -1207,12 +1207,12 @@ ListMenu(){
         AiDozeNew="on"
         usleep 100000
         ListMenu
-    elif [ "$pilihan" == "fdax" ];then
+    elif [ "$pilihan" == "fdnx" ];then
         Perubahan="ya"
         AiDozeNotifNew="off"
         usleep 100000
         ListMenu
-    elif [ "$pilihan" == "fday" ];then
+    elif [ "$pilihan" == "fdny" ];then
         Perubahan="ya"
         AiDozeNotifNew="on"
         usleep 100000
@@ -1410,6 +1410,7 @@ saveSetting()
         echo "$GetModeFCNew" > $PathModulConfig/fastcharge.txt ; 
         GetModeFCBefore=$GetModeFCNew;
         RunTweak="iya"
+        setprop zyc.status.fastcharge "belom"
     fi
     if [ "$GetModeFsyncBefore" != "$GetModeFsyncNew" ];then
         echo "$GetModeFsyncNew" > $PathModulConfig/fsync_mode.txt ; 

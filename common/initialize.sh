@@ -121,6 +121,7 @@ if [ ! -z "$1" ];then
             setprop zyc.change.render "belom"
             setprop zyc.art.optimizer "belom"
             setprop zyc.status.fstrim "belom"
+            setprop zyc.status.fastcharge "belom"
             # dns
             # echo "system" > $PathModulConfig/dns.txt
         fi

@@ -100,6 +100,7 @@ getAppName()
 }
 setTurbo(){
     SetNotificationOn
+    GetBattery
     echo "Set to turbo at : $(date +" %r")" | tee -a $AiLog
     getAppName
     echo "turbo" > $PathModulConfig/status_modul.txt
@@ -111,6 +112,7 @@ setTurbo(){
 }
 setOff(){
     SetNotificationOff
+    GetBattery
     echo "turn to off mode at : $(date +" %r")" | tee -a $AiLog
     echo "off" > $PathModulConfig/status_modul.txt
     StatusModul="off"
@@ -119,9 +121,11 @@ setOff(){
     nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & 
 }
 setLag(){
-    if [ "$(cat "$PathModulConfigAi/ai_doze_notif.txt")" == "on" ];then
+    DozeNotif=$(cat "$PathModulConfigAi/ai_doze_notif.txt")
+    if [ "$DozeNotif" == "on" ];then
         SetNotificationDozeOn
     fi
+    GetBattery
     echo "set to lag mode at : $(date +" %r")" | tee -a $AiLog
     echo "lag" > $PathModulConfig/status_modul.txt
     StatusModul="lag"
@@ -130,9 +134,11 @@ setLag(){
     nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" "doze" &
 }
 setLagoff(){
-    if [ "$(cat "$PathModulConfigAi/ai_doze_notif.txt")" == "on" ];then
+    DozeNotif=$(cat "$PathModulConfigAi/ai_doze_notif.txt")
+    if [ "$DozeNotif" == "on" ];then
         SetNotificationDozeOff
     fi
+    GetBattery
     echo "revert back to off mode at : $(date +" %r")" | tee -a $AiLog
     echo "off" > $PathModulConfig/status_modul.txt
     StatusModul="off"
@@ -201,6 +207,9 @@ SetNotificationDozeOn(){
         sleep 1000000
         echo 300 > /sys/class/timed_output/vibrator/enable
     fi
+}
+GetBattery(){
+    echo "current battery : $(acpi -b | grep '0:' | sed 's/Battery 0:*//g' | sed 's/ *//g' )" | tee -a $AiLog
 }
 runScript(){
     MissingFile="kaga"
@@ -371,9 +380,9 @@ runScript(){
         DozeConfig="$(cat "$PathModulConfigAi/ai_doze.txt")"
         DozeState="$(cat "$DozeStatePath")"
         if [ "$DozeConfig" == "on" ];then
-            GetScreenStateNFC="$( dumpsys nfc | grep 'mScreenState=' | sed 's/mScreenState=*//g' 2>&1 2>/dev/null)" 
-            GetScreenStateOF="$( dumpsys display | grep "mScreenState" | sed 's/mScreenState=*//g' 2>&1 2>/dev/null)" 
-            GetScreenStateTF="$( dumpsys power | grep "mHoldingDisplaySuspendBlocker" | sed 's/mHoldingDisplaySuspendBlocker=*//g' 2>&1 2>/dev/null)" 
+            GetScreenStateNFC="$( dumpsys nfc 2>&1 2>/dev/null | grep 'mScreenState=' | sed 's/mScreenState=*//g' 2>&1 2>/dev/null )" 
+            GetScreenStateOF="$( dumpsys display 2>&1 2>/dev/null | grep "mScreenState" | sed 's/mScreenState=*//g' 2>&1 2>/dev/null )" 
+            GetScreenStateTF="$( dumpsys power 2>&1 2>/dev/null | grep "mHoldingDisplaySuspendBlocker" | sed 's/mHoldingDisplaySuspendBlocker=*//g' 2>&1 2>/dev/null )" 
             StatusLayar="gak tau"
             if [ "$GetScreenStateNFC" == "ON_LOCKED" ] || [ "$GetScreenStateNFC" == "ON_UNLOCKED" ] || [ "$GetScreenStateNFC" == "OFF_LOCKED" ] || [ "$GetScreenStateNFC" == "OFF_UNLOCKED" ];then
                 if [ "$StatusLayar" == "gak tau" ];then
@@ -458,9 +467,8 @@ runScript(){
                         fi
                     fi
                 else
-                    
-                        GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
-                        GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
+                    GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
+                    GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
                     if [ "$GpuStatus" -le "$GpuStop" ];then
                         if [ "$StatusModul" != "off" ];then
                             GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1)
