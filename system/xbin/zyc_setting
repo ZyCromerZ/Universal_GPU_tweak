@@ -1315,7 +1315,7 @@ ListMenu(){
         read AppOptimizerType
         if [ "$AppOptimizerType" == "all"  ];then
             echo "starting optimize all app"
-            cmd package compile -m speed -f -a -r
+            cmd package compile -m speed -f -a
         elif [ "$AppOptimizerType" == "app"  ];then
             echo "starting optimize installed app"
             if [ "$(getenforce)" == "Enforcing" ];then
@@ -1325,7 +1325,7 @@ ListMenu(){
             for appList in `pm list package -3 | sed 's/package:*//g'`
             do
                 echo -n "$appList : "
-                cmd package compile -m speed -f "$appList" -r
+                cmd package compile -m speed -f "$appList"
             done
             if [ "$changeSE" == "ya" ];then
                 setenforce 1
