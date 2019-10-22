@@ -67,6 +67,15 @@ else
     echo $cyanPutih"<<--------------------------------->>"$ResetWarna
     usleep 1000000
 fi
+ServiceCheckker(){
+    Checkservice=$( ps -ef | grep 'service.sh' | grep -v grep | wc -l )
+    if [ "$Checkservice" != "0" ];then
+        clear
+        echo "module service still running,please wait a moment"
+        sleep 1
+        ServiceCheckker
+    fi
+}
 magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
 GetVersion=$($magisk -c | grep -Eo '[0-9]{2}\.[0-9]+')
 case "$GetVersion" in
@@ -105,6 +114,9 @@ PathModulConfig=$Path/ZyC_Turbo_config
 PathModulConfigAi=$Path/ZyC_Ai
 Perubahan="tidak"
 GetSetting(){
+    ServiceCheckker
+    clear
+    echo "get setting . . ."
     if [ -e $PathModulConfig/status_modul.txt ];then
         GetModeBefore=$(cat "$PathModulConfig/status_modul.txt")
         GetModeNew=$(cat "$PathModulConfig/status_modul.txt")
@@ -197,6 +209,7 @@ GetSetting(){
         DnsBefore=$(cat "$PathModulConfig/dns.txt")
         DnsNew=$(cat "$PathModulConfig/dns.txt")
     fi
+    clear
 }
 RefreshList="tidak"
 RestartNotif="tidak"
@@ -928,6 +941,7 @@ ListMenu(){
         usleep 100000
         ListMenu
     elif [ "$pilihan" == "rmt" ];then
+        Perubahan="ya"
         echo '--- --- --- ---'
         echo 'you can set from 1 to 8'
         echo 'lower value more free ram (less app load)'
@@ -1077,7 +1091,6 @@ ListMenu(){
         usleep 100000
         ListMenu
     elif [ "$pilihan" == "sag" ];then
-        Perubahan="ya"
         echo "scan now (y/wsc/n)?"
         echo "y=yes,wsc=when save changes,n=no"
         read askScan
@@ -1089,6 +1102,7 @@ ListMenu(){
             sh $ModulPath/ZyC_Turbo/initialize.sh "App" & wait > /dev/null 2>&1
             echo "done . . ."
         elif [ "$askScan" == "wsc" ];then
+            Perubahan="ya"
             RefreshList="iya"
         else 
             askScan="nope"
@@ -1096,21 +1110,18 @@ ListMenu(){
         usleep 1000000
         ListMenu
     elif [ "$pilihan" == "sal" ];then
-        Perubahan="ya"
         cat "$PathModulConfigAi/list_app_package_detected.txt"
         echo -n "Press any key to continue . . . ."
         read -n 1 -s -r 
         usleep 100000
         ListMenu
     elif [ "$pilihan" == "sgl" ];then
-        Perubahan="ya"
         cat "$PathModulConfigAi/list_app_auto_turbo.txt"
         echo -n "Press any key to continue . . . ."
         read -n 1 -s -r 
         usleep 100000
         ListMenu
     elif [ "$pilihan" == "mag" ];then
-        Perubahan="ya"
         NoApp=1
         GetApp=$ModPath/zyc_app_list.txt
         if [ -e $GetApp ];then
@@ -1243,7 +1254,6 @@ ListMenu(){
         usleep 100000
         ListMenu
     elif [ "$pilihan" == "cdns" ];then
-        Perubahan="ya"
         clear
         if [ "$DnsBefore" != "system" ];then
             DataIpA="none"
@@ -1308,8 +1318,8 @@ ListMenu(){
         usleep 100000
         ListMenu
     elif [ "$pilihan" == "oap" ];then
-        echo "all > all apps (include system)"
-        echo "app > installed app only"
+        echo "all > all apps (include system) (NOT WORK FOR SOME DEVICES)"
+        echo "app > installed app only (recomended)"
         echo "just enter to cancel"
         echo -n "choose type optimizer : "
         read AppOptimizerType
