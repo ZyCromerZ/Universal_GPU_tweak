@@ -1177,24 +1177,24 @@ runScript(){
                     changeSE="ya"
                     setenforce 0
                 fi
-                pm disable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceiver 2>&1 > /dev/null
-                pm disable com.google.android.gms/com.google.android.gms.auth.managed.admin.DeviceAdminReceiver 2>&1 > /dev/null
+                pm disable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceive 2>&1 > /dev/null
+                pm disable com.google.android.gms/com.google.android.gms.auth.managed.admin.DeviceAdminReceive 2>&1 > /dev/null
                 if  [ ! -z "$(pm list packages -f com.google.android.gms)" ] ; then
-                    su -c "pm enable com.google.android.gms/.ads.social.GcmSchedulerWakeupService"  2>&1 > /dev/null
-                    su -c "pm enable com.google.android.gms/.analytics.AnalyticsService"  2>&1 > /dev/null
-                    su -c "pm enable com.google.android.gms/.analytics.service.PlayLogMonitorIntervalService"  2>&1 > /dev/null
-                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService"  2>&1 > /dev/null
-                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$ActiveReceiver"  2>&1 > /dev/null
-                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$Receiver"  2>&1 > /dev/null
-                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$SecretCodeReceiver"  2>&1 > /dev/null
-                    su -c "pm enable com.google.android.gms/.update.SystemUpdateActivity"  2>&1 > /dev/null
+                    su -c "pm enable com.google.android.gms/.ads.social.GcmSchedulerWakeupService" 2>&1 > /dev/null
+                    su -c "pm enable com.google.android.gms/.analytics.AnalyticsService" 2>&1 > /dev/null
+                    su -c "pm enable com.google.android.gms/.analytics.service.PlayLogMonitorIntervalService" 2>&1 > /dev/null
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService" 2>&1 > /dev/null
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$ActiveReceiver" 2>&1 > /dev/null
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$Receiver" 2>&1 > /dev/null
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$SecretCodeReceiver" 2>&1 > /dev/null
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateActivity" 2>&1 > /dev/null
                 fi
                 if  [ ! -z "$(pm list packages -f com.google.android.gsf)" ] ; then
-                    su -c "pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity" 2>&1 > /dev/null
-                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService" 2>&1 > /dev/null
-                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$Receiver" 2>&1 > /dev/null
-                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver" 2>&1 > /dev/null
-                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" 2>&1 > /dev/null
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity" s2>&1 > /dev/null
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService" s2>&1 > /dev/null
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$Receiver" s2>&1 > /dev/null
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver" s2>&1 > /dev/null
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" s2>&1 > /dev/null
                 fi
                 if [ "$changeSE" == "ya" ];then
                     setenforce 1
@@ -1255,9 +1255,11 @@ if [ "$FromTerminal" == "tidak" ];then
             if [ "$AiStatus" == "1" ];then
                 echo "starting ai mode . . . " | tee -a $saveLog 2>&1 > /dev/null
                 echo "  --- --- --- --- --- " | tee -a $saveLog 2>&1 > /dev/null
+                echo "ai start at  : $(date +" %r")"| tee -a $Path/ZyC_Turbo.running.log ;
             elif [ "$AiStatus" == "2" ];then
                 echo "re - run ai mode . . . " | tee -a $saveLog 2>&1 > /dev/null
                 echo "  --- --- --- --- --- " | tee -a $saveLog 2>&1 > /dev/null
+                echo "ai start at  : $(date +" %r")"| tee -a $Path/ZyC_Turbo.running.log ;
             elif [ "$AiStatus" == "3" ];then
                 echo "deactive ai mode . . . " | tee -a $saveLog 2>&1 > /dev/null
                 echo "  --- --- --- --- --- " | tee -a $saveLog 2>&1 > /dev/null
@@ -1277,3 +1279,4 @@ if [ "$FromTerminal" == "tidak" ];then
 fi
 echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog 2>&1 > /dev/null
 echo "  --- --- --- --- --->> " | tee -a $saveLog 2>&1 > /dev/null
+exit 0
