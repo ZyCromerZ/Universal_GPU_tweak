@@ -94,47 +94,49 @@ SetOff(){
     resetprop --delete persist.sys.NV_STEREOCTRL 
     resetprop --delete persist.sys.NV_STEREOSEPCHG 
     resetprop --delete persist.sys.NV_STEREOSEP 
-    if [ -e "$NyariGPU/throttling" ]; then
-        echo $(cat "$PathModulConfig/backup/gpu_throttling.txt") > "$NyariGPU/throttling"
-    fi
-    if [ -e "$NyariGPU/force_no_nap" ]; then
-        echo $(cat "$PathModulConfig/backup/gpu_force_no_nap.txt") > "$NyariGPU/force_no_nap"
-    fi
-    if [ -e "$NyariGPU/force_bus_on" ]; then
-        echo $(cat "$PathModulConfig/backup/gpu_force_bus_on.txt") > "$NyariGPU/force_bus_on"
-    fi
-    if [ -e "$NyariGPU/force_clk_on" ]; then
-        echo $(cat "$PathModulConfig/backup/gpu_force_clk_on.txt") > "$NyariGPU/force_clk_on"
-    fi
-    if [ -e "$NyariGPU/force_rail_on" ]; then
-        echo $(cat "$PathModulConfig/backup/gpu_force_rail_on.txt") > "$NyariGPU/force_rail_on"
-    fi
-    if [ -e "$NyariGPU/bus_split" ]; then
-        echo $(cat "$PathModulConfig/backup/gpu_bus_split.txt") > "$NyariGPU/bus_split"
-    fi
-    if [ -e "$NyariGPU/max_pwrlevel" ]; then
-        echo $(cat "$PathModulConfig/backup/gpu_max_pwrlevel.txt") > "$NyariGPU/max_pwrlevel"
-    fi
-    if [ -e "$NyariGPU/min_pwrlevel" ]; then
-        echo $(cat "$PathModulConfig/backup/gpu_min_pwrlevel.txt") > "$NyariGPU/min_pwrlevel"
-    fi
-    if [ -e "$NyariGPU/devfreq/adrenoboost" ]; then
-        echo $(cat "$PathModulConfig/backup/gpu_adrenoboost.txt") > "$NyariGPU/devfreq/adrenoboost"
-    fi
-    if [ -e "$NyariGPU/devfreq/thermal_pwrlevel" ]; then
-        echo $(cat "$PathModulConfig/backup/gpu_thermal_pwrlevel.txt") > "$NyariGPU/devfreq/thermal_pwrlevel"
-    fi
-    if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
-        echo $(cat  "$PathModulConfig/backup/misc_Dyn_fsync_active.txt") > "/sys/kernel/dyn_fsync/Dyn_fsync_active"
-    fi
-    if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
-        echo $(cat  "$PathModulConfig/backup/misc_class_fsync_enabled.txt") > "/sys/class/misc/fsynccontrol/fsync_enabled"
-    fi 
-    if [ -e /sys/module/sync/parameters/fsync ]; then
-        echo $(cat  "$PathModulConfig/backup/misc_fsync.txt") > "/sys/module/sync/parameters/fsync"
-    fi
-    if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
-        echo $(cat  "$PathModulConfig/backup/misc_module_fsync_enabled.txt") > "/sys/module/sync/parameters/fsync_enabled"
+    if [ "$NyariGPU" != "" ];then
+        if [ -e "$NyariGPU/throttling" ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_throttling.txt") > "$NyariGPU/throttling"
+        fi
+        if [ -e "$NyariGPU/force_no_nap" ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_force_no_nap.txt") > "$NyariGPU/force_no_nap"
+        fi
+        if [ -e "$NyariGPU/force_bus_on" ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_force_bus_on.txt") > "$NyariGPU/force_bus_on"
+        fi
+        if [ -e "$NyariGPU/force_clk_on" ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_force_clk_on.txt") > "$NyariGPU/force_clk_on"
+        fi
+        if [ -e "$NyariGPU/force_rail_on" ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_force_rail_on.txt") > "$NyariGPU/force_rail_on"
+        fi
+        if [ -e "$NyariGPU/bus_split" ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_bus_split.txt") > "$NyariGPU/bus_split"
+        fi
+        if [ -e "$NyariGPU/max_pwrlevel" ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_max_pwrlevel.txt") > "$NyariGPU/max_pwrlevel"
+        fi
+        if [ -e "$NyariGPU/min_pwrlevel" ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_min_pwrlevel.txt") > "$NyariGPU/min_pwrlevel"
+        fi
+        if [ -e "$NyariGPU/devfreq/adrenoboost" ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_adrenoboost.txt") > "$NyariGPU/devfreq/adrenoboost"
+        fi
+        if [ -e "$NyariGPU/devfreq/thermal_pwrlevel" ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_thermal_pwrlevel.txt") > "$NyariGPU/devfreq/thermal_pwrlevel"
+        fi
+        if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
+            echo $(cat  "$PathModulConfig/backup/misc_Dyn_fsync_active.txt") > "/sys/kernel/dyn_fsync/Dyn_fsync_active"
+        fi
+        if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
+            echo $(cat  "$PathModulConfig/backup/misc_class_fsync_enabled.txt") > "/sys/class/misc/fsynccontrol/fsync_enabled"
+        fi 
+        if [ -e /sys/module/sync/parameters/fsync ]; then
+            echo $(cat  "$PathModulConfig/backup/misc_fsync.txt") > "/sys/module/sync/parameters/fsync"
+        fi
+        if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
+            echo $(cat  "$PathModulConfig/backup/misc_module_fsync_enabled.txt") > "/sys/module/sync/parameters/fsync_enabled"
+        fi
     fi
     if [ "$FromAi" == "ya" ];then
         if [ "$CustomRamAdj" == "tweak" ];then
@@ -1237,7 +1239,7 @@ runScript(){
             if [ "$(getprop dalvik.vm.usejit)" == "true" ];then
                 echo "optimize art cache " | tee -a $saveLog 
                 echo "optimize art cache started at $(date +"%d-%m-%Y %r")" | tee -a $Path/ZyC_Turbo.running.log 2>&1 > /dev/null
-                echo $(cmd package bg-dexopt-job 2>&1 1>/dev/null) 
+                # echo $(cmd package bg-dexopt-job 2>&1 1>/dev/null) 
                 echo "done . . . " | tee -a $saveLog 
                 echo "  --- --- --- --- --- " | tee -a $saveLog 
                 echo "optimize art cache at end at $(date +"%d-%m-%Y %r")" | tee -a $Path/ZyC_Turbo.running.log 2>&1 > /dev/null
