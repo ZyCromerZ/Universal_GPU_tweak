@@ -68,7 +68,7 @@ else
     usleep 1000000
 fi
 ServiceCheckker(){
-    Checkservice=$( ps -ef | grep 'service.sh' | grep -v grep | wc -l )
+    Checkservice=$( ps -ef | grep 'ZyC_Turbo/service.sh' | grep -v grep | wc -l )
     if [ "$Checkservice" != "0" ];then
         clear
         echo "module service still running,please wait a moment"
@@ -760,6 +760,7 @@ AppGet(){
     if [ "$(getprop dalvik.vm.usejit)" == "true" ];then
         echo "oap > app optimizer"
     fi
+    # echo "crs > change resolution"
     if [ "$RefreshList" == "sudah" ];then
         echo $hijauHitam"refresh list game and app done . . . :p"$ResetWarna
     elif [ "$RefreshList" == "iya" ];then

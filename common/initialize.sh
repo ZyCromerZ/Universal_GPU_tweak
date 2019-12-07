@@ -129,7 +129,6 @@ if [ ! -z "$1" ];then
             setprop zyc.change.prop "belom"
             setprop zyc.change.dns "belom"
             setprop zyc.change.render "belom"
-            setprop zyc.art.optimizer "belom"
             setprop zyc.status.fstrim "belom"
             setprop zyc.status.fastcharge "belom"
             setprop zram.disksize "0"
@@ -158,8 +157,8 @@ GetAppAndGames(){
     # auto add to game list start
     GameList=$PathModulConfigAi/list_app_auto_turbo.txt
     if [ ! -e $PathModulConfigAi/list_app_auto_turbo.txt ]; then
-        echo "---->> List game installed start <<----"  | tee -a $GameList > /dev/null 2>&1 ;
-        echo "<<---- List game installed end ---->>"  | tee -a $GameList > /dev/null 2>&1 ;
+        echo "---->> List game installed start <<----"  | tee -a $GameList >/dev/null 2>&1 ;
+        echo "<<---- List game installed end ---->>"  | tee -a $GameList >/dev/null 2>&1 ;
     fi
     # Moba Analog
     if [ ! -z $(pm list packages -f com.mobile.legends | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.mobile.legends" "$GameList" ) ];then
@@ -364,8 +363,8 @@ GetAppAndGames(){
     # Get App list start
     listAppPath=$PathModulConfigAi/list_app_package_detected.txt
     if [ ! -e $PathModulConfigAi/list_app_package_detected.txt ]; then
-        echo "---->> List app installed start <<----"  | tee -a $listAppPath > /dev/null 2>&1 ;
-        echo "<<---- List app installed end ---->>"  | tee -a $listAppPath > /dev/null 2>&1 ;
+        echo "---->> List app installed start <<----"  | tee -a $listAppPath >/dev/null 2>&1 ;
+        echo "<<---- List app installed end ---->>"  | tee -a $listAppPath >/dev/null 2>&1 ;
     fi
 
     for listApp in ` pm list packages -3 | awk -F= '{sub("package:","");print $1}'` 
@@ -624,7 +623,7 @@ For V2, just flash it via magisk, it will automatically activates after rebooted
 
 Note:
 mode = off / on / turbo
-namarender = opengl / skiagl / skiavk" | tee -a $SetNotes > /dev/null 2>&1
+namarender = opengl / skiagl / skiavk" | tee -a $SetNotes >/dev/null 2>&1
     fi
     if [ ! -e $PathModulConfig/notes_id.txt ]; then
         SetNotes=$PathModulConfig/notes_id.txt;
@@ -815,7 +814,7 @@ Untuk V2 cukup flash teros biarkan,udah otomatis aktif kalo udah reboot
 
 Note :
 namamode = off/on/turbo
-namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
+namarender = opengl/skiagl/skiavk" | tee -a $SetNotes >/dev/null 2>&1
     
     fi
 
@@ -867,11 +866,6 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
     if [ ! -e $PathModulConfig/backup/gpu_max_pwrlevel.txt ]; then
         if [ -e "$NyariGPU/max_pwrlevel" ]; then
             echo $(cat "$NyariGPU/max_pwrlevel") > "$PathModulConfig/backup/gpu_max_pwrlevel.txt"
-        fi
-    fi
-    if [ ! -e $PathModulConfig/backup/gpu_min_pwrlevel.txt ]; then
-        if [ -e "$NyariGPU/min_pwrlevel" ]; then
-            echo $(cat "$NyariGPU/min_pwrlevel") > "$PathModulConfig/backup/gpu_min_pwrlevel.txt"
         fi
     fi
 
@@ -1008,7 +1002,9 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes > /dev/null 2>&1
     start perfd
 
     # For ai_mode.sh
-    GetAppAndGames
+    if [ ! -e $PathModulConfigAi/list_app_auto_turbo.txt ];then
+        GetAppAndGames
+    fi
     # Gpu trigger start
     if [ ! -e $PathModulConfigAi/status_start_gpu.txt ]; then
         echo '80' > "$PathModulConfigAi/status_start_gpu.txt"

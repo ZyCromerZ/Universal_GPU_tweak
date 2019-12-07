@@ -107,7 +107,7 @@ setTurbo(){
     StatusModul="turbo"
     echo "  --- --- --- --- ---  " | tee -a $AiLog
     sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
-    nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & 
+    nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" >/dev/null 2>&1 & 
     # usleep 5000000
 }
 setOff(){
@@ -118,7 +118,7 @@ setOff(){
     StatusModul="off"
     echo "  --- --- --- --- ---  " | tee -a $AiLog
     sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
-    nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & 
+    nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" >/dev/null 2>&1 & 
 }
 setLag(){
     DozeNotif=$(cat "$PathModulConfigAi/ai_doze_notif.txt")
@@ -131,7 +131,7 @@ setLag(){
     StatusModul="lag"
     echo "  --- --- --- --- ---  " | tee -a $AiLog
     sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
-    nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" "doze" &
+    nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" "doze" >/dev/null 2>&1 &
 }
 setLagoff(){
     DozeNotif=$(cat "$PathModulConfigAi/ai_doze_notif.txt")
@@ -144,7 +144,7 @@ setLagoff(){
     StatusModul="off"
     echo "  --- --- --- --- ---  " | tee -a $AiLog
     sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
-    nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" "doze" &
+    nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" "doze" >/dev/null 2>&1 &
 }
 SetNotificationOn(){
     if [ "$NotifPath" != "none" ];then
@@ -503,7 +503,7 @@ runScript(){
             usleep 5000000
             sh $NotifPath "getar" "off" & wait
             sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait 
-            nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" & 
+            nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" >/dev/null 2>&1 & 
             if [ "$aiStatus" == "2" ];then
                 echo "Continue running at : $(date +" %r")" | tee -a $AiLog
                 echo "module version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed 's/Version:*//g' )" | tee -a $AiLog
@@ -528,8 +528,8 @@ runScript(){
         echo '0' > $PathModulConfigAi/ai_status.txt
     fi
 }
-runScript 2>&1 1>/dev/null | tee -a $Path/ZyC_Ai.running.log
+runScript >/dev/null 2>&1 | tee -a $Path/ZyC_Ai.running.log
 if [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "2" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "3" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "1" ];then
-    nohup sh $BASEDIR/ai_mode.sh &
+    nohup sh $BASEDIR/ai_mode.sh >/dev/null 2>&1 &
 fi
 exit 0
