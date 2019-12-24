@@ -108,6 +108,7 @@ setTurbo(){
     echo "  --- --- --- --- ---  " | tee -a $AiLog
     sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
     nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" >/dev/null 2>&1 & 
+    SpectrumOn
     # usleep 5000000
 }
 setOff(){
@@ -119,6 +120,7 @@ setOff(){
     echo "  --- --- --- --- ---  " | tee -a $AiLog
     sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
     nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" >/dev/null 2>&1 & 
+    SpectrumOff
 }
 setLag(){
     DozeNotif=$(cat "$PathModulConfigAi/ai_doze_notif.txt")
@@ -132,6 +134,7 @@ setLag(){
     echo "  --- --- --- --- ---  " | tee -a $AiLog
     sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
     nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" "doze" >/dev/null 2>&1 &
+    SpectrumBattery
 }
 setLagoff(){
     DozeNotif=$(cat "$PathModulConfigAi/ai_doze_notif.txt")
@@ -145,6 +148,7 @@ setLagoff(){
     echo "  --- --- --- --- ---  " | tee -a $AiLog
     sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
     nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" "doze" >/dev/null 2>&1 &
+    SpectrumOff
 }
 SetNotificationOn(){
     if [ "$NotifPath" != "none" ];then
@@ -210,6 +214,30 @@ SetNotificationDozeOn(){
 }
 GetBattery(){
     echo "current battery : $(acpi -b | grep '0:' | sed 's/Battery 0:*//g' | sed 's/ *//g' )" | tee -a $AiLog
+}
+SpectrumOn(){
+    if [ "$(getprop spectrum.support)" == "1" ];then
+        SpectrumAutoStatus=$(cat "$PathModulConfigAi/spectrum_status.txt")
+        if [ "$SpectrumAutoStatus" == "1" ];then
+            setprop persist.spectrum.profile "$(cat "$PathModulConfigAi/mode_on.txt")"
+        fi
+    fi   
+}
+SpectrumOff(){
+    if [ "$(getprop spectrum.support)" == "1" ];then
+        SpectrumAutoStatus=$(cat "$PathModulConfigAi/spectrum_status.txt")
+        if [ "$SpectrumAutoStatus" == "1" ];then
+            setprop persist.spectrum.profile "$(cat "$PathModulConfigAi/mode_off.txt")"
+        fi
+    fi
+}
+SpectrumBattery(){
+    if [ "$(getprop spectrum.support)" == "1" ];then
+        SpectrumAutoStatus=$(cat "$PathModulConfigAi/spectrum_status.txt")
+        if [ "$SpectrumAutoStatus" == "1" ];then
+            setprop persist.spectrum.profile 1
+        fi
+    fi
 }
 runScript(){
     MissingFile="kaga"
@@ -528,8 +556,11 @@ runScript(){
         echo '0' > $PathModulConfigAi/ai_status.txt
     fi
 }
-runScript >/dev/null 2>&1 | tee -a $Path/ZyC_Ai.running.log
+runScript 2>&1 1>/dev/null | tee -a $Path/ZyC_Ai.running.log
 if [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "2" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "3" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "1" ];then
     nohup sh $BASEDIR/ai_mode.sh >/dev/null 2>&1 &
+fi
+if [ "$fromBoot" == "yes" ];then
+    nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" >/dev/null 2>&1 & 
 fi
 exit 0

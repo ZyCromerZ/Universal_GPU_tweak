@@ -1047,6 +1047,17 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes >/dev/null 2>&1
     if [ ! -e $PathModulConfigAi/ai_doze_notif.txt ]; then
         echo 'off' > "$PathModulConfigAi/ai_doze_notif.txt"
     fi
+    if [ "$(getprop spectrum.support)" == "1" ];then
+        if [ ! -e $PathModulConfigAi/mode_off.txt ]; then
+            echo '0' > "$PathModulConfigAi/mode_off.txt"
+        fi
+        if [ ! -e $PathModulConfigAi/mode_on.txt ]; then
+            echo '3' > "$PathModulConfigAi/mode_on.txt"
+        fi
+        if [ ! -e $PathModulConfigAi/spectrum_status.txt ]; then
+            echo '0' > "$PathModulConfigAi/spectrum_status.txt"
+        fi
+    fi
 elif [ "$FromTerminal" == "ya" ];then
     # disable log
     if [ "$(cat "$PathModulConfig/disable_log_system.txt")" == '1' ];then

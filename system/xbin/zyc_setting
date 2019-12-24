@@ -209,6 +209,18 @@ GetSetting(){
         DnsBefore=$(cat "$PathModulConfig/dns.txt")
         DnsNew=$(cat "$PathModulConfig/dns.txt")
     fi
+    if [ -e $PathModulConfigAi/mode_off.txt ];then
+        ModeOffBefore=$(cat "$PathModulConfigAi/mode_off.txt")
+        ModeOffNew=$(cat "$PathModulConfigAi/mode_off.txt")
+    fi
+    if [ -e $PathModulConfigAi/mode_on.txt ];then
+        ModeOnBefore=$(cat "$PathModulConfigAi/mode_on.txt")
+        ModeOnNew=$(cat "$PathModulConfigAi/mode_on.txt")
+    fi
+    if [ -e $PathModulConfigAi/spectrum_status.txt ];then
+        SpectrumStatusBefore=$(cat "$PathModulConfigAi/spectrum_status.txt")
+        SpectrumStatusNew=$(cat "$PathModulConfigAi/spectrum_status.txt")
+    fi
     clear
 }
 RefreshList="tidak"
@@ -749,6 +761,77 @@ AITwek(){
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
+        
+        if [ "$(getprop spectrum.support)" == "1" ];then
+            echo "<-- -- DNS Config -- -->"
+            echo "acsy > auto change spectrum mode on"
+            echo "acsx > auto change spectrum mode on"
+            echo "csmf > change spectrum mode when tweak off"
+            echo "csmn > change spectrum mode when tweak on"
+            if [ "$SpectrumStatusNew" == "$SpectrumStatusBefore" ];then
+                if [ $SpectrumStatusNew == "1" ];then
+                    echo $kuningHitam"auto change spectrum mode: on"$ResetWarna
+                else
+                    echo $kuningHitam"auto change spectrum mode: off"$ResetWarna
+                fi
+            else
+                if [ $SpectrumStatusNew == "1" ];then
+                    echo $merahPutih"auto change spectrum mode set to: on"$ResetWarna
+                else
+                    echo $merahPutih"auto change spectrum mode set to: off"$ResetWarna
+                fi
+            fi
+            if [ "$ModeOffNew" == "$ModeOffBefore" ]; then
+                if [ "$ModeOffNew" == "0" ];then
+                    echo $biruHitam"current status when tweak mode off: balance"$ResetWarna
+                elif [ "$ModeOffNew" == "1" ];then
+                    echo $biruHitam"current status when tweak mode off: battery"$ResetWarna
+                elif [ "$ModeOffNew" == "2" ];then
+                    echo $biruHitam"current status when tweak mode off: performance"$ResetWarna
+                elif [ "$ModeOffNew" == "3" ];then
+                    echo $biruHitam"current status when tweak mode off: gaming"$ResetWarna
+                else 
+                    echo $biruHitam"current status when tweak mode off: unknow, set to $ModeOffNew"$ResetWarna
+                fi
+            else
+                if [ "$ModeOffNew" == "0" ];then
+                    echo $cyanPutih"Set To status  when tweak mode off: balance"$ResetWarna
+                elif [ "$ModeOffNew" == "1" ];then
+                    echo $cyanPutih"Set To status  when tweak mode off: battery"$ResetWarna
+                elif [ "$ModeOffNew" == "2" ];then
+                    echo $cyanPutih"Set To status  when tweak mode off: performance"$ResetWarna
+                elif [ "$ModeOffNew" == "3" ];then
+                    echo $cyanPutih"Set To status  when tweak mode off: gaming"$ResetWarna
+                else 
+                    echo $cyanPutih"Set To status  when tweak mode off: unknow, set to $ModeOffNew"$ResetWarna
+                fi
+            fi
+            if [ "$ModeOnNew" == "$ModeOnBefore" ]; then
+                if [ "$ModeOnNew" == "0" ];then
+                    echo $biruHitam"current status when tweak mode on/turbo: balance"$ResetWarna
+                elif [ "$ModeOnNew" == "1" ];then
+                    echo $biruHitam"current status when tweak mode on/turbo: battery"$ResetWarna
+                elif [ "$ModeOnNew" == "2" ];then
+                    echo $biruHitam"current status when tweak mode on/turbo: performance"$ResetWarna
+                elif [ "$ModeOnNew" == "3" ];then
+                    echo $biruHitam"current status when tweak mode on/turbo: gaming"$ResetWarna
+                else 
+                    echo $biruHitam"current status when tweak mode on/turbo: unknow, set to $ModeOnNew"$ResetWarna
+                fi
+            else
+                if [ "$ModeOnNew" == "0" ];then
+                    echo $cyanPutih"Set To status  when tweak mode on/turbo: balance"$ResetWarna
+                elif [ "$ModeOnNew" == "1" ];then
+                    echo $cyanPutih"Set To status  when tweak mode on/turbo: battery"$ResetWarna
+                elif [ "$ModeOnNew" == "2" ];then
+                    echo $cyanPutih"Set To status  when tweak mode on/turbo: performance"$ResetWarna
+                elif [ "$ModeOnNew" == "3" ];then
+                    echo $cyanPutih"Set To status  when tweak mode on/turbo: gaming"$ResetWarna
+                else 
+                    echo $cyanPutih"Set To status  when tweak mode on/turbo: unknow, set to $ModeOnNew"$ResetWarna
+                fi
+            fi
+        fi
     fi
 }
 AppGet(){
@@ -757,6 +840,7 @@ AppGet(){
     echo "sal > to check app list install on your phone"
     echo "sgl > to check game list for trigger ai to mode turbo faster"
     echo "mag > manual add games"
+    echo "cr > change resoluion"
     if [ "$(getprop dalvik.vm.usejit)" == "true" ];then
         echo "oap > app optimizer"
     fi
@@ -1356,6 +1440,46 @@ ListMenu(){
     elif [ "$pilihan" == "bsc" ];then
         TypeOpen="0"
         ListMenu
+    elif [ "$pilihan" == "cr" ];then
+        # TypeOpen="0"
+        echo "coming soon :p"
+        sleep 2
+        ListMenu
+    elif [ "$pilihan" == "acsy" ];then
+        SpectrumStatusNew=1
+        ListMenu
+        echo "coming soon :p"
+    elif [ "$pilihan" == "acsx" ];then
+        SpectrumStatusNew=0
+        ListMenu
+        echo "coming soon :p"
+    elif [ "$pilihan" == "csmf" ];then
+        echo "0 = balance"
+        echo "1 = battery"
+        echo "2 = performance"
+        echo "3 = gaming"
+        read GetCsmf
+        if [ "$GetCsmf" -le "3" ];then
+            ModeOffNew=$GetCsmf
+        else
+            echo "input error . . ."
+            sleep 2
+        fi
+        ListMenu
+    elif [ "$pilihan" == "csmn" ];then
+        echo "0 = balance"
+        echo "1 = battery"
+        echo "2 = performance"
+        echo "3 = gaming"
+        read GetCsmn
+        if [ "$GetCsmn" -le "3" ];then
+            ModeOnNew=$GetCsmn
+        else
+            echo "input error . . ."
+            sleep 2
+        fi
+        echo "coming soon :p"
+        ListMenu
     else 
         if [ "$Perubahan" == "ya" ];then
             if [ "$pilihan" == "s" ];then
@@ -1509,6 +1633,18 @@ saveSetting()
     if [ "$StatusEndGpuBefore" != "$StatusEndGpuNew" ];then
         echo "$StatusEndGpuNew" > $PathModulConfigAi/status_end_gpu.txt ; 
         StatusEndGpuBefore=$StatusEndGpuNew;
+    fi
+    if [ "$ModeOnBefore" != "$ModeOnNew" ];then
+        echo "$ModeOnNew" > $PathModulConfigAi/mode_off.txt ; 
+        ModeOnBefore=$ModeOnNew;
+    fi
+    if [ "$ModeOffBefore" != "$ModeOffNew" ];then
+        echo "$ModeOffNew" > $PathModulConfigAi/mode_on.txt ; 
+        ModeOffBefore=$ModeOffNew;
+    fi
+    if [ "$SpectrumStatusBefore" != "$SpectrumStatusNew" ];then
+        echo "$SpectrumStatusNew" > $PathModulConfigAi/spectrum_status.txt ; 
+        SpectrumStatusBefore=$SpectrumStatusNew;
     fi
     if [ "$DnsBefore" != "$DnsNew" ];then
         echo "$DnsNew" > $PathModulConfig/dns.txt ; 

@@ -1261,9 +1261,7 @@ if [ "$FromTerminal" == "tidak" ];then
             fi
         fi
     fi
-    if [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "2" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "3" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "1" ];then
-        nohup sh $BASEDIR/ai_mode.sh "fromBoot" >/dev/null 2>&1 &
-    fi
+    nohup sh $BASEDIR/ai_mode.sh "fromBoot" >/dev/null 2>&1 &
 fi
 echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog >/dev/null 2>&1
 echo "  --- --- --- --- --->> " | tee -a $saveLog >/dev/null 2>&1
