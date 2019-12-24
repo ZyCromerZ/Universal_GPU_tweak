@@ -173,7 +173,10 @@ SetTurbo(){
     setprop persist.sys.NV_FPSLIMIT 120
     if  [ "$NyariGPU" != '' ];then
         if [ -e "$NyariGPU/devfreq/adrenoboost" ]; then
-            echo "3" > "$NyariGPU/devfreq/adrenoboost"
+            echo "4" > "$NyariGPU/devfreq/adrenoboost"
+            if [ "$NyariGPU/devfreq/adrenoboost" != "4" ];then
+                echo "3" > "$NyariGPU/devfreq/adrenoboost"
+            fi
         fi
         if [ -e "$NyariGPU/throttling" ]; then
             echo "0" > "$NyariGPU/throttling"
