@@ -4,6 +4,7 @@
 # this is for auto mode :v 
 # prepare function
 # kampet
+
 fromBoot="no"
 if [ "$1" == "fromBoot" ];then
     fromBoot="yes"
