@@ -534,9 +534,8 @@ runScript(){
         #notification when turbo mode end
         if [ "$fromBoot" == "yes" ];then
             usleep 5000000
-            sh $NotifPath "getar" "off" & wait
-            sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait 
-            nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" >/dev/null 2>&1 & 
+            sh $NotifPath "getar" "off" >/dev/null 2>&1 & wait
+            runInitialize "Terminal"
             if [ "$aiStatus" == "2" ];then
                 echo "Continue running at : $(date +" %r")" | tee -a $AiLog
                 echo "module version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed 's/Version:*//g' )" | tee -a $AiLog
