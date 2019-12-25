@@ -239,6 +239,13 @@ SpectrumBattery(){
         fi
     fi
 }
+runInitialize(){
+    if [ ! -z "$1" ];then
+        sh $ModulPath/ZyC_Turbo/initialize.sh "$1" & wait
+    else
+        sh $ModulPath/ZyC_Turbo/initialize.sh & wait
+    fi
+}
 runScript(){
     MissingFile="kaga"
     # check service sh config start
@@ -372,9 +379,9 @@ runScript(){
     fi
     # Set Ai Notif Mode End
     if [ "$MissingFile" == "iya" ]; then
-        sh $ModulPath/ZyC_Turbo/initialize.sh & wait
+        runInitialize 2>&1 >/dev/null
         if [ "$fromBoot" == "yes" ];then
-            sh $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
+            runInitialize "boot" 2>&1 >/dev/null
         fi
     fi
     pathAppAutoTubo=$PathModulConfigAi/list_app_auto_turbo.txt
@@ -405,9 +412,9 @@ runScript(){
         DozeConfig="$(cat "$PathModulConfigAi/ai_doze.txt")"
         DozeState="$(cat "$DozeStatePath")"
         if [ "$DozeConfig" == "on" ];then
-            GetScreenStateNFC="$( dumpsys nfc 2>&1 2>/dev/null | grep 'mScreenState=' | sed 's/mScreenState=*//g' 2>&1 2>/dev/null )" 
-            GetScreenStateOF="$( dumpsys display 2>&1 2>/dev/null | grep "mScreenState" | sed 's/mScreenState=*//g' 2>&1 2>/dev/null )" 
-            GetScreenStateTF="$( dumpsys power 2>&1 2>/dev/null | grep "mHoldingDisplaySuspendBlocker" | sed 's/mHoldingDisplaySuspendBlocker=*//g' 2>&1 2>/dev/null )" 
+            GetScreenStateNFC="$( dumpsys nfc 2>&1 2>/dev/null | grep 'mScreenState=' | sed 's/mScreenState=*//g' 2>&1 2>/dev/null )" >/dev/null
+            GetScreenStateOF="$( dumpsys display 2>&1 2>/dev/null | grep "mScreenState" | sed 's/mScreenState=*//g' 2>&1 2>/dev/null )" >/dev/null
+            GetScreenStateTF="$( dumpsys power 2>&1 2>/dev/null | grep "mHoldingDisplaySuspendBlocker" | sed 's/mHoldingDisplaySuspendBlocker=*//g' 2>&1 2>/dev/null )" >/dev/null
             StatusLayar="gak tau"
             if [[ "$GetScreenStateNFC" == *"ON_LOCKED"* ]] || [[ "$GetScreenStateNFC" == *"ON_UNLOCKED"* ]] || [[ *"$GetScreenStateNFC" == "OFF_LOCKED"* ]] || [[ "$GetScreenStateNFC" == *"OFF_UNLOCKED"* ]];then
                 if [ "$StatusLayar" == "gak tau" ];then
