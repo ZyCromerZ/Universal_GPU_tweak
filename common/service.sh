@@ -1268,4 +1268,4 @@ if [ "$FromTerminal" == "tidak" ];then
 fi
 echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog >/dev/null 2>&1
 echo "  --- --- --- --- --->> " | tee -a $saveLog >/dev/null 2>&1
-exit 0
+exit 1

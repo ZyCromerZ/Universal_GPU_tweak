@@ -375,9 +375,6 @@ runScript(){
         sh $ModulPath/ZyC_Turbo/initialize.sh & wait
         if [ "$fromBoot" == "yes" ];then
             sh $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
-            return 0
-        else
-            return 0
         fi
     fi
     pathAppAutoTubo=$PathModulConfigAi/list_app_auto_turbo.txt
@@ -412,29 +409,29 @@ runScript(){
             GetScreenStateOF="$( dumpsys display 2>&1 2>/dev/null | grep "mScreenState" | sed 's/mScreenState=*//g' 2>&1 2>/dev/null )" 
             GetScreenStateTF="$( dumpsys power 2>&1 2>/dev/null | grep "mHoldingDisplaySuspendBlocker" | sed 's/mHoldingDisplaySuspendBlocker=*//g' 2>&1 2>/dev/null )" 
             StatusLayar="gak tau"
-            if [ "$GetScreenStateNFC" == "ON_LOCKED" ] || [ "$GetScreenStateNFC" == "ON_UNLOCKED" ] || [ "$GetScreenStateNFC" == "OFF_LOCKED" ] || [ "$GetScreenStateNFC" == "OFF_UNLOCKED" ];then
+            if [[ "$GetScreenStateNFC" == *"ON_LOCKED"* ]] || [[ "$GetScreenStateNFC" == *"ON_UNLOCKED"* ]] || [[ *"$GetScreenStateNFC" == "OFF_LOCKED"* ]] || [[ "$GetScreenStateNFC" == *"OFF_UNLOCKED"* ]];then
                 if [ "$StatusLayar" == "gak tau" ];then
-                    if [ "$GetScreenStateNFC" == "OFF_LOCKED" ];then
+                    if [[ "$GetScreenStateNFC" == *"OFF_LOCKED"* ]];then
                         StatusLayar="mati"
-                    elif [ "$GetScreenStateNFC" == "ON_UNLOCKED" ];then
+                    elif [[ "$GetScreenStateNFC" == *"ON_UNLOCKED"* ]];then
                         StatusLayar="idup"
                     fi
                 fi
             fi
-            if [ "$GetScreenStateOF" == "ON" ] || [ "$GetScreenStateOF" == "OFF" ];then
+            if [[ "$GetScreenStateOF" == *"ON"* ]] || [[ "$GetScreenStateOF" == *"OFF"* ]];then
                 if [ "$StatusLayar" == "gak tau" ];then
-                    if [ "$GetScreenStateOF" == "OFF" ];then
+                    if [[ "$GetScreenStateOF" == *"OFF"* ]];then
                         StatusLayar="mati"
-                    elif [ "$GetScreenStateOF" == "ON" ];then
+                    elif [[ "$GetScreenStateOF" == *"ON"* ]];then
                         StatusLayar="idup"
                     fi
                 fi
             fi
-            if [ "$GetScreenStateTF" == "ON" ] || [ "$GetScreenStateTF" == "OFF" ];then
+            if [[ "$GetScreenStateTF" == *"ON"* ]] || [[ "$GetScreenStateTF" == *"OFF"* ]];then
                 if [ "$StatusLayar" == "gak tau" ];then
-                    if [ "$GetScreenStateTF" == "false" ];then
+                    if [[ "$GetScreenStateTF" == *"false"* ]];then
                         StatusLayar="mati"
-                    elif [ "$GetScreenStateTF" == "true" ];then
+                    elif [[ "$GetScreenStateTF" == *"true"* ]];then
                         StatusLayar="idup"
                     fi
                 fi
@@ -563,4 +560,4 @@ fi
 if [ "$fromBoot" == "yes" ];then
     nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" >/dev/null 2>&1 & 
 fi
-exit 0
+exit 1
