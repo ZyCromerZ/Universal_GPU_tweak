@@ -132,6 +132,7 @@ if [ ! -z "$1" ];then
             setprop zyc.status.fstrim "belom"
             setprop zyc.status.fastcharge "belom"
             setprop zram.disksize "0"
+            echo '0' > "$PathModulConfigAi/ai_status.txt"
             # dns
             # echo "system" > $PathModulConfig/dns.txt
         fi
