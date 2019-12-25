@@ -369,10 +369,7 @@ GetAppAndGames(){
 
     for listApp in ` pm list packages -3 | awk -F= '{sub("package:","");print $1}'` 
         do 
-            if [ -z "$( grep "$listApp" "$listAppPath" )" ];then
-                checkApp=$(pm list packages -f "$listApp" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g')
-                # nameApp=$(aapt d badging "$checkApp" | awk -F: ' $1 == "application-label" {print $2}' | sed "s/'*//g")
-                # adb shell /data/local/tmp/aapt-arm-pie d badging $pkg | awk -F: ' $1 == "application-label" {print $2}' 
+            if [ -z "$( grep "$listApp" "$listAppPath" )" ];then 
                 sed -i "1a  $listApp"  "$listAppPath"  ;
 
             fi
