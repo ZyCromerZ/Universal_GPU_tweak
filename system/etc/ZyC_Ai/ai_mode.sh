@@ -82,6 +82,11 @@ NotifPath="none"
 if [ -e "/system/etc/ZyC_Ai/set_notification.sh" ];then
     NotifPath=/system/etc/ZyC_Ai/set_notification.sh
 fi
+if [ "$fromBoot" == "yes" ];then
+    if [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "2" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "3" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "1" ];then
+        nohup sh $BASEDIR/ai_mode.sh >/dev/null 2>&1 &
+    fi
+fi
 getAppName()
 {
     changeSE="tidak"
@@ -561,8 +566,10 @@ runScript(){
     fi
 }
 runScript 2>&1 1>/dev/null | tee -a $Path/ZyC_Ai.running.log
-if [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "2" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "3" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "1" ];then
-    nohup sh $BASEDIR/ai_mode.sh >/dev/null 2>&1 &
+if [ "$fromBoot" == "no" ];then
+    if [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "2" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "3" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "1" ];then
+        nohup sh $BASEDIR/ai_mode.sh >/dev/null 2>&1 &
+    fi
 fi
 if [ "$fromBoot" == "yes" ];then
     nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" >/dev/null 2>&1 & 
