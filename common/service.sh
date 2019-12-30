@@ -5,8 +5,26 @@
 # prepare function
 # sleep 2s
 # sialan
+GetBusyBox="none"
+PathBusyBox="none"
+for i in /system/bin /system/xbin /sbin /su/xbin; do
+    if [ "$GetBusyBox" == "none" ]; then
+        if [ -f $i/busybox ]; then
+            GetBusyBox=$i/busybox;
+        fi;
+        PathBusyBox=$i
+    fi;
+done;
+sh=sh
+nohup=nohup
+if [ -e "$PathBusyBox/sh" ];then
+    sh=$PathBusyBox/sh
+fi
+if [ -e "$PathBusyBox/nohup" ];then
+    nohup=$PathBusyBox/nohup
+fi
 if [ ! -e /data/mod_path.txt ]; then
-    sh $ModulPath/ZyC_Turbo/initialize.sh & wait
+    $sh $ModulPath/ZyC_Turbo/initialize.sh & wait
 fi
 ModPath=$(cat /data/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
@@ -47,9 +65,9 @@ if [ ! -z "$1" ];then
     fi
 fi
 if [ "$FromTerminal" == "tidak" ];then
-    sh $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
+    $sh $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
     usleep 5000000
-    sh $ModulPath/ZyC_Turbo/initialize.sh & wait
+    $sh $ModulPath/ZyC_Turbo/initialize.sh & wait
 fi;
 if [ ! -z "$2" ];then
     if [ "$2" == "Ai" ];then
@@ -446,8 +464,8 @@ runScript(){
     fi
     # log backup nya
         if [ "$MissingFile" == "iya" ]; then
-            sh $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
-            sh $ModulPath/ZyC_Turbo/initialize.sh & wait
+            $sh $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
+            $sh $ModulPath/ZyC_Turbo/initialize.sh & wait
         fi
     # end log backup
 
@@ -657,7 +675,7 @@ runScript(){
                         fi
                         # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog;
                 else 
-                    sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
+                    $sh $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
                     echo "using custom ram management method $CustomRam" | tee -a $saveLog;
                     StopModify="no"
                     GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
@@ -1264,7 +1282,7 @@ if [ "$FromTerminal" == "tidak" ];then
             fi
         fi
     fi
-    nohup sh $BASEDIR/ai_mode.sh "fromBoot" >/dev/null 2>&1 &
+    $nohup $sh $BASEDIR/ai_mode.sh "fromBoot" >/dev/null 2>&1 &
 fi
 echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog >/dev/null 2>&1
 echo "  --- --- --- --- --->> " | tee -a $saveLog >/dev/null 2>&1
