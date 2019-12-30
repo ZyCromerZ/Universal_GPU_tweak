@@ -838,27 +838,27 @@ AITwek(){
             fi
             if [ "$DozeSpectrumBefore" == "$DozeSpectrumNew" ]; then
                 if [ "$DozeSpectrumNew" == "0" ];then
-                    echo $biruHitam"current status when tweak mode on/turbo: balance"$ResetWarna
+                    echo $biruHitam"current status when force doze on: balance"$ResetWarna
                 elif [ "$DozeSpectrumNew" == "1" ];then
-                    echo $biruHitam"current status when tweak mode on/turbo: battery"$ResetWarna
+                    echo $biruHitam"current status when force doze on: battery"$ResetWarna
                 elif [ "$DozeSpectrumNew" == "2" ];then
-                    echo $biruHitam"current status when tweak mode on/turbo: performance"$ResetWarna
+                    echo $biruHitam"current status when force doze on: performance"$ResetWarna
                 elif [ "$DozeSpectrumNew" == "3" ];then
-                    echo $biruHitam"current status when tweak mode on/turbo: gaming"$ResetWarna
+                    echo $biruHitam"current status when force doze on: gaming"$ResetWarna
                 else 
-                    echo $biruHitam"current status when tweak mode on/turbo: unknow > $DozeSpectrumNew"$ResetWarna
+                    echo $biruHitam"current status when force doze on: unknow > $DozeSpectrumNew"$ResetWarna
                 fi
             else
                 if [ "$DozeSpectrumNew" == "0" ];then
-                    echo $cyanPutih"Set To status  when tweak mode on/turbo: balance"$ResetWarna
+                    echo $cyanPutih"Set To status  when force doze on: balance"$ResetWarna
                 elif [ "$DozeSpectrumNew" == "1" ];then
-                    echo $cyanPutih"Set To status  when tweak mode on/turbo: battery"$ResetWarna
+                    echo $cyanPutih"Set To status  when force doze on: battery"$ResetWarna
                 elif [ "$DozeSpectrumNew" == "2" ];then
-                    echo $cyanPutih"Set To status  when tweak mode on/turbo: performance"$ResetWarna
+                    echo $cyanPutih"Set To status  when force doze on: performance"$ResetWarna
                 elif [ "$DozeSpectrumNew" == "3" ];then
-                    echo $cyanPutih"Set To status  when tweak mode on/turbo: gaming"$ResetWarna
+                    echo $cyanPutih"Set To status  when force doze on: gaming"$ResetWarna
                 else 
-                    echo $cyanPutih"Set To status  when tweak mode on/turbo: unknow, set to $DozeSpectrumNew"$ResetWarna
+                    echo $cyanPutih"Set To status  when force doze on: unknow, set to $DozeSpectrumNew"$ResetWarna
                 fi
             fi
         fi
@@ -1524,7 +1524,7 @@ ListMenu(){
         echo "etc . . ."
         read GetCsmd
         if [ "$GetCsmd" -le "100" ];then
-            SpectrumStatusNew=$GetCsmd
+            DozeSpectrumNew=$GetCsmd
             Perubahan="ya"
         else
             echo "input error . . ."
