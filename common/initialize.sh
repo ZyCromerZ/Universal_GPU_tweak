@@ -1052,6 +1052,9 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes >/dev/null 2>&1
         if [ ! -e $PathModulConfigAi/mode_on.txt ]; then
             echo '3' > "$PathModulConfigAi/mode_on.txt"
         fi
+        if [ ! -e $PathModulConfigAi/doze_spectrum.txt ]; then
+            echo '1' > "$PathModulConfigAi/doze_spectrum.txt"
+        fi
         if [ ! -e $PathModulConfigAi/spectrum_status.txt ]; then
             echo '0' > "$PathModulConfigAi/spectrum_status.txt"
         fi

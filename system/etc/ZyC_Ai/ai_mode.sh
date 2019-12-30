@@ -252,7 +252,7 @@ SpectrumBattery(){
     if [ "$(getprop spectrum.support)" == "1" ];then
         SpectrumAutoStatus=$(cat "$PathModulConfigAi/spectrum_status.txt")
         if [ "$SpectrumAutoStatus" == "1" ];then
-            setprop persist.spectrum.profile 1
+            setprop persist.spectrum.profile "$(cat "$PathModulConfigAi/doze_spectrum.txt")"
         fi
     fi
 }

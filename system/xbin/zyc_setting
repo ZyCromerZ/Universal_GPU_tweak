@@ -221,6 +221,10 @@ GetSetting(){
         SpectrumStatusBefore=$(cat "$PathModulConfigAi/spectrum_status.txt")
         SpectrumStatusNew=$(cat "$PathModulConfigAi/spectrum_status.txt")
     fi
+    if [ -e $PathModulConfigAi/doze_spectrum.txt ];then
+        DozeSpectrumBefore=$(cat "$PathModulConfigAi/doze_spectrum.txt")
+        DozeSpectrumNew=$(cat "$PathModulConfigAi/doze_spectrum.txt")
+    fi
     clear
 }
 RefreshList="tidak"
@@ -763,11 +767,12 @@ AITwek(){
         fi
         
         if [ "$(getprop spectrum.support)" == "1" ];then
-            echo "<-- -- DNS Config -- -->"
+            echo "<-- -- Spectrum Auto change -- -->"
             echo "acsy > auto change spectrum mode on"
-            echo "acsx > auto change spectrum mode on"
+            echo "acsx > auto change spectrum mode off"
             echo "csmf > change spectrum mode when tweak off"
             echo "csmn > change spectrum mode when tweak on"
+            echo "csmd > change spectrum mode when force doze on"
             if [ "$SpectrumStatusNew" == "$SpectrumStatusBefore" ];then
                 if [ $SpectrumStatusNew == "1" ];then
                     echo $kuningHitam"auto change spectrum mode: on"$ResetWarna
@@ -791,7 +796,7 @@ AITwek(){
                 elif [ "$ModeOffNew" == "3" ];then
                     echo $biruHitam"current status when tweak mode off: gaming"$ResetWarna
                 else 
-                    echo $biruHitam"current status when tweak mode off: unknow, set to $ModeOffNew"$ResetWarna
+                    echo $biruHitam"current status when tweak mode off: unknow > $ModeOffNew"$ResetWarna
                 fi
             else
                 if [ "$ModeOffNew" == "0" ];then
@@ -816,7 +821,7 @@ AITwek(){
                 elif [ "$ModeOnNew" == "3" ];then
                     echo $biruHitam"current status when tweak mode on/turbo: gaming"$ResetWarna
                 else 
-                    echo $biruHitam"current status when tweak mode on/turbo: unknow, set to $ModeOnNew"$ResetWarna
+                    echo $biruHitam"current status when tweak mode on/turbo: unknow > $ModeOnNew"$ResetWarna
                 fi
             else
                 if [ "$ModeOnNew" == "0" ];then
@@ -829,6 +834,31 @@ AITwek(){
                     echo $cyanPutih"Set To status  when tweak mode on/turbo: gaming"$ResetWarna
                 else 
                     echo $cyanPutih"Set To status  when tweak mode on/turbo: unknow, set to $ModeOnNew"$ResetWarna
+                fi
+            fi
+            if [ "$DozeSpectrumBefore" == "$DozeSpectrumNew" ]; then
+                if [ "$DozeSpectrumNew" == "0" ];then
+                    echo $biruHitam"current status when tweak mode on/turbo: balance"$ResetWarna
+                elif [ "$DozeSpectrumNew" == "1" ];then
+                    echo $biruHitam"current status when tweak mode on/turbo: battery"$ResetWarna
+                elif [ "$DozeSpectrumNew" == "2" ];then
+                    echo $biruHitam"current status when tweak mode on/turbo: performance"$ResetWarna
+                elif [ "$DozeSpectrumNew" == "3" ];then
+                    echo $biruHitam"current status when tweak mode on/turbo: gaming"$ResetWarna
+                else 
+                    echo $biruHitam"current status when tweak mode on/turbo: unknow > $DozeSpectrumNew"$ResetWarna
+                fi
+            else
+                if [ "$DozeSpectrumNew" == "0" ];then
+                    echo $cyanPutih"Set To status  when tweak mode on/turbo: balance"$ResetWarna
+                elif [ "$DozeSpectrumNew" == "1" ];then
+                    echo $cyanPutih"Set To status  when tweak mode on/turbo: battery"$ResetWarna
+                elif [ "$DozeSpectrumNew" == "2" ];then
+                    echo $cyanPutih"Set To status  when tweak mode on/turbo: performance"$ResetWarna
+                elif [ "$DozeSpectrumNew" == "3" ];then
+                    echo $cyanPutih"Set To status  when tweak mode on/turbo: gaming"$ResetWarna
+                else 
+                    echo $cyanPutih"Set To status  when tweak mode on/turbo: unknow, set to $DozeSpectrumNew"$ResetWarna
                 fi
             fi
         fi
@@ -1447,10 +1477,12 @@ ListMenu(){
         ListMenu
     elif [ "$pilihan" == "acsy" ];then
         SpectrumStatusNew=1
+        Perubahan="ya"
         ListMenu
         echo "coming soon :p"
     elif [ "$pilihan" == "acsx" ];then
         SpectrumStatusNew=0
+        Perubahan="ya"
         ListMenu
         echo "coming soon :p"
     elif [ "$pilihan" == "csmf" ];then
@@ -1458,9 +1490,11 @@ ListMenu(){
         echo "1 = battery"
         echo "2 = performance"
         echo "3 = gaming"
+        echo "etc . . ."
         read GetCsmf
-        if [ "$GetCsmf" -le "3" ];then
+        if [ "$GetCsmf" -le "100" ];then
             ModeOffNew=$GetCsmf
+            Perubahan="ya"
         else
             echo "input error . . ."
             sleep 2
@@ -1471,9 +1505,27 @@ ListMenu(){
         echo "1 = battery"
         echo "2 = performance"
         echo "3 = gaming"
+        echo "etc . . ."
         read GetCsmn
-        if [ "$GetCsmn" -le "3" ];then
+        if [ "$GetCsmn" -le "100" ];then
             ModeOnNew=$GetCsmn
+            Perubahan="ya"
+        else
+            echo "input error . . ."
+            sleep 2
+        fi
+        echo "coming soon :p"
+        ListMenu
+    elif [ "$pilihan" == "csmd" ];then
+        echo "0 = balance"
+        echo "1 = battery"
+        echo "2 = performance"
+        echo "3 = gaming"
+        echo "etc . . ."
+        read GetCsmd
+        if [ "$GetCsmd" -le "100" ];then
+            SpectrumStatusNew=$GetCsmd
+            Perubahan="ya"
         else
             echo "input error . . ."
             sleep 2
@@ -1635,16 +1687,20 @@ saveSetting()
         StatusEndGpuBefore=$StatusEndGpuNew;
     fi
     if [ "$ModeOnBefore" != "$ModeOnNew" ];then
-        echo "$ModeOnNew" > $PathModulConfigAi/mode_off.txt ; 
+        echo "$ModeOnNew" > $PathModulConfigAi/mode_on.txt ; 
         ModeOnBefore=$ModeOnNew;
     fi
     if [ "$ModeOffBefore" != "$ModeOffNew" ];then
-        echo "$ModeOffNew" > $PathModulConfigAi/mode_on.txt ; 
+        echo "$ModeOffNew" > $PathModulConfigAi/mode_off.txt ; 
         ModeOffBefore=$ModeOffNew;
     fi
     if [ "$SpectrumStatusBefore" != "$SpectrumStatusNew" ];then
         echo "$SpectrumStatusNew" > $PathModulConfigAi/spectrum_status.txt ; 
         SpectrumStatusBefore=$SpectrumStatusNew;
+    fi
+    if [ "$DozeSpectrumBefore" != "$DozeSpectrumNew" ];then
+        echo "$DozeSpectrumNew" > $PathModulConfigAi/doze_spectrum.txt ; 
+        DozeSpectrumBefore=$DozeSpectrumNew;
     fi
     if [ "$DnsBefore" != "$DnsNew" ];then
         echo "$DnsNew" > $PathModulConfig/dns.txt ; 
