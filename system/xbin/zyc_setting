@@ -790,9 +790,9 @@ AITwek(){
                 if [ "$ModeOffNew" == "0" ];then
                     echo $biruHitam"current status when tweak mode off: balance"$ResetWarna
                 elif [ "$ModeOffNew" == "1" ];then
-                    echo $biruHitam"current status when tweak mode off: battery"$ResetWarna
-                elif [ "$ModeOffNew" == "2" ];then
                     echo $biruHitam"current status when tweak mode off: performance"$ResetWarna
+                elif [ "$ModeOffNew" == "2" ];then
+                    echo $biruHitam"current status when tweak mode off: battery"$ResetWarna
                 elif [ "$ModeOffNew" == "3" ];then
                     echo $biruHitam"current status when tweak mode off: gaming"$ResetWarna
                 else 
@@ -802,9 +802,9 @@ AITwek(){
                 if [ "$ModeOffNew" == "0" ];then
                     echo $cyanPutih"Set To status  when tweak mode off: balance"$ResetWarna
                 elif [ "$ModeOffNew" == "1" ];then
-                    echo $cyanPutih"Set To status  when tweak mode off: battery"$ResetWarna
-                elif [ "$ModeOffNew" == "2" ];then
                     echo $cyanPutih"Set To status  when tweak mode off: performance"$ResetWarna
+                elif [ "$ModeOffNew" == "2" ];then
+                    echo $cyanPutih"Set To status  when tweak mode off: battery"$ResetWarna
                 elif [ "$ModeOffNew" == "3" ];then
                     echo $cyanPutih"Set To status  when tweak mode off: gaming"$ResetWarna
                 else 
@@ -815,9 +815,9 @@ AITwek(){
                 if [ "$ModeOnNew" == "0" ];then
                     echo $biruHitam"current status when tweak mode on/turbo: balance"$ResetWarna
                 elif [ "$ModeOnNew" == "1" ];then
-                    echo $biruHitam"current status when tweak mode on/turbo: battery"$ResetWarna
-                elif [ "$ModeOnNew" == "2" ];then
                     echo $biruHitam"current status when tweak mode on/turbo: performance"$ResetWarna
+                elif [ "$ModeOnNew" == "2" ];then
+                    echo $biruHitam"current status when tweak mode on/turbo: battery"$ResetWarna
                 elif [ "$ModeOnNew" == "3" ];then
                     echo $biruHitam"current status when tweak mode on/turbo: gaming"$ResetWarna
                 else 
@@ -827,9 +827,9 @@ AITwek(){
                 if [ "$ModeOnNew" == "0" ];then
                     echo $cyanPutih"Set To status  when tweak mode on/turbo: balance"$ResetWarna
                 elif [ "$ModeOnNew" == "1" ];then
-                    echo $cyanPutih"Set To status  when tweak mode on/turbo: battery"$ResetWarna
-                elif [ "$ModeOnNew" == "2" ];then
                     echo $cyanPutih"Set To status  when tweak mode on/turbo: performance"$ResetWarna
+                elif [ "$ModeOnNew" == "2" ];then
+                    echo $cyanPutih"Set To status  when tweak mode on/turbo: battery"$ResetWarna
                 elif [ "$ModeOnNew" == "3" ];then
                     echo $cyanPutih"Set To status  when tweak mode on/turbo: gaming"$ResetWarna
                 else 
@@ -840,9 +840,9 @@ AITwek(){
                 if [ "$DozeSpectrumNew" == "0" ];then
                     echo $biruHitam"current status when force doze on: balance"$ResetWarna
                 elif [ "$DozeSpectrumNew" == "1" ];then
-                    echo $biruHitam"current status when force doze on: battery"$ResetWarna
-                elif [ "$DozeSpectrumNew" == "2" ];then
                     echo $biruHitam"current status when force doze on: performance"$ResetWarna
+                elif [ "$DozeSpectrumNew" == "2" ];then
+                    echo $biruHitam"current status when force doze on: battery"$ResetWarna
                 elif [ "$DozeSpectrumNew" == "3" ];then
                     echo $biruHitam"current status when force doze on: gaming"$ResetWarna
                 else 
@@ -852,9 +852,9 @@ AITwek(){
                 if [ "$DozeSpectrumNew" == "0" ];then
                     echo $cyanPutih"Set To status  when force doze on: balance"$ResetWarna
                 elif [ "$DozeSpectrumNew" == "1" ];then
-                    echo $cyanPutih"Set To status  when force doze on: battery"$ResetWarna
-                elif [ "$DozeSpectrumNew" == "2" ];then
                     echo $cyanPutih"Set To status  when force doze on: performance"$ResetWarna
+                elif [ "$DozeSpectrumNew" == "2" ];then
+                    echo $cyanPutih"Set To status  when force doze on: battery"$ResetWarna
                 elif [ "$DozeSpectrumNew" == "3" ];then
                     echo $cyanPutih"Set To status  when force doze on: gaming"$ResetWarna
                 else 
@@ -1487,8 +1487,8 @@ ListMenu(){
         echo "coming soon :p"
     elif [ "$pilihan" == "csmf" ];then
         echo "0 = balance"
-        echo "1 = battery"
-        echo "2 = performance"
+        echo "1 = performance"
+        echo "2 = battery"
         echo "3 = gaming"
         echo "etc . . ."
         read GetCsmf
@@ -1502,8 +1502,8 @@ ListMenu(){
         ListMenu
     elif [ "$pilihan" == "csmn" ];then
         echo "0 = balance"
-        echo "1 = battery"
-        echo "2 = performance"
+        echo "1 = performance"
+        echo "2 = battery"
         echo "3 = gaming"
         echo "etc . . ."
         read GetCsmn
@@ -1518,8 +1518,8 @@ ListMenu(){
         ListMenu
     elif [ "$pilihan" == "csmd" ];then
         echo "0 = balance"
-        echo "1 = battery"
-        echo "2 = performance"
+        echo "1 = performance"
+        echo "2 = battery"
         echo "3 = gaming"
         echo "etc . . ."
         read GetCsmd
