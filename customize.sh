@@ -31,10 +31,6 @@ SKIPUNZIP=0
 #      set_perm file owner group filepermission context
 #   for all directories in <directory> (including itself), it will call:
 #      set_perm dir owner group dirpermission context
-ui_print "*******************************"
-ui_print "        ZyC GPU Turbo          "
-ui_print "and special thanks to @nowaydev"
-ui_print "       for channel logo :D     "
 ui_print "≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠"
 ui_print "  _______          ____        "
 ui_print "  \___  /ɢᴘᴜ ᴛᴜʀʙᴏ/  ___\      "
@@ -47,14 +43,10 @@ ui_print "                               "
 ui_print "≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠"
 ui_print "ᴅᴇsɪɢɴᴇᴅ ʙʏ ɴᴏᴡᴀʏᴅᴇᴠ           "
 ui_print "-------------------------------"
-ui_print "Thx to people for trying this  "
-ui_print "module . . .                   "
+ui_print "Thx to people for trying this module . . . "
 ui_print ""
-ui_print "after reboot check log inside  "
-ui_print "internal/modul_mantul/         "
-ui_print "ZyC_Turbo.log, after reboot    "
-ui_print "find notes_en.txt/notes_en.id  "
-ui_print "and read it xD                 "
+ui_print "after reboot check log inside internal/modul_mantul/ZyC_Turbo.log, after reboot find notes_en.txt/notes_en.id and read it xD"
+ui_print ""
 ui_print ""
 ui_print "enjoy . . ."
 bin=xbin
