@@ -32,18 +32,6 @@ if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
     exit
 else
     echo $cyanPutih"<<--------------------------------->>"$ResetWarna
-    usleep 200000
-    echo "*  thanks for use my modules  *"
-    usleep 200000
-    echo $cyanPutih"<<--------------------------------->>"$ResetWarna
-    usleep 200000
-    echo "        ZyC GPU Turbo          "
-    usleep 200000
-    echo "and special thanks to @nowaydev"
-    usleep 200000
-    echo "       for channel logo :D     "
-    usleep 200000
-    echo $cyanPutih"<<--------------------------------->>"$ResetWarna
     echo "  _______          ____        "
     usleep 200000
     echo "  \___  /ɢᴘᴜ ᴛᴜʀʙᴏ/  ___\      "
@@ -1501,9 +1489,9 @@ ListMenu(){
         echo "0 > dont change device model"
         echo "1 > model : SM-G975U, brand : samsung"
         echo "2 > custom by ur self"
-        read GetCdm
-        echo -n 'set ram management fix to : '
+        echo -n 'set device model to : '
         read -n 1 GetCdm
+        echo ""
         if [ "$GetCdm" == "0" ];then
             echo "#auto generate" >> "$ModulPath/system.prop"
             echo "" >> "$ModulPath/system.prop"
@@ -1517,8 +1505,10 @@ ListMenu(){
         elif [ "$GetCdm" == "2" ];then
             echo -n "device model : "
             read GetDM
+            echo ""
             echo -n "device brand : "
             read GetDB
+            echo ""
             echo "#auto generate" >> "$ModulPath/system.prop"
             echo "" >> "$ModulPath/system.prop"
             echo "ro.product.brand=$GetDB" >> "$ModulPath/system.prop"
