@@ -31,6 +31,8 @@ SKIPUNZIP=0
 #      set_perm file owner group filepermission context
 #   for all directories in <directory> (including itself), it will call:
 #      set_perm dir owner group dirpermission context
+
+## print word
 ui_print "≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠"
 ui_print "  _______          ____        "
 ui_print "  \___  /ɢᴘᴜ ᴛᴜʀʙᴏ/  ___\      "
@@ -49,6 +51,8 @@ ui_print "after reboot check log inside internal/modul_mantul/ZyC_Turbo.log, aft
 ui_print ""
 ui_print ""
 ui_print "enjoy . . ."
+
+### fix module command
 bin=xbin
 if [ ! -d system/xbin ]; then
 bin=bin
@@ -60,6 +64,8 @@ else
 rm -rf $MODPATH/system/bin/*
 rmdir $MODPATH/system/bin
 fi
+
+### For GMS doze fix
 if [ ! -e  /system/etc/sysconfig/google.xml ]; then
 rm -rf $MODPATH/system/etc/sysconfig/*
 rmdir $MODPATH/system/etc/sysconfig
@@ -100,6 +106,8 @@ else
 fi
 # rm -rf $MODPATH/system/system/*
 fi
+
+### fix folder permission
 set_perm_recursive $MODPATH                   0 0 0755 0777
 set_perm_recursive $MODPATH/system/$bin       0 0 0755 0777
 set_perm_recursive $MODPATH/system/etc/ZyC_Ai 0 0 0755 0777
