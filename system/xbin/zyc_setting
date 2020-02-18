@@ -842,11 +842,10 @@ AppGet(){
     echo "sal > to check app list install on your phone"
     echo "sgl > to check game list for trigger ai to mode turbo faster"
     echo "mag > manual add games"
-    echo "cr > change resoluion"
     if [ "$(getprop dalvik.vm.usejit)" == "true" ];then
         echo "oap > app optimizer"
     fi
-    # echo "crs > change resolution"
+    echo "cdm > change device model <<restart required>>"
     if [ "$RefreshList" == "sudah" ];then
         echo $hijauHitam"refresh list game and app done . . . :p"$ResetWarna
     elif [ "$RefreshList" == "iya" ];then
@@ -1442,21 +1441,14 @@ ListMenu(){
     elif [ "$pilihan" == "bsc" ];then
         TypeOpen="0"
         ListMenu
-    elif [ "$pilihan" == "cr" ];then
-        # TypeOpen="0"
-        echo "coming soon :p"
-        sleep 2
-        ListMenu
     elif [ "$pilihan" == "acsy" ];then
         SpectrumStatusNew=1
         Perubahan="ya"
         ListMenu
-        echo "coming soon :p"
     elif [ "$pilihan" == "acsx" ];then
         SpectrumStatusNew=0
         Perubahan="ya"
         ListMenu
-        echo "coming soon :p"
     elif [ "$pilihan" == "csmf" ];then
         echo "0 = balance"
         echo "1 = performance"
@@ -1503,6 +1495,40 @@ ListMenu(){
             sleep 2
         fi
         echo "coming soon :p"
+        ListMenu
+    elif [ "$pilihan" == "cdm" ];then
+        echo "list devices model"
+        echo "0 > dont change device model"
+        echo "1 > model : SM-G975U, brand : samsung"
+        echo "2 > custom by ur self"
+        read GetCdm
+        echo -n 'set ram management fix to : '
+        read -n 1 GetCdm
+        if [ "$GetCdm" == "0" ];then
+            echo "#auto generate" >> "$ModulPath/system.prop"
+            echo "" >> "$ModulPath/system.prop"
+            echo "#disabled" >> "$ModulPath/system.prop"
+        elif [ "$GetCdm" == "1" ];then
+            echo "#auto generate" >> "$ModulPath/system.prop"
+            echo "" >> "$ModulPath/system.prop"
+            echo "ro.product.brand=samsung" >> "$ModulPath/system.prop"
+            echo "ro.product.manufacturer=samsung" >> "$ModulPath/system.prop"
+            echo "ro.product.model=SM-G975U" >> "$ModulPath/system.prop"
+        elif [ "$GetCdm" == "2" ];then
+            echo -n "device model : "
+            read GetDM
+            echo -n "device brand : "
+            read GetDB
+            echo "#auto generate" >> "$ModulPath/system.prop"
+            echo "" >> "$ModulPath/system.prop"
+            echo "ro.product.brand=$GetDB" >> "$ModulPath/system.prop"
+            echo "ro.product.manufacturer=$GetDB" >> "$ModulPath/system.prop"
+            echo "ro.product.model=$GetDM" >> "$ModulPath/system.prop"
+        else
+            echo "input error"
+        fi
+        echo "done . . ."
+        usleep 1000000
         ListMenu
     else 
         if [ "$Perubahan" == "ya" ];then
