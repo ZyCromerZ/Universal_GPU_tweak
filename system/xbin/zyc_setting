@@ -1209,9 +1209,7 @@ ListMenu(){
         for appList in `pm list package -3 | sed 's/package:*//g'`
         do
             if [ -z $( grep "$appList" "$PathModulConfigAi/list_app_auto_turbo.txt" ) ];then
-                checkApp=$(pm list packages -f "$appList" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g')
-                nameApp=$(aapt d badging "$checkApp" | awk -F: ' $1 == "application-label" {print $2}' | sed "s/'*//g")
-                echo "[ $NoApp ] $appList ( $nameApp )" | tee -a $GetApp
+                echo "[ $NoApp ] $appList" | tee -a $GetApp
                 NoApp=$(($NoApp+1))
             fi
         done
