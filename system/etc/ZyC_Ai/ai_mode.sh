@@ -47,35 +47,7 @@ fi
 #     #rm $Path/Niqua.log
 # fi
 AiLog=$Path/ZyC_Ai.log
-magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
-GetVersion=$($magisk -c | grep -Eo '[0-9]{2}\.[0-9]+')
-case "$GetVersion" in
-'15.'[1-9]*) # Version 15.1 - 15.9
-    ModulPath=/sbin/.core/img
-;;
-'16.'[1-9]*) # Version 16.1 - 16.9
-    ModulPath=/sbin/.core/img
-;;
-'17.'[1-3]*) # Version 17.1 - 17.3
-    ModulPath=/sbin/.core/img
-;;
-'17.'[4-9]*) # Version 17.4 - 17.9
-    ModulPath=/sbin/.magisk/img
-;;
-'18.'[0-9]*) # Version 18.x
-    ModulPath=/sbin/.magisk/img
-;;
-'19.'[0-9a-zA-Z]*) # Version 19.x
-    ModulPath=/data/adb/modules
-;;
-'20.'[0-9a-zA-Z]*) # Version 20.x
-    ModulPath=/data/adb/modules
-;;
-*)
-    echo "unsupported magisk version detected,fail" | tee -a $AiLog
-    exit 
-;;
-esac
+ModulPath=$(cat /data/magisk_path.txt)
 if [ -d "/sys/class/kgsl/kgsl-3d0" ]; then
     NyariGPU="/sys/class/kgsl/kgsl-3d0"
 elif [ -d "/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0" ]; then
@@ -86,12 +58,10 @@ elif [ -d "/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0" ]; then
     NyariGPU="/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
 elif [ -d "/sys/devices/platform/*.gpu/devfreq/*.gpu" ]; then
     NyariGPU="/sys/devices/platform/*.gpu/devfreq/*.gpu"
+elif [ -d "/sys/class/misc/mali0" ]; then
+    NyariGPU="/sys/class/misc/mali0"
 else
     NyariGPU='';
-fi
-if [ "$NyariGPU" == '' ];then
-    echo "gpu path not found" | tee -a $AiLog
-    echo "but u cant use gpu tweak,but u can still use another feature :D" | tee -a $AiLog
 fi
 if [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ];then
     BASEDIR=/system/etc/ZyC_Ai
@@ -107,7 +77,11 @@ getAppName()
         changeSE="ya"
         setenforce 0
     fi
-    GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
+    if [ -e $NyariGPU/gpu_busy_percentage ];then
+        GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
+    else
+        GetGpuStatus="0"
+    fi
     GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
     GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1);
     if [ "$changeSE" == "ya" ];then
@@ -483,7 +457,11 @@ runScript(){
         fi
         if [ "$DozeState" == "off" ];then
             if [ "$aiChange" == "1" ];then
-                GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
+                if [ -e $NyariGPU/gpu_busy_percentage ];then
+                    GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
+                else
+                    GetGpuStatus="0"
+                fi
                 GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
                 if [ "$GpuStatus" -ge "$GpuStart" ] && [ "$StatusModul" != "turbo" ];then
                     setTurbo & wait
@@ -507,7 +485,11 @@ runScript(){
                             setTurbo & wait
                         fi
                     else 
-                        GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
+                        if [ -e $NyariGPU/gpu_busy_percentage ];then
+                            GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
+                        else
+                            GetGpuStatus="0"
+                        fi
                         GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
                         if [ "$GpuStatus" -ge "$GpuStart" ];then
                             if [ "$StatusModul" != "turbo" ];then
@@ -516,7 +498,11 @@ runScript(){
                         fi
                     fi
                 else
-                    GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
+                    if [ -e $NyariGPU/gpu_busy_percentage ];then
+                        GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
+                    else
+                        GetGpuStatus="0"
+                    fi
                     GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
                     if [ "$GpuStatus" -le "$GpuStop" ];then
                         if [ "$StatusModul" != "off" ];then

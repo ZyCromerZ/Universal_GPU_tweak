@@ -33,33 +33,34 @@ if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
 else
     echo $cyanPutih"<<--------------------------------->>"$ResetWarna
     echo "  _______          ____        "
-    usleep 200000
+    usleep 100000
     echo "  \___  /ɢᴘᴜ ᴛᴜʀʙᴏ/  ___\      "
-    usleep 200000
+    usleep 100000
     echo "     / /  __   __| /           "
-    usleep 200000
+    usleep 100000
     echo "    / /__ \ \ / /| \____       "
-    usleep 200000
+    usleep 100000
     echo "   /_____\ \ \ /  \____/       "
-    usleep 200000
+    usleep 100000
     echo "            / /                "
-    usleep 200000
+    usleep 100000
     echo "           /_/                 "
-    usleep 200000
+    usleep 100000
     echo "                               "
-    usleep 200000
+    usleep 100000
     echo "-------------------------------------"
-    usleep 200000
+    usleep 100000
     echo "ᴅᴇsɪɢɴᴇᴅ ʙʏ ɴᴏᴡᴀʏᴅᴇᴠ           "
-    usleep 200000
+    usleep 100000
     echo $cyanPutih"<<--------------------------------->>"$ResetWarna
     usleep 1000000
 fi
 ServiceCheckker(){
     Checkservice=$( ps -ef | grep 'ZyC_Turbo/service.sh' | grep -v grep | wc -l )
-    if [ "$Checkservice" != "0" ];then
+    if [ "$Checkservice" -gt "1" ];then
         clear
-        echo "module service still running,please wait a moment"
+        echo "module service.sh still running,please wait a moment"
+        echo "check logs"
         sleep 1
         ServiceCheckker
     fi
