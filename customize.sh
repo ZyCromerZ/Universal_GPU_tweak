@@ -121,3 +121,5 @@ fi
 if [ -e  /system/system/product/etc/sysconfig/google.xml ]; then
     set_perm_recursive $MODPATH/system/system 0 0 0755 0644
 fi
+
+echo "$NVBASE/modules"
