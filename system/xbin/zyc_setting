@@ -1488,7 +1488,10 @@ ListMenu(){
         echo "0 > dont change device model"
         echo "1 > model : SM-G975U, brand : samsung"
         echo "2 > model : SM-G975F, brand : samsung"
-        echo "3 > custom by ur self"
+        echo "3 > model : SM-G9750, brand : samsung"
+        echo "4 > model : SM-G9758, brand : samsung"
+        echo "5 > model : SM-G975W, brand : samsung"
+        echo "6 > custom by ur self"
         echo -n 'set device model to : '
         read -n 1 GetCdm
         echo ""
@@ -1509,6 +1512,24 @@ ListMenu(){
             echo "ro.product.manufacturer=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
             echo "ro.product.model=SM-G975F" >> "$ModulPath/ZyC_Turbo/system.prop"
         elif [ "$GetCdm" == "3" ];then
+            echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
+            echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "ro.product.brand=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "ro.product.manufacturer=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "ro.product.model=SM-G9750" >> "$ModulPath/ZyC_Turbo/system.prop"
+        elif [ "$GetCdm" == "4" ];then
+            echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
+            echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "ro.product.brand=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "ro.product.manufacturer=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "ro.product.model=SM-G9758" >> "$ModulPath/ZyC_Turbo/system.prop"
+        elif [ "$GetCdm" == "5" ];then
+            echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
+            echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "ro.product.brand=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "ro.product.manufacturer=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "ro.product.model=SM-G975W" >> "$ModulPath/ZyC_Turbo/system.prop"
+        elif [ "$GetCdm" == "6" ];then
             echo -n "device model : "
             read GetDM
             echo ""
