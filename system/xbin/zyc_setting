@@ -1492,15 +1492,15 @@ ListMenu(){
         read -n 1 GetCdm
         echo ""
         if [ "$GetCdm" == "0" ];then
-            echo "#auto generate" >> "$ModulPath/system.prop"
-            echo "" >> "$ModulPath/system.prop"
-            echo "#disabled" >> "$ModulPath/system.prop"
+            echo "#auto generate" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "#disabled" >> "$ModulPath/ZyC_Turbo/system.prop"
         elif [ "$GetCdm" == "1" ];then
-            echo "#auto generate" >> "$ModulPath/system.prop"
-            echo "" >> "$ModulPath/system.prop"
-            echo "ro.product.brand=samsung" >> "$ModulPath/system.prop"
-            echo "ro.product.manufacturer=samsung" >> "$ModulPath/system.prop"
-            echo "ro.product.model=SM-G975U" >> "$ModulPath/system.prop"
+            echo "#auto generate" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "ro.product.brand=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "ro.product.manufacturer=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "ro.product.model=SM-G975U" >> "$ModulPath/ZyC_Turbo/system.prop"
         elif [ "$GetCdm" == "2" ];then
             echo -n "device model : "
             read GetDM
@@ -1508,11 +1508,11 @@ ListMenu(){
             echo -n "device brand : "
             read GetDB
             echo ""
-            echo "#auto generate" >> "$ModulPath/system.prop"
-            echo "" >> "$ModulPath/system.prop"
-            echo "ro.product.brand=$GetDB" >> "$ModulPath/system.prop"
-            echo "ro.product.manufacturer=$GetDB" >> "$ModulPath/system.prop"
-            echo "ro.product.model=$GetDM" >> "$ModulPath/system.prop"
+            echo "#auto generate" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "ro.product.brand=$GetDB" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "ro.product.manufacturer=$GetDB" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "ro.product.model=$GetDM" >> "$ModulPath/ZyC_Turbo/system.prop"
         else
             echo "input error"
         fi
