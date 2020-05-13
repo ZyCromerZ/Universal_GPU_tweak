@@ -855,6 +855,27 @@ AppGet(){
         echo $hijauHitam"refresh list game and app after save setting :p"$ResetWarna
     fi
     echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
+    GameTweak
+}
+GameTweak(){
+    if [ -e /data/data/com.mobile.legends/shared_prefs/com.mobile.legends.v2.playerprefs.xml ];then
+        MoLepath="/data/data/com.mobile.legends/shared_prefs/com.mobile.legends.v2.playerprefs.xml"
+        MoLeVal=$(cat $MoLepath | grep 'name="PreformanceLv" value="' | awk -F '\\value=' '{print $2}' | sed 's/" //g' | sed 's/[/][>]//g' | sed 's/"//g' )
+        echo $biruPutih"<-- -- Mobile Legends Graphics setting -- -->"$ResetWarna
+        echo "mlg1 > set low(1) "
+        echo "mlg2 > set medium(2) "
+        echo "mlg3 > set high(3) "
+        echo "mlg4 > set ultra(4) "
+        echo "current Value : $MoLeVal"
+    fi
+}
+update_file() {
+    if [ ! -z "$1" ] && [ ! -z "$2" ] && [ ! -z "$3" ];then
+        GetValue="$(cat "$3" | grep "$1")"
+        GetPath=${3/"./"/"/"}
+        [ "$GetValue" != "$2" ] && \
+        sed -i "s/$1.*/$2/g" "$3"
+    fi
 }
 ListMenu(){
     clear
@@ -1549,6 +1570,30 @@ ListMenu(){
         fi
         echo "done . . ."
         usleep 1000000
+        ListMenu
+    elif [ "$pilihan" == "mlg1" ];then
+        MoLeKey='name="PreformanceLv" value="'$MoLeVal'"'
+        MoLeVal='name="PreformanceLv" value="1"'
+        sed -i 's/'"$MoLeKey"'/'"$MoLeVal"'/g' "$MoLepath"
+        MoLeVal=$(cat $MoLepath | grep 'name="PreformanceLv" value="' | awk -F '\\value=' '{print $2}' | sed 's/" //g' | sed 's/[/][>]//g' | sed 's/"//g' )
+        ListMenu
+    elif [ "$pilihan" == "mlg2" ];then
+        MoLeKey='name="PreformanceLv" value="'$MoLeVal'"'
+        MoLeVal='name="PreformanceLv" value="2"'
+        sed -i 's/'"$MoLeKey"'/'"$MoLeVal"'/g' "$MoLepath"
+        MoLeVal=$(cat $MoLepath | grep 'name="PreformanceLv" value="' | awk -F '\\value=' '{print $2}' | sed 's/" //g' | sed 's/[/][>]//g' | sed 's/"//g' )
+        ListMenu
+    elif [ "$pilihan" == "mlg3" ];then
+        MoLeKey='name="PreformanceLv" value="'$MoLeVal'"'
+        MoLeVal='name="PreformanceLv" value="3"'
+        sed -i 's/'"$MoLeKey"'/'"$MoLeVal"'/g' "$MoLepath"
+        MoLeVal=$(cat $MoLepath | grep 'name="PreformanceLv" value="' | awk -F '\\value=' '{print $2}' | sed 's/" //g' | sed 's/[/][>]//g' | sed 's/"//g' )
+        ListMenu
+    elif [ "$pilihan" == "mlg4" ];then
+        MoLeKey='name="PreformanceLv" value="'$MoLeVal'"'
+        MoLeVal='name="PreformanceLv" value="4"'
+        sed -i 's/'"$MoLeKey"'/'"$MoLeVal"'/g' "$MoLepath"
+        MoLeVal=$(cat $MoLepath | grep 'name="PreformanceLv" value="' | awk -F '\\value=' '{print $2}' | sed 's/" //g' | sed 's/[/][>]//g' | sed 's/"//g' )
         ListMenu
     else 
         if [ "$Perubahan" == "ya" ];then
