@@ -49,20 +49,20 @@ fi
 AiLog=$Path/ZyC_Ai.log
 ModulPath=$(cat /data/magisk_path.txt)
 MALIGPU="NO"
-if [ -d "/sys/class/kgsl/kgsl-3d0" ]; then
+if [ -d /sys/class/kgsl/kgsl-3d0 ]; then
     NyariGPU="/sys/class/kgsl/kgsl-3d0"
-elif [ -d "/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0" ]; then
+elif [ -d /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0 ]; then
     NyariGPU="/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0"
-elif [ -d "/sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0" ]; then
+elif [ -d /sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0 ]; then
     NyariGPU="/sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
-elif [ -d "/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0" ]; then
+elif [ -d /sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0 ]; then
     NyariGPU="/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
-elif [ -d "/sys/devices/platform/*.gpu/devfreq/*.gpu" ]; then
+elif [ -d /sys/devices/platform/*.gpu/devfreq/*.gpu ]; then
     NyariGPU="/sys/devices/platform/*.gpu/devfreq/*.gpu"
-elif [ -d "/sys/devices/platform/*.mali" ]; then
+elif [ -d /sys/devices/platform/*.mali ]; then
     NyariGPU="/sys/devices/platform/*.mali"
     MALIGPU="YES"
-elif [ -d "/sys/class/misc/mali0" ]; then
+elif [ -d /sys/class/misc/mali0 ]; then
     NyariGPU="/sys/class/misc/mali0"
     MALIGPU="YES"
 else
@@ -273,7 +273,7 @@ runScript(){
         fi
 
         # setting adrenoboost
-        if [ -e "$NyariGPU/devfreq/adrenoboost" ];then
+        if [ -e $NyariGPU/devfreq/adrenoboost ];then
             if [ ! -e "$PathModulConfig/GpuBooster.txt" ]; then
                 MissingFile="iya"
             fi
@@ -466,12 +466,12 @@ runScript(){
         if [ "$DozeState" == "off" ];then
             if [ "$aiChange" == "1" ];then
                 if [ -e $NyariGPU/gpu_busy_percentage ];then
-                    GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
+                    GetGpuStatus=$(cat $NyariGPU/gpu_busy_percentage);
                 else
                     GetGpuStatus="0"
                 fi
                 if [ -e $NyariGPU/utilization ] && [ "$MALIGPU" == "YES" ] ;then
-                    GetGpuStatus=$(cat "$NyariGPU/utilization")
+                    GetGpuStatus=$(cat $NyariGPU/utilization)
                 fi
                 GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
                 if [ "$GpuStatus" -ge "$GpuStart" ] && [ "$StatusModul" != "turbo" ];then
@@ -497,12 +497,12 @@ runScript(){
                         fi
                     else 
                         if [ -e $NyariGPU/gpu_busy_percentage ];then
-                            GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
+                            GetGpuStatus=$(cat $NyariGPU/gpu_busy_percentage);
                         else
                             GetGpuStatus="0"
                         fi
                         if [ -e $NyariGPU/utilization ] && [ "$MALIGPU" == "YES" ] ;then
-                            GetGpuStatus=$(cat "$NyariGPU/utilization")
+                            GetGpuStatus=$(cat $NyariGPU/utilization)
                         fi
                         GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
                         if [ "$GpuStatus" -ge "$GpuStart" ];then
@@ -513,12 +513,12 @@ runScript(){
                     fi
                 else
                     if [ -e $NyariGPU/gpu_busy_percentage ];then
-                        GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
+                        GetGpuStatus=$(cat $NyariGPU/gpu_busy_percentage);
                     else
                         GetGpuStatus="0"
                     fi
                     if [ -e $NyariGPU/utilization ] && [ "$MALIGPU" == "YES" ] ;then
-                        GetGpuStatus=$(cat "$NyariGPU/utilization")
+                        GetGpuStatus=$(cat $NyariGPU/utilization)
                     fi
                     GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
                     if [ "$GpuStatus" -le "$GpuStop" ];then

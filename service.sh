@@ -78,21 +78,20 @@ if [ ! -z "$2" ];then
         FromAi="ya";
     fi
 fi;
-if [ -d "/sys/class/kgsl/kgsl-3d0" ]; then
+if [ -d /sys/class/kgsl/kgsl-3d0 ]; then
     NyariGPU="/sys/class/kgsl/kgsl-3d0"
-elif [ -d "/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0" ]; then
+elif [ -d /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0 ]; then
     NyariGPU="/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0"
-elif [ -d "/sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0" ]; then
+elif [ -d /sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0 ]; then
     NyariGPU="/sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
-elif [ -d "/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0" ]; then
+elif [ -d /sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0 ]; then
     NyariGPU="/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
-elif [ -d "/sys/devices/platform/*.gpu/devfreq/*.gpu" ]; then
+elif [ -d /sys/devices/platform/*.gpu/devfreq/*.gpu ]; then
     NyariGPU="/sys/devices/platform/*.gpu/devfreq/*.gpu"
-elif [ -d "/sys/devices/platform/*.mali" ]; then
+elif [ -d /sys/devices/platform/*.mali ]; then
     NyariGPU="/sys/devices/platform/*.mali"
-elif [ -d "/sys/class/misc/mali0" ]; then
+elif [ -d /sys/class/misc/mali0 ]; then
     NyariGPU="/sys/class/misc/mali0"
-    NyariGPU="/sys/devices/platform/*.mali"
 else
     NyariGPU='';
 fi
@@ -122,32 +121,32 @@ SetOff(){
     resetprop --delete persist.sys.NV_STEREOSEPCHG 
     resetprop --delete persist.sys.NV_STEREOSEP 
     if [ "$NyariGPU" != "" ];then
-        if [ -e "$NyariGPU/throttling" ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_throttling.txt") > "$NyariGPU/throttling"
+        if [ -e $NyariGPU/throttling ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_throttling.txt") > $NyariGPU/throttling
         fi
-        if [ -e "$NyariGPU/force_no_nap" ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_force_no_nap.txt") > "$NyariGPU/force_no_nap"
+        if [ -e $NyariGPU/force_no_nap ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_force_no_nap.txt") > $NyariGPU/force_no_nap
         fi
-        if [ -e "$NyariGPU/force_bus_on" ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_force_bus_on.txt") > "$NyariGPU/force_bus_on"
+        if [ -e $NyariGPU/force_bus_on ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_force_bus_on.txt") > $NyariGPU/force_bus_on
         fi
-        if [ -e "$NyariGPU/force_clk_on" ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_force_clk_on.txt") > "$NyariGPU/force_clk_on"
+        if [ -e $NyariGPU/force_clk_on ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_force_clk_on.txt") > $NyariGPU/force_clk_on
         fi
-        if [ -e "$NyariGPU/force_rail_on" ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_force_rail_on.txt") > "$NyariGPU/force_rail_on"
+        if [ -e $NyariGPU/force_rail_on ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_force_rail_on.txt") > $NyariGPU/force_rail_on
         fi
-        if [ -e "$NyariGPU/bus_split" ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_bus_split.txt") > "$NyariGPU/bus_split"
+        if [ -e $NyariGPU/bus_split ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_bus_split.txt") > $NyariGPU/bus_split
         fi
-        if [ -e "$NyariGPU/max_pwrlevel" ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_max_pwrlevel.txt") > "$NyariGPU/max_pwrlevel"
+        if [ -e $NyariGPU/max_pwrlevel ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_max_pwrlevel.txt") > $NyariGPU/max_pwrlevel
         fi
-        if [ -e "$NyariGPU/devfreq/adrenoboost" ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_adrenoboost.txt") > "$NyariGPU/devfreq/adrenoboost"
+        if [ -e $NyariGPU/devfreq/adrenoboost ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_adrenoboost.txt") > $NyariGPU/devfreq/adrenoboost
         fi
-        if [ -e "$NyariGPU/devfreq/thermal_pwrlevel" ]; then
-            echo $(cat "$PathModulConfig/backup/gpu_thermal_pwrlevel.txt") > "$NyariGPU/devfreq/thermal_pwrlevel"
+        if [ -e $NyariGPU/devfreq/thermal_pwrlevel ]; then
+            echo $(cat "$PathModulConfig/backup/gpu_thermal_pwrlevel.txt") > $NyariGPU/devfreq/thermal_pwrlevel
         fi
         if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
             echo $(cat  "$PathModulConfig/backup/misc_Dyn_fsync_active.txt") > "/sys/kernel/dyn_fsync/Dyn_fsync_active"
@@ -183,11 +182,11 @@ SetOn(){
     setprop persist.sys.NV_STEREOSEP 20
     # GPU TWEAK wajib lah biar kaga drop fps xD
     if [ "$NyariGPU" != '' ];then
-        if [ -e "$NyariGPU/max_pwrlevel" ]; then
-            echo "0" > "$NyariGPU/max_pwrlevel"
+        if [ -e $NyariGPU/max_pwrlevel ]; then
+            echo "0" > $NyariGPU/max_pwrlevel
         fi
-        if [ -e "$NyariGPU/devfreq/adrenoboost" ]; then
-            echo "2" > "$NyariGPU/devfreq/adrenoboost"
+        if [ -e $NyariGPU/devfreq/adrenoboost ]; then
+            echo "2" > $NyariGPU/devfreq/adrenoboost
         fi
     fi
     echo 'use "on" done. . .' | tee -a $saveLog;
@@ -199,46 +198,46 @@ SetTurbo(){
     echo 'use "turbo" setting. . .' | tee -a $saveLog;
     setprop persist.sys.NV_FPSLIMIT 120
     if  [ "$NyariGPU" != '' ];then
-        if [ -e "$NyariGPU/devfreq/adrenoboost" ]; then
-            echo "4" > "$NyariGPU/devfreq/adrenoboost"
-            if [ "$NyariGPU/devfreq/adrenoboost" != "4" ];then
-                echo "3" > "$NyariGPU/devfreq/adrenoboost"
+        if [ -e $NyariGPU/devfreq/adrenoboost ]; then
+            echo "4" > $NyariGPU/devfreq/adrenoboost
+            if [ $NyariGPU/devfreq/adrenoboost != "4" ];then
+                echo "3" > $NyariGPU/devfreq/adrenoboost
             fi
         fi
         if [ -e "$NyariGPU/throttling" ]; then
-            echo "0" > "$NyariGPU/throttling"
+            echo "0" > $NyariGPU/throttling
         fi
         if [ -e "$NyariGPU/force_no_nap" ]; then
-            echo "0" > "$NyariGPU/force_no_nap"
+            echo "0" > $NyariGPU/force_no_nap
         fi
         if [ -e "$NyariGPU/force_bus_on" ]; then
-            echo "0" > "$NyariGPU/force_bus_on"
+            echo "0" > $NyariGPU/force_bus_on
         fi
         if [ -e "$NyariGPU/force_clk_on" ]; then
-            echo "0" > "$NyariGPU/force_clk_on"
+            echo "0" > $NyariGPU/force_clk_on
         fi
         if [ -e "$NyariGPU/force_rail_on" ]; then
-            echo "0" > "$NyariGPU/force_rail_on"
+            echo "0" > $NyariGPU/force_rail_on
         fi
         if [ -e "$NyariGPU/bus_split" ]; then
-            echo "1" > "$NyariGPU/bus_split"
+            echo "1" > $NyariGPU/bus_split
         fi
         if [ -e "/sys/class/thermal/thermal_message/sconfig" ];then
             chmod 0664 "/sys/class/thermal/thermal_message/sconfig"
             echo "-1" > "/sys/class/thermal/thermal_message/sconfig"
             chmod 0444 "/sys/class/thermal/thermal_message/sconfig"
         fi
-        if [ -e "$NyariGPU/dvfs_period" ];then
-            echo "1000" > "$NyariGPU/dvfs_period"
+        if [ -e $NyariGPU/dvfs_period ];then
+            echo "1000" > $NyariGPU/dvfs_period
         fi
-        if [ -e "$NyariGPU/dvfs/dvfs_period" ];then
-            echo "1000" > "$NyariGPU/dvfs/dvfs_period"
+        if [ -e $NyariGPU/dvfs/dvfs_period ];then
+            echo "1000" > $NyariGPU/dvfs/dvfs_period
         fi
-        if [ -e "$NyariGPU/dvfs/period" ];then
-            echo "1000" > "$NyariGPU/dvfs/period"
+        if [ -e $NyariGPU/dvfs/period ];then
+            echo "1000" > $NyariGPU/dvfs/period
         fi
         if [ -e "$NyariGPU/power_policy" ];then
-            echo "always_on" > "$NyariGPU/power_policy"
+            echo "always_on" > $NyariGPU/power_policy
         fi
     fi
     echo 'use "turbo" done .' | tee -a $saveLog;
@@ -297,32 +296,32 @@ LagMode(){
         fi
     fi
     if [ "$NyariGPU" != '' ];then
-        if [ -e "$NyariGPU/max_pwrlevel" ]; then
-            if [ -e "$NyariGPU/num_pwrlevels" ];then
-                numPwrlevels=$(cat "$NyariGPU/num_pwrlevels")
-                echo $((($numPwrlevels/2)-1)) > "$NyariGPU/max_pwrlevel"
+        if [ -e $NyariGPU/max_pwrlevel ]; then
+            if [ -e $NyariGPU/num_pwrlevels ];then
+                numPwrlevels=$(cat $NyariGPU/num_pwrlevels)
+                echo $((($numPwrlevels/2)-1)) > $NyariGPU/max_pwrlevel
             fi
         fi
-        if [ -e "$NyariGPU/devfreq/adrenoboost" ]; then
-            echo "0" > "$NyariGPU/devfreq/adrenoboost"
+        if [ -e $NyariGPU/devfreq/adrenoboost ]; then
+            echo "0" > $NyariGPU/devfreq/adrenoboost
         fi
-        if [ -e "$NyariGPU/throttling" ]; then
-            echo "1" > "$NyariGPU/throttling"
+        if [ -e $NyariGPU/throttling ]; then
+            echo "1" > $NyariGPU/throttling
         fi
         if [ -e "$NyariGPU/force_no_nap" ]; then
-            echo "1" > "$NyariGPU/force_no_nap"
+            echo "1" > $NyariGPU/force_no_nap
         fi
         if [ -e "$NyariGPU/force_bus_on" ]; then
-            echo "1" > "$NyariGPU/force_bus_on"
+            echo "1" > $NyariGPU/force_bus_on
         fi
         if [ -e "$NyariGPU/force_clk_on" ]; then
-            echo "1" > "$NyariGPU/force_clk_on"
+            echo "1" > $NyariGPU/force_clk_on
         fi
         if [ -e "$NyariGPU/force_rail_on" ]; then
-            echo "1" > "$NyariGPU/force_rail_on"
+            echo "1" > $NyariGPU/force_rail_on
         fi
         if [ -e "$NyariGPU/bus_split" ]; then
-            echo "0" > "$NyariGPU/bus_split"
+            echo "0" > $NyariGPU/bus_split
         fi
     fi
 }
@@ -435,7 +434,7 @@ runScript(){
 
     # setting adrenoboost
     GpuBooster="not found"
-    if [ -e "$NyariGPU/devfreq/adrenoboost" ];then
+    if [ -e $NyariGPU/devfreq/adrenoboost ];then
         if [ ! -e "$PathModulConfig/GpuBooster.txt" ]; then
             MissingFile="iya"
         fi
@@ -596,16 +595,16 @@ runScript(){
     # gpu turbo start
         if [ "$GpuBooster" != "not found" ];then
             if [ "$GpuBooster" == "0" ];then
-                echo "$GpuBooster" > "$NyariGPU/devfreq"/adrenoboost
+                echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
                 echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
             elif [ "$GpuBooster" == "1" ];then
-                echo "$GpuBooster" > "$NyariGPU/devfreq"/adrenoboost
+                echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
                 echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
             elif [ "$GpuBooster" == "2" ];then
-                echo "$GpuBooster" > "$NyariGPU/devfreq"/adrenoboost
+                echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
                 echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
             elif [ "$GpuBooster" == "3" ];then
-                echo "$GpuBooster" > "$NyariGPU/devfreq"/adrenoboost
+                echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
                 echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
             else
                 if [ "$GpuBooster" != "tweak" ];then
