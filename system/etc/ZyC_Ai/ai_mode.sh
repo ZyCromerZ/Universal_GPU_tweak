@@ -87,6 +87,9 @@ getAppName()
     else
         GetGpuStatus="0"
     fi
+    if [ -e $NyariGPU/utilization ] && [ "$MALIGPU" == "YES" ] ;then
+        GetGpuStatus=$(cat "$NyariGPU/utilization")
+    fi
     GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
     GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1);
     if [ "$changeSE" == "ya" ];then
@@ -467,6 +470,9 @@ runScript(){
                 else
                     GetGpuStatus="0"
                 fi
+                if [ -e $NyariGPU/utilization ] && [ "$MALIGPU" == "YES" ] ;then
+                    GetGpuStatus=$(cat "$NyariGPU/utilization")
+                fi
                 GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
                 if [ "$GpuStatus" -ge "$GpuStart" ] && [ "$StatusModul" != "turbo" ];then
                     setTurbo & wait
@@ -495,6 +501,9 @@ runScript(){
                         else
                             GetGpuStatus="0"
                         fi
+                        if [ -e $NyariGPU/utilization ] && [ "$MALIGPU" == "YES" ] ;then
+                            GetGpuStatus=$(cat "$NyariGPU/utilization")
+                        fi
                         GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
                         if [ "$GpuStatus" -ge "$GpuStart" ];then
                             if [ "$StatusModul" != "turbo" ];then
@@ -507,6 +516,9 @@ runScript(){
                         GetGpuStatus=$(cat "$NyariGPU/gpu_busy_percentage");
                     else
                         GetGpuStatus="0"
+                    fi
+                    if [ -e $NyariGPU/utilization ] && [ "$MALIGPU" == "YES" ] ;then
+                        GetGpuStatus=$(cat "$NyariGPU/utilization")
                     fi
                     GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
                     if [ "$GpuStatus" -le "$GpuStop" ];then

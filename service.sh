@@ -237,6 +237,9 @@ SetTurbo(){
         if [ -e "$NyariGPU/dvfs/period" ];then
             echo "1000" > "$NyariGPU/dvfs/period"
         fi
+        if [ -e "$NyariGPU/power_policy" ];then
+            echo "always_on" > "$NyariGPU/power_policy"
+        fi
     fi
     echo 'use "turbo" done .' | tee -a $saveLog;
     echo "  --- --- --- --- --- " | tee -a $saveLog
