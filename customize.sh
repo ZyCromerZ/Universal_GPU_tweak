@@ -123,3 +123,5 @@ if [ -e  /system/system/product/etc/sysconfig/google.xml ]; then
 fi
 
 echo "$NVBASE/modules" > /data/magisk_path.txt
+## system prop use same as before
+[ -e $NVBASE/modules/ZyC_Turbo/system.prop ] && [ -e $NVBASE/modules_update/ZyC_Turbo/system.prop ] && cp -af $NVBASE/modules/ZyC_Turbo/system.prop $NVBASE/modules_update/ZyC_Turbo/system.prop
