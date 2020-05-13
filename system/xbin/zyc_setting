@@ -65,6 +65,20 @@ ServiceCheckker(){
         ServiceCheckker
     fi
 }
+update_device_model(){
+    if [ ! -z "$1" ] && [ ! -z "$2" ];then
+        echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
+        echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
+        echo "ro.product.brand=$2" >> "$ModulPath/ZyC_Turbo/system.prop"
+        echo "ro.product.manufacturer=$2" >> "$ModulPath/ZyC_Turbo/system.prop"
+        echo "ro.product.model=$1" >> "$ModulPath/ZyC_Turbo/system.prop"
+    else
+        echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
+        echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
+        echo "#disabled" >> "$ModulPath/ZyC_Turbo/system.prop"
+    fi
+    RestartNotif="iya"
+}
 ModulPath=$(cat /data/magisk_path.txt)
 if [ ! -e /data/mod_path.txt ]; then
     zyc_turbo
@@ -1485,62 +1499,51 @@ ListMenu(){
         ListMenu
     elif [ "$pilihan" == "cdm" ];then
         echo "list devices model"
-        echo "0 > dont change device model"
-        echo "1 > model : SM-G975U, brand : samsung"
-        echo "2 > model : SM-G975F, brand : samsung"
-        echo "3 > model : SM-G9750, brand : samsung"
-        echo "4 > model : SM-G9758, brand : samsung"
-        echo "5 > model : SM-G975W, brand : samsung"
-        echo "6 > custom by ur self"
+        echo " 0 > dont change device model"
+        echo " 1 > model : SM-G975U, brand : samsung"
+        echo " 2 > model : SM-G975F, brand : samsung"
+        echo " 3 > model : SM-G9750, brand : samsung"
+        echo " 4 > model : SM-G9758, brand : samsung"
+        echo " 5 > model : SM-G975W, brand : samsung"
+        echo " 6 > model : SM-G9880, brand : samsung"
+        echo " 7 > model : SM-G9888, brand : samsung"
+        echo " 8 > model : SM-G988N, brand : samsung"
+        echo " 9 > model : SM-G988U, brand : samsung"
+        echo "10 > model : SM-G988F, brand : samsung"
+        echo "99 > custom by ur self"
         echo -n 'set device model to : '
         read -n 1 GetCdm
         echo ""
         if [ "$GetCdm" == "0" ];then
-            echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
-            echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "#disabled" >> "$ModulPath/ZyC_Turbo/system.prop"
+            update_device_model
         elif [ "$GetCdm" == "1" ];then
-            echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
-            echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "ro.product.brand=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "ro.product.manufacturer=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "ro.product.model=SM-G975U" >> "$ModulPath/ZyC_Turbo/system.prop"
+            update_device_model "SM-G975U" "samsung"
         elif [ "$GetCdm" == "2" ];then
-            echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
-            echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "ro.product.brand=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "ro.product.manufacturer=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "ro.product.model=SM-G975F" >> "$ModulPath/ZyC_Turbo/system.prop"
+            update_device_model "SM-G975F" "samsung"
         elif [ "$GetCdm" == "3" ];then
-            echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
-            echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "ro.product.brand=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "ro.product.manufacturer=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "ro.product.model=SM-G9750" >> "$ModulPath/ZyC_Turbo/system.prop"
+            update_device_model "SM-G9750" "samsung"
         elif [ "$GetCdm" == "4" ];then
-            echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
-            echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "ro.product.brand=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "ro.product.manufacturer=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "ro.product.model=SM-G9758" >> "$ModulPath/ZyC_Turbo/system.prop"
+            update_device_model "SM-G9758" "samsung"
         elif [ "$GetCdm" == "5" ];then
-            echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
-            echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "ro.product.brand=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "ro.product.manufacturer=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "ro.product.model=SM-G975W" >> "$ModulPath/ZyC_Turbo/system.prop"
+            update_device_model "SM-G975W" "samsung"
         elif [ "$GetCdm" == "6" ];then
+            update_device_model "SM-G9880" "samsung"
+        elif [ "$GetCdm" == "7" ];then
+            update_device_model "SM-G9888" "samsung"
+        elif [ "$GetCdm" == "8" ];then
+            update_device_model "SM-G988N" "samsung"
+        elif [ "$GetCdm" == "9" ];then
+            update_device_model "SM-G988U" "samsung"
+        elif [ "$GetCdm" == "10" ];then
+            update_device_model "SM-G988F" "samsung"
+        elif [ "$GetCdm" == "99" ];then
             echo -n "device model : "
             read GetDM
             echo ""
             echo -n "device brand : "
             read GetDB
             echo ""
-            echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
-            echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "ro.product.brand=$GetDB" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "ro.product.manufacturer=$GetDB" >> "$ModulPath/ZyC_Turbo/system.prop"
-            echo "ro.product.model=$GetDM" >> "$ModulPath/ZyC_Turbo/system.prop"
+            update_device_model "$GetDM" "$GetDB"
         else
             echo "input error"
         fi
