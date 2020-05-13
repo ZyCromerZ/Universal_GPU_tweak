@@ -48,6 +48,7 @@ fi
 # fi
 AiLog=$Path/ZyC_Ai.log
 ModulPath=$(cat /data/magisk_path.txt)
+MALIGPU="NO"
 if [ -d "/sys/class/kgsl/kgsl-3d0" ]; then
     NyariGPU="/sys/class/kgsl/kgsl-3d0"
 elif [ -d "/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0" ]; then
@@ -58,8 +59,12 @@ elif [ -d "/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0" ]; then
     NyariGPU="/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
 elif [ -d "/sys/devices/platform/*.gpu/devfreq/*.gpu" ]; then
     NyariGPU="/sys/devices/platform/*.gpu/devfreq/*.gpu"
+elif [ -d "/sys/devices/platform/*.mali" ]; then
+    NyariGPU="/sys/devices/platform/*.mali"
+    MALIGPU="YES"
 elif [ -d "/sys/class/misc/mali0" ]; then
     NyariGPU="/sys/class/misc/mali0"
+    MALIGPU="YES"
 else
     NyariGPU='';
 fi
