@@ -1492,11 +1492,11 @@ ListMenu(){
         read -n 1 GetCdm
         echo ""
         if [ "$GetCdm" == "0" ];then
-            echo "#auto generate" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
             echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
             echo "#disabled" >> "$ModulPath/ZyC_Turbo/system.prop"
         elif [ "$GetCdm" == "1" ];then
-            echo "#auto generate" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
             echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
             echo "ro.product.brand=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
             echo "ro.product.manufacturer=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
@@ -1508,7 +1508,7 @@ ListMenu(){
             echo -n "device brand : "
             read GetDB
             echo ""
-            echo "#auto generate" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
             echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
             echo "ro.product.brand=$GetDB" >> "$ModulPath/ZyC_Turbo/system.prop"
             echo "ro.product.manufacturer=$GetDB" >> "$ModulPath/ZyC_Turbo/system.prop"
@@ -1533,7 +1533,7 @@ ListMenu(){
             fi
         fi
         echo "request not found,please try again"
-        usleep 1000000
+        # usleep 1000000
         # usleep 100000
         ListMenu
     fi
