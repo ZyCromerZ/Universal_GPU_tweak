@@ -1487,7 +1487,8 @@ ListMenu(){
         echo "list devices model"
         echo "0 > dont change device model"
         echo "1 > model : SM-G975U, brand : samsung"
-        echo "2 > custom by ur self"
+        echo "2 > model : SM-G975F, brand : samsung"
+        echo "3 > custom by ur self"
         echo -n 'set device model to : '
         read -n 1 GetCdm
         echo ""
@@ -1502,6 +1503,12 @@ ListMenu(){
             echo "ro.product.manufacturer=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
             echo "ro.product.model=SM-G975U" >> "$ModulPath/ZyC_Turbo/system.prop"
         elif [ "$GetCdm" == "2" ];then
+            echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
+            echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "ro.product.brand=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "ro.product.manufacturer=samsung" >> "$ModulPath/ZyC_Turbo/system.prop"
+            echo "ro.product.model=SM-G975F" >> "$ModulPath/ZyC_Turbo/system.prop"
+        elif [ "$GetCdm" == "3" ];then
             echo -n "device model : "
             read GetDM
             echo ""
