@@ -1574,25 +1574,33 @@ ListMenu(){
     elif [ "$pilihan" == "mlg1" ];then
         MoLeKey='name="PreformanceLv" value="'$MoLeVal'"'
         MoLeVal='name="PreformanceLv" value="1"'
+        chmod  0666 $MoLepath
         sed -i 's/'"$MoLeKey"'/'"$MoLeVal"'/g' "$MoLepath"
+        chmod  0660 $MoLepath
         MoLeVal=$(cat $MoLepath | grep 'name="PreformanceLv" value="' | awk -F '\\value=' '{print $2}' | sed 's/" //g' | sed 's/[/][>]//g' | sed 's/"//g' )
         ListMenu
     elif [ "$pilihan" == "mlg2" ];then
         MoLeKey='name="PreformanceLv" value="'$MoLeVal'"'
         MoLeVal='name="PreformanceLv" value="2"'
+        chmod  0666 $MoLepath
         sed -i 's/'"$MoLeKey"'/'"$MoLeVal"'/g' "$MoLepath"
+        chmod  0660 $MoLepath
         MoLeVal=$(cat $MoLepath | grep 'name="PreformanceLv" value="' | awk -F '\\value=' '{print $2}' | sed 's/" //g' | sed 's/[/][>]//g' | sed 's/"//g' )
         ListMenu
     elif [ "$pilihan" == "mlg3" ];then
         MoLeKey='name="PreformanceLv" value="'$MoLeVal'"'
         MoLeVal='name="PreformanceLv" value="3"'
+        chmod  0666 $MoLepath
         sed -i 's/'"$MoLeKey"'/'"$MoLeVal"'/g' "$MoLepath"
+        chmod  0660 $MoLepath
         MoLeVal=$(cat $MoLepath | grep 'name="PreformanceLv" value="' | awk -F '\\value=' '{print $2}' | sed 's/" //g' | sed 's/[/][>]//g' | sed 's/"//g' )
         ListMenu
     elif [ "$pilihan" == "mlg4" ];then
         MoLeKey='name="PreformanceLv" value="'$MoLeVal'"'
         MoLeVal='name="PreformanceLv" value="4"'
+        chmod  0666 $MoLepath
         sed -i 's/'"$MoLeKey"'/'"$MoLeVal"'/g' "$MoLepath"
+        chmod  0660 $MoLepath
         MoLeVal=$(cat $MoLepath | grep 'name="PreformanceLv" value="' | awk -F '\\value=' '{print $2}' | sed 's/" //g' | sed 's/[/][>]//g' | sed 's/"//g' )
         ListMenu
     else 
