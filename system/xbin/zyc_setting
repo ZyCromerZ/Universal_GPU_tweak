@@ -1533,7 +1533,7 @@ ListMenu(){
         echo "10 > model : SM-G988F, brand : samsung"
         echo "99 > custom by ur self"
         echo -n 'set device model to : '
-        read -n 1 GetCdm
+        read GetCdm
         echo ""
         if [ "$GetCdm" == "0" ];then
             update_device_model
