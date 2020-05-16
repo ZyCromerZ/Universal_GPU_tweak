@@ -977,48 +977,6 @@ runScript(){
     if [ "$GetMode" == 'turbo' ];then
         echo "NOTE: just tell you if you use this mode your battery will litle drain" | tee -a $saveLog;
     fi;
-    if [ "$(getprop zyc.change.prop)" == "belom" ];then
-        setprop zyc.change.prop "udah" 
-        echo "adding youtube 4k,suggested by @WhySakura"  | tee -a $saveLog 
-        setprop sys.display-size 3840x2160 2>/dev/null 1>/dev/nul
-        echo "done . . ."  | tee -a $saveLog 
-        echo "  --- --- --- --- --- " | tee -a $saveLog 
-        echo "add video optimizer,suggested by @WhySakura" | tee -a $saveLog;
-        setprop media.stagefright.enable-http 'true' 2>/dev/null 1>/dev/nul
-        setprop media.stagefright.enable-player 'true' 2>/dev/null 1>/dev/nul
-        setprop media.stagefright.enable-meta 'true' 2>/dev/null 1>/dev/nul
-        setprop media.stagefright.enable-aac 'true' 2>/dev/null 1>/dev/nul
-        setprop media.stagefright.enable-qcp 'true' 2>/dev/null 1>/dev/nul
-        setprop media.stagefright.enable-scan 'true' 2>/dev/null 1>/dev/nul
-        setprop media.stagefright.enable-record 'true' 2>/dev/null 1>/dev/nul
-        echo "done . . ."  | tee -a $saveLog 
-        echo "  --- --- --- --- --- " | tee -a $saveLog 
-        echo "something request from @WhySakura"| tee -a $saveLog 
-        setprop debug.egl.swapinterval 1 2>/dev/null 1>/dev/nul
-        setprop sys.use_fifo_ui 1 2>/dev/null 1>/dev/nul
-        echo "done . . ." | tee -a $saveLog 
-        echo "  --- --- --- --- --- " | tee -a $saveLog 
-        echo "add responsive touch " | tee -a $saveLog 
-        setprop touch.deviceType touchScreen 2>/dev/null 1>/dev/nul
-        setprop touch.orientationAware 1 2>/dev/null 1>/dev/nul
-        setprop touch.size.calibration diameter;
-        setprop touch.size.scale 1 2>/dev/null 1>/dev/nul
-        setprop touch.size.bias 0 2>/dev/null 1>/dev/nul
-        setprop touch.size.isSummed 0 2>/dev/null 1>/dev/nul
-        setprop touch.pressure.calibration amplitude 2>/dev/null 1>/dev/nul
-        setprop touch.pressure.scale 0.001 2>/dev/null 1>/dev/nul
-        setprop touch.orientation.calibration none 2>/dev/null 1>/dev/nul
-        setprop touch.distance.calibration none 2>/dev/null 1>/dev/nul
-        setprop touch.distance.scale 0 2>/dev/null 1>/dev/nul
-        setprop touch.coverage.calibration box 2>/dev/null 1>/dev/nul
-        setprop touch.gestureMode spots 2>/dev/null 1>/dev/nul
-        setprop MultitouchSettleInterval 1ms 2>/dev/null 1>/dev/nul
-        setprop MultitouchMinDistance 1px 2>/dev/null 1>/dev/nul
-        setprop TapInterval 1ms 2>/dev/null 1>/dev/nul
-        setprop TapSlop 1px1 2>/dev/null 1>/dev/nul
-        echo "done . . . " | tee -a $saveLog 
-        echo "  --- --- --- --- --- " | tee -a $saveLog 
-    fi
     ResetDns(){
         if [ "$FromTerminal" == "ya" ];then
             ip6tables -t nat -F 2>/dev/null 1>/dev/nul
@@ -1311,4 +1269,3 @@ if [ "$FromTerminal" == "tidak" ];then
 fi
 echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog 2>/dev/null 1>/dev/nul
 echo "  --- --- --- --- --->> " | tee -a $saveLog 2>/dev/null 1>/dev/nul
-exit 1

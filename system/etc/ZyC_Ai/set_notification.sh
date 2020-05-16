@@ -9,11 +9,23 @@ if [ ! -z "$1" ];then
     getMethod=$2
     if [ "$getType" == "getar" ];then
         if [ "$getMethod" == "off" ];then
-            echo 200 > /sys/class/timed_output/vibrator/enable
-            usleep 400000
-            echo 100 > /sys/class/timed_output/vibrator/enable
+            if [ -e /sys/class/timed_output/vibrator/enable ];then
+                echo 200 > /sys/class/timed_output/vibrator/enable
+                usleep 400000
+                echo 100 > /sys/class/timed_output/vibrator/enable
+            fi
+            if [ -e /sys/class/leds/vibrator/duration ] &&  [ -e /sys/class/leds/vibrator/activate ];then
+                echo 200 > /sys/class/leds/vibrator/duration && echo 1 > /sys/class/leds/vibrator/activate
+                usleep 400000
+                echo 100 > /sys/class/leds/vibrator/duration && echo 1 > /sys/class/leds/vibrator/activate
+            fi
         elif [ "$getMethod" == "on" ];then
-            echo 400 > /sys/class/timed_output/vibrator/enable
+            if [ -e /sys/class/timed_output/vibrator/enable ];then
+                echo 400 > /sys/class/timed_output/vibrator/enable
+            fi
+            if [ -e /sys/class/leds/vibrator/duration ] &&  [ -e /sys/class/leds/vibrator/activate ];then
+                echo 400 > /sys/class/leds/vibrator/duration && echo 1 > /sys/class/leds/vibrator/activate
+            fi
         fi
     elif [ "$getType" == "notif" ];then
         GetLedPath="none"
@@ -193,7 +205,12 @@ if [ ! -z "$1" ];then
                 echo "255" > $GetLedPath/red/brightness
             elif [ "$getMethod" == "onvibrate" ];then
                 #on kedip
-                echo 3000 > /sys/class/timed_output/vibrator/enable
+                if [ -e /sys/class/timed_output/vibrator/enable ];then
+                    echo 3000 > /sys/class/timed_output/vibrator/enable
+                fi
+                if [ -e /sys/class/leds/vibrator/duration ] &&  [ -e /sys/class/leds/vibrator/activate ];then
+                    echo 3000 > /sys/class/leds/vibrator/duration && echo 1 > /sys/class/leds/vibrator/activate
+                fi
                 echo "0" > $GetLedPath/red/brightness
                 echo "0" > $GetLedPath/green/brightness
                 for CounTotal in 1 2 3 4 5

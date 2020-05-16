@@ -33,18 +33,6 @@ SKIPUNZIP=0
 #      set_perm dir owner group dirpermission context
 
 ## print word
-ui_print "≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠"
-ui_print "  _______          ____        "
-ui_print "  \___  /ɢᴘᴜ ᴛᴜʀʙᴏ/  ___\      "
-ui_print "     / /  __   __| /           "
-ui_print "    / /__ \ \ / /| \____       "
-ui_print "   /_____\ \ \ /  \____/       "
-ui_print "            / /                "
-ui_print "           /_/                 "
-ui_print "                               "
-ui_print "≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠"
-ui_print "ᴅᴇsɪɢɴᴇᴅ ʙʏ ɴᴏᴡᴀʏᴅᴇᴠ           "
-ui_print "-------------------------------"
 ui_print "Thx to people for trying this module . . . "
 ui_print ""
 ui_print "after reboot check log inside internal/modul_mantul/ZyC_Turbo.log, after reboot find notes_en.txt/notes_en.id and read it xD"
@@ -124,4 +112,46 @@ fi
 
 echo "$NVBASE/modules" > /data/magisk_path.txt
 ## system prop use same as before
+if [ -z "$(cat $NVBASE/modules/ZyC_Turbo/system.prop | grep '# other tweak' )"];then
+    echo "# other tweak
+touch.pressure.scale=0.001
+persist.service.lgospd.enable=0
+persist.service.pcsync.enable=0
+ro.ril.enable.a52=1
+ro.ril.enable.a53=0
+persist.sys.ui.hw=1
+view.scroll_friction=10
+debug.composition.type=gpu
+debug.performance.tuning=1
+touch.deviceType=touchScreen
+touch.orientationAware=1
+touch.size.calibration=diameter
+touch.size.scale=1
+touch.size.bias=0
+touch.size.isSummed=0
+touch.pressure.calibration=physical
+touch.pressure.scale=0.001
+touch.orientation.calibration=none
+touch.distance.calibration=none
+touch.distance.scale=0
+touch.coverage.calibration=box
+touch.gestureMode=spots
+MultitouchSettleInterval=1ms
+MultitouchMinDistance=1px
+TapInterval=1ms
+TapSlop=1px
+
+debug.egl.swapinterval=1
+sys.use_fifo_ui=1
+
+media.stagefright.enable-http=true
+media.stagefright.enable-player=true
+media.stagefright.enable-meta=true
+media.stagefright.enable-aac=true
+media.stagefright.enable-qcp=true
+media.stagefright.enable-scan=true
+media.stagefright.enable-record=true
+
+sys.display-size=3840x2160" >> $NVBASE/modules/ZyC_Turbo/system.prop
+fi
 [ -e $NVBASE/modules/ZyC_Turbo/system.prop ] && [ -e $NVBASE/modules_update/ZyC_Turbo/system.prop ] && cp -af $NVBASE/modules/ZyC_Turbo/system.prop $NVBASE/modules_update/ZyC_Turbo/system.prop

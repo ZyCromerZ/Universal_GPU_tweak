@@ -87,8 +87,10 @@ getAppName()
     else
         GetGpuStatus="0"
     fi
-    if [ -e $NyariGPU/utilization ] && [ "$MALIGPU" == "YES" ] ;then
-        GetGpuStatus=$(cat "$NyariGPU/utilization")
+    if [ -e $NyariGPU/mem_pool_max_size ] && [ -e $NyariGPU/mem_pool_size ] && [ "$MALIGPU" == "YES" ] ;then
+        MemPollSizeMax=$(cat $NyariGPU/mem_pool_max_size)
+        MemPollSize=$(cat $NyariGPU/mem_pool_size)
+        GetGpuStatus="$(awk "BEGIN {print (100/$MemPollSizeMax)*$MemPollSize}" | awk -F "\\." '{print $1}')"
     fi
     GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
     GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1);
@@ -470,8 +472,10 @@ runScript(){
                 else
                     GetGpuStatus="0"
                 fi
-                if [ -e $NyariGPU/utilization ] && [ "$MALIGPU" == "YES" ] ;then
-                    GetGpuStatus=$(cat $NyariGPU/utilization)
+                if [ -e $NyariGPU/mem_pool_max_size ] && [ -e $NyariGPU/mem_pool_size ] && [ "$MALIGPU" == "YES" ] ;then
+                    MemPollSizeMax=$(cat $NyariGPU/mem_pool_max_size)
+                    MemPollSize=$(cat $NyariGPU/mem_pool_size)
+                    GetGpuStatus="$(awk "BEGIN {print (100/$MemPollSizeMax)*$MemPollSize}" | awk -F "\\." '{print $1}')"
                 fi
                 GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
                 if [ "$GpuStatus" -ge "$GpuStart" ] && [ "$StatusModul" != "turbo" ];then
@@ -501,8 +505,10 @@ runScript(){
                         else
                             GetGpuStatus="0"
                         fi
-                        if [ -e $NyariGPU/utilization ] && [ "$MALIGPU" == "YES" ] ;then
-                            GetGpuStatus=$(cat $NyariGPU/utilization)
+                        if [ -e $NyariGPU/mem_pool_max_size ] && [ -e $NyariGPU/mem_pool_size ] && [ "$MALIGPU" == "YES" ] ;then
+                            MemPollSizeMax=$(cat $NyariGPU/mem_pool_max_size)
+                            MemPollSize=$(cat $NyariGPU/mem_pool_size)
+                            GetGpuStatus="$(awk "BEGIN {print (100/$MemPollSizeMax)*$MemPollSize}" | awk -F "\\." '{print $1}')"
                         fi
                         GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
                         if [ "$GpuStatus" -ge "$GpuStart" ];then
@@ -517,8 +523,10 @@ runScript(){
                     else
                         GetGpuStatus="0"
                     fi
-                    if [ -e $NyariGPU/utilization ] && [ "$MALIGPU" == "YES" ] ;then
-                        GetGpuStatus=$(cat $NyariGPU/utilization)
+                    if [ -e $NyariGPU/mem_pool_max_size ] && [ -e $NyariGPU/mem_pool_size ] && [ "$MALIGPU" == "YES" ] ;then
+                        MemPollSizeMax=$(cat $NyariGPU/mem_pool_max_size)
+                        MemPollSize=$(cat $NyariGPU/mem_pool_size)
+                        GetGpuStatus="$(awk "BEGIN {print (100/$MemPollSizeMax)*$MemPollSize}" | awk -F "\\." '{print $1}')"
                     fi
                     GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
                     if [ "$GpuStatus" -le "$GpuStop" ];then

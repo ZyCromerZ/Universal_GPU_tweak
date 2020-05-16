@@ -30,30 +30,6 @@ if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
         usleep 1000000
     done
     exit
-else
-    echo $cyanPutih"<<--------------------------------->>"$ResetWarna
-    echo "  _______          ____        "
-    usleep 100000
-    echo "  \___  /ɢᴘᴜ ᴛᴜʀʙᴏ/  ___\      "
-    usleep 100000
-    echo "     / /  __   __| /           "
-    usleep 100000
-    echo "    / /__ \ \ / /| \____       "
-    usleep 100000
-    echo "   /_____\ \ \ /  \____/       "
-    usleep 100000
-    echo "            / /                "
-    usleep 100000
-    echo "           /_/                 "
-    usleep 100000
-    echo "                               "
-    usleep 100000
-    echo "-------------------------------------"
-    usleep 100000
-    echo "ᴅᴇsɪɢɴᴇᴅ ʙʏ ɴᴏᴡᴀʏᴅᴇᴠ           "
-    usleep 100000
-    echo $cyanPutih"<<--------------------------------->>"$ResetWarna
-    usleep 1000000
 fi
 ServiceCheckker(){
     Checkservice=$( ps -ef | grep 'ZyC_Turbo/service.sh' | grep -v grep | wc -l )
@@ -72,11 +48,53 @@ update_device_model(){
         echo "ro.product.brand=$2" >> "$ModulPath/ZyC_Turbo/system.prop"
         echo "ro.product.manufacturer=$2" >> "$ModulPath/ZyC_Turbo/system.prop"
         echo "ro.product.model=$1" >> "$ModulPath/ZyC_Turbo/system.prop"
+        echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
     else
         echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
         echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
         echo "#disabled" >> "$ModulPath/ZyC_Turbo/system.prop"
+        echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
     fi
+    echo "# other tweak
+touch.pressure.scale=0.001
+persist.service.lgospd.enable=0
+persist.service.pcsync.enable=0
+ro.ril.enable.a52=1
+ro.ril.enable.a53=0
+persist.sys.ui.hw=1
+view.scroll_friction=10
+debug.composition.type=gpu
+debug.performance.tuning=1
+touch.deviceType=touchScreen
+touch.orientationAware=1
+touch.size.calibration=diameter
+touch.size.scale=1
+touch.size.bias=0
+touch.size.isSummed=0
+touch.pressure.calibration=physical
+touch.pressure.scale=0.001
+touch.orientation.calibration=none
+touch.distance.calibration=none
+touch.distance.scale=0
+touch.coverage.calibration=box
+touch.gestureMode=spots
+MultitouchSettleInterval=1ms
+MultitouchMinDistance=1px
+TapInterval=1ms
+TapSlop=1px
+
+debug.egl.swapinterval=1
+sys.use_fifo_ui=1
+
+media.stagefright.enable-http=true
+media.stagefright.enable-player=true
+media.stagefright.enable-meta=true
+media.stagefright.enable-aac=true
+media.stagefright.enable-qcp=true
+media.stagefright.enable-scan=true
+media.stagefright.enable-record=true
+
+sys.display-size=3840x2160" >> "$ModulPath/ZyC_Turbo/system.prop"
     RestartNotif="iya"
 }
 ModulPath=$(cat /data/magisk_path.txt)
@@ -895,7 +913,7 @@ ListMenu(){
         echo "3 > side config"
         echo "4 > detected app and games config"
         if [ "$Perubahan" == "ya" ];then
-            echo "s > save setting"
+            echo "s/save > save setting"
             # echo "0 > exit"
         fi
         echo "0/e > exit setting"
@@ -922,6 +940,8 @@ ListMenu(){
             if [ "$Perubahan" == "ya" ];then
                 if [ "$getModeTweak" == "s" ];then
                     savedata="yes"
+                elif [ "$getModeTweak" == "save" ];then
+                    savedata="yes"
                 else
                     savedata="no"
                 fi
@@ -929,8 +949,6 @@ ListMenu(){
                     saveSetting
                 fi
             fi
-            echo "input error"
-            sleep 2
             ListMenu
         fi 
     fi
@@ -1526,11 +1544,6 @@ ListMenu(){
         echo " 3 > model : SM-G9750, brand : samsung"
         echo " 4 > model : SM-G9758, brand : samsung"
         echo " 5 > model : SM-G975W, brand : samsung"
-        echo " 6 > model : SM-G9880, brand : samsung"
-        echo " 7 > model : SM-G9888, brand : samsung"
-        echo " 8 > model : SM-G988N, brand : samsung"
-        echo " 9 > model : SM-G988U, brand : samsung"
-        echo "10 > model : SM-G988F, brand : samsung"
         echo "99 > custom by ur self"
         echo -n 'set device model to : '
         read GetCdm
@@ -1547,16 +1560,6 @@ ListMenu(){
             update_device_model "SM-G9758" "samsung"
         elif [ "$GetCdm" == "5" ];then
             update_device_model "SM-G975W" "samsung"
-        elif [ "$GetCdm" == "6" ];then
-            update_device_model "SM-G9880" "samsung"
-        elif [ "$GetCdm" == "7" ];then
-            update_device_model "SM-G9888" "samsung"
-        elif [ "$GetCdm" == "8" ];then
-            update_device_model "SM-G988N" "samsung"
-        elif [ "$GetCdm" == "9" ];then
-            update_device_model "SM-G988U" "samsung"
-        elif [ "$GetCdm" == "10" ];then
-            update_device_model "SM-G988F" "samsung"
         elif [ "$GetCdm" == "99" ];then
             echo -n "device model : "
             read GetDM

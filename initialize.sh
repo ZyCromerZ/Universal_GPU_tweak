@@ -102,13 +102,12 @@ if [ ! -z "$1" ];then
             echo 'system' > $PathModulConfig/fsync_mode.txt
             setprop zyc.change.rm "belom"
             setprop zyc.change.zrm "belom"
-            setprop zyc.change.prop "belom"
             setprop zyc.change.dns "belom"
             setprop zyc.change.render "belom"
             setprop zyc.status.fstrim "belom"
             setprop zyc.status.fastcharge "belom"
             setprop zram.disksize "0"
-            echo '1' > "$PathModulConfigAi/ai_status.txt"
+            # echo '1' > "$PathModulConfigAi/ai_status.txt"
             # dns
             # echo "system" > $PathModulConfig/dns.txt
         fi
