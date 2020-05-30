@@ -98,10 +98,10 @@ sys.display-size=3840x2160" >> "$ModulPath/ZyC_Turbo/system.prop"
     RestartNotif="iya"
 }
 ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
-if [ ! -e /data/mod_path.txt ]; then
+if [ ! -e $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt ]; then
     zyc_turbo
 fi
-ModPath=$(cat /data/mod_path.txt)
+ModPath=$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
 PathModulConfig=$Path/ZyC_Turbo_config
 PathModulConfigAi=$Path/ZyC_Ai

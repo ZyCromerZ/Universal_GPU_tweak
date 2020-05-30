@@ -12,10 +12,11 @@ if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
     done
     exit -1
 fi
-if [ ! -e /data/mod_path.txt ]; then
+ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
+if [ ! -e $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt ]; then
     zyc_turbo
 fi
-ModPath=$(cat /data/mod_path.txt)
+ModPath=$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
 PathModulConfig=$Path/ZyC_Turbo_config
 echo "Change render mode script to? : ";

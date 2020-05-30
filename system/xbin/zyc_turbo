@@ -12,16 +12,14 @@ if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
     done
     exit -1
 fi
-magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
-GetVersion=$($magisk -c | grep -Eo '[0-9]{2}\.[0-9]+')
 ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 sh $ModulPath/ZyC_Turbo/initialize.sh "terminal" & wait
 RunStatus="kaga"
-if [ ! -e /data/mod_path.txt ]; then
+if [ ! -e $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt ]; then
     nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" >/dev/null 2>&1 & 
 	RunStatus="iya"
 fi
-ModPath=$(cat /data/mod_path.txt)
+ModPath=$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
 PathModulConfig=$Path/ZyC_Turbo_config
 if [ $RunStatus == "kaga" ];then
