@@ -111,10 +111,10 @@ if [ -e  /system/system/product/etc/sysconfig/google.xml ]; then
 fi
 
 ## magisk path
-echo "$NVBASE/modules" > $NVBASE/modules/ZyC_Turbo/system/etc/ZyC_Ai/magisk_path.txt
+echo "$NVBASE/modules" > $MODPATH/system/etc/ZyC_Ai/magisk_path.txt
 
 ## system prop use same as before
-if [ -z "$(cat $NVBASE/modules/ZyC_Turbo/system.prop | grep '# other tweak' )"];then
+if [ -z "$(cat $NVBASE/modules/ZyC_Turbo/system.prop | grep '# other tweak' )" ];then
     echo "# other tweak
 touch.pressure.scale=0.001
 persist.service.lgospd.enable=0
@@ -156,4 +156,9 @@ media.stagefright.enable-record=true
 
 sys.display-size=3840x2160" >> $NVBASE/modules/ZyC_Turbo/system.prop
 fi
-[ -e $NVBASE/modules/ZyC_Turbo/system.prop ] && [ -e $NVBASE/modules_update/ZyC_Turbo/system.prop ] && cp -af $NVBASE/modules/ZyC_Turbo/system.prop $NVBASE/modules_update/ZyC_Turbo/system.prop
+
+## copy system.prop
+[ -e $NVBASE/modules/ZyC_Turbo/system.prop ] && [ -e $MODPATH/system.prop ] && cp -af $NVBASE/modules/ZyC_Turbo/system.prop $MODPATH/system.prop
+
+## copy some files instead
+[ -e $NVBASE/modules/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt ] && cp -af $NVBASE/modules/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt $MODPATH/system/etc/ZyC_Ai/mod_path.txt
