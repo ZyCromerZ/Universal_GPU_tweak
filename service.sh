@@ -23,43 +23,11 @@ fi
 if [ -e "$PathBusyBox/nohup" ];then
     nohup=$PathBusyBox/nohup
 fi
-if [ ! -e /data/mod_path.txt ]; then
+ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
+if [ ! -e $ModulPath/system/etc/ZyC_Ai/mod_path.txt ]; then
     $sh $ModulPath/ZyC_Turbo/initialize.sh & wait
 fi
-ModPath=$(cat /data/mod_path.txt)
-if [ ! -e /data/magisk_path.txt ]; then
-    magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
-    GetVersion=$($magisk -c | grep -Eo '[0-9]{2}\.[0-9]+')
-    case "$GetVersion" in
-    '15.'[1-9]*) # Version 15.1 - 15.9
-        ModulPath=/sbin/.core/img
-    ;;
-    '16.'[1-9]*) # Version 16.1 - 16.9
-        ModulPath=/sbin/.core/img
-    ;;
-    '17.'[1-3]*) # Version 17.1 - 17.3
-        ModulPath=/sbin/.core/img
-    ;;
-    '17.'[4-9]*) # Version 17.4 - 17.9
-        ModulPath=/sbin/.magisk/img
-    ;;
-    '18.'[0-9]*) # Version 18.x
-        ModulPath=/sbin/.magisk/img
-    ;;
-    '19.'[0-9a-zA-Z]*) # Version 19.x
-        ModulPath=/data/adb/modules
-    ;;
-    '20.'[0-9a-zA-Z]*) # Version 20.x
-        ModulPath=/data/adb/modules
-    ;;
-    *)
-        echo "unsupported magisk version detected,fail"
-        exit
-    ;;
-    esac
-    echo "$ModulPath" > /data/magisk_path.txt
-fi
-ModulPath=$(cat /data/magisk_path.txt)
+ModPath=$(cat $ModulPath/system/etc/ZyC_Ai/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
 FromTerminal="tidak";
 FromAi="tidak"

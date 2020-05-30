@@ -14,7 +14,7 @@ if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
 fi
 magisk=$(ls /data/adb/magisk/magisk || ls /sbin/magisk) 2>/dev/null;
 GetVersion=$($magisk -c | grep -Eo '[0-9]{2}\.[0-9]+')
-ModulPath=$(cat /data/magisk_path.txt)
+ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 sh $ModulPath/ZyC_Turbo/initialize.sh "terminal" & wait
 RunStatus="kaga"
 if [ ! -e /data/mod_path.txt ]; then

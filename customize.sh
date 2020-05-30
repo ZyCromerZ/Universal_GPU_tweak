@@ -110,7 +110,9 @@ if [ -e  /system/system/product/etc/sysconfig/google.xml ]; then
     set_perm_recursive $MODPATH/system/system 0 0 0755 0644
 fi
 
-echo "$NVBASE/modules" > /data/magisk_path.txt
+## magisk path
+echo "$NVBASE/modules" > $NVBASE/modules/ZyC_Turbo/system/etc/ZyC_Ai/magisk_path.txt
+
 ## system prop use same as before
 if [ -z "$(cat $NVBASE/modules/ZyC_Turbo/system.prop | grep '# other tweak' )"];then
     echo "# other tweak

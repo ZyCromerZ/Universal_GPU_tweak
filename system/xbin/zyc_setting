@@ -97,7 +97,7 @@ media.stagefright.enable-record=true
 sys.display-size=3840x2160" >> "$ModulPath/ZyC_Turbo/system.prop"
     RestartNotif="iya"
 }
-ModulPath=$(cat /data/magisk_path.txt)
+ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 if [ ! -e /data/mod_path.txt ]; then
     zyc_turbo
 fi

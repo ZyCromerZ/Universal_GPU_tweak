@@ -6,7 +6,7 @@
 # thanks for donation to @Mellinio :D
 # MODDIR=${0%/*}
 # for service.sh
-ModulPath=$(cat /data/magisk_path.txt)
+ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 GetVersion="$(cat "$ModulPath/ZyC_Turbo/module.prop" | grep "version=Version" | sed 's/version=Version*//g')"
 if [ -d /sys/class/kgsl/kgsl-3d0 ]; then
     NyariGPU="/sys/class/kgsl/kgsl-3d0"
@@ -30,8 +30,8 @@ GenerateApp="tidak";
 ketemuInternal="kaga"
 if [ ! -z "$1" ];then
     if [ "$1" == "boot" ];then
-        if [ -e /data/mod_path.txt ];then
-            if [ "$(cat /data/mod_path.txt)" == "/data" ];then
+        if [ -e $ModulPath/system/etc/ZyC_Ai/mod_path.txt ];then
+            if [ "$(cat $ModulPath/system/etc/ZyC_Ai/mod_path.txt)" == "/data" ];then
                 GetPath="none"
                 for cariInternal in /data/media/0 /storage/emulated/0 /storage/emulated/legacy /storage/sdcard0 /sdcard /data
                 do
@@ -48,8 +48,8 @@ if [ ! -z "$1" ];then
                 done
                 if [ $GetPath != "none" ];then
                     if [ $GetPath != "/data" ];then
-                        mv $(cat /data/mod_path.txt) $GetPath
-                        echo "$cariInternal" > /data/mod_path.txt
+                        mv $(cat $ModulPath/system/etc/ZyC_Ai/mod_path.txt) $GetPath
+                        echo "$cariInternal" > $ModulPath/system/etc/ZyC_Ai/mod_path.txt
                     fi
                 fi
             fi
@@ -57,22 +57,22 @@ if [ ! -z "$1" ];then
     fi
 fi
 # Path=/sdcard/modul_mantul/ZyC_mod
-if [ ! -e /data/mod_path.txt ]; then
+if [ ! -e $ModulPath/system/etc/ZyC_Ai/mod_path.txt ]; then
     for cariInternal in /data/media/0 /storage/emulated/0 /storage/emulated/legacy /storage/sdcard0 /sdcard /data
     do
         if [ "$ketemuInternal" == "kaga" ] && [ -d $cariInternal/android ];then
             ketemuInternal="udah"
-            echo "$cariInternal" > /data/mod_path.txt
+            echo "$cariInternal" > $ModulPath/system/etc/ZyC_Ai/mod_path.txt
             break
         fi
         if [ "$ketemuInternal" == "kaga" ] && [ -d $cariInternal/Android ];then
             ketemuInternal="udah"
-            echo "$cariInternal" > /data/mod_path.txt
+            echo "$cariInternal" > $ModulPath/system/etc/ZyC_Ai/mod_path.txt
             break
         fi
         if [ "$cariInternal" == "/data" ] && [ "$ketemuInternal" == "kaga" ];then
             ketemuInternal="udah"
-            echo "$cariInternal" > /data/mod_path.txt
+            echo "$cariInternal" > $ModulPath/system/etc/ZyC_Ai/mod_path.txt
         fi
     done
 fi
@@ -86,7 +86,7 @@ if [ ! -z "$1" ];then
     fi
     if [ "$1" == "boot" ];then
         sleep 20
-        ModPath=$(cat /data/mod_path.txt)
+        ModPath=$(cat $ModulPath/system/etc/ZyC_Ai/mod_path.txt)
         if [ "$ModPath" != "" ];then
             Path=$ModPath/modul_mantul/ZyC_mod
             if [ ! -d $Path/ZyC_Ai ]; then
@@ -113,7 +113,7 @@ if [ ! -z "$1" ];then
         fi
     fi
 fi;
-ModPath=$(cat /data/mod_path.txt)
+ModPath=$(cat $ModulPath/system/etc/ZyC_Ai/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
 if [ ! -d $Path/ZyC_Ai ]; then
     mkdir -p $Path/ZyC_Ai

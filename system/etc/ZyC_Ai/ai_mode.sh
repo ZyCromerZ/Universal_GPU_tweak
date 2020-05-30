@@ -47,7 +47,7 @@ fi
 #     #rm $Path/Niqua.log
 # fi
 AiLog=$Path/ZyC_Ai.log
-ModulPath=$(cat /data/magisk_path.txt)
+ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 MALIGPU="NO"
 if [ -d /sys/class/kgsl/kgsl-3d0 ]; then
     NyariGPU="/sys/class/kgsl/kgsl-3d0"
