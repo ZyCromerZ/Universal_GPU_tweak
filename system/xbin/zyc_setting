@@ -102,6 +102,7 @@ if [ ! -e $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt ]; then
     zyc_turbo
 fi
 ModPath=$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)
+ModPathGame=$ModPath/Android/data
 Path=$ModPath/modul_mantul/ZyC_mod
 PathModulConfig=$Path/ZyC_Turbo_config
 PathModulConfigAi=$Path/ZyC_Ai
@@ -886,6 +887,37 @@ GameTweak(){
         echo "mlg4 > set ultra(4) "
         echo "current Value : $MoLeVal"
     fi
+    DragonRajaGame="nope"
+    DragonRajaValue="none"
+    DragonRajaValueType="Same"
+    for DragonRajaPackageName in tw.com.szn.lz com.zloong.eu.dr.gp com.tencent.lzhx com.archosaur.sea.dr.gp com.kr.krlz.google com.tencent.longzu.jp 
+    do
+        if [ -e $ModPathGame/$DragonRajaPackageName/files/userdata/usercfg.lua ];then 
+            DragonRajaGame="available"
+            getVal=$(cat $ModPathGame/$DragonRajaPackageName/files/userdata/usercfg.lua | grep "QC_HighFrameRateFlag = " | awk -F '\\HighFrameRateFlag' '{print $2}' | sed 's/[;]//g' | sed 's/ = //g' )
+            if [ "$DragonRajaValue" == "none" ];then
+                DragonRajaValue="$getVal"
+            else
+                if [ "$DragonRajaValue" != "$getVal" ];then
+                    DragonRajaValueType="Not Same"
+                fi
+            fi
+        fi
+    done
+    if [ "$DragonRajaGame" == "available" ];then
+        echo $merahPutih"<-- -- Dragon Raja Unlock Highframerate -- -->"$ResetWarna
+        echo "dru > unlock HFR for all Dragon Raja games"
+        echo "NOTE : please dont set custom graphic to make this tweak working !!!"
+        if [ "$DragonRajaValueType" == "Not Same" ];then
+            echo "current status : not all unlocked 60fps"
+        else
+            if [ "$DragonRajaValue" == "2" ];then
+                echo "current status : unlocked 60fps"
+            else
+                echo "current status : locked at 30fps"
+            fi
+        fi
+    fi
 }
 update_file() {
     if [ ! -z "$1" ] && [ ! -z "$2" ] && [ ! -z "$3" ];then
@@ -1605,6 +1637,23 @@ ListMenu(){
         sed -i 's/'"$MoLeKey"'/'"$MoLeVal"'/g' "$MoLepath"
         chmod  0660 $MoLepath
         MoLeVal=$(cat $MoLepath | grep 'name="PreformanceLv" value="' | awk -F '\\value=' '{print $2}' | sed 's/" //g' | sed 's/[/][>]//g' | sed 's/"//g' )
+        ListMenu
+    elif [ "$pilihan" == "dru" ];then
+        for DragonRajaPackageName in tw.com.szn.lz com.zloong.eu.dr.gp com.tencent.lzhx com.archosaur.sea.dr.gp com.kr.krlz.google com.tencent.longzu.jp 
+        do
+            if [ -e $ModPathGame/$DragonRajaPackageName/files/userdata/usercfg.lua ];then 
+                DragonRajaGame="available"
+                getVal=$(cat $ModPathGame/$DragonRajaPackageName/files/userdata/usercfg.lua | grep "QC_HighFrameRateFlag = " | awk -F '\\HighFrameRateFlag' '{print $2}' | sed 's/[;]//g' | sed 's/ = //g' )
+                if [ "$DragonRajaValue" == "none" ];then
+                    DragonRajaValue="$getVal"
+                else
+                    if [ "$DragonRajaValue" != "$getVal" ];then
+                        DragonRajaValueType="Not Same"
+                    fi
+                fi
+                sed -i 's/QC_HighFrameRateFlag = .*/QC_HighFrameRateFlag = 2;/g' "$ModPathGame/$DragonRajaPackageName/files/userdata/usercfg.lua"
+            fi
+        done
         ListMenu
     else 
         if [ "$Perubahan" == "ya" ];then
