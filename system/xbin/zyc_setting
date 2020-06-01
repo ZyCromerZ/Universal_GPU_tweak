@@ -31,12 +31,22 @@ if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
     done
     exit
 fi
+ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
+if [ ! -e $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt ]; then
+    zyc_turbo
+fi
+ModPath=$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)
+ModPathGame=$ModPath/Android/data
+Path=$ModPath/modul_mantul/ZyC_mod
+PathModulConfig=$Path/ZyC_Turbo_config
+PathModulConfigAi=$Path/ZyC_Ai
+Perubahan="tidak"
 ServiceCheckker(){
-    Checkservice=$( ps -ef | grep 'ZyC_Turbo/service.sh' | grep -v grep | wc -l )
+    Checkservice=$( ps -ef | grep 'ZyC_Turbo/main.sh' | grep -v grep | wc -l )
     if [ "$Checkservice" -gt "1" ];then
         clear
-        echo "module service.sh still running,please wait a moment"
-        echo "check logs"
+        echo "module service still running,please wait a moment"
+        echo "please check logs at $Path/ZyC_Turbo.log for more detail . . ."
         sleep 1
         ServiceCheckker
     fi
@@ -104,16 +114,6 @@ sys.use_fifo_ui=1
 sys.display-size=3840x2160" >> "$ModulPath/ZyC_Turbo/system.prop"
     RestartNotif="iya"
 }
-ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
-if [ ! -e $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt ]; then
-    zyc_turbo
-fi
-ModPath=$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)
-ModPathGame=$ModPath/Android/data
-Path=$ModPath/modul_mantul/ZyC_mod
-PathModulConfig=$Path/ZyC_Turbo_config
-PathModulConfigAi=$Path/ZyC_Ai
-Perubahan="tidak"
 GetSetting(){
     ServiceCheckker
     clear
