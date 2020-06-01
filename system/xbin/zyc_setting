@@ -41,7 +41,7 @@ ServiceCheckker(){
         ServiceCheckker
     fi
 }
-update_device_model(){
+update_system_prop(){
     if [ ! -z "$1" ] && [ ! -z "$2" ];then
         echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
         echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
@@ -55,7 +55,12 @@ update_device_model(){
         echo "#disabled" >> "$ModulPath/ZyC_Turbo/system.prop"
         echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
     fi
-    echo "# other tweak
+    echo -n 'enable touchscreen optimizer : (y/n)'
+    read GetTop
+    echo -n 'enable video optimizer : (y/n)'
+    read GetVop
+        if [ "$GetTop" == 'y' ];then
+            echo "# touchscreen optimizer
 touch.pressure.scale=0.001
 persist.service.lgospd.enable=0
 persist.service.pcsync.enable=0
@@ -81,19 +86,21 @@ touch.gestureMode=spots
 MultitouchSettleInterval=1ms
 MultitouchMinDistance=1px
 TapInterval=1ms
-TapSlop=1px
-
-debug.egl.swapinterval=1
-sys.use_fifo_ui=1
-
+TapSlop=1px" >> "$ModulPath/ZyC_Turbo/system.prop"
+        fi
+        if [ "$GetVop" == 'y' ];then
+            echo "# video optimizer
 media.stagefright.enable-http=true
 media.stagefright.enable-player=true
 media.stagefright.enable-meta=true
 media.stagefright.enable-aac=true
 media.stagefright.enable-qcp=true
 media.stagefright.enable-scan=true
-media.stagefright.enable-record=true
-
+media.stagefright.enable-record=true" >> "$ModulPath/ZyC_Turbo/system.prop"
+        fi
+    echo "# other tweak
+debug.egl.swapinterval=1
+sys.use_fifo_ui=1
 sys.display-size=3840x2160" >> "$ModulPath/ZyC_Turbo/system.prop"
     RestartNotif="iya"
 }
@@ -867,25 +874,27 @@ AppGet(){
     if [ "$(getprop dalvik.vm.usejit)" == "true" ];then
         echo "oap > app optimizer"
     fi
-    echo "cdm > change device model <<restart required>>"
     if [ "$RefreshList" == "sudah" ];then
         echo $hijauHitam"refresh list game and app done . . . :p"$ResetWarna
     elif [ "$RefreshList" == "iya" ];then
         echo $hijauHitam"refresh list game and app after save setting :p"$ResetWarna
     fi
     echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
+    echo "<-- -- system.prop modules generator -- -->"
+    echo "upm > update system prop modules <<restart required>>"
     GameTweak
 }
 GameTweak(){
     if [ -e /data/data/com.mobile.legends/shared_prefs/com.mobile.legends.v2.playerprefs.xml ];then
         MoLepath="/data/data/com.mobile.legends/shared_prefs/com.mobile.legends.v2.playerprefs.xml"
         MoLeVal=$(cat $MoLepath | grep 'name="PreformanceLv" value="' | awk -F '\\value=' '{print $2}' | sed 's/" //g' | sed 's/[/][>]//g' | sed 's/"//g' )
-        echo $biruPutih"<-- -- Mobile Legends Graphics setting -- -->"$ResetWarna
+        echo "<-- -- Mobile Legends Graphics setting -- -->"
         echo "mlg1 > set low(1) "
         echo "mlg2 > set medium(2) "
         echo "mlg3 > set high(3) "
         echo "mlg4 > set ultra(4) "
         echo "current Value : $MoLeVal"
+        echo $biruPutih"<<----------<=====*=====>---------->>"$ResetWarna
     fi
     DragonRajaGame="nope"
     DragonRajaValue="none"
@@ -905,18 +914,19 @@ GameTweak(){
         fi
     done
     if [ "$DragonRajaGame" == "available" ];then
-        echo $merahPutih"<-- -- Dragon Raja Unlock Highframerate -- -->"$ResetWarna
+        echo "<-- -- Dragon Raja Unlock Highframerate -- -->"
         echo "dru > unlock HFR for all Dragon Raja games"
         echo "NOTE : please dont set custom graphic to make this tweak working !!!"
         if [ "$DragonRajaValueType" == "Not Same" ];then
-            echo "current status : not all unlocked 60fps"
+            echo $merahPutih"current status : not all unlocked 60fps"$ResetWarna
         else
             if [ "$DragonRajaValue" == "2" ];then
-                echo "current status : unlocked 60fps"
+                echo $hijauPutih"current status : unlocked 60fps"$ResetWarna
             else
-                echo "current status : locked at 30fps"
+                echo $kuningPutih"current status : locked at 30fps"$ResetWarna
             fi
         fi
+        echo $biruPutih"<<----------<=====*=====>---------->>"$ResetWarna
     fi
 }
 update_file() {
@@ -1568,7 +1578,7 @@ ListMenu(){
         fi
         echo "coming soon :p"
         ListMenu
-    elif [ "$pilihan" == "cdm" ];then
+    elif [ "$pilihan" == "upm" ];then
         echo "list devices model"
         echo " 0 > dont change device model"
         echo " 1 > model : SM-G975U, brand : samsung"
@@ -1581,17 +1591,17 @@ ListMenu(){
         read GetCdm
         echo ""
         if [ "$GetCdm" == "0" ];then
-            update_device_model
+            update_system_prop
         elif [ "$GetCdm" == "1" ];then
-            update_device_model "SM-G975U" "samsung"
+            update_system_prop "SM-G975U" "samsung"
         elif [ "$GetCdm" == "2" ];then
-            update_device_model "SM-G975F" "samsung"
+            update_system_prop "SM-G975F" "samsung"
         elif [ "$GetCdm" == "3" ];then
-            update_device_model "SM-G9750" "samsung"
+            update_system_prop "SM-G9750" "samsung"
         elif [ "$GetCdm" == "4" ];then
-            update_device_model "SM-G9758" "samsung"
+            update_system_prop "SM-G9758" "samsung"
         elif [ "$GetCdm" == "5" ];then
-            update_device_model "SM-G975W" "samsung"
+            update_system_prop "SM-G975W" "samsung"
         elif [ "$GetCdm" == "99" ];then
             echo -n "device model : "
             read GetDM
@@ -1599,7 +1609,7 @@ ListMenu(){
             echo -n "device brand : "
             read GetDB
             echo ""
-            update_device_model "$GetDM" "$GetDB"
+            update_system_prop "$GetDM" "$GetDB"
         else
             echo "input error"
         fi
