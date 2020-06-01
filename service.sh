@@ -16,20 +16,21 @@ fi
 if [ -e "$PathBusyBox/nohup" ];then
     nohup=$PathBusyBox/nohup
 fi
+ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 if [ ! -z "$1" ];then
     if [ ! -z "$2" ];then
         if [ ! -z "$3" ];then
             if [ ! -z "$4" ];then
-                $nohup $sh ./service.sh "$1" "$2" "$3" "$4" 1>/dev/null 2>dev>null
+                $nohup ./$ModulPath/ZyC_Turbo/main.sh "$1" "$2" "$3" "$4" 2>/dev/null 1>/dev/nul
             else
-                $nohup $sh ./service.sh "$1" "$2" "$3" 1>/dev/null 2>dev>null
+                $nohup ./$ModulPath/ZyC_Turbo/main.sh "$1" "$2" "$3" 2>/dev/null 1>/dev/nul
             fi
         else
-            $nohup $sh ./service.sh "$1" "$2" 1>/dev/null 2>dev>null
+            $nohup ./$ModulPath/ZyC_Turbo/main.sh "$1" "$2" 2>/dev/null 1>/dev/nul
         fi
     else
-        $nohup $sh "$1" ./service.sh 1>/dev/null 2>dev>null
+        $nohup ./$ModulPath/ZyC_Turbo/main.sh "$1" 2>/dev/null 1>/dev/nul
     fi
 else
-    $nohup $sh ./service.sh 1>/dev/null 2>dev>null
+    $nohup ./$ModulPath/ZyC_Turbo/main.sh 2>/dev/null 1>/dev/nul
 fi
