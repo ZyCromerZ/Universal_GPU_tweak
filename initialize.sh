@@ -152,7 +152,6 @@ GetAppAndGames(){
         if [ ! -z $(pm list packages -f $DragonRajaPackageName | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$DragonRajaPackageName" "$GameList" ) ];then
             sed -i "1a  $DragonRajaPackageName" $GameList;
         fi
-    fi
     done
     # if [ ! -z $(pm list packages -f jp.konami | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "jp.konami" "$GameList" ) ];then
     #     sed -i "1a  jp.konami" $GameList;
