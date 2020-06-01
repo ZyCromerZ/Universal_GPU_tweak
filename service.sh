@@ -1,5 +1,6 @@
 #!/system/bin/sh
 # for call main.sh :v
+GetBusyBox="none"
 for i in /system/bin /system/xbin /sbin /su/xbin; do
     if [ "$GetBusyBox" == "none" ]; then
         if [ -f $i/busybox ]; then
