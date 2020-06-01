@@ -27,7 +27,7 @@ ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 if [ ! -e $ModulPath/system/etc/ZyC_Ai/mod_path.txt ]; then
     $sh $ModulPath/ZyC_Turbo/initialize.sh & wait
 fi
-ModPath=$(cat $ModulPath/system/etc/ZyC_Ai/mod_path.txt)
+ModPath=$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
 FromTerminal="tidak";
 FromAi="tidak"

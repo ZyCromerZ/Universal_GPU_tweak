@@ -28,7 +28,7 @@ if [ "$1" == "fromBoot" ];then
     fromBoot="yes"
     usleep 5000000
 fi
-MAGISKTMP=$ModulPath/ZyC_Turbo
+ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 if [ ! -e $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt ]; then
     $sh $ModulPath/ZyC_Turbo/initialize.sh & wait
 fi
