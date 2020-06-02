@@ -12,12 +12,12 @@ for i in /system/bin /system/xbin /sbin /su/xbin; do
     fi;
 done;
 usleep=usleep
-if [ -e "$PathBusyBox/usleep" ];then
-    usleep=$PathBusyBox/usleep
+if [ -e "$PathBusyBox/busybox" ];then
+    usleep=$PathBusyBox" usleep"
 fi
 nohup=nohup
-if [ -e "$PathBusyBox/nohup" ];then
-    nohup=$PathBusyBox/nohup
+if [ -e "$PathBusyBox/busybox" ];then
+    nohup=$PathBusyBox" nohup"
 fi
 if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
     echo $merahHitam"please type 'su' first -_-"$ResetWarna

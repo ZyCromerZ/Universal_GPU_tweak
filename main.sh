@@ -17,12 +17,12 @@ for i in /system/bin /system/xbin /sbin /su/xbin; do
 done;
 
 nohup=nohup
-if [ -e "$PathBusyBox/nohup" ];then
-    nohup=$PathBusyBox/nohup
+if [ -e "$PathBusyBox/busybox" ];then
+    nohup=$PathBusyBox" nohup"
 fi
 usleep=usleep
-if [ -e "$PathBusyBox/usleep" ];then
-    usleep=$PathBusyBox/usleep
+if [ -e "$PathBusyBox/busybox" ];then
+    usleep=$PathBusyBox" usleep"
 fi
 ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 if [ ! -e $ModulPath/system/etc/ZyC_Ai/mod_path.txt ]; then

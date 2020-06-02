@@ -10,8 +10,8 @@ for i in /system/bin /system/xbin /sbin /su/xbin; do
     fi;
 done;
 nohup=nohup
-if [ -e "$PathBusyBox/nohup" ];then
-    nohup=$PathBusyBox/nohup
+if [ -e "$PathBusyBox/busybox" ];then
+    nohup=$PathBusyBox" nohup"
 fi
 ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 if [ ! -z "$1" ];then

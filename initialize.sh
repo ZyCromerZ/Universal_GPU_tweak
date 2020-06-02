@@ -17,8 +17,8 @@ for i in /system/bin /system/xbin /sbin /su/xbin; do
     fi;
 done;
 usleep=usleep
-if [ -e "$PathBusyBox/usleep" ];then
-    usleep=$PathBusyBox/usleep
+if [ -e "$PathBusyBox/busybox" ];then
+    usleep=$PathBusyBox" usleep"
 fi
 ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 GetVersion="$(cat "$ModulPath/ZyC_Turbo/module.prop" | grep "version=Version" | sed 's/version=Version*//g')"

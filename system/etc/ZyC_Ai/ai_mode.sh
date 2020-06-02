@@ -16,13 +16,21 @@ for i in /system/bin /system/xbin /sbin /su/xbin; do
     fi;
 done;
 nohup=nohup
-if [ -e "$PathBusyBox/nohup" ];then
-    nohup=$PathBusyBox/nohup
+if [ -e "$PathBusyBox/busybox" ];then
+    nohup=$PathBusyBox" nohup"
+fi
+usleep=usleep
+if [ -e "$PathBusyBox/busybox" ];then
+    usleep=$PathBusyBox" usleep"
+fi
+sleep=sleep
+if [ -e "$PathBusyBox/busybox" ];then
+    sleep=$PathBusyBox" sleep"
 fi
 fromBoot="no"
 if [ "$1" == "fromBoot" ];then
     fromBoot="yes"
-    usleep 5000000
+    $usleep 5000000
 fi
 ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 if [ ! -e $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt ]; then
@@ -106,7 +114,7 @@ setTurbo(){
     ./$ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
     $nohup ./$ModulPath/ZyC_Turbo/main.sh "Terminal" "Ai" 2>/dev/null 1>/dev/null& 
     SpectrumOn
-    # usleep 5000000
+    # $usleep 5000000
 }
 setOff(){
     SetNotificationOff
@@ -160,7 +168,7 @@ SetNotificationOn(){
         fi
     else
         echo 800 > /sys/class/timed_output/vibrator/enable
-        usleep 500000
+        $usleep 500000
     fi
 }
 SetNotificationOff(){
@@ -174,7 +182,7 @@ SetNotificationOff(){
         fi
     else
         echo 600 > /sys/class/timed_output/vibrator/enable
-        sleep 1000000
+        $sleep 1000000
         echo 300 > /sys/class/timed_output/vibrator/enable
     fi
 }
@@ -196,7 +204,7 @@ SetNotificationDozeOff(){
         ./$NotifPath "notif" "dozeoff" & wait
     else
         echo 600 > /sys/class/timed_output/vibrator/enable
-        sleep 1000000
+        $sleep 1000000
         echo 300 > /sys/class/timed_output/vibrator/enable
     fi
 }
@@ -205,7 +213,7 @@ SetNotificationDozeOn(){
         ./$NotifPath "notif" "dozeon" & wait
     else
         echo 600 > /sys/class/timed_output/vibrator/enable
-        sleep 1000000
+        $sleep 1000000
         echo 300 > /sys/class/timed_output/vibrator/enable
     fi
 }
@@ -546,9 +554,9 @@ runScript(){
         fi
         if [ "$aiStatus" == "2"  ];then
             if [ "$StatusModul" == "turbo" ];then
-                sleep "$waitTimeOn"
+                $sleep "$waitTimeOn"
             else
-                sleep "$waitTimeOff"
+                $sleep "$waitTimeOff"
             fi
         fi 
         #notification when turbo mode start
@@ -564,7 +572,7 @@ runScript(){
         fi
         #notification when turbo mode end
         if [ "$fromBoot" == "yes" ];then
-            usleep 5000000
+            $usleep 5000000
             ./$NotifPath "getar" "off" 2>/dev/null 1>/dev/null& wait
             runInitialize "Terminal"
             if [ "$aiStatus" == "2" ];then
