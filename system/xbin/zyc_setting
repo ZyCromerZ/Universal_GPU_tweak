@@ -569,10 +569,11 @@ AITwek(){
     fi    
     if [ "$TypeOpen" == "1" ];then
         if [ -e "$PathModulConfigAi/ai_change.txt" ];then
-            echo "<-- -- AI Change mode by -- -->"
+            echo "<-- -- AI Change mode -- -->"
             echo "acu > change mode based gpu usage"
-            echo "ace > change mode by game only"
-            echo "acb > change mode by game or gpu usage"
+            echo "ace > change mode to turbo by game only"
+            echo "acb > change mode to turbo by game or gpu usage"
+            echo "acp > change mode to turbo while using ur phone"
             if [ "$GetModeAiCBefore" != "$GetModeAiCNew" ];then
                 if [ $GetModeAiCNew == "1" ];then
                     echo $cyanPutih"this will set to : by gpu usage"$ResetWarna
@@ -580,6 +581,8 @@ AITwek(){
                     echo $cyanPutih"this will set to : By detected game"$ResetWarna
                 elif [ $GetModeAiCNew == "3" ];then
                     echo $cyanPutih"this will set to : both"$ResetWarna
+                elif [ $GetModeAiCNew == "4" ];then
+                    echo $cyanPutih"this will set to : while using phone"$ResetWarna
                 fi
             else
                 if [ $GetModeAiCBefore == "1" ];then
@@ -588,6 +591,8 @@ AITwek(){
                     echo $cyanHitam"current status : By detected game"$ResetWarna
                 elif [ $GetModeAiCBefore == "3" ];then
                     echo $cyanHitam"current status : both"$ResetWarna
+                elif [ $GetModeAiCBefore == "4" ];then
+                    echo $cyanHitam"current status : while using phone"$ResetWarna
                 fi
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
@@ -1173,6 +1178,11 @@ ListMenu(){
     elif [ "$pilihan" == "acb" ];then
         Perubahan="ya"
         GetModeAiCNew="3"
+        $usleep 100000
+        ListMenu
+    elif [ "$pilihan" == "acp" ];then
+        Perubahan="ya"
+        GetModeAiCNew="4"
         $usleep 100000
         ListMenu
     elif [ "$pilihan" == "aiy" ];then

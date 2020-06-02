@@ -98,7 +98,7 @@ getAppName()
 setTurbo(){
     SetNotificationOn
     GetBattery
-    echo "Set to turbo at : $(date +" %r")" | tee -a $AiLog
+    echo "Set to turbo at : $(date +" %Y-%m-%d %r")" | tee -a $AiLog
     getAppName
     echo "turbo" > $PathModulConfig/status_modul.txt
     StatusModul="turbo"
@@ -111,7 +111,7 @@ setTurbo(){
 setOff(){
     SetNotificationOff
     GetBattery
-    echo "turn to off mode at : $(date +" %r")" | tee -a $AiLog
+    echo "turn to off mode at : $(date +" %Y-%m-%d %r")" | tee -a $AiLog
     echo "off" > $PathModulConfig/status_modul.txt
     StatusModul="off"
     echo "  --- --- --- --- ---  " | tee -a $AiLog
@@ -125,7 +125,7 @@ setLag(){
         SetNotificationDozeOn
     fi
     GetBattery
-    echo "set to lag mode at : $(date +" %r")" | tee -a $AiLog
+    echo "set to lag mode at : $(date +" %Y-%m-%d %r")" | tee -a $AiLog
     echo "lag" > $PathModulConfig/status_modul.txt
     StatusModul="lag"
     echo "  --- --- --- --- ---  " | tee -a $AiLog
@@ -139,7 +139,7 @@ setLagoff(){
         SetNotificationDozeOff
     fi
     GetBattery
-    echo "revert back to off mode at : $(date +" %r")" | tee -a $AiLog
+    echo "revert back to off mode at : $(date +" %Y-%m-%d %r")" | tee -a $AiLog
     echo "off" > $PathModulConfig/status_modul.txt
     StatusModul="off"
     echo "  --- --- --- --- ---  " | tee -a $AiLog
@@ -395,7 +395,7 @@ runScript(){
     StatusModul=$(cat "$PathModulConfig/status_modul.txt");
     if [ "$aiStatus" == "1" ]; then
         echo "<<--- --- --- --- --- " | tee -a $AiLog
-        echo "starting ai mode at : $(date +" %r")" | tee -a $AiLog
+        echo "starting ai mode at : $(date +" %Y-%m-%d %r")" | tee -a $AiLog
         echo "module version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed 's/Version:*//g' )" | tee -a $AiLog
         echo "  --- --- --- --- --- " | tee -a $AiLog
         echo "2" > $PathModulConfigAi/ai_status.txt
@@ -442,7 +442,7 @@ runScript(){
             fi
             if [ "$StatusLayar" == "mati" ];then
                 if [ "$DozeState" != "on" ];then
-                    echo "turn on force doze at : $(date +" %r")"  | tee -a $AiLog
+                    echo "turn on force doze at : $(date +" %Y-%m-%d %r")"  | tee -a $AiLog
                     echo "  --- --- --- --- ---  " | tee -a $AiLog
                     echo $(dumpsys deviceidle force-idle)
                     echo "on" > "$DozeStatePath" 
@@ -450,7 +450,7 @@ runScript(){
                 fi
             elif [ "$StatusLayar" == "idup" ];then
                 if [ "$DozeState" != "off" ];then
-                    echo "turn off force doze at : $(date +" %r")"  | tee -a $AiLog
+                    echo "turn off force doze at : $(date +" %Y-%m-%d %r")"  | tee -a $AiLog
                     echo "  --- --- --- --- ---  " | tee -a $AiLog
                     echo $(dumpsys deviceidle unforce)
                     echo $(dumpsys deviceidle battery reset)
@@ -534,6 +534,14 @@ runScript(){
                         fi
                     fi
                 fi
+            elif [ "$aiChange" == "4" ];then
+                if [ "$StatusLayar" == "idup" ] && [ "$StatusModul" != "turbo" ];then
+                    setTurbo & wait
+                elif [ "$StatusLayar" == "mati" ] && [ "$StatusModul" != "off" ];then
+                    setLagoff & wait
+                else
+                    echo "$(date+"%Y-%m-%d %r")WARNING!!!,ur phone not support this feature,force switch ai change mode to "
+                fi
             fi
         fi
         if [ "$aiStatus" == "2"  ];then
@@ -560,25 +568,25 @@ runScript(){
             ./$NotifPath "getar" "off" 2>/dev/null 1>/dev/nul & wait
             runInitialize "Terminal"
             if [ "$aiStatus" == "2" ];then
-                echo "Continue running at : $(date +" %r")" | tee -a $AiLog
+                echo "Continue running at : $(date +" %Y-%m-%d %r")" | tee -a $AiLog
                 echo "module version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed 's/Version:*//g' )" | tee -a $AiLog
                 echo "  --- --- --- --- --- " | tee -a $AiLog
             fi
         fi
     elif [ "$aiStatus" == "3" ];then
         echo 'stoping ai mode . . .'  | tee -a $AiLog
-        echo "end at : $(date +" %r")" | tee -a $AiLog
+        echo "end at : $(date +" %Y-%m-%d %r")" | tee -a $AiLog
         echo "  --- --- --- --- --->> " | tee -a $AiLog
         echo '0' > $PathModulConfigAi/ai_status.txt
     elif [ "$aiStatus" == "0" ];then
         echo "cannot start . . ."  | tee -a $AiLog
         echo "please change ai status to 1 first" | tee -a $AiLog
-        echo "end at : $(date +" %r")" | tee -a $AiLog
+        echo "end at : $(date +" %Y-%m-%d %r")" | tee -a $AiLog
         echo "  --- --- --- --- --->> " | tee -a $AiLog
     else
         echo "cannot start . . ."  | tee -a $AiLog
         echo "ai status error . . ."  | tee -a $AiLog
-        echo "end at : $(date +" %r")" | tee -a $AiLog
+        echo "end at : $(date +" %Y-%m-%d %r")" | tee -a $AiLog
         echo "  --- --- --- --- --->> " | tee -a $AiLog
         echo '0' > $PathModulConfigAi/ai_status.txt
     fi
