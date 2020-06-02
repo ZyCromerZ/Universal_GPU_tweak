@@ -599,8 +599,8 @@ For module config files in the zyc_ai folder (ignore the missing files)
   Value=0 ( off ) / 1 ( turned on when module on mode turbo ) / 2 ( turned on when playing game )
 
 - ai_change.txt
-  for setting ai for ai change mode based game ony, gpu usage only, or both
-  Value=1( based gpu usage ) / 2 ( based game ) / 3 ( both )
+  for setting ai for ai change mode based game ony, gpu usage only, both or while using ur phone
+  Value=1( based gpu usage ) / 2 ( based game ) / 3 ( based game & gpu usage ) / 4 ( while using ur phone  )
 
 - ai_doze.txt
   for setting ai to force device deepsleep faster,but notidication was late
@@ -790,8 +790,8 @@ Untuk file config modul dalam folder zyc_ai ( abaikan kalo file tidak ada )
   Value=0( mati )/1( menyala pada saat mode turbo )/2( menyala pada saat main game )
 
 - ai_change.txt
-  Untuk setting ai untuk merubah mode berdasarkan game,penggunakan gpu, atau dua duanya
-  Value=1( berdasarkan penggunaan gpu )/2( berdasarkan penggunaan game )/3( bersarkan game & penggunaan gpu )
+  Untuk setting ai untuk merubah mode berdasarkan game,penggunakan gpu, dua duanya, atau ketika menggunakan hp nya
+  Value=1 ( berdasarkan penggunaan gpu ) / 2 ( berdasarkan penggunaan game ) / 3 ( bersarkan game & penggunaan gpu ) / 4 (ketika menggunakan hp)
 
 - ai_doze.txt
   Untuk setting ai untuk memaksa device agar masuk mode deepsleep lebih cepat,tapi notif bakal telat masuk
