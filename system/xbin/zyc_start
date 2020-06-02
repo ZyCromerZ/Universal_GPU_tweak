@@ -1,6 +1,24 @@
 #!/system/bin/sh
 # ni sh buat ganti mode paling cepet di dunia AWKWKWKWK
 echo 'preparing . . .'
+GetBusyBox="none"
+PathBusyBox="none"
+for i in /system/bin /system/xbin /sbin /su/xbin; do
+    if [ "$GetBusyBox" == "none" ]; then
+        if [ -f $i/busybox ]; then
+            GetBusyBox=$i/busybox;
+        fi;
+        PathBusyBox=$i
+    fi;
+done;
+usleep=usleep
+if [ -e "$PathBusyBox/usleep" ];then
+    usleep=$PathBusyBox/usleep
+fi
+nohup=nohup
+if [ -e "$PathBusyBox/nohup" ];then
+    nohup=$PathBusyBox/nohup
+fi
 if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
     echo $merahHitam"please type 'su' first -_-"$ResetWarna
     echo ""
@@ -8,7 +26,7 @@ if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
     for timeExit in "3s 2s 1s 0s" ;
     do
         echo "$timeExit"
-        usleep 1000000
+        $usleep 1000000
     done
     exit -1
 fi
@@ -21,17 +39,17 @@ Path=$ModPath/modul_mantul/ZyC_mod
 PathModulConfig=$Path/ZyC_Turbo_config
 if [ ! -z "$1" ];then
     echo "updating mode to '$1',please wait. . .";
-    printf "$1" | zyc_mode > /dev/null 2>&1;
-    usleep 100000
+    printf "$1" | zyc_mode 2>/dev/null 1>/dev/nul;
+    $usleep 100000
     echo "update mode to '$1' done .";
 fi;
 if [ ! -z "$2" ];then
     echo "updating mode render to '$2',please wait. . .";
-    printf "$2" | zyc_render > /dev/null 2>&1;
-    usleep 100000
+    printf "$2" | zyc_render 2>/dev/null 1>/dev/nul;
+    $usleep 100000
     echo "update mode render to '$2' done .";
 fi;
-zyc_turbo > /dev/null 2>&1
+zyc_turbo 2>/dev/null 1>/dev/nul
 mode=$(cat "$PathModulConfig/status_modul.txt");
 render=$(cat "$PathModulConfig/mode_render.txt");
 echo "use mode [$mode]  and render using [$render]";

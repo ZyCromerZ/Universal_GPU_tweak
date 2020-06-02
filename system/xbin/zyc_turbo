@@ -1,6 +1,20 @@
 #!/system/bin/sh
 # ni sh buat nge trigger ganti mode aja
 echo 'wait . . .';
+GetBusyBox="none"
+PathBusyBox="none"
+for i in /system/bin /system/xbin /sbin /su/xbin; do
+    if [ "$GetBusyBox" == "none" ]; then
+        if [ -f $i/busybox ]; then
+            GetBusyBox=$i/busybox;
+        fi;
+        PathBusyBox=$i
+    fi;
+done;
+nohup=nohup
+if [ -e "$PathBusyBox/nohup" ];then
+    nohup=$PathBusyBox/nohup
+fi
 if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
     echo $merahHitam"please type 'su' first -_-"$ResetWarna
     echo ""
@@ -16,14 +30,14 @@ ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 sh $ModulPath/ZyC_Turbo/initialize.sh "terminal" & wait
 RunStatus="kaga"
 if [ ! -e $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt ]; then
-    nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" >/dev/null 2>&1 & 
+    $nohup ./$ModulPath/ZyC_Turbo/service.sh "Terminal" 2>/dev/null 1>/dev/nul & 
 	RunStatus="iya"
 fi
 ModPath=$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
 PathModulConfig=$Path/ZyC_Turbo_config
 if [ $RunStatus == "kaga" ];then
-	nohup sh $ModulPath/ZyC_Turbo/service.sh "Terminal" >/dev/null 2>&1 & 
+	$nohup ./$ModulPath/ZyC_Turbo/service.sh "Terminal" 2>/dev/null 1>/dev/nul & 
 fi
 mode=$(cat "$PathModulConfig/status_modul.txt");
 render=$(cat "$PathModulConfig/mode_render.txt");

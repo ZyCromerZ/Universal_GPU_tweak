@@ -15,13 +15,14 @@ for i in /system/bin /system/xbin /sbin /su/xbin; do
         PathBusyBox=$i
     fi;
 done;
-sh=sh
+
 nohup=nohup
-if [ -e "$PathBusyBox/sh" ];then
-    sh=$PathBusyBox/sh
-fi
 if [ -e "$PathBusyBox/nohup" ];then
     nohup=$PathBusyBox/nohup
+fi
+usleep=usleep
+if [ -e "$PathBusyBox/usleep" ];then
+    usleep=$PathBusyBox/usleep
 fi
 ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 if [ ! -e $ModulPath/system/etc/ZyC_Ai/mod_path.txt ]; then
@@ -38,7 +39,7 @@ if [ ! -z "$1" ];then
 fi
 if [ "$FromTerminal" == "tidak" ];then
     ./$ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
-    usleep 5000000
+    $usleep 5000000
     ./$ModulPath/ZyC_Turbo/initialize.sh & wait
 fi;
 if [ ! -z "$2" ];then
@@ -853,14 +854,14 @@ runScript(){
                             echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog;
                             echo "Set Zram to $SetZramTo Bytes . . ." | tee -a $saveLog;
                             $PathBusyBox/swapoff "/dev/block/zram0" 
-                            usleep 100000
+                            $usleep 100000
                             echo "1" > /sys/block/zram0/reset
                             echo "$FixSize" > /sys/block/zram0/disksize | tee -a $saveLog;
                             $PathBusyBox/mkswap "/dev/block/zram0" 
-                            usleep 100000
+                            $usleep 100000
                             setprop zram.disksize $SetZramTo 2>/dev/null 1>/dev/nul
                             $PathBusyBox/swapon "/dev/block/zram0" 
-                            usleep 100000
+                            $usleep 100000
                         fi
                     fi;
                     if [ -e /dev/block/zram1 ]; then
@@ -871,14 +872,14 @@ runScript(){
                             echo "enable Zram1 & use $CustomZram Gb done ." | tee -a $saveLog;
                             echo "Set Zram1 to $SetZramTo Bytes . . ." | tee -a $saveLog;
                             $PathBusyBox/swapoff "/dev/block/zram1" 
-                            usleep 100000
+                            $usleep 100000
                             echo "1" > /sys/block/zram1/reset
                             echo "$FixSize" > /sys/block/zram1/disksize | tee -a $saveLog;
                             $PathBusyBox/mkswap "/dev/block/zram1" 
-                            usleep 100000
+                            $usleep 100000
                             setprop zram.disksize $SetZramTo 2>/dev/null 1>/dev/nul
                             $PathBusyBox/swapon "/dev/block/zram1" 
-                            usleep 100000
+                            $usleep 100000
                         fi
                     fi;
                     if [ -e /dev/block/zram2 ]; then
@@ -889,14 +890,14 @@ runScript(){
                             echo "enable Zram2 & use $CustomZram Gb done ." | tee -a $saveLog;
                             echo "Set Zram2 to $SetZramTo Bytes . . ." | tee -a $saveLog;
                             $PathBusyBox/swapoff "/dev/block/zram2" 
-                            usleep 100000
+                            $usleep 100000
                             echo "1" > /sys/block/zram2/reset
                             echo "$FixSize" > /sys/block/zram2/disksize | tee -a $saveLog;
                             $PathBusyBox/mkswap "/dev/block/zram2" 
-                            usleep 100000
+                            $usleep 100000
                             setprop zram.disksize $SetZramTo 2>/dev/null 1>/dev/nul
                             $PathBusyBox/swapon "/dev/block/zram2" 
-                            usleep 100000
+                            $usleep 100000
                         fi
                     fi;
                     sysctl -e -w vm.swappiness=$Swapinnes 

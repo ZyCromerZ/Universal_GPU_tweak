@@ -6,6 +6,20 @@
 # thanks for donation to @Mellinio :D
 # MODDIR=${0%/*}
 # for service.sh
+GetBusyBox="none"
+PathBusyBox="none"
+for i in /system/bin /system/xbin /sbin /su/xbin; do
+    if [ "$GetBusyBox" == "none" ]; then
+        if [ -f $i/busybox ]; then
+            GetBusyBox=$i/busybox;
+        fi;
+        PathBusyBox=$i
+    fi;
+done;
+usleep=usleep
+if [ -e "$PathBusyBox/usleep" ];then
+    usleep=$PathBusyBox/usleep
+fi
 ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 GetVersion="$(cat "$ModulPath/ZyC_Turbo/module.prop" | grep "version=Version" | sed 's/version=Version*//g')"
 if [ -d /sys/class/kgsl/kgsl-3d0 ]; then
@@ -85,7 +99,7 @@ if [ ! -z "$1" ];then
         FromTerminal="skip"
     fi
     if [ "$1" == "boot" ];then
-        sleep 20
+        $usleep 20000000
         ModPath=$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)
         if [ "$ModPath" != "" ];then
             Path=$ModPath/modul_mantul/ZyC_mod
@@ -133,8 +147,8 @@ GetAppAndGames(){
     # auto add to game list start
     GameList=$PathModulConfigAi/list_app_auto_turbo.txt
     if [ ! -e $PathModulConfigAi/list_app_auto_turbo.txt ]; then
-        echo "---->> List game installed start <<----"  | tee -a $GameList >/dev/null 2>&1 ;
-        echo "<<---- List game installed end ---->>"  | tee -a $GameList >/dev/null 2>&1 ;
+        echo "---->> List game installed start <<----"  | tee -a $GameList 2>/dev/null 1>/dev/nul ;
+        echo "<<---- List game installed end ---->>"  | tee -a $GameList 2>/dev/null 1>/dev/nul ;
     fi
     # Moba Analog
     if [ ! -z $(pm list packages -f com.mobile.legends | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.mobile.legends" "$GameList" ) ];then
@@ -346,8 +360,8 @@ GetAppAndGames(){
     # Get App list start
     listAppPath=$PathModulConfigAi/list_app_package_detected.txt
     if [ ! -e $PathModulConfigAi/list_app_package_detected.txt ]; then
-        echo "---->> List app installed start <<----"  | tee -a $listAppPath >/dev/null 2>&1 ;
-        echo "<<---- List app installed end ---->>"  | tee -a $listAppPath >/dev/null 2>&1 ;
+        echo "---->> List app installed start <<----"  | tee -a $listAppPath 2>/dev/null 1>/dev/nul ;
+        echo "<<---- List app installed end ---->>"  | tee -a $listAppPath 2>/dev/null 1>/dev/nul ;
     fi
 
     for listApp in ` pm list packages -3 | awk -F= '{sub("package:","");print $1}'` 
@@ -603,7 +617,7 @@ For V2, just flash it via magisk, it will automatically activates after rebooted
 
 Note:
 mode = off / on / turbo
-namarender = opengl / skiagl / skiavk" | tee -a $SetNotes >/dev/null 2>&1
+namarender = opengl / skiagl / skiavk" | tee -a $SetNotes 2>/dev/null 1>/dev/nul
     fi
     if [ ! -e $PathModulConfig/notes_id.txt ]; then
         SetNotes=$PathModulConfig/notes_id.txt;
@@ -794,7 +808,7 @@ Untuk V2 cukup flash teros biarkan,udah otomatis aktif kalo udah reboot
 
 Note :
 namamode = off/on/turbo
-namarender = opengl/skiagl/skiavk" | tee -a $SetNotes >/dev/null 2>&1
+namarender = opengl/skiagl/skiavk" | tee -a $SetNotes 2>/dev/null 1>/dev/nul
     
     fi
 

@@ -15,11 +15,7 @@ for i in /system/bin /system/xbin /sbin /su/xbin; do
         PathBusyBox=$i
     fi;
 done;
-sh=sh
 nohup=nohup
-if [ -e "$PathBusyBox/sh" ];then
-    sh=$PathBusyBox/sh
-fi
 if [ -e "$PathBusyBox/nohup" ];then
     nohup=$PathBusyBox/nohup
 fi
@@ -108,7 +104,7 @@ setTurbo(){
     StatusModul="turbo"
     echo "  --- --- --- --- ---  " | tee -a $AiLog
     ./$ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
-    $nohup ./$ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" >/dev/null 2>&1 & 
+    $nohup ./$ModulPath/ZyC_Turbo/main.sh "Terminal" "Ai" 2>/dev/null 1>/dev/nul & 
     SpectrumOn
     # usleep 5000000
 }
@@ -120,7 +116,7 @@ setOff(){
     StatusModul="off"
     echo "  --- --- --- --- ---  " | tee -a $AiLog
     ./$ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
-    $nohup ./$ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" >/dev/null 2>&1 & 
+    $nohup ./$ModulPath/ZyC_Turbo/main.sh "Terminal" "Ai" 2>/dev/null 1>/dev/nul & 
     SpectrumOff
 }
 setLag(){
@@ -134,7 +130,7 @@ setLag(){
     StatusModul="lag"
     echo "  --- --- --- --- ---  " | tee -a $AiLog
     ./$ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
-    $nohup ./$ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" "doze" >/dev/null 2>&1 &
+    $nohup ./$ModulPath/ZyC_Turbo/main.sh "Terminal" "Ai" "doze" 2>/dev/null 1>/dev/nul &
     SpectrumBattery
 }
 setLagoff(){
@@ -148,7 +144,7 @@ setLagoff(){
     StatusModul="off"
     echo "  --- --- --- --- ---  " | tee -a $AiLog
     ./$ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
-    $nohup ./$ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" "doze" >/dev/null 2>&1 &
+    $nohup ./$ModulPath/ZyC_Turbo/main.sh "Terminal" "Ai" "doze" 2>/dev/null 1>/dev/nul &
     SpectrumOff
 }
 SetNotificationOn(){
@@ -561,7 +557,7 @@ runScript(){
         #notification when turbo mode end
         if [ "$fromBoot" == "yes" ];then
             usleep 5000000
-            ./$NotifPath "getar" "off" >/dev/null 2>&1 & wait
+            ./$NotifPath "getar" "off" 2>/dev/null 1>/dev/nul & wait
             runInitialize "Terminal"
             if [ "$aiStatus" == "2" ];then
                 echo "Continue running at : $(date +" %r")" | tee -a $AiLog
@@ -589,9 +585,9 @@ runScript(){
 }
 runScript 2>&1 1>/dev/null | tee -a $Path/ZyC_Ai.running.log
 if [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "2" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "3" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "1" ];then
-    $nohup ./$BASEDIR/ai_mode.sh >/dev/null 2>&1 &
+    $nohup ./$BASEDIR/ai_mode.sh 2>/dev/null 1>/dev/nul &
 fi
 if [ "$fromBoot" == "yes" ];then
-    $nohup ./$ModulPath/ZyC_Turbo/service.sh "Terminal" "Ai" >/dev/null 2>&1 & 
+    $nohup ./$ModulPath/ZyC_Turbo/main.sh "Terminal" "Ai" 2>/dev/null 1>/dev/nul & 
 fi
 exit 1

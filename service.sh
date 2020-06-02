@@ -9,11 +9,7 @@ for i in /system/bin /system/xbin /sbin /su/xbin; do
         PathBusyBox=$i
     fi;
 done;
-sh=sh
 nohup=nohup
-if [ -e "$PathBusyBox/sh" ];then
-    sh=$PathBusyBox/sh
-fi
 if [ -e "$PathBusyBox/nohup" ];then
     nohup=$PathBusyBox/nohup
 fi

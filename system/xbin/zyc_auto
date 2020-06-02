@@ -12,6 +12,24 @@ if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
     done
     exit -1
 fi
+GetBusyBox="none"
+PathBusyBox="none"
+for i in /system/bin /system/xbin /sbin /su/xbin; do
+    if [ "$GetBusyBox" == "none" ]; then
+        if [ -f $i/busybox ]; then
+            GetBusyBox=$i/busybox;
+        fi;
+        PathBusyBox=$i
+    fi;
+done;
+usleep=usleep
+if [ -e "$PathBusyBox/usleep" ];then
+    usleep=$PathBusyBox/usleep
+fi
+nohup=nohup
+if [ -e "$PathBusyBox/nohup" ];then
+    nohup=$PathBusyBox/nohup
+fi
 ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 if [ ! -e $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt ]; then
     zyc_turbo
@@ -27,18 +45,18 @@ if [ ! -z "$1" ];then
     if [ "$1" == "on" ];then
         echo "updating auto mode to '1',please wait. . .";
         echo "1" > $PathModulConfigAi/ai_status.txt;
-        usleep 100000
+        $usleep 100000
         echo "update auto mode to '1' done .";
         
     elif [ "$1" == "off" ];then
         echo "updating auto mode to '3',please wait. . .";
         echo "3" > $PathModulConfigAi/ai_status.txt;
-        usleep 100000
+        $usleep 100000
         echo "update auto mode to '3' done .";
     else
         echo "updating auto mode to '$1',please wait. . .";
         echo "$1" > $PathModulConfigAi/ai_status.txt;
-        usleep 100000
+        $usleep 100000
         echo "update auto mode to '$1' done .";
     fi
 fi;
@@ -51,10 +69,10 @@ if [ -e "$PathModulConfigAi/ai_status.txt" ];then
     elif [ "$aiStatus" == '2' ];then
         echo "ai mode still running"
     else
-        nohup sh /system/etc/ZyC_Ai/ai_mode.sh >/dev/null 2>&1 & 
+        $nohup ./system/etc/ZyC_Ai/ai_mode.sh 2>/dev/null 1>/dev/nul & 
         echo "close this terminal, the ai mode has been running"
     fi
 else
-    nohup sh /system/etc/ZyC_Ai/ai_mode.sh >/dev/null 2>&1 & 
+    $nohup ./system/etc/ZyC_Ai/ai_mode.sh 2>/dev/null 1>/dev/nul & 
     echo "close this terminal, the ai mode has been running"
 fi

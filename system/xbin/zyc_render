@@ -1,6 +1,20 @@
 #!/system/bin/sh
 # ni sh buat ganti mode lah
 echo 'wait . . .';
+GetBusyBox="none"
+PathBusyBox="none"
+for i in /system/bin /system/xbin /sbin /su/xbin; do
+    if [ "$GetBusyBox" == "none" ]; then
+        if [ -f $i/busybox ]; then
+            GetBusyBox=$i/busybox;
+        fi;
+        PathBusyBox=$i
+    fi;
+done;
+usleep=usleep
+if [ -e "$PathBusyBox/usleep" ];then
+    usleep=$PathBusyBox/usleep
+fi
 if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
     echo $merahHitam"please type 'su' first -_-"$ResetWarna
     echo ""
@@ -8,7 +22,7 @@ if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
     for timeExit in "3s 2s 1s 0s" ;
     do
         echo "$timeExit"
-        usleep 1000000
+        $usleep 1000000
     done
     exit -1
 fi
@@ -28,7 +42,7 @@ if [ -z $modeNya ];then
 else
     echo $modeNya > $PathModulConfig/mode_render.txt;
     echo "mode updated to [$modeNya]";
-    zyc_turbo > /dev/null 2>&1
+    zyc_turbo 2>/dev/null 1>/dev/nul
 fi;
 echo 'request done . . .';
 echo "see log at $Path/ZyC_turbo.log";
