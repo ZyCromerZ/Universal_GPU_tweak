@@ -555,6 +555,16 @@ runScript(){
         if [ "$aiStatus" == "2"  ];then
             if [ "$StatusModul" == "turbo" ];then
                 $sleep "$waitTimeOn"
+                AosOnTurbo="$(cat "$PathModulConfigAi/ai_aos_on_turbo.txt")"
+                if [ $AosOnTurbo == "1" ];then
+                    input=input
+                    if [ -e /system/bin/input ];then
+                        input=/system/bin/input
+                    elif [ -e /system/xbin/input ];then
+                        input=/system/xbin/input
+                    fi
+                    $input keyevent -999999 2>/dev/null 1>/dev/null
+                fi
             else
                 $sleep "$waitTimeOff"
             fi

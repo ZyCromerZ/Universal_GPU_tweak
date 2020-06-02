@@ -240,6 +240,10 @@ GetSetting(){
         DozeSpectrumBefore=$(cat "$PathModulConfigAi/doze_spectrum.txt")
         DozeSpectrumNew=$(cat "$PathModulConfigAi/doze_spectrum.txt")
     fi
+    if [ -e $PathModulConfigAi/ai_aos_on_turbo.txt ];then
+        AosOnTurboBefore="$(cat "$PathModulConfigAi/ai_aos_on_turbo.txt")"
+        AosOnTurboNew="$(cat "$PathModulConfigAi/ai_aos_on_turbo.txt")"
+    fi
     clear
 }
 RefreshList="tidak"
@@ -882,6 +886,21 @@ AITwek(){
                 fi
             fi
         fi
+        if [ -e "$PathModulConfigAi/ai_aos_on_turbo.txt" ];then
+            echo "<-- -- AI always on while on turbo mode -- -->"
+            if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ];then
+                echo "aosx > turn off always on while on turbo mode"
+                echo "aosy > turn on always on while on turbo mode"
+                if [ "$AosOnTurboBefore" != "$AosOnTurboNew" ];then
+                    echo $hijauPutih"this will set to : $AosOnTurboNew"$ResetWarna
+                else
+                    echo $putihHitam"Current status : $AosOnTurboBefore"$ResetWarna
+                fi
+            else
+                echo "turn on ai first before setting this . . . ."
+            fi
+            echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
+        fi
     fi
 }
 AppGet(){
@@ -1420,6 +1439,14 @@ ListMenu(){
         AiDozeNotifNew="on"
         $usleep 100000
         ListMenu
+    elif [ "$pilihan" == "aosx" ];then
+        Perubahan="ya"
+        AosOnTurboNew="0"
+        $usleep 100000
+    elif [ "$pilihan" == "aosy" ];then
+        Perubahan="ya"
+        AosOnTurboNew="1"
+        $usleep 100000
     elif [ "$pilihan" == "dnss" ];then
         Perubahan="ya"
         DnsNew="system"
@@ -1858,6 +1885,10 @@ saveSetting()
     if [ "$DozeSpectrumBefore" != "$DozeSpectrumNew" ];then
         echo "$DozeSpectrumNew" > $PathModulConfigAi/doze_spectrum.txt ; 
         DozeSpectrumBefore=$DozeSpectrumNew;
+    fi
+    if [ "$AosOnTurboBefore" != "$AosOnTurboNew" ];then
+        echo "$AosOnTurboNew" > $PathModulConfigAi/ai_aos_on_turbo.txt
+        AosOnTurboBefore="$AosOnTurboNew"
     fi
     if [ "$DnsBefore" != "$DnsNew" ];then
         echo "$DnsNew" > $PathModulConfig/dns.txt ; 

@@ -1055,6 +1055,9 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes 2>/dev/null 1>/dev/nul
             echo '0' > "$PathModulConfigAi/spectrum_status.txt"
         fi
     fi
+    if [ ! -e $PathModulConfigAi/ai_aos_on_turbo.txt ]; then
+        echo '0' > "$PathModulConfigAi/ai_aos_on_turbo.txt"
+    fi
 elif [ "$FromTerminal" == "ya" ];then
     # disable log
     if [ "$(cat "$PathModulConfig/disable_log_system.txt")" == '1' ];then
