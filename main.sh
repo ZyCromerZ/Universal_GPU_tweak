@@ -1094,7 +1094,7 @@ runScript(){
             setprop net.dns2 91.239.100.100 2>/dev/null 1>/dev/nul
             setprop net.ppp0.dns1 91.239.100.100 2>/dev/null 1>/dev/nul
             setprop net.ppp0.dns2 91.239.100.100 2>/dev/null 1>/dev/nul
-            setprop net.rmnet0.dns1 91.239.100.100 2>/dev/null 1>/dev/nul 
+            setprop net.rmnet0.dns1 91.239.100.100 2>/dev/null 1>/dev/null
             setprop net.rmnet0.dns2 91.239.100.100 2>/dev/null 1>/dev/nul
             setprop net.rmnet1.dns1 91.239.100.100 2>/dev/null 1>/dev/nul
             setprop net.rmnet1.dns2 91.239.100.100 2>/dev/null 1>/dev/nul
@@ -1207,7 +1207,7 @@ runScript(){
         fi
     fi
 }
-runScript 2>/dev/null 1>/dev/nul | tee -a $Path/ZyC_Turbo.running.log ;
+runScript 2>/dev/null 1>/dev/null| tee -a $Path/ZyC_Turbo.running.log ;
 if [ "$FromTerminal" == "tidak" ];then
     if [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ];then
         BASEDIR=/system/etc/ZyC_Ai
@@ -1234,7 +1234,7 @@ if [ "$FromTerminal" == "tidak" ];then
             fi
         fi
     fi
-    $nohup ./$BASEDIR/ai_mode.sh "fromBoot" 2>/dev/null 1>/dev/nul &
+    $nohup ./$BASEDIR/ai_mode.sh "fromBoot" 2>/dev/null 1>/dev/null&
 fi
 echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog 2>/dev/null 1>/dev/nul
 echo "  --- --- --- --- --->> " | tee -a $saveLog 2>/dev/null 1>/dev/nul

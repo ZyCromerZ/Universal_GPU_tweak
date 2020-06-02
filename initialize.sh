@@ -147,8 +147,8 @@ GetAppAndGames(){
     # auto add to game list start
     GameList=$PathModulConfigAi/list_app_auto_turbo.txt
     if [ ! -e $PathModulConfigAi/list_app_auto_turbo.txt ]; then
-        echo "---->> List game installed start <<----"  | tee -a $GameList 2>/dev/null 1>/dev/nul ;
-        echo "<<---- List game installed end ---->>"  | tee -a $GameList 2>/dev/null 1>/dev/nul ;
+        echo "---->> List game installed start <<----"  | tee -a $GameList 2>/dev/null 1>/dev/null;
+        echo "<<---- List game installed end ---->>"  | tee -a $GameList 2>/dev/null 1>/dev/null;
     fi
     # Moba Analog
     if [ ! -z $(pm list packages -f com.mobile.legends | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.mobile.legends" "$GameList" ) ];then
@@ -360,8 +360,8 @@ GetAppAndGames(){
     # Get App list start
     listAppPath=$PathModulConfigAi/list_app_package_detected.txt
     if [ ! -e $PathModulConfigAi/list_app_package_detected.txt ]; then
-        echo "---->> List app installed start <<----"  | tee -a $listAppPath 2>/dev/null 1>/dev/nul ;
-        echo "<<---- List app installed end ---->>"  | tee -a $listAppPath 2>/dev/null 1>/dev/nul ;
+        echo "---->> List app installed start <<----"  | tee -a $listAppPath 2>/dev/null 1>/dev/null;
+        echo "<<---- List app installed end ---->>"  | tee -a $listAppPath 2>/dev/null 1>/dev/null;
     fi
 
     for listApp in ` pm list packages -3 | awk -F= '{sub("package:","");print $1}'` 

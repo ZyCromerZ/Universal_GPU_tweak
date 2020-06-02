@@ -69,10 +69,10 @@ if [ -e "$PathModulConfigAi/ai_status.txt" ];then
     elif [ "$aiStatus" == '2' ];then
         echo "ai mode still running"
     else
-        $nohup ./system/etc/ZyC_Ai/ai_mode.sh 2>/dev/null 1>/dev/nul & 
+        $nohup ./system/etc/ZyC_Ai/ai_mode.sh 2>/dev/null 1>/dev/null& 
         echo "close this terminal, the ai mode has been running"
     fi
 else
-    $nohup ./system/etc/ZyC_Ai/ai_mode.sh 2>/dev/null 1>/dev/nul & 
+    $nohup ./system/etc/ZyC_Ai/ai_mode.sh 2>/dev/null 1>/dev/null& 
     echo "close this terminal, the ai mode has been running"
 fi
