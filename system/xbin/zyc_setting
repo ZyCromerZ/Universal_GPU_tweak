@@ -892,9 +892,17 @@ AITwek(){
                 echo "aosx > turn off always on while on turbo mode"
                 echo "aosy > turn on always on while on turbo mode"
                 if [ "$AosOnTurboBefore" != "$AosOnTurboNew" ];then
-                    echo $hijauPutih"this will set to : $AosOnTurboNew"$ResetWarna
+                    if [ "$AosOnTurboNew" == "1" ];then
+                        echo $hijauPutih"this will set to : Active"$ResetWarna
+                    else
+                        echo $hijauPutih"this will set to : Disabled"$ResetWarna
+                    fi
                 else
-                    echo $putihHitam"Current status : $AosOnTurboBefore"$ResetWarna
+                    if [ "$AosOnTurboBefore" == "1" ];then
+                        echo $putihHitam"Current status : Active"$ResetWarna
+                    else
+                        echo $putihHitam"Current status : Disabled"$ResetWarna
+                    fi
                 fi
             else
                 echo "turn on ai first before setting this . . . ."
@@ -1443,10 +1451,12 @@ ListMenu(){
         Perubahan="ya"
         AosOnTurboNew="0"
         $usleep 100000
+        ListMenu
     elif [ "$pilihan" == "aosy" ];then
         Perubahan="ya"
         AosOnTurboNew="1"
         $usleep 100000
+        ListMenu
     elif [ "$pilihan" == "dnss" ];then
         Perubahan="ya"
         DnsNew="system"
