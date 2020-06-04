@@ -398,9 +398,9 @@ runScript(){
     echo "starting modules . . ." | tee -a $saveLog 
     echo "Version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" | tee -a $saveLog 
     if [ $NyariGPU == "" ];then
-        echo "Gpu Path : $NyariGPU" | tee -a $saveLog 
-    else
         echo "Gpu Path : undetected" | tee -a $saveLog 
+    else
+        echo "Gpu Path : $NyariGPU" | tee -a $saveLog 
     fi
     echo "Gpu Type : $TypeGpu"| tee -a $saveLog 
     if [ "$FromTerminal" == "tidak" ];then
