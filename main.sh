@@ -147,6 +147,13 @@ SetOff(){
             fi
         fi
     fi
+    if [ -e "/sys/class/thermal/thermal_message/sconfig" ];then
+            echo 'xiaomi sconfig thermal detected . . .' | tee -a $saveLog;
+            echo 'set to default' | tee -a $saveLog;
+            chmod 0664 "/sys/class/thermal/thermal_message/sconfig"
+            echo "10" > "/sys/class/thermal/thermal_message/sconfig"
+            chmod 0444 "/sys/class/thermal/thermal_message/sconfig"
+    fi
     echo 'revert done . . .' | tee -a $saveLog;
     echo "  --- --- --- --- --- " | tee -a $saveLog
 }
@@ -202,6 +209,8 @@ SetTurbo(){
             echo "1" > $NyariGPU/bus_split
         fi
         if [ -e "/sys/class/thermal/thermal_message/sconfig" ];then
+            echo 'xiaomi sconfig thermal detected . . .' | tee -a $saveLog;
+            echo 'disabled for best perf :V' | tee -a $saveLog;
             chmod 0664 "/sys/class/thermal/thermal_message/sconfig"
             echo "-1" > "/sys/class/thermal/thermal_message/sconfig"
             chmod 0444 "/sys/class/thermal/thermal_message/sconfig"
