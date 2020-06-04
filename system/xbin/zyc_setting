@@ -1312,7 +1312,7 @@ ListMenu(){
             echo "--- --- --- --- ---"
             echo "Re Scan app & game list"
             echo "--- --- --- --- ---"
-            ./$ModulPath/ZyC_Turbo/initialize.sh "App" & wait 2>/dev/null 1>/dev/null
+            .$ModulPath/ZyC_Turbo/initialize.sh "App" & wait 2>/dev/null 1>/dev/null
             echo "done . . ."
         elif [ "$askScan" == "wsc" ];then
             Perubahan="ya"
@@ -1907,7 +1907,7 @@ saveSetting()
         echo "--- --- --- --- ---"
         echo "Re Scan app & game list"
         echo "--- --- --- --- ---"
-        ./$ModulPath/ZyC_Turbo/initialize.sh "App" & wait
+        .$ModulPath/ZyC_Turbo/initialize.sh "App" & wait
     fi
     if [ "$RestartNotif" == "iya" ];then
         echo " please restart to take effect for gms doze fix"

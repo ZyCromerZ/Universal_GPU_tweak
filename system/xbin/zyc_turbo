@@ -27,7 +27,7 @@ if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
     exit -1
 fi
 ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
-./$ModulPath/ZyC_Turbo/initialize.sh "terminal" & wait
+.$ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
 RunStatus="kaga"
 if [ ! -e $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt ]; then
     $nohup .$ModulPath/ZyC_Turbo/main.sh "Terminal" 2>/dev/null 1>/dev/null
