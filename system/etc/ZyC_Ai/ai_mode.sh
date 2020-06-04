@@ -167,7 +167,12 @@ SetNotificationOn(){
             .$NotifPath "notif" "onvibrate" & wait
         fi
     else
-        echo 800 > /sys/class/timed_output/vibrator/enable
+        if [ -e /sys/class/leds/vibrator/duration ] &&  [ -e /sys/class/leds/vibrator/activate ];then
+            echo 800 > /sys/class/leds/vibrator/duration && echo 1 > /sys/class/leds/vibrator/activate
+        fi
+        if [ -e /sys/class/timed_output/vibrator/enable ];then
+            echo 800 > /sys/class/timed_output/vibrator/enable
+        fi
         $usleep 500000
     fi
 }
@@ -181,9 +186,16 @@ SetNotificationOff(){
             .$NotifPath "notif" "off2" & wait
         fi
     else
-        echo 600 > /sys/class/timed_output/vibrator/enable
-        $sleep 1000000
-        echo 300 > /sys/class/timed_output/vibrator/enable
+        if [ -e /sys/class/leds/vibrator/duration ] &&  [ -e /sys/class/leds/vibrator/activate ];then
+            echo 600 > /sys/class/leds/vibrator/duration && echo 1 > /sys/class/leds/vibrator/activate
+            $sleep 1000000
+            echo 300 > /sys/class/leds/vibrator/duration && echo 1 > /sys/class/leds/vibrator/activate
+        fi
+        if [ -e /sys/class/timed_output/vibrator/enable ];then
+            echo 600 > /sys/class/timed_output/vibrator/enable
+            $sleep 1000000
+            echo 300 > /sys/class/timed_output/vibrator/enable
+        fi
     fi
 }
 SetNotificationRunning(){
@@ -203,18 +215,32 @@ SetNotificationDozeOff(){
     if [ "$NotifPath" != "none" ];then
         .$NotifPath "notif" "dozeoff" & wait
     else
-        echo 600 > /sys/class/timed_output/vibrator/enable
-        $sleep 1000000
-        echo 300 > /sys/class/timed_output/vibrator/enable
+        if [ -e /sys/class/leds/vibrator/duration ] &&  [ -e /sys/class/leds/vibrator/activate ];then
+            echo 600 > /sys/class/leds/vibrator/duration && echo 1 > /sys/class/leds/vibrator/activate
+            $sleep 1000000
+            echo 300 > /sys/class/leds/vibrator/duration && echo 1 > /sys/class/leds/vibrator/activate
+        fi
+        if [ -e /sys/class/timed_output/vibrator/enable ];then
+            echo 600 > /sys/class/timed_output/vibrator/enable
+            $sleep 1000000
+            echo 300 > /sys/class/timed_output/vibrator/enable
+        fi
     fi
 }
 SetNotificationDozeOn(){
     if [ "$NotifPath" != "none" ];then
         .$NotifPath "notif" "dozeon" & wait
     else
-        echo 600 > /sys/class/timed_output/vibrator/enable
-        $sleep 1000000
-        echo 300 > /sys/class/timed_output/vibrator/enable
+        if [ -e /sys/class/leds/vibrator/duration ] &&  [ -e /sys/class/leds/vibrator/activate ];then
+            echo 600 > /sys/class/leds/vibrator/duration && echo 1 > /sys/class/leds/vibrator/activate
+            $sleep 1000000
+            echo 300 > /sys/class/leds/vibrator/duration && echo 1 > /sys/class/leds/vibrator/activate
+        fi
+        if [ -e /sys/class/timed_output/vibrator/enable ];then
+            echo 600 > /sys/class/timed_output/vibrator/enable
+            $sleep 1000000
+            echo 300 > /sys/class/timed_output/vibrator/enable
+        fi
     fi
 }
 GetBattery(){
