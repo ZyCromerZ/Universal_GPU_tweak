@@ -62,12 +62,12 @@ elif [ -d /sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0 ]; then
 elif [ -d /sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0 ]; then
     NyariGPU="/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
 elif [ -d /sys/devices/platform/*.gpu/devfreq/*.gpu ]; then
-    NyariGPU="/sys/devices/platform/*.gpu/devfreq/*.gpu"
+    NyariGPU=/sys/devices/platform/*.gpu/devfreq/*.gpu
 elif [ -d /sys/devices/platform/*.mali ]; then
-    NyariGPU="/sys/devices/platform/*.mali"
+    NyariGPU=/sys/devices/platform/*.mali
     MALIGPU="YES"
 elif [ -d /sys/class/misc/mali0 ]; then
-    NyariGPU="/sys/class/misc/mali0"
+    NyariGPU=/sys/class/misc/mali0
     MALIGPU="YES"
 else
     NyariGPU='';

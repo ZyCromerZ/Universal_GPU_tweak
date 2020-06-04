@@ -47,20 +47,30 @@ if [ ! -z "$2" ];then
         FromAi="ya";
     fi
 fi;
+MALIGPU="NO"
+TypeGpu='Undetected / Unknow'
 if [ -d /sys/class/kgsl/kgsl-3d0 ]; then
     NyariGPU="/sys/class/kgsl/kgsl-3d0"
+    TypeGpu="Adreno"
 elif [ -d /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0 ]; then
     NyariGPU="/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0"
+    TypeGpu="Adreno"
 elif [ -d /sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0 ]; then
     NyariGPU="/sys/devices/soc/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
+    TypeGpu="Adreno"
 elif [ -d /sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0 ]; then
     NyariGPU="/sys/devices/soc.0/*.qcom,kgsl-3d0/kgsl/kgsl-3d0"
+    TypeGpu="Adreno"
 elif [ -d /sys/devices/platform/*.gpu/devfreq/*.gpu ]; then
-    NyariGPU="/sys/devices/platform/*.gpu/devfreq/*.gpu"
+    NyariGPU=/sys/devices/platform/*.gpu/devfreq/*.gpu
 elif [ -d /sys/devices/platform/*.mali ]; then
-    NyariGPU="/sys/devices/platform/*.mali"
+    NyariGPU=/sys/devices/platform/*.mali
+    MALIGPU="YES"
+    TypeGpu="Mali"
 elif [ -d /sys/class/misc/mali0 ]; then
-    NyariGPU="/sys/class/misc/mali0"
+    NyariGPU=/sys/class/misc/mali0
+    MALIGPU="YES"
+    TypeGpu="Mali"
 else
     NyariGPU='';
 fi
@@ -196,14 +206,16 @@ SetTurbo(){
             echo "-1" > "/sys/class/thermal/thermal_message/sconfig"
             chmod 0444 "/sys/class/thermal/thermal_message/sconfig"
         fi
-        if [ -e $NyariGPU/dvfs_period ];then
-            echo "1000" > $NyariGPU/dvfs_period
-        fi
-        if [ -e $NyariGPU/dvfs/dvfs_period ];then
-            echo "1000" > $NyariGPU/dvfs/dvfs_period
-        fi
-        if [ -e $NyariGPU/dvfs/period ];then
-            echo "1000" > $NyariGPU/dvfs/period
+        if [ $MALIGPU == "YES" ];then
+            if [ -e $NyariGPU/dvfs_period ];then
+                echo "1000" > $NyariGPU/dvfs_period
+            fi
+            if [ -e $NyariGPU/dvfs/dvfs_period ];then
+                echo "1000" > $NyariGPU/dvfs/dvfs_period
+            fi
+            if [ -e $NyariGPU/dvfs/period ];then
+                echo "1000" > $NyariGPU/dvfs/period
+            fi
         fi
         if [ -e "$NyariGPU/power_policy" ];then
             echo "always_on" > $NyariGPU/power_policy
@@ -367,7 +379,13 @@ enableLogSystem(){
 runScript(){
     echo "<<--- --- --- --- --- " | tee -a $saveLog 
     echo "starting modules . . ." | tee -a $saveLog 
-    echo "Version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" 
+    echo "Version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" | tee -a $saveLog 
+    if [ $NyariGPU == "" ];then
+        echo "Gpu Path : $NyariGPU" | tee -a $saveLog 
+    else
+        echo "Gpu Path : undetected" | tee -a $saveLog 
+    fi
+    echo "Gpu Type : $TypeGpu"| tee -a $saveLog 
     if [ "$FromTerminal" == "tidak" ];then
         echo "running with boot detected" | tee -a $saveLog 
     elif [ "$FromAi" == "ya" ];then
