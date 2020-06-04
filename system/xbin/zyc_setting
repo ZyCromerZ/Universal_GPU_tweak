@@ -974,6 +974,10 @@ GameTweak(){
         fi
         echo $biruPutih"<<----------<=====*=====>---------->>"$ResetWarna
     fi
+    if [ -e /data/data/com.epicgames.fortnite/files/UE4Game/FortniteGame/FortniteGame/Saved/Config/Android/GameUserSettings.ini ];then
+        FortniteGamePath="data/data/com.epicgames.fortnite/files/UE4Game/FortniteGame/FortniteGame/Saved/Config/Android/GameUserSettings.ini"
+        FortniteGameGetVal="$(cat $FortniteGamePath)"
+    fi
 }
 update_file() {
     if [ ! -z "$1" ] && [ ! -z "$2" ] && [ ! -z "$3" ];then
