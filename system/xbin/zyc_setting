@@ -140,6 +140,10 @@ GetSetting(){
         GetModeRenderBefore=$(cat "$PathModulConfig/mode_render.txt")
         GetModeRenderNew=$(cat "$PathModulConfig/mode_render.txt")
     fi
+    if [ -e $PathModulConfig/mode_render_lock.txt ];then
+        GetModeRenderLockBefore=$(cat "$PathModulConfig/mode_render_lock.txt")
+        GetModeRenderLockNew=$(cat "$PathModulConfig/mode_render_lock.txt")
+    fi
     if [ -e $PathModulConfig/fastcharge.txt ];then
         GetModeFCBefore=$(cat "$PathModulConfig/fastcharge.txt")
         GetModeFCNew=$(cat "$PathModulConfig/fastcharge.txt")
@@ -147,6 +151,10 @@ GetSetting(){
     if [ -e $PathModulConfig/fsync_mode.txt ];then
         GetModeFsyncBefore=$(cat "$PathModulConfig/fsync_mode.txt")
         GetModeFsyncNew=$(cat "$PathModulConfig/fsync_mode.txt")
+    fi
+    if [ -e $PathModulConfig/fsync_mode_lock.txt ];then
+        GetModeFsyncLockBefore=$(cat "$PathModulConfig/fsync_mode_lock.txt")
+        GetModeFsyncLockNew=$(cat "$PathModulConfig/fsync_mode_lock.txt")
     fi
     if [ -e $PathModulConfig/GpuBooster.txt ];then
         GetModeAdrenoBefore=$(cat "$PathModulConfig/GpuBooster.txt")
@@ -288,6 +296,8 @@ MainTweak(){
         echo "opd > Use Default OpenGL render"
         echo "ops > Use OpenGL Skia render"
         echo "vkn > Use Vulkan render"
+        echo "mrr > reset this setting to default every firstboot (Not Recomended)"
+        echo "mrk > always keep this setting"
         if [ "$GetModeRenderBefore" != "$GetModeRenderNew" ];then
             if [ $GetModeRenderNew == "opengl" ];then
                 echo $hijauPutih"this will set to : OpenGL Default"$ResetWarna
@@ -309,6 +319,19 @@ MainTweak(){
                 echo $abuHitam"Current Status : System Default"$ResetWarna
             fi
         fi
+        if [ "$GetModeRenderLockBefore" != "$GetModeRenderLockNew" ];then
+            if [ "$GetModeRenderLockNew" == "0" ];then
+                echo $hijauHitam"this will set to : reset every boot"$ResetWarna
+            else
+                echo $kuningPutih"this will set to : dont do reset every boot"$ResetWarna
+            fi
+        else
+            if [ "$GetModeRenderLockBefore" == "0" ];then
+                echo $hijauHitam"Current Status : reset every boot"$ResetWarna
+            else
+                echo $kuningHitam"Current Status : dont do reset every boot"$ResetWarna
+            fi
+        fi
         echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
     fi
     if [ -e "$PathModulConfig/fsync_mode.txt" ];then
@@ -317,6 +340,8 @@ MainTweak(){
         echo "fcx > turn off fsync"
         echo "fcy > turn on fsync"
         echo "fca > auto change fsync"
+        echo "mfr > reset this setting to default every firstboot (Not Recomended)"
+        echo "mfk > always keep this setting"
         echo "      disable fsync after change to turbo mode"
         if [ "$GetModeFsyncBefore" != "$GetModeFsyncNew" ];then
             if [ $GetModeFsyncNew == "0" ];then
@@ -337,6 +362,19 @@ MainTweak(){
                 echo $biruHitam"Current Status : by system"$ResetWarna
             elif [ $GetModeFsyncBefore == "auto" ];then
                 echo $cyanHitam"Current Status : by auto"$ResetWarna
+            fi
+        fi
+        if [ "$GetModeFsyncLockBefore" != "$GetModeFsyncLockNew" ];then
+            if [ "$GetModeFsyncLockNew" == "0" ];then
+                echo $hijauHitam"this will set to : reset every boot"$ResetWarna
+            else
+                echo $kuningPutih"this will set to : dont do reset every boot"$ResetWarna
+            fi
+        else
+            if [ "$GetModeFsyncLockBefore" == "0" ];then
+                echo $hijauHitam"Current Status : reset every boot"$ResetWarna
+            else
+                echo $kuningHitam"Current Status : dont do reset every boot"$ResetWarna
             fi
         fi
         echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
@@ -1100,6 +1138,16 @@ ListMenu(){
         GetModeRenderNew="skiavk"
         $usleep 100000
         ListMenu
+    elif [ "$pilihan" == "mrr" ];then
+        Perubahan="ya"
+        GetModeRenderLockNew="0"
+        $usleep 100000
+        ListMenu
+    elif [ "$pilihan" == "mrk" ];then
+        Perubahan="ya"
+        GetModeRenderLockNew="1"
+        $usleep 100000
+        ListMenu
     elif [ "$pilihan" == "fs" ];then
         Perubahan="ya"
         GetModeFCNew="system"
@@ -1128,6 +1176,16 @@ ListMenu(){
     elif [ "$pilihan" == "fca" ];then
         Perubahan="ya"
         GetModeFsyncNew="auto"
+        $usleep 100000
+        ListMenu
+    elif [ "$pilihan" == "mfr" ];then
+        Perubahan="ya"
+        GetModeFsyncLockNew="0"
+        $usleep 100000
+        ListMenu
+    elif [ "$pilihan" == "mfk" ];then
+        Perubahan="ya"
+        GetModeFsyncLockNew="1"
         $usleep 100000
         ListMenu
     elif [ "$pilihan" == "adx" ];then
@@ -1786,6 +1844,11 @@ saveSetting()
         RunTweak="iya"
         setprop zyc.change.render "belom"
     fi
+    if [ "$GetModeRenderLockBefore" != "$GetModeRenderLockNew" ];then
+        echo "$GetModeRenderLockNew" > $PathModulConfig/mode_render_lock.txt ; 
+        GetModeRenderLockBefore=$GetModeRenderLockNew;
+        RunTweak="iya"
+    fi
     if [ "$GetModeFCBefore" != "$GetModeFCNew" ];then
         echo "$GetModeFCNew" > $PathModulConfig/fastcharge.txt ; 
         GetModeFCBefore=$GetModeFCNew;
@@ -1795,6 +1858,11 @@ saveSetting()
     if [ "$GetModeFsyncBefore" != "$GetModeFsyncNew" ];then
         echo "$GetModeFsyncNew" > $PathModulConfig/fsync_mode.txt ; 
         GetModeFsyncBefore=$GetModeFsyncNew;
+        RunTweak="iya"
+    fi
+    if [ "$GetModeFsyncLockBefore" != "$GetModeFsyncLockNew" ];then
+        echo "$GetModeFsyncLockNew" > $PathModulConfig/fsync_mode_lock.txt ; 
+        GetModeFsyncLockBefore=$GetModeFsyncLockNew;
         RunTweak="iya"
     fi
     if [ "$GetModeAdrenoBefore" != "$GetModeAdrenoNew" ];then

@@ -112,8 +112,12 @@ if [ ! -z "$1" ];then
                 mkdir -p $Path/ZyC_Turbo_config
             fi
             PathModulConfig=$Path/ZyC_Turbo_config
-            echo 'system' > $PathModulConfig/mode_render.txt
-            echo 'system' > $PathModulConfig/fsync_mode.txt
+            if [ -e $PathModulConfig/mode_render_lock.txt ] && [ "$(cat $PathModulConfig/mode_render_lock.txt)" == "0" ];then
+                echo 'system' > $PathModulConfig/mode_render.txt
+            fi
+            if [ -e $PathModulConfig/fsync_mode_lock.txt ] && [ "$(cat $PathModulConfig/fsync_mode_lock.txt)" == "0" ];then
+                echo 'system' > $PathModulConfig/fsync_mode.txt
+            fi
             setprop zyc.change.rm "belom"
             setprop zyc.change.zrm "belom"
             setprop zyc.change.dns "belom"
@@ -382,6 +386,10 @@ if [ "$FromTerminal" == "tidak" ];then
     if [ ! -e $PathModulConfig/mode_render.txt ]; then
         echo 'system' > $PathModulConfig/mode_render.txt
     fi
+    # mode render lock
+    if [ ! -e $PathModulConfig/mode_render_lock.txt ];then
+        echo '0' > $PathModulConfig/mode_render_lock.txt
+    fi
     # max fps nya
     if [ ! -e $PathModulConfig/total_fps.txt ]; then
         echo '0' > $PathModulConfig/total_fps.txt
@@ -401,6 +409,10 @@ if [ "$FromTerminal" == "tidak" ];then
     # setting fsync
     if [ ! -e $PathModulConfig/fsync_mode.txt ]; then
         echo 'system' > $PathModulConfig/fsync_mode.txt
+    fi
+    # setting fsync lock
+    if [ ! -e $PathModulConfig/fsync_mode_lock.txt ]; then
+        echo '0' > $PathModulConfig/fsync_mode_lock.txt
     fi
     # setting custom Ram Management
     if [ ! -e $PathModulConfig/custom_ram_management.txt ]; then
