@@ -18,15 +18,15 @@ done;
 
 nohup=nohup
 if [ -e "$PathBusyBox/busybox" ];then
-    nohup=$PathBusyBox" nohup"
+    nohup=$PathBusyBox"/busybox nohup"
 fi
 usleep=usleep
 if [ -e "$PathBusyBox/busybox" ];then
-    usleep=$PathBusyBox" usleep"
+    usleep=$PathBusyBox"/busybox usleep"
 fi
 ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 if [ ! -e $ModulPath/system/etc/ZyC_Ai/mod_path.txt ]; then
-    ./$ModulPath/ZyC_Turbo/initialize.sh & wait
+    .$ModulPath/ZyC_Turbo/initialize.sh & wait
 fi
 ModPath=$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
@@ -38,9 +38,9 @@ if [ ! -z "$1" ];then
     fi
 fi
 if [ "$FromTerminal" == "tidak" ];then
-    ./$ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
+    .$ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
     $usleep 5000000
-    ./$ModulPath/ZyC_Turbo/initialize.sh & wait
+    .$ModulPath/ZyC_Turbo/initialize.sh & wait
 fi;
 if [ ! -z "$2" ];then
     if [ "$2" == "Ai" ];then
@@ -458,8 +458,8 @@ runScript(){
     fi
     # log backup nya
         if [ "$MissingFile" == "iya" ]; then
-            ./$ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
-            ./$ModulPath/ZyC_Turbo/initialize.sh & wait
+            .$ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
+            .$ModulPath/ZyC_Turbo/initialize.sh & wait
         fi
     # end log backup
 
@@ -481,22 +481,22 @@ runScript(){
     fi
     # ngator mode start
         if [ "$GetMode" == 'off' ];then
-            SetOff 2>/dev/null 1>/dev/nul
+            SetOff 2>/dev/null 1>/dev/null
             echo "turn off tweak" | tee -a $saveLog;
             echo "  --- --- --- --- --- " | tee -a $saveLog
         elif [ "$GetMode" == 'on' ];then
-            SetOff 2>/dev/null 1>/dev/nul
-            SetOn 2>/dev/null 1>/dev/nul
+            SetOff 2>/dev/null 1>/dev/null
+            SetOn 2>/dev/null 1>/dev/null
             # disableFsync
             echo "setting to mode on" | tee -a $saveLog;
             echo "  --- --- --- --- --- " | tee -a $saveLog
         elif [ "$GetMode" == 'turbo' ];then
-            SetOn 2>/dev/null 1>/dev/nul
-            SetTurbo 2>/dev/null 1>/dev/nul
+            SetOn 2>/dev/null 1>/dev/null
+            SetTurbo 2>/dev/null 1>/dev/null
             # disableFsync
             # disableThermal
             if [ "$fsyncMode" == "auto" ] && [ "$FromAi" == "ya" ];then
-                disableFsync 2>/dev/null 1>/dev/nul
+                disableFsync 2>/dev/null 1>/dev/null
                 echo "disable fysnc" | tee -a $saveLog;
                 echo "  --- --- --- --- --- " | tee -a $saveLog
             fi
@@ -504,12 +504,12 @@ runScript(){
             echo "  --- --- --- --- --- " | tee -a $saveLog
         elif [ "$GetMode" == 'lag' ];then
             # SetOff
-            LagMode 2>/dev/null 1>/dev/nul
+            LagMode 2>/dev/null 1>/dev/null
             # disableFsync
             echo "setting to mode lag" | tee -a $saveLog;
             echo "  --- --- --- --- --- " | tee -a $saveLog
         else
-            SetOff 2>/dev/null 1>/dev/nul
+            SetOff 2>/dev/null 1>/dev/null
             # SetOn
             # disableFsync
             echo "please read guide, mode $GetMode,not found autmatic set to mode off " | tee -a $saveLog;
@@ -669,7 +669,7 @@ runScript(){
                         fi
                         # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog;
                 else 
-                    ./$ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
+                    .$ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
                     echo "using custom ram management method $CustomRam" | tee -a $saveLog;
                     StopModify="no"
                     GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
@@ -788,16 +788,6 @@ runScript(){
         if [ "$FromTerminal" == "ya" ];then
             StopZramSet="kaga"
         fi
-        GetBusyBox="none"
-        PathBusyBox="none"
-        for i in /system/bin /system/xbin /sbin /su/xbin; do
-            if [ "$GetBusyBox" == "none" ]; then
-                if [ -f $i/busybox ]; then
-                    GetBusyBox=$i/busybox;
-                fi;
-                PathBusyBox=$i
-            fi;
-        done;
         if [ "$GetBusyBox" == "none" ];then
             StopZramSet="iya"
             echo "need busybox to set Zram " | tee -a $saveLog
@@ -827,8 +817,8 @@ runScript(){
                         setprop zyc.change.zrm "udah"
                         StopZramSet="iya"
                         echo 'disable Zram done .' | tee -a $saveLog;
-                        $GetBusyBox swapoff /dev/block/zram0 2>/dev/null 1>/dev/nul
-                        $GetBusyBox setprop zram.disksize 0 2>/dev/null 1>/dev/nul
+                        $GetBusyBox swapoff /dev/block/zram0 2>/dev/null 1>/dev/null
+                        $GetBusyBox setprop zram.disksize 0 2>/dev/null 1>/dev/null
                         echo 'disable Zram done .' | tee -a $saveLog;
                         echo "  --- --- --- --- --- " | tee -a $saveLog
                     fi;
@@ -859,7 +849,7 @@ runScript(){
                             echo "$FixSize" > /sys/block/zram0/disksize | tee -a $saveLog;
                             $PathBusyBox/mkswap "/dev/block/zram0" 
                             $usleep 100000
-                            setprop zram.disksize $SetZramTo 2>/dev/null 1>/dev/nul
+                            setprop zram.disksize $SetZramTo 2>/dev/null 1>/dev/null
                             $PathBusyBox/swapon "/dev/block/zram0" 
                             $usleep 100000
                         fi
@@ -877,7 +867,7 @@ runScript(){
                             echo "$FixSize" > /sys/block/zram1/disksize | tee -a $saveLog;
                             $PathBusyBox/mkswap "/dev/block/zram1" 
                             $usleep 100000
-                            setprop zram.disksize $SetZramTo 2>/dev/null 1>/dev/nul
+                            setprop zram.disksize $SetZramTo 2>/dev/null 1>/dev/null
                             $PathBusyBox/swapon "/dev/block/zram1" 
                             $usleep 100000
                         fi
@@ -895,7 +885,7 @@ runScript(){
                             echo "$FixSize" > /sys/block/zram2/disksize | tee -a $saveLog;
                             $PathBusyBox/mkswap "/dev/block/zram2" 
                             $usleep 100000
-                            setprop zram.disksize $SetZramTo 2>/dev/null 1>/dev/nul
+                            setprop zram.disksize $SetZramTo 2>/dev/null 1>/dev/null
                             $PathBusyBox/swapon "/dev/block/zram2" 
                             $usleep 100000
                         fi
@@ -903,23 +893,23 @@ runScript(){
                     sysctl -e -w vm.swappiness=$Swapinnes 
                     if [ "$ZramOptimizer" == "1" ];then
                         echo "echo optimize zram setting . . ." | tee -a $saveLog;
-                        sysctl -e -w vm.dirty_ratio=15 2>/dev/null 1>/dev/nul
-                        sysctl -e -w vm.dirty_background_ratio=3 2>/dev/null 1>/dev/nul
-                        sysctl -e -w vm.drop_caches=2 2>/dev/null 1>/dev/nul
-                        sysctl -e -w vm.vfs_cache_pressure=100 2>/dev/null 1>/dev/nul
+                        sysctl -e -w vm.dirty_ratio=15 2>/dev/null 1>/dev/null
+                        sysctl -e -w vm.dirty_background_ratio=3 2>/dev/null 1>/dev/null
+                        sysctl -e -w vm.drop_caches=2 2>/dev/null 1>/dev/null
+                        sysctl -e -w vm.vfs_cache_pressure=100 2>/dev/null 1>/dev/null
                     else
                         echo "use stock zram setting . . ." | tee -a $saveLog;
                         if [ ! -z "$(cat $PathModulConfig/backup/zram_vm.dirty_ratio.txt)" ];then
-                            sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_ratio.txt") 2>/dev/null 1>/dev/nul
+                            sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_ratio.txt") 2>/dev/null 1>/dev/null
                         fi
                         if [ ! -z "$(cat $PathModulConfig/backup/zram_vm.dirty_background_ratio.txt)" ];then
-                            sysctl -e -w vm.dirty_background_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_background_ratio.txt") 2>/dev/null 1>/dev/nul
+                            sysctl -e -w vm.dirty_background_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_background_ratio.txt") 2>/dev/null 1>/dev/null
                         fi
                         if [ ! -z "$(cat $PathModulConfig/backup/zram_vm.drop_caches.txt)" ];then
-                            sysctl -e -w vm.drop_caches=$(cat "$PathModulConfig/backup/zram_vm.drop_caches.txt") 2>/dev/null 1>/dev/nul
+                            sysctl -e -w vm.drop_caches=$(cat "$PathModulConfig/backup/zram_vm.drop_caches.txt") 2>/dev/null 1>/dev/null
                         fi
                         if [ ! -z "$(cat $PathModulConfig/backup/zram_vm.vfs_cache_pressure.txt)" ];then
-                            sysctl -e -w vm.vfs_cache_pressure=$(cat "$PathModulConfig/backup/zram_vm.vfs_cache_pressure.txt") 2>/dev/null 1>/dev/nul
+                            sysctl -e -w vm.vfs_cache_pressure=$(cat "$PathModulConfig/backup/zram_vm.vfs_cache_pressure.txt") 2>/dev/null 1>/dev/null
                         fi
                     fi
                     start perfd
@@ -933,10 +923,10 @@ runScript(){
 
     if [ "$LogStatus" == '1' ];then
         # enableLogSystem
-        disableLogSystem 2>/dev/null 1>/dev/nul
+        disableLogSystem 2>/dev/null 1>/dev/null
     elif [ "$LogStatus" == '2' ];then
         # disableLogSystem
-        enableLogSystem 2>/dev/null 1>/dev/nul
+        enableLogSystem 2>/dev/null 1>/dev/null
     fi
     if [ "$GetMode" == 'off' ];then
         echo "turn off tweak succeess :D"| tee -a $saveLog;
@@ -948,32 +938,32 @@ runScript(){
     fi;
     ResetDns(){
         if [ "$FromTerminal" == "ya" ];then
-            ip6tables -t nat -F 2>/dev/null 1>/dev/nul
-            iptables -t nat -F 2>/dev/null 1>/dev/nul
-            resetprop net.eth0.dns1 2>/dev/null 1>/dev/nul
-            resetprop net.eth0.dns2 2>/dev/null 1>/dev/nul
-            resetprop net.dns1 2>/dev/null 1>/dev/nul
-            resetprop net.dns2 2>/dev/null 1>/dev/nul
-            resetprop net.ppp0.dns1 2>/dev/null 1>/dev/nul
-            resetprop net.ppp0.dns2 2>/dev/null 1>/dev/nul
-            resetprop net.rmnet0.dns1 2>/dev/null 1>/dev/nul
-            resetprop net.rmnet0.dns2 2>/dev/null 1>/dev/nul
-            resetprop net.rmnet1.dns1 2>/dev/null 1>/dev/nul
-            resetprop net.rmnet1.dns2 2>/dev/null 1>/dev/nul
-            resetprop net.rmnet2.dns1 2>/dev/null 1>/dev/nul
-            resetprop net.rmnet2.dns2 2>/dev/null 1>/dev/nul
-            resetprop net.pdpbr1.dns1 2>/dev/null 1>/dev/nul
-            resetprop net.pdpbr1.dns2 2>/dev/null 1>/dev/nul
-            resetprop net.wlan0.dns1 2>/dev/null 1>/dev/nul
-            resetprop net.wlan0.dns2 2>/dev/null 1>/dev/nul
-            resetprop 2001:4860:4860::8888 2>/dev/null 1>/dev/nul
-            resetprop 2001:4860:4860::8844 2>/dev/null 1>/dev/nul
-            resetprop 2606:4700:4700::1111 2>/dev/null 1>/dev/nul
-            resetprop 2606:4700:4700::1001 2>/dev/null 1>/dev/nul
-            resetprop 2a00:5a60::ad1:0ff:5353 2>/dev/null 1>/dev/nul
-            resetprop 2a00:5a60::ad2:0ff:5353 2>/dev/null 1>/dev/nul
-            # resetprop 2001:67c:28a4:::5353 2>/dev/null 1>/dev/nul
-            # resetprop 2001:67c:28a4:::5353 2>/dev/null 1>/dev/nul
+            ip6tables -t nat -F 2>/dev/null 1>/dev/null
+            iptables -t nat -F 2>/dev/null 1>/dev/null
+            resetprop net.eth0.dns1 2>/dev/null 1>/dev/null
+            resetprop net.eth0.dns2 2>/dev/null 1>/dev/null
+            resetprop net.dns1 2>/dev/null 1>/dev/null
+            resetprop net.dns2 2>/dev/null 1>/dev/null
+            resetprop net.ppp0.dns1 2>/dev/null 1>/dev/null
+            resetprop net.ppp0.dns2 2>/dev/null 1>/dev/null
+            resetprop net.rmnet0.dns1 2>/dev/null 1>/dev/null
+            resetprop net.rmnet0.dns2 2>/dev/null 1>/dev/null
+            resetprop net.rmnet1.dns1 2>/dev/null 1>/dev/null
+            resetprop net.rmnet1.dns2 2>/dev/null 1>/dev/null
+            resetprop net.rmnet2.dns1 2>/dev/null 1>/dev/null
+            resetprop net.rmnet2.dns2 2>/dev/null 1>/dev/null
+            resetprop net.pdpbr1.dns1 2>/dev/null 1>/dev/null
+            resetprop net.pdpbr1.dns2 2>/dev/null 1>/dev/null
+            resetprop net.wlan0.dns1 2>/dev/null 1>/dev/null
+            resetprop net.wlan0.dns2 2>/dev/null 1>/dev/null
+            resetprop 2001:4860:4860::8888 2>/dev/null 1>/dev/null
+            resetprop 2001:4860:4860::8844 2>/dev/null 1>/dev/null
+            resetprop 2606:4700:4700::1111 2>/dev/null 1>/dev/null
+            resetprop 2606:4700:4700::1001 2>/dev/null 1>/dev/null
+            resetprop 2a00:5a60::ad1:0ff:5353 2>/dev/null 1>/dev/null
+            resetprop 2a00:5a60::ad2:0ff:5353 2>/dev/null 1>/dev/null
+            # resetprop 2001:67c:28a4:::5353 2>/dev/null 1>/dev/null
+            # resetprop 2001:67c:28a4:::5353 2>/dev/null 1>/dev/null
         fi
     }
     if [ "$(getprop zyc.change.dns)" == "belom" ] ;then
@@ -983,65 +973,65 @@ runScript(){
             # reset
             ResetDns
             # reset
-            iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 1.1.1.1:53 2>/dev/null 1>/dev/nul
-            iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 1.0.0.1:53 2>/dev/null 1>/dev/nul
-            iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 1.1.1.1:53 2>/dev/null 1>/dev/nul
-            iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 1.0.0.1:53 2>/dev/null 1>/dev/nul
-            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1111]:53 2>/dev/null 1>/dev/nul
-            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1001]:53 2>/dev/null 1>/dev/nul
-            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1111]:53 2>/dev/null 1>/dev/nul
-            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1001]:53 2>/dev/null 1>/dev/nul
+            iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 1.1.1.1:53 2>/dev/null 1>/dev/null
+            iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 1.0.0.1:53 2>/dev/null 1>/dev/null
+            iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 1.1.1.1:53 2>/dev/null 1>/dev/null
+            iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 1.0.0.1:53 2>/dev/null 1>/dev/null
+            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1111]:53 2>/dev/null 1>/dev/null
+            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1001]:53 2>/dev/null 1>/dev/null
+            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1111]:53 2>/dev/null 1>/dev/null
+            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2606:4700:4700::1001]:53 2>/dev/null 1>/dev/null
             # SETPROP
-            setprop net.eth0.dns1 1.1.1.1 2>/dev/null 1>/dev/nul
-            setprop net.eth0.dns2 1.0.0.1 2>/dev/null 1>/dev/nul
-            setprop net.dns1 1.1.1.1 2>/dev/null 1>/dev/nul
-            setprop net.dns2 1.0.0.1 2>/dev/null 1>/dev/nul
-            setprop net.ppp0.dns1 1.1.1.1 2>/dev/null 1>/dev/nul
-            setprop net.ppp0.dns2 1.0.0.1 2>/dev/null 1>/dev/nul
-            setprop net.rmnet0.dns1 1.1.1.1 2>/dev/null 1>/dev/nul
-            setprop net.rmnet0.dns2 1.0.0.1 2>/dev/null 1>/dev/nul
-            setprop net.rmnet1.dns1 1.1.1.1 2>/dev/null 1>/dev/nul
-            setprop net.rmnet1.dns2 1.0.0.1 2>/dev/null 1>/dev/nul
-            setprop net.rmnet2.dns1 1.1.1.1 2>/dev/null 1>/dev/nul
-            setprop net.rmnet2.dns2 1.0.0.1 2>/dev/null 1>/dev/nul
-            setprop net.pdpbr1.dns1 1.1.1.1 2>/dev/null 1>/dev/nul
-            setprop net.pdpbr1.dns2 1.0.0.1 2>/dev/null 1>/dev/nul
-            setprop net.wlan0.dns1 1.1.1.1 2>/dev/null 1>/dev/nul
-            setprop net.wlan0.dns2 1.0.0.1 2>/dev/null 1>/dev/nul
-            # setprop 2606:4700:4700::1111 '' 2>/dev/null 1>/dev/nul
-            # setprop 2606:4700:4700::1001 '' 2>/dev/null 1>/dev/nul
+            setprop net.eth0.dns1 1.1.1.1 2>/dev/null 1>/dev/null
+            setprop net.eth0.dns2 1.0.0.1 2>/dev/null 1>/dev/null
+            setprop net.dns1 1.1.1.1 2>/dev/null 1>/dev/null
+            setprop net.dns2 1.0.0.1 2>/dev/null 1>/dev/null
+            setprop net.ppp0.dns1 1.1.1.1 2>/dev/null 1>/dev/null
+            setprop net.ppp0.dns2 1.0.0.1 2>/dev/null 1>/dev/null
+            setprop net.rmnet0.dns1 1.1.1.1 2>/dev/null 1>/dev/null
+            setprop net.rmnet0.dns2 1.0.0.1 2>/dev/null 1>/dev/null
+            setprop net.rmnet1.dns1 1.1.1.1 2>/dev/null 1>/dev/null
+            setprop net.rmnet1.dns2 1.0.0.1 2>/dev/null 1>/dev/null
+            setprop net.rmnet2.dns1 1.1.1.1 2>/dev/null 1>/dev/null
+            setprop net.rmnet2.dns2 1.0.0.1 2>/dev/null 1>/dev/null
+            setprop net.pdpbr1.dns1 1.1.1.1 2>/dev/null 1>/dev/null
+            setprop net.pdpbr1.dns2 1.0.0.1 2>/dev/null 1>/dev/null
+            setprop net.wlan0.dns1 1.1.1.1 2>/dev/null 1>/dev/null
+            setprop net.wlan0.dns2 1.0.0.1 2>/dev/null 1>/dev/null
+            # setprop 2606:4700:4700::1111 '' 2>/dev/null 1>/dev/null
+            # setprop 2606:4700:4700::1001 '' 2>/dev/null 1>/dev/null
         elif [ "$GetDnsType" == "google" ];then
             echo "use google dns "| tee -a $saveLog 
             # reset
             ResetDns
             # reset
-            iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 8.8.8.8:53 2>/dev/null 1>/dev/nul
-            iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 8.8.4.4:53 2>/dev/null 1>/dev/nul
-            iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 8.8.8.8:53 2>/dev/null 1>/dev/nul
-            iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 8.8.4.4:53 2>/dev/null 1>/dev/nul
-            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination [2001:4860:4860:8888]:53 2>/dev/null 1>/dev/nul
-            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination [2001:4860:4860:8844]:53 2>/dev/null 1>/dev/nul
-            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination [2001:4860:4860:8888]:53 2>/dev/null 1>/dev/nul
-            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination [2001:4860:4860:8844]:53 2>/dev/null 1>/dev/nul
+            iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 8.8.8.8:53 2>/dev/null 1>/dev/null
+            iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 8.8.4.4:53 2>/dev/null 1>/dev/null
+            iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 8.8.8.8:53 2>/dev/null 1>/dev/null
+            iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 8.8.4.4:53 2>/dev/null 1>/dev/null
+            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination [2001:4860:4860:8888]:53 2>/dev/null 1>/dev/null
+            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination [2001:4860:4860:8844]:53 2>/dev/null 1>/dev/null
+            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination [2001:4860:4860:8888]:53 2>/dev/null 1>/dev/null
+            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination [2001:4860:4860:8844]:53 2>/dev/null 1>/dev/null
             # SETPROP
-            setprop net.eth0.dns1 8.8.8.8 2>/dev/null 1>/dev/nul
-            setprop net.eth0.dns2 8.8.4.4 2>/dev/null 1>/dev/nul
-            setprop net.dns1 8.8.8.8 2>/dev/null 1>/dev/nul
-            setprop net.dns2 8.8.4.4 2>/dev/null 1>/dev/nul
-            setprop net.ppp0.dns1 8.8.8.8 2>/dev/null 1>/dev/nul
-            setprop net.ppp0.dns2 8.8.4.4 2>/dev/null 1>/dev/nul
-            setprop net.rmnet0.dns1 8.8.8.8 2>/dev/null 1>/dev/nul
-            setprop net.rmnet0.dns2 8.8.4.4 2>/dev/null 1>/dev/nul
-            setprop net.rmnet1.dns1 8.8.8.8 2>/dev/null 1>/dev/nul
-            setprop net.rmnet1.dns2 8.8.4.4 2>/dev/null 1>/dev/nul
-            setprop net.rmnet2.dns1 8.8.8.8 2>/dev/null 1>/dev/nul
-            setprop net.rmnet2.dns2 8.8.4.4 2>/dev/null 1>/dev/nul
-            setprop net.pdpbr1.dns1 8.8.8.8 2>/dev/null 1>/dev/nul
-            setprop net.pdpbr1.dns2 8.8.4.4 2>/dev/null 1>/dev/nul
-            setprop net.wlan0.dns1 8.8.8.8 2>/dev/null 1>/dev/nul
-            setprop net.wlan0.dns2 8.8.4.4 2>/dev/null 1>/dev/nul
-            # setprop 2001:4860:4860::8888 '' 2>/dev/null 1>/dev/nul
-            # setprop 2001:4860:4860::8844 '' 2>/dev/null 1>/dev/nul
+            setprop net.eth0.dns1 8.8.8.8 2>/dev/null 1>/dev/null
+            setprop net.eth0.dns2 8.8.4.4 2>/dev/null 1>/dev/null
+            setprop net.dns1 8.8.8.8 2>/dev/null 1>/dev/null
+            setprop net.dns2 8.8.4.4 2>/dev/null 1>/dev/null
+            setprop net.ppp0.dns1 8.8.8.8 2>/dev/null 1>/dev/null
+            setprop net.ppp0.dns2 8.8.4.4 2>/dev/null 1>/dev/null
+            setprop net.rmnet0.dns1 8.8.8.8 2>/dev/null 1>/dev/null
+            setprop net.rmnet0.dns2 8.8.4.4 2>/dev/null 1>/dev/null
+            setprop net.rmnet1.dns1 8.8.8.8 2>/dev/null 1>/dev/null
+            setprop net.rmnet1.dns2 8.8.4.4 2>/dev/null 1>/dev/null
+            setprop net.rmnet2.dns1 8.8.8.8 2>/dev/null 1>/dev/null
+            setprop net.rmnet2.dns2 8.8.4.4 2>/dev/null 1>/dev/null
+            setprop net.pdpbr1.dns1 8.8.8.8 2>/dev/null 1>/dev/null
+            setprop net.pdpbr1.dns2 8.8.4.4 2>/dev/null 1>/dev/null
+            setprop net.wlan0.dns1 8.8.8.8 2>/dev/null 1>/dev/null
+            setprop net.wlan0.dns2 8.8.4.4 2>/dev/null 1>/dev/null
+            # setprop 2001:4860:4860::8888 '' 2>/dev/null 1>/dev/null
+            # setprop 2001:4860:4860::8844 '' 2>/dev/null 1>/dev/null
         elif [ "$GetDnsType" == "adguard" ];then
             echo "use adguard dns "| tee -a $saveLog 
             # reset
@@ -1051,61 +1041,61 @@ runScript(){
             iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 176.103.130.131:5353
             iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 176.103.130.130:5353
             iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 176.103.130.131:5353
-            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad1:0ff]:5353 2>/dev/null 1>/dev/nul
-            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad2:0ff]:5353 2>/dev/null 1>/dev/nul
-            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad1:0ff]:5353 2>/dev/null 1>/dev/nul
-            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad2:0ff]:5353 2>/dev/null 1>/dev/nul
+            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad1:0ff]:5353 2>/dev/null 1>/dev/null
+            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad2:0ff]:5353 2>/dev/null 1>/dev/null
+            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad1:0ff]:5353 2>/dev/null 1>/dev/null
+            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2a00:5a60::ad2:0ff]:5353 2>/dev/null 1>/dev/null
             # SETPROP
-            setprop net.eth0.dns1 176.103.130.130 2>/dev/null 1>/dev/nul
-            setprop net.eth0.dns2 176.103.130.131 2>/dev/null 1>/dev/nul
-            setprop net.dns1 176.103.130.130 2>/dev/null 1>/dev/nul
-            setprop net.dns2 176.103.130.131 2>/dev/null 1>/dev/nul
-            setprop net.ppp0.dns1 176.103.130.130 2>/dev/null 1>/dev/nul
-            setprop net.ppp0.dns2 176.103.130.131 2>/dev/null 1>/dev/nul
-            setprop net.rmnet0.dns1 176.103.130.130 2>/dev/null 1>/dev/nul
-            setprop net.rmnet0.dns2 176.103.130.131 2>/dev/null 1>/dev/nul
-            setprop net.rmnet1.dns1 176.103.130.130 2>/dev/null 1>/dev/nul
-            setprop net.rmnet1.dns2 176.103.130.131 2>/dev/null 1>/dev/nul
-            setprop net.rmnet2.dns1 176.103.130.130 2>/dev/null 1>/dev/nul
-            setprop net.rmnet2.dns2 176.103.130.131 2>/dev/null 1>/dev/nul
-            setprop net.pdpbr1.dns1 176.103.130.130 2>/dev/null 1>/dev/nul
-            setprop net.pdpbr1.dns2 176.103.130.131 2>/dev/null 1>/dev/nul
-            setprop net.wlan0.dns1 176.103.130.130 2>/dev/null 1>/dev/nul
-            setprop net.wlan0.dns2 176.103.130.131 2>/dev/null 1>/dev/nul
-            # setprop 2a00:5a60::ad1:0ff:5353 '' 2>/dev/null 1>/dev/nul
-            # setprop 2a00:5a60::ad2:0ff:5353 '' 2>/dev/null 1>/dev/nul
+            setprop net.eth0.dns1 176.103.130.130 2>/dev/null 1>/dev/null
+            setprop net.eth0.dns2 176.103.130.131 2>/dev/null 1>/dev/null
+            setprop net.dns1 176.103.130.130 2>/dev/null 1>/dev/null
+            setprop net.dns2 176.103.130.131 2>/dev/null 1>/dev/null
+            setprop net.ppp0.dns1 176.103.130.130 2>/dev/null 1>/dev/null
+            setprop net.ppp0.dns2 176.103.130.131 2>/dev/null 1>/dev/null
+            setprop net.rmnet0.dns1 176.103.130.130 2>/dev/null 1>/dev/null
+            setprop net.rmnet0.dns2 176.103.130.131 2>/dev/null 1>/dev/null
+            setprop net.rmnet1.dns1 176.103.130.130 2>/dev/null 1>/dev/null
+            setprop net.rmnet1.dns2 176.103.130.131 2>/dev/null 1>/dev/null
+            setprop net.rmnet2.dns1 176.103.130.130 2>/dev/null 1>/dev/null
+            setprop net.rmnet2.dns2 176.103.130.131 2>/dev/null 1>/dev/null
+            setprop net.pdpbr1.dns1 176.103.130.130 2>/dev/null 1>/dev/null
+            setprop net.pdpbr1.dns2 176.103.130.131 2>/dev/null 1>/dev/null
+            setprop net.wlan0.dns1 176.103.130.130 2>/dev/null 1>/dev/null
+            setprop net.wlan0.dns2 176.103.130.131 2>/dev/null 1>/dev/null
+            # setprop 2a00:5a60::ad1:0ff:5353 '' 2>/dev/null 1>/dev/null
+            # setprop 2a00:5a60::ad2:0ff:5353 '' 2>/dev/null 1>/dev/null
         elif [ "$GetDnsType" == "uncensored" ];then
             echo "use uncensored dns "| tee -a $saveLog 
             # reset
             ResetDns
             # reset
-            iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 91.239.100.100:5353 2>/dev/null 1>/dev/nul
-            iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 91.239.100.100:5353 2>/dev/null 1>/dev/nul
-            iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 91.239.100.100:5353 2>/dev/null 1>/dev/nul
-            iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 91.239.100.100:5353 2>/dev/null 1>/dev/nul
-            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353 2>/dev/null 1>/dev/nul
-            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353 2>/dev/null 1>/dev/nul
-            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353 2>/dev/null 1>/dev/nul
-            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353 2>/dev/null 1>/dev/nul
+            iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 91.239.100.100:5353 2>/dev/null 1>/dev/null
+            iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 91.239.100.100:5353 2>/dev/null 1>/dev/null
+            iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 91.239.100.100:5353 2>/dev/null 1>/dev/null
+            iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 91.239.100.100:5353 2>/dev/null 1>/dev/null
+            ip6tables -t nat -A OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353 2>/dev/null 1>/dev/null
+            ip6tables -t nat -I OUTPUT -p 6 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353 2>/dev/null 1>/dev/null
+            ip6tables -t nat -A OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353 2>/dev/null 1>/dev/null
+            ip6tables -t nat -I OUTPUT -p 17 --dport 53 -j DNAT --to-destination  [2001:67c:28a4::]:5353 2>/dev/null 1>/dev/null
             # SETPROP
-            setprop net.eth0.dns1 91.239.100.100 2>/dev/null 1>/dev/nul
-            setprop net.eth0.dns2 91.239.100.100 2>/dev/null 1>/dev/nul
-            setprop net.dns1 91.239.100.100 2>/dev/null 1>/dev/nul
-            setprop net.dns2 91.239.100.100 2>/dev/null 1>/dev/nul
-            setprop net.ppp0.dns1 91.239.100.100 2>/dev/null 1>/dev/nul
-            setprop net.ppp0.dns2 91.239.100.100 2>/dev/null 1>/dev/nul
+            setprop net.eth0.dns1 91.239.100.100 2>/dev/null 1>/dev/null
+            setprop net.eth0.dns2 91.239.100.100 2>/dev/null 1>/dev/null
+            setprop net.dns1 91.239.100.100 2>/dev/null 1>/dev/null
+            setprop net.dns2 91.239.100.100 2>/dev/null 1>/dev/null
+            setprop net.ppp0.dns1 91.239.100.100 2>/dev/null 1>/dev/null
+            setprop net.ppp0.dns2 91.239.100.100 2>/dev/null 1>/dev/null
             setprop net.rmnet0.dns1 91.239.100.100 2>/dev/null 1>/dev/null
-            setprop net.rmnet0.dns2 91.239.100.100 2>/dev/null 1>/dev/nul
-            setprop net.rmnet1.dns1 91.239.100.100 2>/dev/null 1>/dev/nul
-            setprop net.rmnet1.dns2 91.239.100.100 2>/dev/null 1>/dev/nul
-            setprop net.rmnet2.dns1 91.239.100.100 2>/dev/null 1>/dev/nul
-            setprop net.rmnet2.dns2 91.239.100.100 2>/dev/null 1>/dev/nul
-            setprop net.pdpbr1.dns1 91.239.100.100 2>/dev/null 1>/dev/nul
-            setprop net.pdpbr1.dns2 91.239.100.100 2>/dev/null 1>/dev/nul
-            setprop net.wlan0.dns1 91.239.100.100 2>/dev/null 1>/dev/nul
-            setprop net.wlan0.dns2 91.239.100.100 2>/dev/null 1>/dev/nul
-            # setprop 2001:67c:28a4:::5353 '' 2>/dev/null 1>/dev/nul
-            # setprop 2001:67c:28a4:::5353 '' 2>/dev/null 1>/dev/nul
+            setprop net.rmnet0.dns2 91.239.100.100 2>/dev/null 1>/dev/null
+            setprop net.rmnet1.dns1 91.239.100.100 2>/dev/null 1>/dev/null
+            setprop net.rmnet1.dns2 91.239.100.100 2>/dev/null 1>/dev/null
+            setprop net.rmnet2.dns1 91.239.100.100 2>/dev/null 1>/dev/null
+            setprop net.rmnet2.dns2 91.239.100.100 2>/dev/null 1>/dev/null
+            setprop net.pdpbr1.dns1 91.239.100.100 2>/dev/null 1>/dev/null
+            setprop net.pdpbr1.dns2 91.239.100.100 2>/dev/null 1>/dev/null
+            setprop net.wlan0.dns1 91.239.100.100 2>/dev/null 1>/dev/null
+            setprop net.wlan0.dns2 91.239.100.100 2>/dev/null 1>/dev/null
+            # setprop 2001:67c:28a4:::5353 '' 2>/dev/null 1>/dev/null
+            # setprop 2001:67c:28a4:::5353 '' 2>/dev/null 1>/dev/null
         else
             if [ "$GetDnsType" != "system" ];then
                 echo "system" > "$PathModulConfig/dns.txt"
@@ -1116,13 +1106,13 @@ runScript(){
             # reset
         fi
         if [ "$GetDnsType" != "system" ];then
-            sysctl -e -w net.ipv4.tcp_low_latency=0 2>/dev/null 1>/dev/nul
-            sysctl -e -w net.ipv4.tcp_dsack=1 2>/dev/null 1>/dev/nul
-            sysctl -e -w net.ipv4.tcp_ecn=2 2>/dev/null 1>/dev/nul
-            sysctl -e -w net.ipv4.tcp_timestamps=1 2>/dev/null 1>/dev/nul
-            sysctl -e -w net.ipv4.tcp_window_scaling=1 2>/dev/null 1>/dev/nul
-            sysctl -e -w net.ipv4.tcp_sack=1 2>/dev/null 1>/dev/nul
-            sysctl -e -w net.ipv4.ip_forward=1 2>/dev/null 1>/dev/nul
+            sysctl -e -w net.ipv4.tcp_low_latency=0 2>/dev/null 1>/dev/null
+            sysctl -e -w net.ipv4.tcp_dsack=1 2>/dev/null 1>/dev/null
+            sysctl -e -w net.ipv4.tcp_ecn=2 2>/dev/null 1>/dev/null
+            sysctl -e -w net.ipv4.tcp_timestamps=1 2>/dev/null 1>/dev/null
+            sysctl -e -w net.ipv4.tcp_window_scaling=1 2>/dev/null 1>/dev/null
+            sysctl -e -w net.ipv4.tcp_sack=1 2>/dev/null 1>/dev/null
+            sysctl -e -w net.ipv4.ip_forward=1 2>/dev/null 1>/dev/null
         fi
         echo "  --- --- --- --- --- " | tee -a $saveLog 
     fi
@@ -1141,32 +1131,32 @@ runScript(){
                 fi;
             done;
             if [ "$GetBusyBox" == "none " ];then
-                echo "GMS Doze fail . . ." | tee -a $Path/ZyC_GmsDoze.log 2>/dev/null 1>/dev/nul
+                echo "GMS Doze fail . . ." | tee -a $Path/ZyC_GmsDoze.log 2>/dev/null 1>/dev/null
             else
-                echo "Note : better to use universal gms doze :D" | tee -a $Path/ZyC_GmsDoze.log 2>/dev/null 1>/dev/nul
+                echo "Note : better to use universal gms doze :D" | tee -a $Path/ZyC_GmsDoze.log 2>/dev/null 1>/dev/null
                 changeSE="tidak"
                 if [ "$(getenforce)" == "Enforcing" ];then
                     changeSE="ya"
                     setenforce 0
                 fi
-                pm disable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceive 2>/dev/null 1>/dev/nul
-                pm disable com.google.android.gms/com.google.android.gms.auth.managed.admin.DeviceAdminReceive 2>/dev/null 1>/dev/nul
+                pm disable com.google.android.gms/com.google.android.gms.mdm.receivers.MdmDeviceAdminReceive 2>/dev/null 1>/dev/null
+                pm disable com.google.android.gms/com.google.android.gms.auth.managed.admin.DeviceAdminReceive 2>/dev/null 1>/dev/null
                 if  [ ! -z "$(pm list packages -f com.google.android.gms)" ] ; then
-                    su -c "pm enable com.google.android.gms/.ads.social.GcmSchedulerWakeupService" 2>/dev/null 1>/dev/nul
-                    su -c "pm enable com.google.android.gms/.analytics.AnalyticsService" 2>/dev/null 1>/dev/nul
-                    su -c "pm enable com.google.android.gms/.analytics.service.PlayLogMonitorIntervalService" 2>/dev/null 1>/dev/nul
-                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService" 2>/dev/null 1>/dev/nul
-                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$ActiveReceiver" 2>/dev/null 1>/dev/nul
-                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$Receiver" 2>/dev/null 1>/dev/nul
-                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$SecretCodeReceiver" 2>/dev/null 1>/dev/nul
-                    su -c "pm enable com.google.android.gms/.update.SystemUpdateActivity" 2>/dev/null 1>/dev/nul
+                    su -c "pm enable com.google.android.gms/.ads.social.GcmSchedulerWakeupService" 2>/dev/null 1>/dev/null
+                    su -c "pm enable com.google.android.gms/.analytics.AnalyticsService" 2>/dev/null 1>/dev/null
+                    su -c "pm enable com.google.android.gms/.analytics.service.PlayLogMonitorIntervalService" 2>/dev/null 1>/dev/null
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService" 2>/dev/null 1>/dev/null
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$ActiveReceiver" 2>/dev/null 1>/dev/null
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$Receiver" 2>/dev/null 1>/dev/null
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateService\$SecretCodeReceiver" 2>/dev/null 1>/dev/null
+                    su -c "pm enable com.google.android.gms/.update.SystemUpdateActivity" 2>/dev/null 1>/dev/null
                 fi
                 if  [ ! -z "$(pm list packages -f com.google.android.gsf)" ] ; then
-                    su -c "pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity" s2>/dev/null 1>/dev/nul
-                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService" s2>/dev/null 1>/dev/nul
-                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$Receiver" s2>/dev/null 1>/dev/nul
-                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver" s2>/dev/null 1>/dev/nul
-                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" s2>/dev/null 1>/dev/nul
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity" s2>/dev/null 1>/dev/null
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService" s2>/dev/null 1>/dev/null
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$Receiver" s2>/dev/null 1>/dev/null
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver" s2>/dev/null 1>/dev/null
+                    su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" s2>/dev/null 1>/dev/null
                 fi
                 if [ "$changeSE" == "ya" ];then
                     setenforce 1
@@ -1186,7 +1176,7 @@ runScript(){
                         cp -af "$MODPATH/system/system/product/etc/sysconfig/google.xml.fixed" $MODPATH/system/system/product/etc/sysconfig/google.xml 
                     fi
                 fi
-                echo "GMS Doze done . . ." | tee -a $Path/ZyC_GmsDoze.log 2>/dev/null 1>/dev/nul
+                echo "GMS Doze done . . ." | tee -a $Path/ZyC_GmsDoze.log 2>/dev/null 1>/dev/null
             fi
         else
             if [ -e $MODPATH/system/etc/sysconfig/google.xml.ori ]; then
@@ -1214,27 +1204,27 @@ if [ "$FromTerminal" == "tidak" ];then
         if [ -e "$PathModulConfigAi/ai_status.txt" ]; then
             AiStatus="$(cat "$PathModulConfigAi/ai_status.txt")"
             if [ "$AiStatus" == "1" ];then
-                echo "starting ai mode . . . " | tee -a $saveLog 2>/dev/null 1>/dev/nul
-                echo "  --- --- --- --- --- " | tee -a $saveLog 2>/dev/null 1>/dev/nul
+                echo "starting ai mode . . . " | tee -a $saveLog 2>/dev/null 1>/dev/null
+                echo "  --- --- --- --- --- " | tee -a $saveLog 2>/dev/null 1>/dev/null
                 echo "ai start at  : $(date +" %r")"| tee -a $Path/ZyC_Turbo.running.log ;
             elif [ "$AiStatus" == "2" ];then
-                echo "re - run ai mode . . . " | tee -a $saveLog 2>/dev/null 1>/dev/nul
-                echo "  --- --- --- --- --- " | tee -a $saveLog 2>/dev/null 1>/dev/nul
+                echo "re - run ai mode . . . " | tee -a $saveLog 2>/dev/null 1>/dev/null
+                echo "  --- --- --- --- --- " | tee -a $saveLog 2>/dev/null 1>/dev/null
                 echo "ai start at  : $(date +" %r")"| tee -a $Path/ZyC_Turbo.running.log ;
             elif [ "$AiStatus" == "3" ];then
-                echo "deactive ai mode . . . " | tee -a $saveLog 2>/dev/null 1>/dev/nul
-                echo "  --- --- --- --- --- " | tee -a $saveLog 2>/dev/null 1>/dev/nul
+                echo "deactive ai mode . . . " | tee -a $saveLog 2>/dev/null 1>/dev/null
+                echo "  --- --- --- --- --- " | tee -a $saveLog 2>/dev/null 1>/dev/null
             elif [ "$AiStatus" == "0" ];then
-                echo "ai status off"| tee -a $saveLog 2>/dev/null 1>/dev/nul
-                echo "  --- --- --- --- --- " | tee -a $saveLog 2>/dev/null 1>/dev/nul
+                echo "ai status off"| tee -a $saveLog 2>/dev/null 1>/dev/null
+                echo "  --- --- --- --- --- " | tee -a $saveLog 2>/dev/null 1>/dev/null
             else
-                echo "ai status error,set to 0"| tee -a $saveLog 2>/dev/null 1>/dev/nul
+                echo "ai status error,set to 0"| tee -a $saveLog 2>/dev/null 1>/dev/null
                 echo '0' > "$PathModulConfigAi/ai_status.txt"
-                echo "  --- --- --- --- --- " | tee -a $saveLog 2>/dev/null 1>/dev/nul
+                echo "  --- --- --- --- --- " | tee -a $saveLog 2>/dev/null 1>/dev/null
             fi
         fi
     fi
-    $nohup ./$BASEDIR/ai_mode.sh "fromBoot" 2>/dev/null 1>/dev/null&
+    $nohup .$BASEDIR/ai_mode.sh "fromBoot" 2>/dev/null 1>/dev/null &
 fi
-echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog 2>/dev/null 1>/dev/nul
-echo "  --- --- --- --- --->> " | tee -a $saveLog 2>/dev/null 1>/dev/nul
+echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog 2>/dev/null 1>/dev/null
+echo "  --- --- --- --- --->> " | tee -a $saveLog 2>/dev/null 1>/dev/null

@@ -24,11 +24,11 @@ for i in /system/bin /system/xbin /sbin /su/xbin; do
 done;
 usleep=usleep
 if [ -e "$PathBusyBox/busybox" ];then
-    usleep=$PathBusyBox" usleep"
+    usleep=$PathBusyBox"/busybox usleep"
 fi
 nohup=nohup
 if [ -e "$PathBusyBox/busybox" ];then
-    nohup=$PathBusyBox" nohup"
+    nohup=$PathBusyBox"/busybox nohup"
 fi
 ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 if [ ! -e $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt ]; then
@@ -69,10 +69,10 @@ if [ -e "$PathModulConfigAi/ai_status.txt" ];then
     elif [ "$aiStatus" == '2' ];then
         echo "ai mode still running"
     else
-        $nohup ./system/etc/ZyC_Ai/ai_mode.sh 2>/dev/null 1>/dev/null& 
+        $nohup ./system/etc/ZyC_Ai/ai_mode.sh 2>/dev/null 1>/dev/null & 
         echo "close this terminal, the ai mode has been running"
     fi
 else
-    $nohup ./system/etc/ZyC_Ai/ai_mode.sh 2>/dev/null 1>/dev/null& 
+    $nohup ./system/etc/ZyC_Ai/ai_mode.sh 2>/dev/null 1>/dev/null & 
     echo "close this terminal, the ai mode has been running"
 fi

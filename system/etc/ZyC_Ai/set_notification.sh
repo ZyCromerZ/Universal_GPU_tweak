@@ -16,15 +16,15 @@ for i in /system/bin /system/xbin /sbin /su/xbin; do
 done;
 nohup=nohup
 if [ -e "$PathBusyBox/busybox" ];then
-    nohup=$PathBusyBox" nohup"
+    nohup=$PathBusyBox"/busybox nohup"
 fi
 usleep=usleep
 if [ -e "$PathBusyBox/busybox" ];then
-    usleep=$PathBusyBox" usleep"
+    usleep=$PathBusyBox"/busybox usleep"
 fi
 sleep=sleep
 if [ -e "$PathBusyBox/busybox" ];then
-    sleep=$PathBusyBox" sleep"
+    sleep=$PathBusyBox"/busybox sleep"
 fi
 if [ ! -z "$1" ];then
     getType=$1

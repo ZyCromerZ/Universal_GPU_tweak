@@ -13,11 +13,11 @@ for i in /system/bin /system/xbin /sbin /su/xbin; do
 done;
 usleep=usleep
 if [ -e "$PathBusyBox/busybox" ];then
-    usleep=$PathBusyBox" usleep"
+    usleep=$PathBusyBox"/busybox usleep"
 fi
 nohup=nohup
 if [ -e "$PathBusyBox/busybox" ];then
-    nohup=$PathBusyBox" nohup"
+    nohup=$PathBusyBox"/busybox nohup"
 fi
 if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
     echo $merahHitam"please type 'su' first -_-"$ResetWarna
@@ -39,17 +39,17 @@ Path=$ModPath/modul_mantul/ZyC_mod
 PathModulConfig=$Path/ZyC_Turbo_config
 if [ ! -z "$1" ];then
     echo "updating mode to '$1',please wait. . .";
-    printf "$1" | zyc_mode 2>/dev/null 1>/dev/nul;
+    printf "$1" | zyc_mode 2>/dev/null 1>/dev/null;
     $usleep 100000
     echo "update mode to '$1' done .";
 fi;
 if [ ! -z "$2" ];then
     echo "updating mode render to '$2',please wait. . .";
-    printf "$2" | zyc_render 2>/dev/null 1>/dev/nul;
+    printf "$2" | zyc_render 2>/dev/null 1>/dev/null;
     $usleep 100000
     echo "update mode render to '$2' done .";
 fi;
-zyc_turbo 2>/dev/null 1>/dev/nul
+zyc_turbo 2>/dev/null 1>/dev/null
 mode=$(cat "$PathModulConfig/status_modul.txt");
 render=$(cat "$PathModulConfig/mode_render.txt");
 echo "use mode [$mode]  and render using [$render]";

@@ -110,6 +110,17 @@ if [ -e  /system/system/product/etc/sysconfig/google.xml ]; then
     set_perm_recursive $MODPATH/system/system 0 0 0755 0644
 fi
 
+## remove some useless files
+if [ -e  $MODPATH/.gitattributes ]; then
+    rm -rf $MODPATH/.gitattributes
+fi
+if [ -e  $MODPATH/.gitignore ]; then
+    rm -rf $MODPATH/.gitignore
+fi
+if [ -e  $MODPATH/readme.md ]; then
+    rm -rf $MODPATH/readme.md
+fi
+
 ## magisk path
 echo "$NVBASE/modules" > $MODPATH/system/etc/ZyC_Ai/magisk_path.txt
 

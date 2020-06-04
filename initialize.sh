@@ -18,7 +18,7 @@ for i in /system/bin /system/xbin /sbin /su/xbin; do
 done;
 usleep=usleep
 if [ -e "$PathBusyBox/busybox" ];then
-    usleep=$PathBusyBox" usleep"
+    usleep=$PathBusyBox"/busybox usleep"
 fi
 ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 GetVersion="$(cat "$ModulPath/ZyC_Turbo/module.prop" | grep "version=Version" | sed 's/version=Version*//g')"
@@ -617,7 +617,7 @@ For V2, just flash it via magisk, it will automatically activates after rebooted
 
 Note:
 mode = off / on / turbo
-namarender = opengl / skiagl / skiavk" | tee -a $SetNotes 2>/dev/null 1>/dev/nul
+namarender = opengl / skiagl / skiavk" | tee -a $SetNotes 2>/dev/null 1>/dev/null
     fi
     if [ ! -e $PathModulConfig/notes_id.txt ]; then
         SetNotes=$PathModulConfig/notes_id.txt;
@@ -808,7 +808,7 @@ Untuk V2 cukup flash teros biarkan,udah otomatis aktif kalo udah reboot
 
 Note :
 namamode = off/on/turbo
-namarender = opengl/skiagl/skiavk" | tee -a $SetNotes 2>/dev/null 1>/dev/nul
+namarender = opengl/skiagl/skiavk" | tee -a $SetNotes 2>/dev/null 1>/dev/null
     
     fi
 

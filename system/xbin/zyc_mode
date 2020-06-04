@@ -13,7 +13,7 @@ for i in /system/bin /system/xbin /sbin /su/xbin; do
 done;
 usleep=usleep
 if [ -e "$PathBusyBox/busybox" ];then
-    usleep=$PathBusyBox" usleep"
+    usleep=$PathBusyBox"/busybox usleep"
 fi
 if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
     echo $merahHitam"please type 'su' first -_-"$ResetWarna
@@ -42,7 +42,7 @@ if [ -z $modeNya ];then
 else
     echo $modeNya > $PathModulConfig/status_modul.txt;
     echo "mode updated to [$modeNya]";
-    zyc_turbo 2>/dev/null 1>/dev/nul
+    zyc_turbo 2>/dev/null 1>/dev/null
 fi;
 echo 'request done . . .';
 echo "see log at $Path/ZyC_turbo.log";
