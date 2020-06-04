@@ -429,6 +429,18 @@ if [ "$FromTerminal" == "tidak" ];then
     if [ ! -e $PathModulConfig/dns.txt ]; then
         echo "system" > $PathModulConfig/dns.txt
     fi
+    # xiaomi thermal changer
+    if -e [ /sys/class/thermal/thermal_message/sconfig ];then
+        if [ ! -e $PathModulConfig/xiaomi_thermal_default.txt ]; then
+            echo "10" > $PathModulConfig/xiaomi_thermal_default.txt
+        fi
+        if [ ! -e $PathModulConfig/xiaomi_thermal_on_turbo.txt ]; then
+            echo "-1" > $PathModulConfig/xiaomi_thermal_on_turbo.txt
+        fi
+        if [ ! -e $PathModulConfig/xiaomi_thermal_lock_value.txt ]; then
+            echo "0" > $PathModulConfig/xiaomi_thermal_lock_value.txt
+        fi
+    fi
     # Check notes version
     # SetModulVersion="3.36-71 BETA"
     SetModulVersion="$GetVersion"

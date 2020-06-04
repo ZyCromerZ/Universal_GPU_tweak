@@ -148,11 +148,15 @@ SetOff(){
         fi
     fi
     if [ -e "/sys/class/thermal/thermal_message/sconfig" ];then
-            echo 'xiaomi sconfig thermal detected . . .' | tee -a $saveLog;
-            echo 'set to default' | tee -a $saveLog;
-            chmod 0664 "/sys/class/thermal/thermal_message/sconfig"
-            echo "10" > "/sys/class/thermal/thermal_message/sconfig"
-            chmod 0444 "/sys/class/thermal/thermal_message/sconfig"
+            XThermalDefault="$(cat "$PathModulConfig/xiaomi_thermal_default.txt")"
+            XThermalLockVal="$(cat "$PathModulConfig/xiaomi_thermal_lock_value.txt")"
+            if [ $XThermalLockVal == "0" ];then
+                echo 'xiaomi sconfig thermal detected . . .' | tee -a $saveLog;
+                echo 'update value to '"$XThermalOnTurbo" | tee -a $saveLog;
+                chmod 0664 "/sys/class/thermal/thermal_message/sconfig"
+                echo "$XThermalDefault" > "/sys/class/thermal/thermal_message/sconfig"
+                chmod 0444 "/sys/class/thermal/thermal_message/sconfig"
+            fi
     fi
     echo 'revert done . . .' | tee -a $saveLog;
     echo "  --- --- --- --- --- " | tee -a $saveLog
@@ -209,11 +213,15 @@ SetTurbo(){
             echo "1" > $NyariGPU/bus_split
         fi
         if [ -e "/sys/class/thermal/thermal_message/sconfig" ];then
-            echo 'xiaomi sconfig thermal detected . . .' | tee -a $saveLog;
-            echo 'disabled for best perf :V' | tee -a $saveLog;
-            chmod 0664 "/sys/class/thermal/thermal_message/sconfig"
-            echo "-1" > "/sys/class/thermal/thermal_message/sconfig"
-            chmod 0444 "/sys/class/thermal/thermal_message/sconfig"
+            XThermalOnTurbo="$(cat "$PathModulConfig/xiaomi_thermal_on_turbo.txt")"
+            XThermalLockVal="$(cat "$PathModulConfig/xiaomi_thermal_lock_value.txt")"
+            if [ "$XThermalLockVal" == "0" ];then
+                echo 'xiaomi sconfig thermal detected . . .' | tee -a $saveLog;
+                echo 'update value to '"$XThermalOnTurbo" | tee -a $saveLog;
+                chmod 0664 "/sys/class/thermal/thermal_message/sconfig"
+                echo "$XThermalOnTurbo" > "/sys/class/thermal/thermal_message/sconfig"
+                chmod 0444 "/sys/class/thermal/thermal_message/sconfig"
+            fi
         fi
         if [ $MALIGPU == "YES" ];then
             if [ -e $NyariGPU/dvfs_period ];then
@@ -473,6 +481,17 @@ runScript(){
 
     # dns
     if [ ! -e "$PathModulConfig/dns.txt" ]; then
+        MissingFile="iya"
+    fi
+
+    # xiaomi thermal changer
+    if [ ! -e "$PathModulConfig/xiaomi_thermal_default.txt" ] && [ -e /sys/class/thermal/thermal_message/sconfig ];then
+        MissingFile="iya"
+    fi
+    if [ ! -e "$PathModulConfig/xiaomi_thermal_on_turbo.txt" ] && [ -e /sys/class/thermal/thermal_message/sconfig ];then
+        MissingFile="iya"
+    fi
+    if [ ! -e "$PathModulConfig/xiaomi_thermal_lock_value.txt" ] && [ -e /sys/class/thermal/thermal_message/sconfig ];then
         MissingFile="iya"
     fi
 
@@ -1221,6 +1240,30 @@ runScript(){
                     cp -af "$MODPATH/system/system/product/etc/sysconfig/google.xml.ori" $MODPATH/system/system/product/etc/sysconfig/google.xml 
                 fi
             fi
+        fi
+    fi
+    
+    if [ -e /sys/class/thermal/thermal_message/sconfig ];then
+        XThermalDefault="$(cat "$PathModulConfig/xiaomi_thermal_default.txt")"
+        XThermalOnTurbo="$(cat "$PathModulConfig/xiaomi_thermal_on_turbo.txt")"
+        XThermalLockVal="$(cat "$PathModulConfig/xiaomi_thermal_lock_value.txt")"
+        if [ "$XThermalLockVal" == "1" ];then
+            echo 'xiaomi sconfig thermal lock based default mode' | tee -a $saveLog;
+            chmod 0664 "/sys/class/thermal/thermal_message/sconfig"
+            echo "$XThermalOnTurbo" > "/sys/class/thermal/thermal_message/sconfig"
+            chmod 0444 "/sys/class/thermal/thermal_message/sconfig"
+        elif [ "$XThermalLockVal" == "2" ];then
+            echo 'xiaomi sconfig thermal lock based turbo mode' | tee -a $saveLog;
+            chmod 0664 "/sys/class/thermal/thermal_message/sconfig"
+            echo "$XThermalOnTurbo" > "/sys/class/thermal/thermal_message/sconfig"
+            chmod 0444 "/sys/class/thermal/thermal_message/sconfig"
+        else
+            echo 'value for xiaomi_thermal_lock_value.txt error . . .' | tee -a $saveLog;
+            echo 'force set to default mode' | tee -a $saveLog;
+            chmod 0664 "/sys/class/thermal/thermal_message/sconfig"
+            echo "$XThermalDefault" > "/sys/class/thermal/thermal_message/sconfig"
+            chmod 0444 "/sys/class/thermal/thermal_message/sconfig"
+            echo '1' > $PathModulConfig/xiaomi_thermal_lock_value.txt
         fi
     fi
 }
