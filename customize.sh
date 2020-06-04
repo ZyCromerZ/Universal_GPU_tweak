@@ -120,6 +120,9 @@ fi
 if [ -e  $MODPATH/readme.md ]; then
     rm -rf $MODPATH/readme.md
 fi
+if [ -e  $MODPATH/updater.sh ]; then
+    rm -rf $MODPATH/updater.sh
+fi
 
 ## magisk path
 echo "$NVBASE/modules" > $MODPATH/system/etc/ZyC_Ai/magisk_path.txt
