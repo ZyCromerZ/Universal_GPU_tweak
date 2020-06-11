@@ -1842,7 +1842,7 @@ PubgFileMover(){
     NoFile=1
     for GetFileConfig in `find "$ModPathGame"/modul_mantul/ZyC_mod/Pubg_config`
     do
-        if [ -e "$GetFileConfig" ) ];then
+        if [ -e "$GetFileConfig" ];then
             echo "[ $NoFile ] $GetFolder" | tee -a "$GetListFileConfig"
             NoFile=$(($NoFile+1))
         fi
@@ -1851,7 +1851,7 @@ PubgFileMover(){
     read FileNumber
     for GetFolderGame in `find "$ModPathGame"/com.tencent.ig/files/UE4Game/ShadowTrackerExtra/ShadowTrackerExtra/Saved/Config`
     do
-        if [ -d "$GetFolderGame" ) ];then
+        if [ -d "$GetFolderGame" ];then
             echo "[ $NoFolder ] $GetFolder" | tee -a "$GetListFolderConfig"
             NoFolder=$(($NoFolder+1))
         fi
@@ -1871,7 +1871,7 @@ PubgFileMover(){
     echo "copy another file again?[y/n]"
     read GetUrInput
     if [ "$GetUrInput" == "y" ];then
-        PubgFileMover()
+        PubgFileMover
     fi
 }
 exitSetting(){
