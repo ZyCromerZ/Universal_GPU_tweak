@@ -1804,7 +1804,7 @@ ListMenu(){
         echo "lock all file done . . . ."
         ListMenu
     elif [ "$pilihan" == "pubgmf" ];then
-        PubgFileMover()
+        PubgFileMover
         ListMenu
     else 
         if [ "$Perubahan" == "ya" ];then
