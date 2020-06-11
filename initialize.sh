@@ -1150,3 +1150,6 @@ fi
 if [ "$changeSE" == "ya" ] && [ -z "$(getprop | grep begonia)" ] ;then
     setenforce 1
 fi
+if [ ! -d "$(cat "$ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt")"/modul_mantul/ZyC_mod/Pubg_config ];then
+    mkdir "$(cat "$ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt")"/modul_mantul/ZyC_mod/Pubg_config
+fi

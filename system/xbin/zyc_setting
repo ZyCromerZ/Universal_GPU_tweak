@@ -1016,6 +1016,12 @@ GameTweak(){
         FortniteGamePath="data/data/com.epicgames.fortnite/files/UE4Game/FortniteGame/FortniteGame/Saved/Config/Android/GameUserSettings.ini"
         FortniteGameGetVal="$(cat $FortniteGamePath)"
     fi
+    if [ -d "$ModPathGame"/com.tencent.ig ];then
+        echo "<-- -- PUBG mobile tencenct setting -- -->"
+        echo "pubgmf > move file to inside pubg folder"
+        echo "pubglf > lock all internal pubg data"
+        echo "Note : please extact pubg mod file to internal/modul_mantul/ZyC_mod/Pubg_config before use pubgmf command"
+    fi
 }
 update_file() {
     if [ ! -z "$1" ] && [ ! -z "$2" ] && [ ! -z "$3" ];then
@@ -1788,6 +1794,18 @@ ListMenu(){
             fi
         done
         ListMenu
+    elif [ "$pilihan" == "pubglf" ];then
+        for PubgFiles in `find "$ModPathGame"/com.tencent.ig/data`
+        do
+            if [ -e "$PubgFiles" ];then
+                chmod 0555 "$PubgFiles" -v
+            fi
+        done
+        echo "lock all file done . . . ."
+        ListMenu
+    elif [ "$pilihan" == "pubgmf" ];then
+        PubgFileMover()
+        ListMenu
     else 
         if [ "$Perubahan" == "ya" ];then
             if [ "$pilihan" == "s" ];then
@@ -1805,6 +1823,55 @@ ListMenu(){
         # $usleep 1000000
         # $usleep 100000
         ListMenu
+    fi
+}
+PubgFileMover(){
+    if [ "$(getenforce)" == "Enforcing" ] && [ -z "$(getprop | grep begonia)" ] ;then
+        changeSE="ya"
+        setenforce 0
+    fi
+    GetListFileConfig="$ModPath"/zyc_pubg_app_list.txt
+    GetListFolderConfig="$ModPath"/zyc_pubg_folder_list.txt
+    if [ -e $GetListFileConfig ];then
+        rm $GetListFileConfig
+    fi
+    if [ -e "$GetListFolderConfig" ];then
+        rm "$GetListFolderConfig"
+    fi
+    NoFolder=1
+    NoFile=1
+    for GetFileConfig in `find "$ModPathGame"/modul_mantul/ZyC_mod/Pubg_config`
+    do
+        if [ -e "$GetFileConfig" ) ];then
+            echo "[ $NoFile ] $GetFolder" | tee -a "$GetListFileConfig"
+            NoFile=$(($NoFile+1))
+        fi
+    done
+    echo -n "choose file number:"
+    read FileNumber
+    for GetFolderGame in `find "$ModPathGame"/com.tencent.ig/files/UE4Game/ShadowTrackerExtra/ShadowTrackerExtra/Saved/Config`
+    do
+        if [ -d "$GetFolderGame" ) ];then
+            echo "[ $NoFolder ] $GetFolder" | tee -a "$GetListFolderConfig"
+            NoFolder=$(($NoFolder+1))
+        fi
+    done
+    echo -n "choose folder number :"
+    read FolderNumber
+    FileName=$(cat "$GetListFileConfig" | awk -F '\\[ '"$FileNumber"' ]' '{print $2}' | sed 's/(.*//' | tr -d '\040\011\012\015') ;
+    FolderName=$(cat "$GetListFolderConfig" | awk -F '\\[ '"$FolderNumber"' ]' '{print $2}' | sed 's/(.*//' | tr -d '\040\011\012\015') ;
+    cp -af "$FileName" "$FolderName" -v && echo "done . . ."
+    $usleep 2000000
+    clear
+    rm "$GetListFileConfig"
+    rm "$GetListFolderConfig"
+    if [ "$changeSE" == "ya" ] && [ -z "$(getprop | grep begonia)" ] ;then
+        setenforce 1
+    fi
+    echo "copy another file again?[y/n]"
+    read GetUrInput
+    if [ "$GetUrInput" == "y" ];then
+        PubgFileMover()
     fi
 }
 exitSetting(){
