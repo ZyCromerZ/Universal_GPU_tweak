@@ -1181,7 +1181,7 @@ runScript(){
             else
                 echo "Note : better to use universal gms doze :D" | tee -a $Path/ZyC_GmsDoze.log 2>/dev/null 1>/dev/null
                 changeSE="tidak"
-                if [ "$(getenforce)" == "Enforcing" ];then
+                if [ "$(getenforce)" == "Enforcing" ] && [ -z "$(getprop | grep begonia)" ] ;then
                     changeSE="ya"
                     setenforce 0
                 fi
@@ -1204,7 +1204,7 @@ runScript(){
                     su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver" s2>/dev/null 1>/dev/null
                     su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" s2>/dev/null 1>/dev/null
                 fi
-                if [ "$changeSE" == "ya" ];then
+                if [ "$changeSE" == "ya" ] && [ -z "$(getprop | grep begonia)" ] ;then
                     setenforce 1
                 fi
                 if [ -e $MODPATH/system/etc/sysconfig/google.xml.fixed ]; then

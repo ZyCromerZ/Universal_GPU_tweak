@@ -143,7 +143,7 @@ if [ ! -d $Path/ZyC_Turbo_config ]; then
 fi
 PathModulConfig=$Path/ZyC_Turbo_config
 changeSE="tidak"
-if [ "$(getenforce)" == "Enforcing" ];then
+if [ "$(getenforce)" == "Enforcing" ] && [ -z "$(getprop | grep begonia)" ] ;then
     changeSE="ya"
     setenforce 0
 fi
@@ -1147,6 +1147,6 @@ fi
 if [ $GenerateApp == "ya" ];then
     GetAppAndGames
 fi
-if [ "$changeSE" == "ya" ];then
+if [ "$changeSE" == "ya" ] && [ -z "$(getprop | grep begonia)" ] ;then
     setenforce 1
 fi

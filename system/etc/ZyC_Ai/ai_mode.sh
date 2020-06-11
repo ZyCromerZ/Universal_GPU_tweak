@@ -82,7 +82,7 @@ fi
 getAppName()
 {
     changeSE="tidak"
-    if [ "$(getenforce)" == "Enforcing" ];then
+    if [ "$(getenforce)" == "Enforcing" ] && [ -z "$(getprop | grep begonia)" ] ;then
         changeSE="ya"
         setenforce 0
     fi
@@ -98,7 +98,7 @@ getAppName()
     fi
     GpuStatus=$( echo $GetGpuStatus | awk -F'%' '{sub(/^te/,"",$1); print $1 }' ) ;
     GetPackageApp=$(dumpsys activity recents | grep 'Recent #0' | cut -d= -f2 | sed 's| .*||' | cut -d '/' -f1);
-    if [ "$changeSE" == "ya" ];then
+    if [ "$changeSE" == "ya" ] && [ -z "$(getprop | grep begonia)" ] ;then
         setenforce 1
     fi
     echo "while running '$GetPackageApp' your gpu used at $(echo "$GpuStatus")%" | tee -a $AiLog

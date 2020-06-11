@@ -1411,7 +1411,7 @@ ListMenu(){
             rm $GetApp
         fi
         changeSE="tidak"
-        if [ "$(getenforce)" == "Enforcing" ];then
+        if [ "$(getenforce)" == "Enforcing" ] && [ -z "$(getprop | grep begonia)" ] ;then
             changeSE="ya"
             setenforce 0
         fi
@@ -1422,7 +1422,7 @@ ListMenu(){
                 NoApp=$(($NoApp+1))
             fi
         done
-        if [ "$changeSE" == "ya" ];then
+        if [ "$changeSE" == "ya" ] && [ -z "$(getprop | grep begonia)" ] ;then
             setenforce 1
         fi
         echo 'please input number only'
@@ -1619,7 +1619,7 @@ ListMenu(){
             cmd package compile -m speed -f -a
         elif [ "$AppOptimizerType" == "app"  ];then
             echo "starting optimize installed app"
-            if [ "$(getenforce)" == "Enforcing" ];then
+            if [ "$(getenforce)" == "Enforcing" ] && [ -z "$(getprop | grep begonia)" ] ;then
                 changeSE="ya"
                 setenforce 0
             fi
@@ -1628,7 +1628,7 @@ ListMenu(){
                 echo -n "$appList : "
                 cmd package compile -m speed -f "$appList"
             done
-            if [ "$changeSE" == "ya" ];then
+            if [ "$changeSE" == "ya" ] && [ -z "$(getprop | grep begonia)" ] ;then
                 setenforce 1
             fi
         fi
