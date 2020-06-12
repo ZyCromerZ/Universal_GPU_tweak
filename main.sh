@@ -26,7 +26,7 @@ if [ -e "$PathBusyBox/busybox" ];then
 fi
 ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 if [ ! -e $ModulPath/system/etc/ZyC_Ai/mod_path.txt ]; then
-    .$ModulPath/ZyC_Turbo/initialize.sh & wait
+    . $ModulPath/ZyC_Turbo/initialize.sh & wait
 fi
 ModPath=$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
@@ -38,9 +38,9 @@ if [ ! -z "$1" ];then
     fi
 fi
 if [ "$FromTerminal" == "tidak" ];then
-    .$ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
+    . $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
     $usleep 5000000
-    .$ModulPath/ZyC_Turbo/initialize.sh & wait
+    . $ModulPath/ZyC_Turbo/initialize.sh & wait
 fi;
 if [ ! -z "$2" ];then
     if [ "$2" == "Ai" ];then
@@ -504,8 +504,8 @@ runScript(){
     fi
     # log backup nya
         if [ "$MissingFile" == "iya" ]; then
-            .$ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
-            .$ModulPath/ZyC_Turbo/initialize.sh & wait
+            . $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
+            . $ModulPath/ZyC_Turbo/initialize.sh & wait
         fi
     # end log backup
 
@@ -715,7 +715,7 @@ runScript(){
                         fi
                         # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog;
                 else 
-                    .$ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
+                    . $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
                     echo "using custom ram management method $CustomRam" | tee -a $saveLog;
                     StopModify="no"
                     GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
@@ -1294,7 +1294,7 @@ if [ "$FromTerminal" == "tidak" ];then
             fi
         fi
     fi
-    $nohup .$BASEDIR/ai_mode.sh "fromBoot" 2>/dev/null 1>/dev/null &
+    $nohup . $BASEDIR/ai_mode.sh "fromBoot" 2>/dev/null 1>/dev/null &
 fi
 echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog 2>/dev/null 1>/dev/null
 echo "  --- --- --- --- --->> " | tee -a $saveLog 2>/dev/null 1>/dev/null

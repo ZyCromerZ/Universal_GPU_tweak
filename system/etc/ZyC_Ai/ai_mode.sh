@@ -34,7 +34,7 @@ if [ "$1" == "fromBoot" ];then
 fi
 ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
 if [ ! -e $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt ]; then
-    .$ModulPath/ZyC_Turbo/initialize.sh & wait
+    . $ModulPath/ZyC_Turbo/initialize.sh & wait
 fi
 ModPath=$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
@@ -111,8 +111,8 @@ setTurbo(){
     echo "turbo" > $PathModulConfig/status_modul.txt
     StatusModul="turbo"
     echo "  --- --- --- --- ---  " | tee -a $AiLog
-    .$ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
-    $nohup .$ModulPath/ZyC_Turbo/main.sh "Terminal" "Ai" 2>/dev/null 1>/dev/null & 
+    . $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
+    $nohup . $ModulPath/ZyC_Turbo/main.sh "Terminal" "Ai" 2>/dev/null 1>/dev/null & 
     SpectrumOn
     # $usleep 5000000
 }
@@ -123,8 +123,8 @@ setOff(){
     echo "off" > $PathModulConfig/status_modul.txt
     StatusModul="off"
     echo "  --- --- --- --- ---  " | tee -a $AiLog
-    .$ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
-    $nohup .$ModulPath/ZyC_Turbo/main.sh "Terminal" "Ai" 2>/dev/null 1>/dev/null & 
+    . $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
+    $nohup . $ModulPath/ZyC_Turbo/main.sh "Terminal" "Ai" 2>/dev/null 1>/dev/null & 
     SpectrumOff
 }
 setLag(){
@@ -137,8 +137,8 @@ setLag(){
     echo "lag" > $PathModulConfig/status_modul.txt
     StatusModul="lag"
     echo "  --- --- --- --- ---  " | tee -a $AiLog
-    .$ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
-    $nohup .$ModulPath/ZyC_Turbo/main.sh "Terminal" "Ai" "doze" 2>/dev/null 1>/dev/null &
+    . $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
+    $nohup . $ModulPath/ZyC_Turbo/main.sh "Terminal" "Ai" "doze" 2>/dev/null 1>/dev/null &
     SpectrumBattery
 }
 setLagoff(){
@@ -151,20 +151,20 @@ setLagoff(){
     echo "off" > $PathModulConfig/status_modul.txt
     StatusModul="off"
     echo "  --- --- --- --- ---  " | tee -a $AiLog
-    .$ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
-    $nohup .$ModulPath/ZyC_Turbo/main.sh "Terminal" "Ai" "doze" 2>/dev/null 1>/dev/null &
+    . $ModulPath/ZyC_Turbo/initialize.sh "Terminal" & wait
+    $nohup . $ModulPath/ZyC_Turbo/main.sh "Terminal" "Ai" "doze" 2>/dev/null 1>/dev/null &
     SpectrumOff
 }
 SetNotificationOn(){
     if [ "$NotifPath" != "none" ];then
         if [ "$aiNotif" == "1" ];then
-            .$NotifPath "getar" "on" & wait
+            . $NotifPath "getar" "on" & wait
         elif [ "$aiNotif" == "2" ];then
-            .$NotifPath "notif" "on" & wait
+            . $NotifPath "notif" "on" & wait
         elif [ "$aiNotif" == "3" ];then
-            .$NotifPath "notif" "on2" & wait
+            . $NotifPath "notif" "on2" & wait
         elif [ "$aiNotif" == "4" ];then
-            .$NotifPath "notif" "onvibrate" & wait
+            . $NotifPath "notif" "onvibrate" & wait
         fi
     else
         if [ -e /sys/class/leds/vibrator/duration ] &&  [ -e /sys/class/leds/vibrator/activate ];then
@@ -179,11 +179,11 @@ SetNotificationOn(){
 SetNotificationOff(){
     if [ "$NotifPath" != "none" ];then
         if [ "$aiNotif" == "1" ];then
-            .$NotifPath "getar" "off" & wait
+            . $NotifPath "getar" "off" & wait
         elif [ "$aiNotif" == "2" ];then
-            .$NotifPath "notif" "off" & wait
+            . $NotifPath "notif" "off" & wait
         elif [ "$aiNotif" == "3" ];then
-            .$NotifPath "notif" "off2" & wait
+            . $NotifPath "notif" "off2" & wait
         fi
     else
         if [ -e /sys/class/leds/vibrator/duration ] &&  [ -e /sys/class/leds/vibrator/activate ];then
@@ -201,19 +201,19 @@ SetNotificationOff(){
 SetNotificationRunning(){
     if [ "$NotifPath" != "none" ] && [ "$(cat "$PathModulConfig/status_modul.txt")" == "turbo" ] && [ "$StatusModul" == "turbo" ];then
         if [ "$aiNotifRunning" == "1" ];then
-            .$NotifPath "notif" "running" & wait
+            . $NotifPath "notif" "running" & wait
         elif [ "$aiNotifRunning" == "2" ];then
-            .$NotifPath "notif" "running1" & wait
+            . $NotifPath "notif" "running1" & wait
         elif [ "$aiNotifRunning" == "3" ];then
-            .$NotifPath "notif" "running2" & wait
+            . $NotifPath "notif" "running2" & wait
         elif [ "$aiNotifRunning" == "4" ];then
-            .$NotifPath "notif" "running3" & wait
+            . $NotifPath "notif" "running3" & wait
         fi
     fi
 }
 SetNotificationDozeOff(){
     if [ "$NotifPath" != "none" ];then
-        .$NotifPath "notif" "dozeoff" & wait
+        . $NotifPath "notif" "dozeoff" & wait
     else
         if [ -e /sys/class/leds/vibrator/duration ] &&  [ -e /sys/class/leds/vibrator/activate ];then
             echo 600 > /sys/class/leds/vibrator/duration && echo 1 > /sys/class/leds/vibrator/activate
@@ -229,7 +229,7 @@ SetNotificationDozeOff(){
 }
 SetNotificationDozeOn(){
     if [ "$NotifPath" != "none" ];then
-        .$NotifPath "notif" "dozeon" & wait
+        . $NotifPath "notif" "dozeon" & wait
     else
         if [ -e /sys/class/leds/vibrator/duration ] &&  [ -e /sys/class/leds/vibrator/activate ];then
             echo 600 > /sys/class/leds/vibrator/duration && echo 1 > /sys/class/leds/vibrator/activate
@@ -272,9 +272,9 @@ SpectrumBattery(){
 }
 runInitialize(){
     if [ ! -z "$1" ];then
-        .$ModulPath/ZyC_Turbo/initialize.sh "$1" & wait
+        . $ModulPath/ZyC_Turbo/initialize.sh "$1" & wait
     else
-        .$ModulPath/ZyC_Turbo/initialize.sh & wait
+        . $ModulPath/ZyC_Turbo/initialize.sh & wait
     fi
 }
 runScript(){
@@ -609,7 +609,7 @@ runScript(){
         #notification when turbo mode end
         if [ "$fromBoot" == "yes" ];then
             $usleep 5000000
-            .$NotifPath "getar" "off" 2>/dev/null 1>/dev/null & wait
+            . $NotifPath "getar" "off" 2>/dev/null 1>/dev/null & wait
             runInitialize "Terminal"
             if [ "$aiStatus" == "2" ];then
                 echo "Continue running at : $(date +" %Y-%m-%d %r")" | tee -a $AiLog
@@ -637,9 +637,9 @@ runScript(){
 }
 runScript 2>&1 1>/dev/null | tee -a $Path/ZyC_Ai.running.log
 if [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "2" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "3" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "1" ];then
-    $nohup .$BASEDIR/ai_mode.sh 2>/dev/null 1>/dev/null &
+    $nohup . $BASEDIR/ai_mode.sh 2>/dev/null 1>/dev/null &
 fi
 if [ "$fromBoot" == "yes" ];then
-    $nohup .$ModulPath/ZyC_Turbo/main.sh "Terminal" "Ai" 2>/dev/null 1>/dev/null & 
+    $nohup . $ModulPath/ZyC_Turbo/main.sh "Terminal" "Ai" 2>/dev/null 1>/dev/null & 
 fi
 exit 1

@@ -18,16 +18,16 @@ if [ ! -z "$1" ];then
     if [ ! -z "$2" ];then
         if [ ! -z "$3" ];then
             if [ ! -z "$4" ];then
-                $nohup .$ModulPath/ZyC_Turbo/main.sh "$1" "$2" "$3" "$4" 2>/dev/null 1>/dev/null
+                $nohup . $ModulPath/ZyC_Turbo/main.sh "$1" "$2" "$3" "$4" 2>/dev/null 1>/dev/null
             else
-                $nohup .$ModulPath/ZyC_Turbo/main.sh "$1" "$2" "$3" 2>/dev/null 1>/dev/null
+                $nohup . $ModulPath/ZyC_Turbo/main.sh "$1" "$2" "$3" 2>/dev/null 1>/dev/null
             fi
         else
-            $nohup .$ModulPath/ZyC_Turbo/main.sh "$1" "$2" 2>/dev/null 1>/dev/null
+            $nohup . $ModulPath/ZyC_Turbo/main.sh "$1" "$2" 2>/dev/null 1>/dev/null
         fi
     else
-        $nohup .$ModulPath/ZyC_Turbo/main.sh "$1" 2>/dev/null 1>/dev/null
+        $nohup . $ModulPath/ZyC_Turbo/main.sh "$1" 2>/dev/null 1>/dev/null
     fi
 else
-    $nohup .$ModulPath/ZyC_Turbo/main.sh 2>/dev/null 1>/dev/null
+    $nohup . $ModulPath/ZyC_Turbo/main.sh 2>/dev/null 1>/dev/null
 fi
