@@ -1840,7 +1840,7 @@ PubgFileMover(){
     fi
     NoFolder=1
     NoFile=1
-    for GetFileConfig in `find "$ModPathGame"/modul_mantul/ZyC_mod/Pubg_config`
+    for GetFileConfig in `find "$ModPath"/modul_mantul/ZyC_mod/Pubg_config`
     do
         if [ -e "$GetFileConfig" ];then
             echo "[ $NoFile ] $GetFolder" | tee -a "$GetListFileConfig"
