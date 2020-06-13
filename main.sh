@@ -1294,7 +1294,7 @@ if [ "$FromTerminal" == "tidak" ];then
             fi
         fi
     fi
-    $nohup . $BASEDIR/ai_mode.sh "fromBoot" 2>/dev/null 1>/dev/null &
+    $nohup .$BASEDIR/ai_mode.sh "fromBoot" 2>/dev/null 1>/dev/null &
 fi
 echo "finished at $(date +"%d-%m-%Y %r")"| tee -a $saveLog 2>/dev/null 1>/dev/null
 echo "  --- --- --- --- --->> " | tee -a $saveLog 2>/dev/null 1>/dev/null

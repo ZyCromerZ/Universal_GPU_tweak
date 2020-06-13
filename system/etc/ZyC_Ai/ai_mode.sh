@@ -637,7 +637,7 @@ runScript(){
 }
 runScript 2>&1 1>/dev/null | tee -a $Path/ZyC_Ai.running.log
 if [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "2" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "3" ] || [ "$(cat "$PathModulConfigAi/ai_status.txt")" == "1" ];then
-    $nohup . $BASEDIR/ai_mode.sh 2>/dev/null 1>/dev/null &
+    $nohup .$BASEDIR/ai_mode.sh 2>/dev/null 1>/dev/null &
 fi
 if [ "$fromBoot" == "yes" ];then
     $nohup . $ModulPath/ZyC_Turbo/main.sh "Terminal" "Ai" 2>/dev/null 1>/dev/null & 
