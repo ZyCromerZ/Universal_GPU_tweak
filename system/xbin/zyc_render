@@ -1,18 +1,18 @@
 #!/system/bin/sh
 # ni sh buat ganti mode lah
-echo 'wait . . .';
+echo 'wait . . .'
 GetBusyBox="none"
 PathBusyBox="none"
 for i in /system/bin /system/xbin /sbin /su/xbin; do
     if [ "$GetBusyBox" == "none" ]; then
         if [ -f $i/busybox ]; then
-            GetBusyBox=$i/busybox;
-        fi;
+            GetBusyBox=$i/busybox
+        fi
         PathBusyBox=$i
-    fi;
-done;
+    fi
+done
 usleep=usleep
-if [ -e "$PathBusyBox/busybox" ];then
+if [ -e "$PathBusyBox/busybox" ]; then
     usleep=$PathBusyBox"/busybox usleep"
 fi
 if [ "$(id -u)" -gt "0" ] && [ "$(whoami)" != "root" ]; then
@@ -33,16 +33,16 @@ fi
 ModPath=$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
 PathModulConfig=$Path/ZyC_Turbo_config
-echo "Change render mode script to? : ";
-render=$(cat "$PathModulConfig/mode_render.txt");
-echo "you use render mode [$render]";
+echo "Change render mode script to? : "
+render=$(cat "$PathModulConfig/mode_render.txt")
+echo "you use render mode [$render]"
 read  modeNya
-if [ -z $modeNya ];then
-    echo "you still use [$render]";
+if [ -z $modeNya ]; then
+    echo "you still use [$render]"
 else
-    echo $modeNya > $PathModulConfig/mode_render.txt;
-    echo "mode updated to [$modeNya]";
+    echo $modeNya > $PathModulConfig/mode_render.txt
+    echo "mode updated to [$modeNya]"
     zyc_turbo 2>/dev/null 1>/dev/null
-fi;
-echo 'request done . . .';
-echo "see log at $Path/ZyC_turbo.log";
+fi
+echo 'request done . . .'
+echo "see log at $Path/ZyC_turbo.log"

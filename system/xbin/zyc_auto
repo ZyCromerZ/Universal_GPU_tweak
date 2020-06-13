@@ -17,17 +17,17 @@ PathBusyBox="none"
 for i in /system/bin /system/xbin /sbin /su/xbin; do
     if [ "$GetBusyBox" == "none" ]; then
         if [ -f $i/busybox ]; then
-            GetBusyBox=$i/busybox;
-        fi;
+            GetBusyBox=$i/busybox
+        fi
         PathBusyBox=$i
-    fi;
-done;
+    fi
+done
 usleep=usleep
-if [ -e "$PathBusyBox/busybox" ];then
+if [ -e "$PathBusyBox/busybox" ]; then
     usleep=$PathBusyBox"/busybox usleep"
 fi
 nohup=nohup
-if [ -e "$PathBusyBox/busybox" ];then
+if [ -e "$PathBusyBox/busybox" ]; then
     nohup=$PathBusyBox"/busybox nohup"
 fi
 ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
@@ -37,36 +37,36 @@ fi
 ModPath=$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
 PathModulConfigAi=$Path/ZyC_Ai
-if [ ! -e "/system/etc/ZyC_Ai" ];then
+if [ ! -e "/system/etc/ZyC_Ai" ]; then
     echo "ai not found"
-    exit -1;
+    exit -1
 fi
-if [ ! -z "$1" ];then
-    if [ "$1" == "on" ];then
-        echo "updating auto mode to '1',please wait. . .";
-        echo "1" > $PathModulConfigAi/ai_status.txt;
+if [ ! -z "$1" ]; then
+    if [ "$1" == "on" ]; then
+        echo "updating auto mode to '1',please wait. . ."
+        echo "1" > $PathModulConfigAi/ai_status.txt
         $usleep 100000
-        echo "update auto mode to '1' done .";
+        echo "update auto mode to '1' done ."
         
-    elif [ "$1" == "off" ];then
-        echo "updating auto mode to '3',please wait. . .";
-        echo "3" > $PathModulConfigAi/ai_status.txt;
+    elif [ "$1" == "off" ]; then
+        echo "updating auto mode to '3',please wait. . ."
+        echo "3" > $PathModulConfigAi/ai_status.txt
         $usleep 100000
-        echo "update auto mode to '3' done .";
+        echo "update auto mode to '3' done ."
     else
-        echo "updating auto mode to '$1',please wait. . .";
-        echo "$1" > $PathModulConfigAi/ai_status.txt;
+        echo "updating auto mode to '$1',please wait. . ."
+        echo "$1" > $PathModulConfigAi/ai_status.txt
         $usleep 100000
-        echo "update auto mode to '$1' done .";
+        echo "update auto mode to '$1' done ."
     fi
-fi;
-if [ -e "$PathModulConfigAi/ai_status.txt" ];then
+fi
+if [ -e "$PathModulConfigAi/ai_status.txt" ]; then
     aiStatus=$(cat "$PathModulConfigAi/ai_status.txt");
-    if [ "$aiStatus" == '0' ];then
+    if [ "$aiStatus" == '0' ]; then
         echo "set ai status to 1 first"  
-    elif [ "$aiStatus" == '3' ];then
+    elif [ "$aiStatus" == '3' ]; then
         echo "check log,auto mode turned off,if not wait a minutes xD"
-    elif [ "$aiStatus" == '2' ];then
+    elif [ "$aiStatus" == '2' ]; then
         echo "ai mode still running"
     else
         $nohup ./system/etc/ZyC_Ai/ai_mode.sh 2>/dev/null 1>/dev/null & 

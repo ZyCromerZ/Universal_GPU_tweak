@@ -59,7 +59,7 @@ rm -rf $MODPATH/system/etc/sysconfig/*
 rmdir $MODPATH/system/etc/sysconfig
 else
 # mkdir /system/etc/sysconfig
-if [ -e /system/etc/sysconfig/google.xml.ori ];then
+if [ -e /system/etc/sysconfig/google.xml.ori ]; then
     cp -af /system/etc/sysconfig/google.xml.ori $MODPATH/system/etc/sysconfig/google.xml.ori
     cp -af /system/etc/sysconfig/google.xml.ori $MODPATH/system/etc/sysconfig/google.xml
 else 
@@ -72,7 +72,7 @@ if [ ! -e  /system/product/etc/sysconfig/google.xml ]; then
 rm -rf $MODPATH/system/product/*
 rmdir $MODPATH/system/product
 else
-if [ -e /system/product/etc/sysconfig/google.xml.ori ];then
+if [ -e /system/product/etc/sysconfig/google.xml.ori ]; then
     cp -af /system/product/etc/sysconfig/google.xml.ori $MODPATH/system/product/etc/sysconfig/google.xml.ori
     cp -af /system/product/etc/sysconfig/google.xml.ori $MODPATH/system/product/etc/sysconfig/google.xml 
 else
@@ -85,7 +85,7 @@ if [ ! -e  /system/system/product/etc/sysconfig/google.xml ]; then
 rm -rf $MODPATH/system/system/*
 rmdir $MODPATH/system/system
 else
-if [ -e /system/system/product/etc/sysconfig/google.xml.ori ];then
+if [ -e /system/system/product/etc/sysconfig/google.xml.ori ]; then
     cp -af /system/system/product/etc/sysconfig/google.xml.ori $MODPATH/system/system/product/etc/sysconfig/google.xml.ori
     cp -af /system/system/product/etc/sysconfig/google.xml.ori $MODPATH/system/system/product/etc/sysconfig/google.xml
 else

@@ -11,13 +11,13 @@ PathBusyBox="none"
 for i in /system/bin /system/xbin /sbin /su/xbin; do
     if [ "$GetBusyBox" == "none" ]; then
         if [ -f $i/busybox ]; then
-            GetBusyBox=$i/busybox;
-        fi;
+            GetBusyBox=$i/busybox
+        fi
         PathBusyBox=$i
-    fi;
-done;
+    fi
+done
 usleep=usleep
-if [ -e "$PathBusyBox/busybox" ];then
+if [ -e "$PathBusyBox/busybox" ]; then
     usleep=$PathBusyBox"/busybox usleep"
 fi
 ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
@@ -42,26 +42,26 @@ fi
 FromTerminal="tidak";
 GenerateApp="tidak";
 ketemuInternal="kaga"
-if [ ! -z "$1" ];then
-    if [ "$1" == "boot" ];then
-        if [ -e $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt ];then
-            if [ "$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)" == "/data" ];then
+if [ ! -z "$1" ]; then
+    if [ "$1" == "boot" ]; then
+        if [ -e $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt ]; then
+            if [ "$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)" == "/data" ]; then
                 GetPath="none"
                 for cariInternal in /data/media/0 /storage/emulated/0 /storage/emulated/legacy /storage/sdcard0 /sdcard /data
                 do
-                    if [ "$GetPath" == "none" ] && [ -d $cariInternal/android ];then
+                    if [ "$GetPath" == "none" ] && [ -d $cariInternal/android ]; then
                         GetPath=$cariInternal
                     fi
-                    if [ "$GetPath" == "none" ] && [ -d $cariInternal/Android ];then
+                    if [ "$GetPath" == "none" ] && [ -d $cariInternal/Android ]; then
                         GetPath=$cariInternal
 
                     fi
-                    if [ "$cariInternal" == "/data" ] && [ "$GetPath" == "none" ];then
+                    if [ "$cariInternal" == "/data" ] && [ "$GetPath" == "none" ]; then
                         GetPath=$cariInternal
                     fi
                 done
-                if [ $GetPath != "none" ];then
-                    if [ $GetPath != "/data" ];then
+                if [ $GetPath != "none" ]; then
+                    if [ $GetPath != "/data" ]; then
                         mv $(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt) $GetPath
                         echo "$cariInternal" > $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt
                     fi
@@ -74,34 +74,34 @@ fi
 if [ ! -e $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt ]; then
     for cariInternal in /data/media/0 /storage/emulated/0 /storage/emulated/legacy /storage/sdcard0 /sdcard /data
     do
-        if [ "$ketemuInternal" == "kaga" ] && [ -d $cariInternal/android ];then
+        if [ "$ketemuInternal" == "kaga" ] && [ -d $cariInternal/android ]; then
             ketemuInternal="udah"
             echo "$cariInternal" > $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt
             break
         fi
-        if [ "$ketemuInternal" == "kaga" ] && [ -d $cariInternal/Android ];then
+        if [ "$ketemuInternal" == "kaga" ] && [ -d $cariInternal/Android ]; then
             ketemuInternal="udah"
             echo "$cariInternal" > $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt
             break
         fi
-        if [ "$cariInternal" == "/data" ] && [ "$ketemuInternal" == "kaga" ];then
+        if [ "$cariInternal" == "/data" ] && [ "$ketemuInternal" == "kaga" ]; then
             ketemuInternal="udah"
             echo "$cariInternal" > $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt
         fi
     done
 fi
-if [ ! -z "$1" ];then
-    if [ "$1" == "Terminal" ];then
+if [ ! -z "$1" ]; then
+    if [ "$1" == "Terminal" ]; then
         FromTerminal="ya";
     fi
-    if [ "$1" == "App" ];then
+    if [ "$1" == "App" ]; then
         GenerateApp="ya";
         FromTerminal="skip"
     fi
-    if [ "$1" == "boot" ];then
+    if [ "$1" == "boot" ]; then
         $usleep 20000000
         ModPath=$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)
-        if [ "$ModPath" != "" ];then
+        if [ "$ModPath" != "" ]; then
             Path=$ModPath/modul_mantul/ZyC_mod
             if [ ! -d $Path/ZyC_Ai ]; then
                 mkdir -p $Path/ZyC_Ai
@@ -112,10 +112,10 @@ if [ ! -z "$1" ];then
                 mkdir -p $Path/ZyC_Turbo_config
             fi
             PathModulConfig=$Path/ZyC_Turbo_config
-            if [ -e $PathModulConfig/mode_render_lock.txt ] && [ "$(cat $PathModulConfig/mode_render_lock.txt)" == "0" ];then
+            if [ -e $PathModulConfig/mode_render_lock.txt ] && [ "$(cat $PathModulConfig/mode_render_lock.txt)" == "0" ]; then
                 echo 'system' > $PathModulConfig/mode_render.txt
             fi
-            if [ -e $PathModulConfig/fsync_mode_lock.txt ] && [ "$(cat $PathModulConfig/fsync_mode_lock.txt)" == "0" ];then
+            if [ -e $PathModulConfig/fsync_mode_lock.txt ] && [ "$(cat $PathModulConfig/fsync_mode_lock.txt)" == "0" ]; then
                 echo 'system' > $PathModulConfig/fsync_mode.txt
             fi
             setprop zyc.change.rm "belom"
@@ -130,7 +130,7 @@ if [ ! -z "$1" ];then
             # echo "system" > $PathModulConfig/dns.txt
         fi
     fi
-fi;
+fi
 ModPath=$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
 if [ ! -d $Path/ZyC_Ai ]; then
@@ -143,7 +143,7 @@ if [ ! -d $Path/ZyC_Turbo_config ]; then
 fi
 PathModulConfig=$Path/ZyC_Turbo_config
 changeSE="tidak"
-if [ "$(getenforce)" == "Enforcing" ] && [ -z "$(getprop | grep begonia)" ] ;then
+if [ "$(getenforce)" == "Enforcing" ] && [ -z "$(getprop | grep begonia)" ] ; then
     changeSE="ya"
     setenforce 0
 fi
@@ -155,44 +155,44 @@ GetAppAndGames(){
         echo "<<---- List game installed end ---->>"  | tee -a $GameList 2>/dev/null 1>/dev/null;
     fi
     # Moba Analog
-    if [ ! -z $(pm list packages -f com.mobile.legends | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.mobile.legends" "$GameList" ) ];then
+    if [ ! -z $(pm list packages -f com.mobile.legends | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.mobile.legends" "$GameList" ) ]; then
         sed -i "1a  com.mobile.legends" $GameList;
     fi
-    if [ ! -z $(pm list packages -f com.pubg.krmobile | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.pubg.krmobile" "$GameList" ) ];then
+    if [ ! -z $(pm list packages -f com.pubg.krmobile | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.pubg.krmobile" "$GameList" ) ]; then
         sed -i "1a  com.pubg.krmobile" $GameList;
     fi
-    if [ ! -z $(pm list packages -f com.pwrd.pwm | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.pwrd.pwm" "$GameList" ) ];then
+    if [ ! -z $(pm list packages -f com.pwrd.pwm | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.pwrd.pwm" "$GameList" ) ]; then
         sed -i "1a  com.pwrd.pwm" $GameList;
     fi
     # Dragon Raja
     for DragonRajaPackageName in tw.com.szn.lz com.zloong.eu.dr.gp com.tencent.lzhx com.archosaur.sea.dr.gp com.kr.krlz.google com.tencent.longzu.jp 
     do
-        if [ ! -z $(pm list packages -f $DragonRajaPackageName | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$DragonRajaPackageName" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f $DragonRajaPackageName | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$DragonRajaPackageName" "$GameList" ) ]; then
             sed -i "1a  $DragonRajaPackageName" $GameList;
         fi
     done
-    # if [ ! -z $(pm list packages -f jp.konami | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "jp.konami" "$GameList" ) ];then
+    # if [ ! -z $(pm list packages -f jp.konami | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "jp.konami" "$GameList" ) ]; then
     #     sed -i "1a  jp.konami" $GameList;
     # fi
-    # if [ ! -z $(pm list packages -f org.gamesamba | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "org.gamesamba" "$GameList" ) ];then
+    # if [ ! -z $(pm list packages -f org.gamesamba | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "org.gamesamba" "$GameList" ) ]; then
     #     sed -i "1a  org.gamesamba" $GameList;
     # fi
-    # if [ ! -z $(pm list packages -f com.skizze | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.skizze" "$GameList" ) ];then
+    # if [ ! -z $(pm list packages -f com.skizze | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.skizze" "$GameList" ) ]; then
     #     sed -i "1a  com.skizze" $GameList;
     # fi
-    # if [ ! -z $(pm list packages -f com.vitotechnology | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.vitotechnology" "$GameList" ) ];then
+    # if [ ! -z $(pm list packages -f com.vitotechnology | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.vitotechnology" "$GameList" ) ]; then
     #     sed -i "1a  com.vitotechnology" $GameList;
     # fi
-    # if [ ! -z $(pm list packages -f com.mohjang | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.mohjang" "$GameList" ) ];then
+    # if [ ! -z $(pm list packages -f com.mohjang | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.mohjang" "$GameList" ) ]; then
     #     sed -i "1a  com.mohjang" $GameList;
     # fi
-    # if [ ! -z $(pm list packages -f com.dmi | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.dmi" "$GameList" ) ];then
+    # if [ ! -z $(pm list packages -f com.dmi | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.dmi" "$GameList" ) ]; then
     #     sed -i "1a  com.dmi" $GameList;
     # fi
-    # if [ ! -z $(pm list packages -f com.herogames | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.herogames" "$GameList" ) ];then
+    # if [ ! -z $(pm list packages -f com.herogames | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com.herogames" "$GameList" ) ]; then
     #     sed -i "1a  com.herogames" $GameList;
     # fi
-    # if [ ! -z $(pm list packages -f com. | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com." "$GameList" ) ];then
+    # if [ ! -z $(pm list packages -f com. | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "com." "$GameList" ) ]; then
     #     sed -i "1a  com." $GameList;
     # fi
     # new method add game
@@ -200,161 +200,161 @@ GetAppAndGames(){
 
     for dtsGame in `pm list packages -3 | grep 'com.dts' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$dtsGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$dtsGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$dtsGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$dtsGame" "$GameList" ) ]; then
             sed -i "1a  $dtsGame" $GameList;
         fi
     done 
     # gamedreamer
     for gamedreamerGame in `pm list packages -3 | grep 'com.gamedreamer' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$gamedreamerGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$gamedreamerGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$gamedreamerGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$gamedreamerGame" "$GameList" ) ]; then
             sed -i "1a  $gamedreamerGame" $GameList;
         fi
     done 
     # nekki
     for nekkiGame in `pm list packages -3 | grep 'com.nekki' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$nekkiGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$nekkiGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$nekkiGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$nekkiGame" "$GameList" ) ]; then
             sed -i "1a  $nekkiGame" $GameList;
         fi
     done 
     # rekoo
     for rekooGame in `pm list packages -3 | grep 'com.rekoo' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$rekooGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$rekooGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$rekooGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$rekooGame" "$GameList" ) ]; then
             sed -i "1a  $rekooGame" $GameList;
         fi
     done 
     # tencent
     for tencentGame in `pm list packages -3 | grep 'com.tencent' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$tencentGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$tencentGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$tencentGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$tencentGame" "$GameList" ) ]; then
             sed -i "1a  $tencentGame" $GameList;
         fi
     done 
     # garena
     for garenaGame in `pm list packages -3 | grep 'com.garena' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$garenaGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$garenaGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$garenaGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$garenaGame" "$GameList" ) ]; then
             sed -i "1a  $garenaGame" $GameList;
         fi
     done 
     # netease
     for neteaseGame in `pm list packages -3 | grep 'com.netease' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$neteaseGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$neteaseGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$neteaseGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$neteaseGame" "$GameList" ) ]; then
             sed -i "1a  $neteaseGame" $GameList;
         fi
     done 
     # ea
     for eaGame in `pm list packages -3 | grep 'com.ea' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$eaGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$eaGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$eaGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$eaGame" "$GameList" ) ]; then
             sed -i "1a  $eaGame" $GameList;
         fi
     done 
     # gameloft
     for gameloftGame in `pm list packages -3 | grep 'com.gameloft' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$gameloftGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$gameloftGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$gameloftGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$gameloftGame" "$GameList" ) ]; then
             sed -i "1a  $gameloftGame" $GameList;
         fi
     done 
     # nermarble
     for netmarbleGame in `pm list packages -3 | grep 'com.netmarble' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$netmarbleGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$netmarbleGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$netmarbleGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$netmarbleGame" "$GameList" ) ]; then
             sed -i "1a  $netmarbleGame" $GameList;
         fi
     done 
     # activision
     for activisionGame in `pm list packages -3 | grep 'com.activision' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$activisionGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$activisionGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$activisionGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$activisionGame" "$GameList" ) ]; then
             sed -i "1a  $activisionGame" $GameList;
         fi
     done 
     # miHoYo
     for miHoYoGame in `pm list packages -3 | grep 'com.miHoYo' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$miHoYoGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$miHoYoGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$miHoYoGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$miHoYoGame" "$GameList" ) ]; then
             sed -i "1a  $miHoYoGame" $GameList;
         fi
     done 
     # theonegames
     for theonegamesGame in `pm list packages -3 | grep 'com.theonegames' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$theonegamesGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$theonegamesGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$theonegamesGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$theonegamesGame" "$GameList" ) ]; then
             sed -i "1a  $theonegamesGame" $GameList;
         fi
     done 
     # squareenixmontreal
     for squareenixmontrealGame in `pm list packages -3 | grep 'com.squareenixmontreal' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$squareenixmontrealGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$squareenixmontrealGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$squareenixmontrealGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$squareenixmontrealGame" "$GameList" ) ]; then
             sed -i "1a  $squareenixmontrealGame" $GameList;
         fi
     done 
     # jp.konami
     for konamiGame in `pm list packages -3 | grep 'jp.konami' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$konamiGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$konamiGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$konamiGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$konamiGame" "$GameList" ) ]; then
             sed -i "1a  $konamiGame" $GameList;
         fi
     done 
     # org.gamesamba
     for gamesambaGame in `pm list packages -3 | grep 'org.gamesamba' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$gamesambaGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$gamesambaGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$gamesambaGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$gamesambaGame" "$GameList" ) ]; then
             sed -i "1a  $gamesambaGame" $GameList;
         fi
     done 
     # skizze
     for skizzeGame in `pm list packages -3 | grep 'com.skizze' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$skizzeGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$skizzeGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$skizzeGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$skizzeGame" "$GameList" ) ]; then
             sed -i "1a  $skizzeGame" $GameList;
         fi
     done 
     # vitotechnology
     for vitotechnologyGame in `pm list packages -3 | grep 'com.vitotechnology' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$vitotechnologyGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$vitotechnologyGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$vitotechnologyGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$vitotechnologyGame" "$GameList" ) ]; then
             sed -i "1a  $vitotechnologyGame" $GameList;
         fi
     done 
     # mohjang
     for mohjangGame in `pm list packages -3 | grep 'com.mohjang' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$mohjangGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$mohjangGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$mohjangGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$mohjangGame" "$GameList" ) ]; then
             sed -i "1a  $mohjangGame" $GameList;
         fi
     done 
     # dmi
     for dmiGame in `pm list packages -3 | grep 'com.dmi' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$dmiGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$dmiGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$dmiGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$dmiGame" "$GameList" ) ]; then
             sed -i "1a  $dmiGame" $GameList;
         fi
     done 
     # herogames
     for herogamesGame in `pm list packages -3 | grep 'com.herogames' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$herogamesGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$herogamesGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$herogamesGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$herogamesGame" "$GameList" ) ]; then
             sed -i "1a  $herogamesGame" $GameList;
         fi
     done 
     # playfungame
     for playfungameGame in `pm list packages -3 | grep 'com.playfungame' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$playfungameGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$playfungameGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$playfungameGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$playfungameGame" "$GameList" ) ]; then
             sed -i "1a  $playfungameGame" $GameList;
         fi
     done 
     # supercell
     for supercellGame in `pm list packages -3 | grep 'com.supercell' | awk -F= '{sub("package:","");print $1}'`
     do
-        if [ ! -z $(pm list packages -f "$supercellGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$supercellGame" "$GameList" ) ];then
+        if [ ! -z $(pm list packages -f "$supercellGame" | awk -F '\\.apk' '{print $1".apk"}' | sed 's/package:*//g') ] && [ -z $( grep "$supercellGame" "$GameList" ) ]; then
             sed -i "1a  $supercellGame" $GameList;
         fi
     done 
@@ -370,14 +370,14 @@ GetAppAndGames(){
 
     for listApp in ` pm list packages -3 | awk -F= '{sub("package:","");print $1}'` 
         do 
-            if [ -z "$( grep "$listApp" "$listAppPath" )" ];then 
+            if [ -z "$( grep "$listApp" "$listAppPath" )" ]; then 
                 sed -i "1a  $listApp"  "$listAppPath"  ;
 
             fi
     done
     # Get App list end
 }
-if [ "$FromTerminal" == "tidak" ];then
+if [ "$FromTerminal" == "tidak" ]; then
     # status modul
     if [ ! -e $PathModulConfig/status_modul.txt ]; then
         echo 'turbo' > $PathModulConfig/status_modul.txt
@@ -387,7 +387,7 @@ if [ "$FromTerminal" == "tidak" ];then
         echo 'system' > $PathModulConfig/mode_render.txt
     fi
     # mode render lock
-    if [ ! -e $PathModulConfig/mode_render_lock.txt ];then
+    if [ ! -e $PathModulConfig/mode_render_lock.txt ]; then
         echo '0' > $PathModulConfig/mode_render_lock.txt
     fi
     # max fps nya
@@ -442,7 +442,7 @@ if [ "$FromTerminal" == "tidak" ];then
         echo "system" > $PathModulConfig/dns.txt
     fi
     # xiaomi thermal changer
-    if -e [ /sys/class/thermal/thermal_message/sconfig ];then
+    if -e [ /sys/class/thermal/thermal_message/sconfig ]; then
         if [ ! -e $PathModulConfig/xiaomi_thermal_default.txt ]; then
             echo "10" > $PathModulConfig/xiaomi_thermal_default.txt
         fi
@@ -456,8 +456,8 @@ if [ "$FromTerminal" == "tidak" ];then
     # Check notes version
     # SetModulVersion="3.36-71 BETA"
     SetModulVersion="$GetVersion"
-    if [ -e $PathModulConfig/notes_en.txt ];then
-        if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed 's/Version:*//g'  )" != "$SetModulVersion" ];then
+    if [ -e $PathModulConfig/notes_en.txt ]; then
+        if [ "$(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed 's/Version:*//g'  )" != "$SetModulVersion" ]; then
             rm $PathModulConfig/notes_en.txt
             echo 'delete notes_en';
             # echo 'auto' > "$PathModulConfig/fsync_mode.txt"
@@ -465,8 +465,8 @@ if [ "$FromTerminal" == "tidak" ];then
             # echo '10' > "$PathModulConfigAi/wait_time_on.txt" # Wait time
         fi
     fi
-    if [ -e $PathModulConfig/notes_id.txt ];then
-        if [ "$(cat "$PathModulConfig/notes_id.txt" | grep 'Version:' | sed 's/Version:*//g'  )" != "$SetModulVersion" ];then
+    if [ -e $PathModulConfig/notes_id.txt ]; then
+        if [ "$(cat "$PathModulConfig/notes_id.txt" | grep 'Version:' | sed 's/Version:*//g'  )" != "$SetModulVersion" ]; then
             rm $PathModulConfig/notes_id.txt
             echo 'delete notes_id';
         fi
@@ -1000,7 +1000,7 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes 2>/dev/null 1>/dev/null
     stop perfd
     for ZramConf in vm.dirty_ratio vm.dirty_background_ratio vm.swappiness vm.drop_caches vm.vfs_cache_pressure vm.min_free_kbytes
     do
-        if [ -z $(echo $ZramConf | grep "compact_memory") ];then
+        if [ -z $(echo $ZramConf | grep "compact_memory") ]; then
             GetPath="$(echo "$PathModulConfig/backup/zram_$ZramConf" | awk '{ print $1".txt" }')"
             GetData="$(sysctl $ZramConf | awk '{ print $3 }')"
             if [ ! -e $GetPath ]; then
@@ -1009,8 +1009,8 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes 2>/dev/null 1>/dev/null
             fi
         fi 
     done
-    if [ -e $PathModulConfig/backup/zram_disksize.txt ];then
-        if [ "$(cat "$PathModulConfig/backup/zram_disksize.txt")" == "0" ];then
+    if [ -e $PathModulConfig/backup/zram_disksize.txt ]; then
+        if [ "$(cat "$PathModulConfig/backup/zram_disksize.txt")" == "0" ]; then
             rm $PathModulConfig/backup/zram_disksize.txt
         fi
     fi
@@ -1020,7 +1020,7 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes 2>/dev/null 1>/dev/null
     start perfd
 
     # For ai_mode.sh
-    if [ ! -e $PathModulConfigAi/list_app_auto_turbo.txt ];then
+    if [ ! -e $PathModulConfigAi/list_app_auto_turbo.txt ]; then
         GetAppAndGames
     fi
     # Gpu trigger start
@@ -1065,7 +1065,7 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes 2>/dev/null 1>/dev/null
     if [ ! -e $PathModulConfigAi/ai_doze_notif.txt ]; then
         echo 'off' > "$PathModulConfigAi/ai_doze_notif.txt"
     fi
-    if [ "$(getprop spectrum.support)" == "1" ];then
+    if [ "$(getprop spectrum.support)" == "1" ]; then
         if [ ! -e $PathModulConfigAi/mode_off.txt ]; then
             echo '0' > "$PathModulConfigAi/mode_off.txt"
         fi
@@ -1082,9 +1082,9 @@ namarender = opengl/skiagl/skiavk" | tee -a $SetNotes 2>/dev/null 1>/dev/null
     if [ ! -e $PathModulConfigAi/ai_aos_on_turbo.txt ]; then
         echo '0' > "$PathModulConfigAi/ai_aos_on_turbo.txt"
     fi
-elif [ "$FromTerminal" == "ya" ];then
+elif [ "$FromTerminal" == "ya" ]; then
     # disable log
-    if [ "$(cat "$PathModulConfig/disable_log_system.txt")" == '1' ];then
+    if [ "$(cat "$PathModulConfig/disable_log_system.txt")" == '1' ]; then
         # ro.com.google.locationfeatures=0
         if [ ! -e $PathModulConfig/backup/prop_ro.com.google.locationfeatures.txt ]; then
             echo $(getprop  ro.com.google.locationfeatures) > "$PathModulConfig/backup/prop_ro.com.google.locationfeatures.txt"
@@ -1126,30 +1126,30 @@ elif [ "$FromTerminal" == "ya" ];then
         fi
     fi
     # ram management 
-    if [ "$(cat "$PathModulConfig/custom_ram_management.txt")" != "0" ];then
-        if [ ! -e $PathModulConfig/backup/ram_debug_level.txt ];then
-            if [ -e /sys/module/lowmemorykiller/parameters/debug_level ];then
+    if [ "$(cat "$PathModulConfig/custom_ram_management.txt")" != "0" ]; then
+        if [ ! -e $PathModulConfig/backup/ram_debug_level.txt ]; then
+            if [ -e /sys/module/lowmemorykiller/parameters/debug_level ]; then
                 echo $(cat "/sys/module/lowmemorykiller/parameters/debug_level") > "$PathModulConfig/backup/ram_debug_level.txt"  
             fi
         fi
-        if [ ! -e $PathModulConfig/backup/ram_adj.txt ];then
-            if [ -e /sys/module/lowmemorykiller/parameters/adj ];then
+        if [ ! -e $PathModulConfig/backup/ram_adj.txt ]; then
+            if [ -e /sys/module/lowmemorykiller/parameters/adj ]; then
                 echo $(cat "/sys/module/lowmemorykiller/parameters/adj") > "$PathModulConfig/backup/ram_adj.txt"  
             fi
         fi
-        if [ ! -e $PathModulConfig/backup/ram_minfree.txt ];then
-            if [ -e /sys/module/lowmemorykiller/parameters/minfree ];then
+        if [ ! -e $PathModulConfig/backup/ram_minfree.txt ]; then
+            if [ -e /sys/module/lowmemorykiller/parameters/minfree ]; then
                 echo $(cat "/sys/module/lowmemorykiller/parameters/minfree") > "$PathModulConfig/backup/ram_minfree.txt"  
             fi
         fi
     fi
 fi
-if [ $GenerateApp == "ya" ];then
+if [ $GenerateApp == "ya" ]; then
     GetAppAndGames
 fi
-if [ "$changeSE" == "ya" ] && [ -z "$(getprop | grep begonia)" ] ;then
+if [ "$changeSE" == "ya" ] && [ -z "$(getprop | grep begonia)" ] ; then
     setenforce 1
 fi
-if [ ! -d "$(cat "$ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt")"/modul_mantul/ZyC_mod/Pubg_config ];then
+if [ ! -d "$(cat "$ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt")"/modul_mantul/ZyC_mod/Pubg_config ]; then
     mkdir "$(cat "$ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt")"/modul_mantul/ZyC_mod/Pubg_config
 fi

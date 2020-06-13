@@ -10,18 +10,18 @@ PathBusyBox="none"
 for i in /system/bin /system/xbin /sbin /su/xbin; do
     if [ "$GetBusyBox" == "none" ]; then
         if [ -f $i/busybox ]; then
-            GetBusyBox=$i/busybox;
-        fi;
+            GetBusyBox=$i/busybox
+        fi
         PathBusyBox=$i
-    fi;
-done;
+    fi
+done
 
 nohup=nohup
-if [ -e "$PathBusyBox/busybox" ];then
+if [ -e "$PathBusyBox/busybox" ]; then
     nohup=$PathBusyBox"/busybox nohup"
 fi
 usleep=usleep
-if [ -e "$PathBusyBox/busybox" ];then
+if [ -e "$PathBusyBox/busybox" ]; then
     usleep=$PathBusyBox"/busybox usleep"
 fi
 ModulPath=$(cat /system/etc/ZyC_Ai/magisk_path.txt)
@@ -32,21 +32,21 @@ ModPath=$(cat $ModulPath/ZyC_Turbo/system/etc/ZyC_Ai/mod_path.txt)
 Path=$ModPath/modul_mantul/ZyC_mod
 FromTerminal="tidak";
 FromAi="tidak"
-if [ ! -z "$1" ];then
-    if [ "$1" == "Terminal" ];then
+if [ ! -z "$1" ]; then
+    if [ "$1" == "Terminal" ]; then
         FromTerminal="ya";
     fi
 fi
-if [ "$FromTerminal" == "tidak" ];then
+if [ "$FromTerminal" == "tidak" ]; then
     . $ModulPath/ZyC_Turbo/initialize.sh "boot" & wait
     $usleep 5000000
     . $ModulPath/ZyC_Turbo/initialize.sh & wait
-fi;
-if [ ! -z "$2" ];then
-    if [ "$2" == "Ai" ];then
+fi
+if [ ! -z "$2" ]; then
+    if [ "$2" == "Ai" ]; then
         FromAi="ya";
     fi
-fi;
+fi
 MALIGPU="NO"
 TypeGpu='Undetected / Unknow'
 if [ -d /sys/class/kgsl/kgsl-3d0 ]; then
@@ -99,7 +99,7 @@ SetOff(){
     resetprop --delete persist.sys.NV_STEREOCTRL 
     resetprop --delete persist.sys.NV_STEREOSEPCHG 
     resetprop --delete persist.sys.NV_STEREOSEP 
-    if [ "$NyariGPU" != "" ];then
+    if [ "$NyariGPU" != "" ]; then
         if [ -e $NyariGPU/throttling ]; then
             echo $(cat "$PathModulConfig/backup/gpu_throttling.txt") > $NyariGPU/throttling
         fi
@@ -140,17 +140,17 @@ SetOff(){
             echo $(cat  "$PathModulConfig/backup/misc_module_fsync_enabled.txt") > "/sys/module/sync/parameters/fsync_enabled"
         fi
     fi
-    if [ "$FromAi" == "ya" ];then
-        if [ "$CustomRamAdj" == "tweak" ];then
-            if [ "$(cat "/sys/module/lowmemorykiller/parameters/adj")" != "0,110,220,355,850,1000" ];then
+    if [ "$FromAi" == "ya" ]; then
+        if [ "$CustomRamAdj" == "tweak" ]; then
+            if [ "$(cat "/sys/module/lowmemorykiller/parameters/adj")" != "0,110,220,355,850,1000" ]; then
                 echo "0,110,220,355,850,1000" > /sys/module/lowmemorykiller/parameters/adj
             fi
         fi
     fi
-    if [ -e "/sys/class/thermal/thermal_message/sconfig" ];then
+    if [ -e "/sys/class/thermal/thermal_message/sconfig" ]; then
             XThermalDefault="$(cat "$PathModulConfig/xiaomi_thermal_default.txt")"
             XThermalLockVal="$(cat "$PathModulConfig/xiaomi_thermal_lock_value.txt")"
-            if [ $XThermalLockVal == "0" ];then
+            if [ $XThermalLockVal == "0" ]; then
                 echo 'xiaomi sconfig thermal detected . . .' | tee -a $saveLog;
                 echo 'update value to '"$XThermalOnTurbo" | tee -a $saveLog;
                 chmod 0664 "/sys/class/thermal/thermal_message/sconfig"
@@ -171,7 +171,7 @@ SetOn(){
     setprop persist.sys.NV_STEREOSEPCHG 0
     setprop persist.sys.NV_STEREOSEP 20
     # GPU TWEAK wajib lah biar kaga drop fps xD
-    if [ "$NyariGPU" != '' ];then
+    if [ "$NyariGPU" != '' ]; then
         if [ -e $NyariGPU/max_pwrlevel ]; then
             echo "0" > $NyariGPU/max_pwrlevel
         fi
@@ -187,10 +187,10 @@ SetTurbo(){
     #fps limit ke 120
     echo 'use "turbo" setting. . .' | tee -a $saveLog;
     setprop persist.sys.NV_FPSLIMIT 120
-    if  [ "$NyariGPU" != '' ];then
+    if  [ "$NyariGPU" != '' ]; then
         if [ -e $NyariGPU/devfreq/adrenoboost ]; then
             echo "4" > $NyariGPU/devfreq/adrenoboost
-            if [ $NyariGPU/devfreq/adrenoboost != "4" ];then
+            if [ $NyariGPU/devfreq/adrenoboost != "4" ]; then
                 echo "3" > $NyariGPU/devfreq/adrenoboost
             fi
         fi
@@ -212,10 +212,10 @@ SetTurbo(){
         if [ -e "$NyariGPU/bus_split" ]; then
             echo "1" > $NyariGPU/bus_split
         fi
-        if [ -e "/sys/class/thermal/thermal_message/sconfig" ];then
+        if [ -e "/sys/class/thermal/thermal_message/sconfig" ]; then
             XThermalOnTurbo="$(cat "$PathModulConfig/xiaomi_thermal_on_turbo.txt")"
             XThermalLockVal="$(cat "$PathModulConfig/xiaomi_thermal_lock_value.txt")"
-            if [ "$XThermalLockVal" == "0" ];then
+            if [ "$XThermalLockVal" == "0" ]; then
                 echo 'xiaomi sconfig thermal detected . . .' | tee -a $saveLog;
                 echo 'update value to '"$XThermalOnTurbo" | tee -a $saveLog;
                 chmod 0664 "/sys/class/thermal/thermal_message/sconfig"
@@ -223,18 +223,18 @@ SetTurbo(){
                 chmod 0444 "/sys/class/thermal/thermal_message/sconfig"
             fi
         fi
-        if [ $MALIGPU == "YES" ];then
-            if [ -e $NyariGPU/dvfs_period ];then
+        if [ $MALIGPU == "YES" ]; then
+            if [ -e $NyariGPU/dvfs_period ]; then
                 echo "1000" > $NyariGPU/dvfs_period
             fi
-            if [ -e $NyariGPU/dvfs/dvfs_period ];then
+            if [ -e $NyariGPU/dvfs/dvfs_period ]; then
                 echo "1000" > $NyariGPU/dvfs/dvfs_period
             fi
-            if [ -e $NyariGPU/dvfs/period ];then
+            if [ -e $NyariGPU/dvfs/period ]; then
                 echo "1000" > $NyariGPU/dvfs/period
             fi
         fi
-        if [ -e "$NyariGPU/power_policy" ];then
+        if [ -e "$NyariGPU/power_policy" ]; then
             echo "always_on" > $NyariGPU/power_policy
         fi
     fi
@@ -286,16 +286,16 @@ enableFsync(){
     echo "  --- --- --- --- --- " | tee -a $saveLog
 }
 LagMode(){
-    if [ "$FromAi" == "ya" ];then
-        if [ "$CustomRamAdj" == "tweak" ];then
-            if [ "$(cat "/sys/module/lowmemorykiller/parameters/adj")" != "0,100,200,300,900,906" ];then
+    if [ "$FromAi" == "ya" ]; then
+        if [ "$CustomRamAdj" == "tweak" ]; then
+            if [ "$(cat "/sys/module/lowmemorykiller/parameters/adj")" != "0,100,200,300,900,906" ]; then
                 echo "0,100,200,300,900,906" > /sys/module/lowmemorykiller/parameters/adj
             fi
         fi
     fi
-    if [ "$NyariGPU" != '' ];then
+    if [ "$NyariGPU" != '' ]; then
         if [ -e $NyariGPU/max_pwrlevel ]; then
-            if [ -e $NyariGPU/num_pwrlevels ];then
+            if [ -e $NyariGPU/num_pwrlevels ]; then
                 numPwrlevels=$(cat $NyariGPU/num_pwrlevels)
                 echo $((($numPwrlevels/2)-1)) > $NyariGPU/max_pwrlevel
             fi
@@ -397,15 +397,15 @@ runScript(){
     echo "<<--- --- --- --- --- " | tee -a $saveLog 
     echo "starting modules . . ." | tee -a $saveLog 
     echo "Version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )" | tee -a $saveLog 
-    if [ $NyariGPU == "" ];then
+    if [ $NyariGPU == "" ]; then
         echo "Gpu Path : undetected" | tee -a $saveLog 
     else
         echo "Gpu Path : $NyariGPU" | tee -a $saveLog 
     fi
     echo "Gpu Type : $TypeGpu"| tee -a $saveLog 
-    if [ "$FromTerminal" == "tidak" ];then
+    if [ "$FromTerminal" == "tidak" ]; then
         echo "running with boot detected" | tee -a $saveLog 
-    elif [ "$FromAi" == "ya" ];then
+    elif [ "$FromAi" == "ya" ]; then
         echo "running with ai detected" | tee -a $saveLog 
     else
         echo "running without boot detected" | tee -a $saveLog 
@@ -438,7 +438,7 @@ runScript(){
 
     # setting adrenoboost
     GpuBooster="not found"
-    if [ -e $NyariGPU/devfreq/adrenoboost ];then
+    if [ -e $NyariGPU/devfreq/adrenoboost ]; then
         if [ ! -e "$PathModulConfig/GpuBooster.txt" ]; then
             MissingFile="iya"
         fi
@@ -485,13 +485,13 @@ runScript(){
     fi
 
     # xiaomi thermal changer
-    if [ ! -e "$PathModulConfig/xiaomi_thermal_default.txt" ] && [ -e /sys/class/thermal/thermal_message/sconfig ];then
+    if [ ! -e "$PathModulConfig/xiaomi_thermal_default.txt" ] && [ -e /sys/class/thermal/thermal_message/sconfig ]; then
         MissingFile="iya"
     fi
-    if [ ! -e "$PathModulConfig/xiaomi_thermal_on_turbo.txt" ] && [ -e /sys/class/thermal/thermal_message/sconfig ];then
+    if [ ! -e "$PathModulConfig/xiaomi_thermal_on_turbo.txt" ] && [ -e /sys/class/thermal/thermal_message/sconfig ]; then
         MissingFile="iya"
     fi
-    if [ ! -e "$PathModulConfig/xiaomi_thermal_lock_value.txt" ] && [ -e /sys/class/thermal/thermal_message/sconfig ];then
+    if [ ! -e "$PathModulConfig/xiaomi_thermal_lock_value.txt" ] && [ -e /sys/class/thermal/thermal_message/sconfig ]; then
         MissingFile="iya"
     fi
 
@@ -522,33 +522,33 @@ runScript(){
     Swapinnes=$(cat "$PathModulConfig/swapinnes.txt")
     ZramOptimizer=$(cat "$PathModulConfig/zram_optimizer.txt")
     GetDnsType=$(cat "$PathModulConfig/dns.txt")
-    if [ -e "$NyariGPU/devfreq/adrenoboost" ];then
+    if [ -e "$NyariGPU/devfreq/adrenoboost" ]; then
         GpuBooster=$(cat "$PathModulConfig/GpuBooster.txt")
     fi
     # ngator mode start
-        if [ "$GetMode" == 'off' ];then
+        if [ "$GetMode" == 'off' ]; then
             SetOff 2>/dev/null 1>/dev/null
             echo "turn off tweak" | tee -a $saveLog;
             echo "  --- --- --- --- --- " | tee -a $saveLog
-        elif [ "$GetMode" == 'on' ];then
+        elif [ "$GetMode" == 'on' ]; then
             SetOff 2>/dev/null 1>/dev/null
             SetOn 2>/dev/null 1>/dev/null
             # disableFsync
             echo "setting to mode on" | tee -a $saveLog;
             echo "  --- --- --- --- --- " | tee -a $saveLog
-        elif [ "$GetMode" == 'turbo' ];then
+        elif [ "$GetMode" == 'turbo' ]; then
             SetOn 2>/dev/null 1>/dev/null
             SetTurbo 2>/dev/null 1>/dev/null
             # disableFsync
             # disableThermal
-            if [ "$fsyncMode" == "auto" ] && [ "$FromAi" == "ya" ];then
+            if [ "$fsyncMode" == "auto" ] && [ "$FromAi" == "ya" ]; then
                 disableFsync 2>/dev/null 1>/dev/null
                 echo "disable fysnc" | tee -a $saveLog;
                 echo "  --- --- --- --- --- " | tee -a $saveLog
             fi
             echo "swith to turbo mode" | tee -a $saveLog;
             echo "  --- --- --- --- --- " | tee -a $saveLog
-        elif [ "$GetMode" == 'lag' ];then
+        elif [ "$GetMode" == 'lag' ]; then
             # SetOff
             LagMode 2>/dev/null 1>/dev/null
             # disableFsync
@@ -565,7 +565,7 @@ runScript(){
     # ngator mode end
 
     # enable fastcharge start
-        if [ "$(getprop zyc.status.fastcharge)" == "belom" ];then
+        if [ "$(getprop zyc.status.fastcharge)" == "belom" ]; then
             if [ "$FastCharge" == "1" ]; then
                 setprop zyc.status.fastcharge "sudah"
                 if [ -e /sys/kernel/fast_charge/force_fast_charge ]; then
@@ -589,7 +589,7 @@ runScript(){
     # enable fastcharge end
 
     # set fps ? start
-        if [ "$TotalFps" != "0" ] && [ "$GetMode" != 'turbo' ];then
+        if [ "$TotalFps" != "0" ] && [ "$GetMode" != 'turbo' ]; then
             setprop persist.sys.NV_FPSLIMIT $TotalFps
             echo "custom fps detected, set to $TotalFps" | tee -a $saveLog;
             echo "  --- --- --- --- --- " | tee -a $saveLog
@@ -597,32 +597,32 @@ runScript(){
     # set fps ? end
 
     # fstrim start
-        if [ "$(getprop zyc.status.fstrim)" == "belom" ];then
+        if [ "$(getprop zyc.status.fstrim)" == "belom" ]; then
             if [ -e system/bin/fstrim ]; then
                 fstrimDulu | tee -a $Path/ZyC_Turbo.running.log ;
             elif [ -e system/xbin/fstrim ]; then
                 fstrimDulu | tee -a $Path/ZyC_Turbo.running.log ;
-            fi;
+            fi
             setprop zyc.status.fstrim "sudah"
         fi
     # fstrim end
 
     # gpu turbo start
-        if [ "$GpuBooster" != "not found" ];then
-            if [ "$GpuBooster" == "0" ];then
+        if [ "$GpuBooster" != "not found" ]; then
+            if [ "$GpuBooster" == "0" ]; then
                 echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
                 echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
-            elif [ "$GpuBooster" == "1" ];then
+            elif [ "$GpuBooster" == "1" ]; then
                 echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
                 echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
-            elif [ "$GpuBooster" == "2" ];then
+            elif [ "$GpuBooster" == "2" ]; then
                 echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
                 echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
-            elif [ "$GpuBooster" == "3" ];then
+            elif [ "$GpuBooster" == "3" ]; then
                 echo "$GpuBooster" > $NyariGPU/devfreq/adrenoboost
                 echo "custom GpuBoost detected, set to $GpuBooster" | tee -a $saveLog;
             else
-                if [ "$GpuBooster" != "tweak" ];then
+                if [ "$GpuBooster" != "tweak" ]; then
                     echo 'tweak' > $PathModulConfig/GpuBooster.txt
                 fi
                 echo "nice,use default this tweak GpuBoost" | tee -a $saveLog;
@@ -633,20 +633,20 @@ runScript(){
 
     # echo "ok beres dah . . .\n" | tee -a $saveLog;
     # gpu render start
-        if [ "$FromTerminal" == "ya" ];then
-            if [ "$(getprop zyc.change.render)" == "belom" ];then
-                if [ "$RenderMode" == 'skiagl' ];then
+        if [ "$FromTerminal" == "ya" ]; then
+            if [ "$(getprop zyc.change.render)" == "belom" ]; then
+                if [ "$RenderMode" == 'skiagl' ]; then
                     setprop debug.hwui.renderer skiagl
                     echo "set render gpu to OpenGL (SKIA) done" | tee -a $saveLog;
-                elif [ "$RenderMode" == 'skiavk' ];then
+                elif [ "$RenderMode" == 'skiavk' ]; then
                     setprop debug.hwui.renderer skiavk
                     echo "set render gpu to Vulkan (SKIA) done" | tee -a $saveLog;
-                elif [ "$RenderMode" == 'opengl' ];then
+                elif [ "$RenderMode" == 'opengl' ]; then
                     setprop debug.hwui.renderer opengl
                     echo "set render gpu to OpenGL default done" | tee -a $saveLog;
                 else
                     GetBackupGPU=$(cat "$PathModulConfig/backup/gpu_render.txt")
-                    if [ -z "$GetBackupGPU" ];then
+                    if [ -z "$GetBackupGPU" ]; then
                         echo "system" > $PathModulConfig/mode_render.txt
                         setprop debug.hwui.renderer "$GetBackupGPU"
                         echo "set render gpu to system setting" | tee -a $saveLog;
@@ -659,15 +659,15 @@ runScript(){
     # gpu render end
 
     # disable fsync start
-        if [ "$FromTerminal" == "ya" ];then
-            if [ "$fsyncMode" == "0" ];then
+        if [ "$FromTerminal" == "ya" ]; then
+            if [ "$fsyncMode" == "0" ]; then
                 disableFsync
-            elif [ "$fsyncMode" == "1" ];then
+            elif [ "$fsyncMode" == "1" ]; then
                 enableFsync
-            elif [ "$fsyncMode" == "system" ];then
+            elif [ "$fsyncMode" == "system" ]; then
                 systemFsync
             else
-                if [ "$fsyncMode" != "auto" ];then
+                if [ "$fsyncMode" != "auto" ]; then
                     echo "fsync value error,set to by system" | tee -a $saveLog;
                     echo "  --- --- --- --- --- " | tee -a $saveLog
                     echo 'system' > $PathModulConfig/fsync_mode.txt
@@ -679,9 +679,9 @@ runScript(){
     # disable fsync end
 
     # custom ram managent start
-        if [ "$FromTerminal" == "ya" ];then
-            if [ "$(getprop zyc.change.rm)" == "belom" ];then
-                if [ "$CustomRam" == '0' ];then
+        if [ "$FromTerminal" == "ya" ]; then
+            if [ "$(getprop zyc.change.rm)" == "belom" ]; then
+                if [ "$CustomRam" == '0' ]; then
                         # echo "coming_soon :D"| tee -a $saveLog;
                         if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ]; then
                             echo "not use custom ram management,using stock ram management" | tee -a $saveLog;
@@ -690,13 +690,13 @@ runScript(){
                             chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
                             setprop lmk.autocalc true
                         fi
-                        if [ -e "$PathModulConfig/backup/ram_debug_level".txt ] && [ -e /sys/module/lowmemorykiller/parameters/debug_level ];then
+                        if [ -e "$PathModulConfig/backup/ram_debug_level".txt ] && [ -e /sys/module/lowmemorykiller/parameters/debug_level ]; then
                             chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
                             echo "$(cat "$PathModulConfig/backup/ram_debug_level.txt")" > "/sys/module/lowmemorykiller/parameters/debug_level"
                             chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
                             # rm $PathModulConfig/backup/ram_debug_level.txt
                         fi
-                        if [ -e "$PathModulConfig/backup/ram_adj".txt ] && [ -e /sys/module/lowmemorykiller/parameters/adj ];then
+                        if [ -e "$PathModulConfig/backup/ram_adj".txt ] && [ -e /sys/module/lowmemorykiller/parameters/adj ]; then
                             chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
                             # echo $(cat "$PathModulConfig/backup/ram_adj.txt") > "/sys/module/lowmemorykiller/parameters/adj"
                             #ADJ1=0; ADJ2=100; ADJ3=200; ADJ4=300; ADJ5=900; ADJ6=906 # STOCK
@@ -704,13 +704,13 @@ runScript(){
                             chmod 0644 /sys/module/lowmemorykiller/parameters/adj;
                             rm $PathModulConfig/backup/ram_adj.txt
                         fi
-                        if [ -e "$PathModulConfig/backup/ram_minfree".txt ] && [ -e /sys/module/lowmemorykiller/parameters/minfree ];then
+                        if [ -e "$PathModulConfig/backup/ram_minfree".txt ] && [ -e /sys/module/lowmemorykiller/parameters/minfree ]; then
                             chmod 0666 /sys/module/lowmemorykiller/parameters/minfree;
                             echo "$(cat "$PathModulConfig/backup/ram_minfree.txt")" > "/sys/module/lowmemorykiller/parameters/minfree"
                             chmod 0644 /sys/module/lowmemorykiller/parameters/minfree;
                             rm $PathModulConfig/backup/ram_minfree.txt
                         fi
-                        if [ -e "$PathModulConfig/backup/zram_vm".min_free_kbytes.txt ];then
+                        if [ -e "$PathModulConfig/backup/zram_vm".min_free_kbytes.txt ]; then
                             sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.min_free_kbytes.txt") 
                         fi
                         # echo "udah mati broo,selamat battery lu aman :V" | tee -a $saveLog;
@@ -778,11 +778,11 @@ runScript(){
                     else   
                         echo "method not found" | tee -a $saveLog;
                         StopModify="yes"
-                    fi;
-                    if [ "$StopModify" == "no" ];then
+                    fi
+                    if [ "$StopModify" == "no" ]; then
                         if [ -e /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk ]; then
                             chmod 0666 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-                            if [ "$CustomRam" -le "4" ];then
+                            if [ "$CustomRam" -le "4" ]; then
                                 echo "1" > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
                                 setprop lmk.autocalc true
                             else
@@ -790,22 +790,22 @@ runScript(){
                                 setprop lmk.autocalc false
                             fi
                             chmod 0644 /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk;
-                        fi;
+                        fi
                         if [ -e /sys/module/lowmemorykiller/parameters/debug_level ]; then
                             chmod 0666 /sys/module/lowmemorykiller/parameters/debug_level;
                             echo "0" > /sys/module/lowmemorykiller/parameters/debug_level
                             chmod 0644 /sys/module/lowmemorykiller/parameters/debug_level;
-                        fi;
+                        fi
 
                         chmod 0666 /sys/module/lowmemorykiller/parameters/adj;
                         chmod 0666 /sys/module/lowmemorykiller/parameters/minfree;
                         # echo "0,120,230,415,910,1000" > /sys/module/lowmemorykiller/parameters/adj
-                        if [ "$CustomRamAdj" == "tweak" ];then
-                            if [ "$(cat "/sys/module/lowmemorykiller/parameters/adj")" != "0,110,220,355,850,1000" ];then
+                        if [ "$CustomRamAdj" == "tweak" ]; then
+                            if [ "$(cat "/sys/module/lowmemorykiller/parameters/adj")" != "0,110,220,355,850,1000" ]; then
                                 echo "0,110,220,355,850,1000" > /sys/module/lowmemorykiller/parameters/adj
                             fi
                         else
-                            if [ "$(cat "/sys/module/lowmemorykiller/parameters/adj")" != "0,100,200,300,900,906" ];then
+                            if [ "$(cat "/sys/module/lowmemorykiller/parameters/adj")" != "0,100,200,300,900,906" ]; then
                                 echo "0,100,200,300,900,906" > /sys/module/lowmemorykiller/parameters/adj
                             fi
                         fi
@@ -819,11 +819,11 @@ runScript(){
                         if [ -e /proc/sys/vm/extra_free_kbytes ]; then
                             sysctl -e -w vm.min_free_kbytes=$(($minFreeSet/2));
                             setprop sys.sysctl.extra_free_kbytes $(($minFreeSet/2));
-                        fi;
+                        fi
                         start perfd
-                    fi;
+                    fi
                     # echo "done,selamat menikmati.. eh merasakan modul ini\ncuma makanan yg bisa di nikmati" | tee -a $saveLog;
-                fi;
+                fi
                 setprop zyc.change.rm "udah"
                 echo "  --- --- --- --- --- " | tee -a $saveLog
             fi
@@ -831,34 +831,34 @@ runScript(){
     # custom ram managent end
     # custom zram start
         StopZramSet="iya"
-        if [ "$FromTerminal" == "ya" ];then
+        if [ "$FromTerminal" == "ya" ]; then
             StopZramSet="kaga"
         fi
-        if [ "$GetBusyBox" == "none" ];then
+        if [ "$GetBusyBox" == "none" ]; then
             StopZramSet="iya"
             echo "need busybox to set Zram " | tee -a $saveLog
             echo "  --- --- --- --- --- " | tee -a $saveLog
         else
             GetTotalRam=$(free -m | awk '/Mem:/{print $2}');
-            if [ "$CustomZram" == "1" ];then
+            if [ "$CustomZram" == "1" ]; then
                 SetZramTo="1073741824"
-            elif [ "$CustomZram" == "2" ];then
+            elif [ "$CustomZram" == "2" ]; then
                 SetZramTo="2147483648"
-            elif [ "$CustomZram" == "3" ];then
+            elif [ "$CustomZram" == "3" ]; then
                 SetZramTo="3221225472"
-            elif [ "$CustomZram" == "4" ];then
+            elif [ "$CustomZram" == "4" ]; then
                 SetZramTo="4294967296"
-            elif [ "$CustomZram" == "5" ];then
+            elif [ "$CustomZram" == "5" ]; then
                 SetZramTo="5368709120‬"
-            elif [ "$CustomZram" == "6" ];then
+            elif [ "$CustomZram" == "6" ]; then
                 SetZramTo="6442450944‬"
-            elif [ "$CustomZram" == "7" ];then
+            elif [ "$CustomZram" == "7" ]; then
                 SetZramTo="7516192768"
-            elif [ "$CustomZram" == "8" ];then
+            elif [ "$CustomZram" == "8" ]; then
                 SetZramTo="8589934592‬"
-            elif [ "$CustomZram" == "0" ];then
+            elif [ "$CustomZram" == "0" ]; then
             #  disable zram 
-                if [ "$(getprop zyc.change.zrm)" == "belom" ];then
+                if [ "$(getprop zyc.change.zrm)" == "belom" ]; then
                     if [ -e /dev/block/zram0 ]; then
                         setprop zyc.change.zrm "udah"
                         StopZramSet="iya"
@@ -867,26 +867,26 @@ runScript(){
                         $GetBusyBox setprop zram.disksize 0 2>/dev/null 1>/dev/null
                         echo 'disable Zram done .' | tee -a $saveLog;
                         echo "  --- --- --- --- --- " | tee -a $saveLog
-                    fi;
+                    fi
                 fi
                 StopZramSet="iya"
-            elif [ "$CustomZram" == "system" ];then
+            elif [ "$CustomZram" == "system" ]; then
                 SetZramTo=$(cat "$PathModulConfig/backup/zram_disksize.txt")
                 echo "use Zram default system setting" | tee -a $saveLog
                 echo "  --- --- --- --- --- " | tee -a $saveLog
             fi
-            if [ "$SetZramTo" == "0" ];then
+            if [ "$SetZramTo" == "0" ]; then
                 setprop zyc.change.zrm == "udah"
                 StopZramSet="iya"
             fi
-            if [ "$(getprop zyc.change.zrm)" == "belom" ];then
+            if [ "$(getprop zyc.change.zrm)" == "belom" ]; then
                 stop perfd
-                if [ "$StopZramSet" == "kaga" ];then
+                if [ "$StopZramSet" == "kaga" ]; then
                     if [ -e /dev/block/zram0 ]; then
                         setprop zyc.change.zrm "udah" 
                         FixSize=$(echo $SetZramTo |  sed "s/-*//g" )
                         GetSwapNow=$(getprop zram.disksize |  sed "s/-*//g" )
-                        if [ "$FixSize" != "$GetSwapNow" ];then
+                        if [ "$FixSize" != "$GetSwapNow" ]; then
                             echo "enable Zram & use $CustomZram Gb done ." | tee -a $saveLog;
                             echo "Set Zram to $SetZramTo Bytes . . ." | tee -a $saveLog;
                             $PathBusyBox/swapoff "/dev/block/zram0" 
@@ -899,12 +899,12 @@ runScript(){
                             $PathBusyBox/swapon "/dev/block/zram0" 
                             $usleep 100000
                         fi
-                    fi;
+                    fi
                     if [ -e /dev/block/zram1 ]; then
                         setprop zyc.change.zrm "udah" 
                         FixSize=$(echo $SetZramTo |  sed "s/-*//g" )
                         GetSwapNow=$(getprop zram.disksize |  sed "s/-*//g" )
-                        if [ "$FixSize" != "$GetSwapNow" ];then
+                        if [ "$FixSize" != "$GetSwapNow" ]; then
                             echo "enable Zram1 & use $CustomZram Gb done ." | tee -a $saveLog;
                             echo "Set Zram1 to $SetZramTo Bytes . . ." | tee -a $saveLog;
                             $PathBusyBox/swapoff "/dev/block/zram1" 
@@ -917,12 +917,12 @@ runScript(){
                             $PathBusyBox/swapon "/dev/block/zram1" 
                             $usleep 100000
                         fi
-                    fi;
+                    fi
                     if [ -e /dev/block/zram2 ]; then
                         setprop zyc.change.zrm "udah" 
                         FixSize=$(echo $SetZramTo |  sed "s/-*//g" )
                         GetSwapNow=$(getprop zram.disksize |  sed "s/-*//g" )
-                        if [ "$FixSize" != "$GetSwapNow" ];then
+                        if [ "$FixSize" != "$GetSwapNow" ]; then
                             echo "enable Zram2 & use $CustomZram Gb done ." | tee -a $saveLog;
                             echo "Set Zram2 to $SetZramTo Bytes . . ." | tee -a $saveLog;
                             $PathBusyBox/swapoff "/dev/block/zram2" 
@@ -935,9 +935,9 @@ runScript(){
                             $PathBusyBox/swapon "/dev/block/zram2" 
                             $usleep 100000
                         fi
-                    fi;
+                    fi
                     sysctl -e -w vm.swappiness=$Swapinnes 
-                    if [ "$ZramOptimizer" == "1" ];then
+                    if [ "$ZramOptimizer" == "1" ]; then
                         echo "echo optimize zram setting . . ." | tee -a $saveLog;
                         sysctl -e -w vm.dirty_ratio=15 2>/dev/null 1>/dev/null
                         sysctl -e -w vm.dirty_background_ratio=3 2>/dev/null 1>/dev/null
@@ -945,16 +945,16 @@ runScript(){
                         sysctl -e -w vm.vfs_cache_pressure=100 2>/dev/null 1>/dev/null
                     else
                         echo "use stock zram setting . . ." | tee -a $saveLog;
-                        if [ ! -z "$(cat $PathModulConfig/backup/zram_vm.dirty_ratio.txt)" ];then
+                        if [ ! -z "$(cat $PathModulConfig/backup/zram_vm.dirty_ratio.txt)" ]; then
                             sysctl -e -w vm.dirty_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_ratio.txt") 2>/dev/null 1>/dev/null
                         fi
-                        if [ ! -z "$(cat $PathModulConfig/backup/zram_vm.dirty_background_ratio.txt)" ];then
+                        if [ ! -z "$(cat $PathModulConfig/backup/zram_vm.dirty_background_ratio.txt)" ]; then
                             sysctl -e -w vm.dirty_background_ratio=$(cat "$PathModulConfig/backup/zram_vm.dirty_background_ratio.txt") 2>/dev/null 1>/dev/null
                         fi
-                        if [ ! -z "$(cat $PathModulConfig/backup/zram_vm.drop_caches.txt)" ];then
+                        if [ ! -z "$(cat $PathModulConfig/backup/zram_vm.drop_caches.txt)" ]; then
                             sysctl -e -w vm.drop_caches=$(cat "$PathModulConfig/backup/zram_vm.drop_caches.txt") 2>/dev/null 1>/dev/null
                         fi
-                        if [ ! -z "$(cat $PathModulConfig/backup/zram_vm.vfs_cache_pressure.txt)" ];then
+                        if [ ! -z "$(cat $PathModulConfig/backup/zram_vm.vfs_cache_pressure.txt)" ]; then
                             sysctl -e -w vm.vfs_cache_pressure=$(cat "$PathModulConfig/backup/zram_vm.vfs_cache_pressure.txt") 2>/dev/null 1>/dev/null
                         fi
                     fi
@@ -967,23 +967,23 @@ runScript(){
         
     # custom zram end
 
-    if [ "$LogStatus" == '1' ];then
+    if [ "$LogStatus" == '1' ]; then
         # enableLogSystem
         disableLogSystem 2>/dev/null 1>/dev/null
-    elif [ "$LogStatus" == '2' ];then
+    elif [ "$LogStatus" == '2' ]; then
         # disableLogSystem
         enableLogSystem 2>/dev/null 1>/dev/null
     fi
-    if [ "$GetMode" == 'off' ];then
+    if [ "$GetMode" == 'off' ]; then
         echo "turn off tweak succeess :D"| tee -a $saveLog;
     else
         echo "done,tweak has been turned on" | tee -a $saveLog;
-    fi;
-    if [ "$GetMode" == 'turbo' ];then
+    fi
+    if [ "$GetMode" == 'turbo' ]; then
         echo "NOTE: just tell you if you use this mode your battery will litle drain" | tee -a $saveLog;
-    fi;
+    fi
     ResetDns(){
-        if [ "$FromTerminal" == "ya" ];then
+        if [ "$FromTerminal" == "ya" ]; then
             ip6tables -t nat -F 2>/dev/null 1>/dev/null
             iptables -t nat -F 2>/dev/null 1>/dev/null
             resetprop net.eth0.dns1 2>/dev/null 1>/dev/null
@@ -1012,9 +1012,9 @@ runScript(){
             # resetprop 2001:67c:28a4:::5353 2>/dev/null 1>/dev/null
         fi
     }
-    if [ "$(getprop zyc.change.dns)" == "belom" ] ;then
+    if [ "$(getprop zyc.change.dns)" == "belom" ] ; then
         setprop zyc.change.dns 'udah'
-        if [ "$GetDnsType" == "cloudflare" ];then
+        if [ "$GetDnsType" == "cloudflare" ]; then
             echo "use cloudflare dns "| tee -a $saveLog
             # reset
             ResetDns
@@ -1046,7 +1046,7 @@ runScript(){
             setprop net.wlan0.dns2 1.0.0.1 2>/dev/null 1>/dev/null
             # setprop 2606:4700:4700::1111 '' 2>/dev/null 1>/dev/null
             # setprop 2606:4700:4700::1001 '' 2>/dev/null 1>/dev/null
-        elif [ "$GetDnsType" == "google" ];then
+        elif [ "$GetDnsType" == "google" ]; then
             echo "use google dns "| tee -a $saveLog 
             # reset
             ResetDns
@@ -1078,7 +1078,7 @@ runScript(){
             setprop net.wlan0.dns2 8.8.4.4 2>/dev/null 1>/dev/null
             # setprop 2001:4860:4860::8888 '' 2>/dev/null 1>/dev/null
             # setprop 2001:4860:4860::8844 '' 2>/dev/null 1>/dev/null
-        elif [ "$GetDnsType" == "adguard" ];then
+        elif [ "$GetDnsType" == "adguard" ]; then
             echo "use adguard dns "| tee -a $saveLog 
             # reset
             ResetDns
@@ -1110,7 +1110,7 @@ runScript(){
             setprop net.wlan0.dns2 176.103.130.131 2>/dev/null 1>/dev/null
             # setprop 2a00:5a60::ad1:0ff:5353 '' 2>/dev/null 1>/dev/null
             # setprop 2a00:5a60::ad2:0ff:5353 '' 2>/dev/null 1>/dev/null
-        elif [ "$GetDnsType" == "uncensored" ];then
+        elif [ "$GetDnsType" == "uncensored" ]; then
             echo "use uncensored dns "| tee -a $saveLog 
             # reset
             ResetDns
@@ -1143,7 +1143,7 @@ runScript(){
             # setprop 2001:67c:28a4:::5353 '' 2>/dev/null 1>/dev/null
             # setprop 2001:67c:28a4:::5353 '' 2>/dev/null 1>/dev/null
         else
-            if [ "$GetDnsType" != "system" ];then
+            if [ "$GetDnsType" != "system" ]; then
                 echo "system" > "$PathModulConfig/dns.txt"
             fi
             echo "use system dns "| tee -a $saveLog 
@@ -1151,7 +1151,7 @@ runScript(){
             ResetDns
             # reset
         fi
-        if [ "$GetDnsType" != "system" ];then
+        if [ "$GetDnsType" != "system" ]; then
             sysctl -e -w net.ipv4.tcp_low_latency=0 2>/dev/null 1>/dev/null
             sysctl -e -w net.ipv4.tcp_dsack=1 2>/dev/null 1>/dev/null
             sysctl -e -w net.ipv4.tcp_ecn=2 2>/dev/null 1>/dev/null
@@ -1162,26 +1162,26 @@ runScript(){
         fi
         echo "  --- --- --- --- --- " | tee -a $saveLog 
     fi
-    if [ "$FromTerminal" == "tidak" ];then
+    if [ "$FromTerminal" == "tidak" ]; then
         #fix gms :p
-        if [ "$GMSDoze" == "1" ];then
+        if [ "$GMSDoze" == "1" ]; then
             GetBusyBox="none"
-            if [ -e "$Path/ZyC_GmsDoze.log" ];then
+            if [ -e "$Path/ZyC_GmsDoze.log" ]; then
                 rm $Path/ZyC_GmsDoze.log
             fi
             for i in /system/bin /system/xbin /sbin /su/xbin; do
                 if [ "$GetBusyBox" == "none" ]; then
                     if [ -f $i/busybox ]; then
-                        GetBusyBox=$i/busybox;
-                    fi;
-                fi;
-            done;
-            if [ "$GetBusyBox" == "none " ];then
+                        GetBusyBox=$i/busybox
+                    fi
+                fi
+            done
+            if [ "$GetBusyBox" == "none " ]; then
                 echo "GMS Doze fail . . ." | tee -a $Path/ZyC_GmsDoze.log 2>/dev/null 1>/dev/null
             else
                 echo "Note : better to use universal gms doze :D" | tee -a $Path/ZyC_GmsDoze.log 2>/dev/null 1>/dev/null
                 changeSE="tidak"
-                if [ "$(getenforce)" == "Enforcing" ] && [ -z "$(getprop | grep begonia)" ] ;then
+                if [ "$(getenforce)" == "Enforcing" ] && [ -z "$(getprop | grep begonia)" ] ; then
                     changeSE="ya"
                     setenforce 0
                 fi
@@ -1204,21 +1204,21 @@ runScript(){
                     su -c "pm enable com.google.android.gsf/.update.SystemUpdateService\$SecretCodeReceiver" s2>/dev/null 1>/dev/null
                     su -c "pm enable com.google.android.gsf/.update.SystemUpdateActivity" s2>/dev/null 1>/dev/null
                 fi
-                if [ "$changeSE" == "ya" ] && [ -z "$(getprop | grep begonia)" ] ;then
+                if [ "$changeSE" == "ya" ] && [ -z "$(getprop | grep begonia)" ] ; then
                     setenforce 1
                 fi
                 if [ -e $MODPATH/system/etc/sysconfig/google.xml.fixed ]; then
-                    if [ "$(cat "$MODPATH/system/etc/sysconfig/google.xml.fixed" )" != "$(cat "$MODPATH/system/etc/sysconfig/google.xml" )" ];then
+                    if [ "$(cat "$MODPATH/system/etc/sysconfig/google.xml.fixed" )" != "$(cat "$MODPATH/system/etc/sysconfig/google.xml" )" ]; then
                         cp -af "$MODPATH/system/etc/sysconfig/google.xml.fixed" $MODPATH/system/etc/sysconfig/google.xml 
                     fi
                 fi
                 if [ -e $MODPATH/system/product/etc/sysconfig/google.xml.fixed ]; then
-                    if [ "$(cat "$MODPATH/system/product/etc/sysconfig/google.xml.fixed" )" != "$(cat "$MODPATH/system/product/etc/sysconfig/google.xml" )" ];then
+                    if [ "$(cat "$MODPATH/system/product/etc/sysconfig/google.xml.fixed" )" != "$(cat "$MODPATH/system/product/etc/sysconfig/google.xml" )" ]; then
                         cp -af "$MODPATH/system/product/etc/sysconfig/google.xml.fixed" $MODPATH/system/product/etc/sysconfig/google.xml 
                     fi
                 fi
                 if [ -e $MODPATH/system/system/product/etc/sysconfig/google.xml.fixed ]; then
-                    if [ "$(cat "$MODPATH/system/system/product/etc/sysconfig/google.xml.fixed" )" != "$(cat "$MODPATH/system/system/product/etc/sysconfig/google.xml" )" ];then
+                    if [ "$(cat "$MODPATH/system/system/product/etc/sysconfig/google.xml.fixed" )" != "$(cat "$MODPATH/system/system/product/etc/sysconfig/google.xml" )" ]; then
                         cp -af "$MODPATH/system/system/product/etc/sysconfig/google.xml.fixed" $MODPATH/system/system/product/etc/sysconfig/google.xml 
                     fi
                 fi
@@ -1226,33 +1226,33 @@ runScript(){
             fi
         else
             if [ -e $MODPATH/system/etc/sysconfig/google.xml.ori ]; then
-                if [ "$(cat "$MODPATH/system/etc/sysconfig/google.xml.ori" )" != "$(cat "$MODPATH/system/etc/sysconfig/google.xml" )" ];then
+                if [ "$(cat "$MODPATH/system/etc/sysconfig/google.xml.ori" )" != "$(cat "$MODPATH/system/etc/sysconfig/google.xml" )" ]; then
                     cp -af "$MODPATH/system/etc/sysconfig/google.xml.ori" $MODPATH/system/etc/sysconfig/google.xml 
                 fi
             fi
             if [ -e $MODPATH/system/product/etc/sysconfig/google.xml.ori ]; then
-                if [ "$(cat "$MODPATH/system/product/etc/sysconfig/google.xml.ori" )" != "$(cat "$MODPATH/system/product/etc/sysconfig/google.xml" )" ];then
+                if [ "$(cat "$MODPATH/system/product/etc/sysconfig/google.xml.ori" )" != "$(cat "$MODPATH/system/product/etc/sysconfig/google.xml" )" ]; then
                     cp -af "$MODPATH/system/product/etc/sysconfig/google.xml.ori" $MODPATH/system/product/etc/sysconfig/google.xml 
                 fi
             fi
             if [ -e $MODPATH/system/system/product/etc/sysconfig/google.xml.ori ]; then
-                if [ "$(cat "$MODPATH/system/system/product/etc/sysconfig/google.xml.ori" )" != "$(cat "$MODPATH/system/system/product/etc/sysconfig/google.xml" )" ];then
+                if [ "$(cat "$MODPATH/system/system/product/etc/sysconfig/google.xml.ori" )" != "$(cat "$MODPATH/system/system/product/etc/sysconfig/google.xml" )" ]; then
                     cp -af "$MODPATH/system/system/product/etc/sysconfig/google.xml.ori" $MODPATH/system/system/product/etc/sysconfig/google.xml 
                 fi
             fi
         fi
     fi
     
-    if [ -e /sys/class/thermal/thermal_message/sconfig ];then
+    if [ -e /sys/class/thermal/thermal_message/sconfig ]; then
         XThermalDefault="$(cat "$PathModulConfig/xiaomi_thermal_default.txt")"
         XThermalOnTurbo="$(cat "$PathModulConfig/xiaomi_thermal_on_turbo.txt")"
         XThermalLockVal="$(cat "$PathModulConfig/xiaomi_thermal_lock_value.txt")"
-        if [ "$XThermalLockVal" == "1" ];then
+        if [ "$XThermalLockVal" == "1" ]; then
             echo 'xiaomi sconfig thermal lock based default mode' | tee -a $saveLog;
             chmod 0664 "/sys/class/thermal/thermal_message/sconfig"
             echo "$XThermalOnTurbo" > "/sys/class/thermal/thermal_message/sconfig"
             chmod 0444 "/sys/class/thermal/thermal_message/sconfig"
-        elif [ "$XThermalLockVal" == "2" ];then
+        elif [ "$XThermalLockVal" == "2" ]; then
             echo 'xiaomi sconfig thermal lock based turbo mode' | tee -a $saveLog;
             chmod 0664 "/sys/class/thermal/thermal_message/sconfig"
             echo "$XThermalOnTurbo" > "/sys/class/thermal/thermal_message/sconfig"
@@ -1268,23 +1268,23 @@ runScript(){
     fi
 }
 runScript 2>/dev/null 1>/dev/null| tee -a $Path/ZyC_Turbo.running.log ;
-if [ "$FromTerminal" == "tidak" ];then
-    if [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ];then
+if [ "$FromTerminal" == "tidak" ]; then
+    if [ -e "/system/etc/ZyC_Ai/ai_mode.sh" ]; then
         BASEDIR=/system/etc/ZyC_Ai
         if [ -e "$PathModulConfigAi/ai_status.txt" ]; then
             AiStatus="$(cat "$PathModulConfigAi/ai_status.txt")"
-            if [ "$AiStatus" == "1" ];then
+            if [ "$AiStatus" == "1" ]; then
                 echo "starting ai mode . . . " | tee -a $saveLog 2>/dev/null 1>/dev/null
                 echo "  --- --- --- --- --- " | tee -a $saveLog 2>/dev/null 1>/dev/null
                 echo "ai start at  : $(date +" %r")"| tee -a $Path/ZyC_Turbo.running.log ;
-            elif [ "$AiStatus" == "2" ];then
+            elif [ "$AiStatus" == "2" ]; then
                 echo "re - run ai mode . . . " | tee -a $saveLog 2>/dev/null 1>/dev/null
                 echo "  --- --- --- --- --- " | tee -a $saveLog 2>/dev/null 1>/dev/null
                 echo "ai start at  : $(date +" %r")"| tee -a $Path/ZyC_Turbo.running.log ;
-            elif [ "$AiStatus" == "3" ];then
+            elif [ "$AiStatus" == "3" ]; then
                 echo "deactive ai mode . . . " | tee -a $saveLog 2>/dev/null 1>/dev/null
                 echo "  --- --- --- --- --- " | tee -a $saveLog 2>/dev/null 1>/dev/null
-            elif [ "$AiStatus" == "0" ];then
+            elif [ "$AiStatus" == "0" ]; then
                 echo "ai status off"| tee -a $saveLog 2>/dev/null 1>/dev/null
                 echo "  --- --- --- --- --- " | tee -a $saveLog 2>/dev/null 1>/dev/null
             else

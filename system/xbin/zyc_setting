@@ -2,21 +2,21 @@
 # ni sh buat nge trigger ganti mode aja
 # setting warna
 clear
-abuHitam='\e[01;90m' 2>/dev/null 1>/dev/null; # abu abu - hitam
-putihHitam='\e[01;40m' 2>/dev/null 1>/dev/null; # putih - hitam
-merahHitam='\e[01;91m' 2>/dev/null 1>/dev/null; # merah - hitam
-merahPutih='\e[01;41m' 2>/dev/null 1>/dev/null; # merah - putih
-kuningHitam='\e[01;93m' 2>/dev/null 1>/dev/null; # kuning - hitam
-kuningPutih='\e[01;43m' 2>/dev/null 1>/dev/null; # kuning - putih
-biruHitam='\e[01;94m' 2>/dev/null 1>/dev/null; # biru - hitam
-biruPutih='\e[01;104m' 2>/dev/null 1>/dev/null; # biru - putih
-cyanHitam='\e[01;96m' 2>/dev/null 1>/dev/null; # cyan - hitam
-cyanPutih='\e[01;46m' 2>/dev/null 1>/dev/null; # cyan - putih
-hijauHitam='\e[01;92m' 2>/dev/null 1>/dev/null; # hijau - hitam
-hijauPutih='\e[01;42m' 2>/dev/null 1>/dev/null; # hijau - putih
-unguHitam='\e[01;95m' 2>/dev/null 1>/dev/null; # ungu - hitam
-unguPutih='\e[01;45m' 2>/dev/null 1>/dev/null; # ungu - putih
-ResetWarna='\e[0m' 2>/dev/null 1>/dev/null; # Buat Reser Warna
+abuHitam='\e[01;90m' 2>/dev/null 1>/dev/null # abu abu - hitam
+putihHitam='\e[01;40m' 2>/dev/null 1>/dev/null # putih - hitam
+merahHitam='\e[01;91m' 2>/dev/null 1>/dev/null # merah - hitam
+merahPutih='\e[01;41m' 2>/dev/null 1>/dev/null # merah - putih
+kuningHitam='\e[01;93m' 2>/dev/null 1>/dev/null # kuning - hitam
+kuningPutih='\e[01;43m' 2>/dev/null 1>/dev/null # kuning - putih
+biruHitam='\e[01;94m' 2>/dev/null 1>/dev/null # biru - hitam
+biruPutih='\e[01;104m' 2>/dev/null 1>/dev/null # biru - putih
+cyanHitam='\e[01;96m' 2>/dev/null 1>/dev/null # cyan - hitam
+cyanPutih='\e[01;46m' 2>/dev/null 1>/dev/null # cyan - putih
+hijauHitam='\e[01;92m' 2>/dev/null 1>/dev/null # hijau - hitam
+hijauPutih='\e[01;42m' 2>/dev/null 1>/dev/null # hijau - putih
+unguHitam='\e[01;95m' 2>/dev/null 1>/dev/null # ungu - hitam
+unguPutih='\e[01;45m' 2>/dev/null 1>/dev/null # ungu - putih
+ResetWarna='\e[0m' 2>/dev/null 1>/dev/null # Buat Reser Warna
 # setting warna end
 echo $kuningPutih"Preparing Config . . . ."$ResetWarna
 GetBusyBox="none"
@@ -24,13 +24,13 @@ PathBusyBox="none"
 for i in /system/bin /system/xbin /sbin /su/xbin; do
     if [ "$GetBusyBox" == "none" ]; then
         if [ -f $i/busybox ]; then
-            GetBusyBox=$i/busybox;
-        fi;
+            GetBusyBox=$i/busybox
+        fi
         PathBusyBox=$i
-    fi;
-done;
+    fi
+done
 usleep=usleep
-if [ -e "$PathBusyBox/busybox" ];then
+if [ -e "$PathBusyBox/busybox" ]; then
     usleep=$PathBusyBox"/busybox usleep"
 fi
 $usleep 1000000
@@ -57,7 +57,7 @@ PathModulConfigAi=$Path/ZyC_Ai
 Perubahan="tidak"
 ServiceCheckker(){
     Checkservice=$( ps -ef | grep 'ZyC_Turbo/main.sh' | grep -v grep | wc -l )
-    if [ "$Checkservice" -gt "1" ];then
+    if [ "$Checkservice" -gt "1" ]; then
         clear
         echo "module service still running,please wait a moment"
         echo "please check logs at $Path/ZyC_Turbo.log for more detail . . ."
@@ -66,7 +66,7 @@ ServiceCheckker(){
     fi
 }
 update_system_prop(){
-    if [ ! -z "$1" ] && [ ! -z "$2" ];then
+    if [ ! -z "$1" ] && [ ! -z "$2" ]; then
         echo "#auto generate" > "$ModulPath/ZyC_Turbo/system.prop"
         echo "" >> "$ModulPath/ZyC_Turbo/system.prop"
         echo "ro.product.brand=$2" >> "$ModulPath/ZyC_Turbo/system.prop"
@@ -83,7 +83,7 @@ update_system_prop(){
     read GetTop
     echo -n 'enable video optimizer : (y/n)'
     read GetVop
-        if [ "$GetTop" == 'y' ];then
+        if [ "$GetTop" == 'y' ]; then
             echo "# touchscreen optimizer
 touch.pressure.scale=0.001
 persist.service.lgospd.enable=0
@@ -112,7 +112,7 @@ MultitouchMinDistance=1px
 TapInterval=1ms
 TapSlop=1px" >> "$ModulPath/ZyC_Turbo/system.prop"
         fi
-        if [ "$GetVop" == 'y' ];then
+        if [ "$GetVop" == 'y' ]; then
             echo "# video optimizer
 media.stagefright.enable-http=true
 media.stagefright.enable-player=true
@@ -132,123 +132,123 @@ GetSetting(){
     ServiceCheckker
     clear
     echo "get setting . . ."
-    if [ -e $PathModulConfig/status_modul.txt ];then
+    if [ -e $PathModulConfig/status_modul.txt ]; then
         GetModeBefore=$(cat "$PathModulConfig/status_modul.txt")
         GetModeNew=$(cat "$PathModulConfig/status_modul.txt")
     fi
-    if [ -e $PathModulConfig/mode_render.txt ];then
+    if [ -e $PathModulConfig/mode_render.txt ]; then
         GetModeRenderBefore=$(cat "$PathModulConfig/mode_render.txt")
         GetModeRenderNew=$(cat "$PathModulConfig/mode_render.txt")
     fi
-    if [ -e $PathModulConfig/mode_render_lock.txt ];then
+    if [ -e $PathModulConfig/mode_render_lock.txt ]; then
         GetModeRenderLockBefore=$(cat "$PathModulConfig/mode_render_lock.txt")
         GetModeRenderLockNew=$(cat "$PathModulConfig/mode_render_lock.txt")
     fi
-    if [ -e $PathModulConfig/fastcharge.txt ];then
+    if [ -e $PathModulConfig/fastcharge.txt ]; then
         GetModeFCBefore=$(cat "$PathModulConfig/fastcharge.txt")
         GetModeFCNew=$(cat "$PathModulConfig/fastcharge.txt")
     fi
-    if [ -e $PathModulConfig/fsync_mode.txt ];then
+    if [ -e $PathModulConfig/fsync_mode.txt ]; then
         GetModeFsyncBefore=$(cat "$PathModulConfig/fsync_mode.txt")
         GetModeFsyncNew=$(cat "$PathModulConfig/fsync_mode.txt")
     fi
-    if [ -e $PathModulConfig/fsync_mode_lock.txt ];then
+    if [ -e $PathModulConfig/fsync_mode_lock.txt ]; then
         GetModeFsyncLockBefore=$(cat "$PathModulConfig/fsync_mode_lock.txt")
         GetModeFsyncLockNew=$(cat "$PathModulConfig/fsync_mode_lock.txt")
     fi
-    if [ -e $PathModulConfig/GpuBooster.txt ];then
+    if [ -e $PathModulConfig/GpuBooster.txt ]; then
         GetModeAdrenoBefore=$(cat "$PathModulConfig/GpuBooster.txt")
         GetModeAdrenoNew=$(cat "$PathModulConfig/GpuBooster.txt")
     fi
-    if [ -e $PathModulConfig/custom_ram_management.txt ];then
+    if [ -e $PathModulConfig/custom_ram_management.txt ]; then
         GetModeRamBefore=$(cat "$PathModulConfig/custom_ram_management.txt")
         GetModeRamNew=$(cat "$PathModulConfig/custom_ram_management.txt")
     fi
-    if [ -e $PathModulConfig/custom_ram_management_adj.txt ];then
+    if [ -e $PathModulConfig/custom_ram_management_adj.txt ]; then
         GetModeRamAdjBefore=$(cat "$PathModulConfig/custom_ram_management_adj.txt")
         GetModeRamAdjNew=$(cat "$PathModulConfig/custom_ram_management_adj.txt")
     fi
-    if [ -e $PathModulConfigAi/ai_status.txt ];then
+    if [ -e $PathModulConfigAi/ai_status.txt ]; then
         GetModeAiBefore=$(cat "$PathModulConfigAi/ai_status.txt")
         GetModeAiNew=$(cat "$PathModulConfigAi/ai_status.txt")
     fi
-    if [ -e $PathModulConfigAi/ai_change.txt ];then
+    if [ -e $PathModulConfigAi/ai_change.txt ]; then
         GetModeAiCBefore=$(cat "$PathModulConfigAi/ai_change.txt")
         GetModeAiCNew=$(cat "$PathModulConfigAi/ai_change.txt")
     fi
-    if [ -e $PathModulConfigAi/ai_notif_mode.txt ];then
+    if [ -e $PathModulConfigAi/ai_notif_mode.txt ]; then
         GetModeAiNotifBefore=$(cat "$PathModulConfigAi/ai_notif_mode.txt")
         GetModeAiNotifNew=$(cat "$PathModulConfigAi/ai_notif_mode.txt")
     fi
-    if [ -e $PathModulConfigAi/ai_notif_mode_running.txt ];then
+    if [ -e $PathModulConfigAi/ai_notif_mode_running.txt ]; then
         GetModeAiNotifRunningBefore=$(cat "$PathModulConfigAi/ai_notif_mode_running.txt")
         GetModeAiNotifRunningNew=$(cat "$PathModulConfigAi/ai_notif_mode_running.txt")
     fi
-    if [ -e $PathModulConfigAi/ai_notif_mode_running_status.txt ];then
+    if [ -e $PathModulConfigAi/ai_notif_mode_running_status.txt ]; then
         GetModeAiNotifRunningStatusBefore=$(cat "$PathModulConfigAi/ai_notif_mode_running_status.txt")
         GetModeAiNotifRunningStatusNew=$(cat "$PathModulConfigAi/ai_notif_mode_running_status.txt")
     fi
-    if [ -e $PathModulConfigAi/wait_time_off.txt ];then
+    if [ -e $PathModulConfigAi/wait_time_off.txt ]; then
         waitTimeOffBefore=$(cat "$PathModulConfigAi/wait_time_off.txt")
         waitTimeOffNew=$(cat "$PathModulConfigAi/wait_time_off.txt")
     fi
-    if [ -e $PathModulConfigAi/wait_time_on.txt ];then
+    if [ -e $PathModulConfigAi/wait_time_on.txt ]; then
         waitTimeOnBefore=$(cat "$PathModulConfigAi/wait_time_on.txt")
         waitTimeOnNew=$(cat "$PathModulConfigAi/wait_time_on.txt")
     fi
-    if [ -e $PathModulConfig/gms_doze.txt ];then
+    if [ -e $PathModulConfig/gms_doze.txt ]; then
         GmsDozeBefore=$(cat "$PathModulConfig/gms_doze.txt")
         GmsDozeNew=$(cat "$PathModulConfig/gms_doze.txt")
     fi
-    if [ -e $PathModulConfig/zram.txt ];then
+    if [ -e $PathModulConfig/zram.txt ]; then
         ZramBefore=$(cat "$PathModulConfig/zram.txt")
         ZramNew=$(cat "$PathModulConfig/zram.txt")
     fi
-    if [ -e $PathModulConfig/swapinnes.txt ];then
+    if [ -e $PathModulConfig/swapinnes.txt ]; then
         swapinnesBefore=$(cat "$PathModulConfig/swapinnes.txt")
         swapinnesNew=$(cat "$PathModulConfig/swapinnes.txt")
     fi
-    if [ -e $PathModulConfig/zram_optimizer.txt ];then
+    if [ -e $PathModulConfig/zram_optimizer.txt ]; then
         ZramOptimizerBefore=$(cat "$PathModulConfig/zram_optimizer.txt")
         ZramOptimizerNew=$(cat "$PathModulConfig/zram_optimizer.txt")
     fi
-    if [ -e $PathModulConfigAi/ai_doze.txt ];then
+    if [ -e $PathModulConfigAi/ai_doze.txt ]; then
         AiDozeBefore=$(cat "$PathModulConfigAi/ai_doze.txt")
         AiDozeNew=$(cat "$PathModulConfigAi/ai_doze.txt")
     fi
-    if [ -e $PathModulConfigAi/ai_doze_notif.txt ];then
+    if [ -e $PathModulConfigAi/ai_doze_notif.txt ]; then
         AiDozeNotifBefore=$(cat "$PathModulConfigAi/ai_doze_notif.txt")
         AiDozeNotifNew=$(cat "$PathModulConfigAi/ai_doze_notif.txt")
     fi
-    if [ -e $PathModulConfigAi/status_start_gpu.txt ];then
+    if [ -e $PathModulConfigAi/status_start_gpu.txt ]; then
         StatusStartGpuBefore=$(cat "$PathModulConfigAi/status_start_gpu.txt")
         StatusStartGpuNew=$(cat "$PathModulConfigAi/status_start_gpu.txt")
     fi
-    if [ -e $PathModulConfigAi/status_end_gpu.txt ];then
+    if [ -e $PathModulConfigAi/status_end_gpu.txt ]; then
         StatusEndGpuBefore=$(cat "$PathModulConfigAi/status_end_gpu.txt")
         StatusEndGpuNew=$(cat "$PathModulConfigAi/status_end_gpu.txt")
     fi
-    if [ -e $PathModulConfig/dns.txt ];then
+    if [ -e $PathModulConfig/dns.txt ]; then
         DnsBefore=$(cat "$PathModulConfig/dns.txt")
         DnsNew=$(cat "$PathModulConfig/dns.txt")
     fi
-    if [ -e $PathModulConfigAi/mode_off.txt ];then
+    if [ -e $PathModulConfigAi/mode_off.txt ]; then
         ModeOffBefore=$(cat "$PathModulConfigAi/mode_off.txt")
         ModeOffNew=$(cat "$PathModulConfigAi/mode_off.txt")
     fi
-    if [ -e $PathModulConfigAi/mode_on.txt ];then
+    if [ -e $PathModulConfigAi/mode_on.txt ]; then
         ModeOnBefore=$(cat "$PathModulConfigAi/mode_on.txt")
         ModeOnNew=$(cat "$PathModulConfigAi/mode_on.txt")
     fi
-    if [ -e $PathModulConfigAi/spectrum_status.txt ];then
+    if [ -e $PathModulConfigAi/spectrum_status.txt ]; then
         SpectrumStatusBefore=$(cat "$PathModulConfigAi/spectrum_status.txt")
         SpectrumStatusNew=$(cat "$PathModulConfigAi/spectrum_status.txt")
     fi
-    if [ -e $PathModulConfigAi/doze_spectrum.txt ];then
+    if [ -e $PathModulConfigAi/doze_spectrum.txt ]; then
         DozeSpectrumBefore=$(cat "$PathModulConfigAi/doze_spectrum.txt")
         DozeSpectrumNew=$(cat "$PathModulConfigAi/doze_spectrum.txt")
     fi
-    if [ -e $PathModulConfigAi/ai_aos_on_turbo.txt ];then
+    if [ -e $PathModulConfigAi/ai_aos_on_turbo.txt ]; then
         AosOnTurboBefore="$(cat "$PathModulConfigAi/ai_aos_on_turbo.txt")"
         AosOnTurboNew="$(cat "$PathModulConfigAi/ai_aos_on_turbo.txt")"
     fi
@@ -262,17 +262,17 @@ typeMenu="none"
 TypeOpen="0"
 
 MainTweak(){
-    if [ -e "$PathModulConfig/status_modul.txt" ];then
+    if [ -e "$PathModulConfig/status_modul.txt" ]; then
         echo "<-- -- Module Status Config -- -->"
-        if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ];then
-            if [ "$GetModeBefore" == "$GetModeNew" ];then
+        if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ]; then
+            if [ "$GetModeBefore" == "$GetModeNew" ]; then
                 GetModeBefore=$(cat "$PathModulConfig/status_modul.txt")
                 GetModeNew=$(cat "$PathModulConfig/status_modul.txt")
             else
                 GetModeBefore=$(cat "$PathModulConfig/status_modul.txt")
             fi
         fi
-        if [ "$GetModeAiBefore" == "0" ];then
+        if [ "$GetModeAiBefore" == "0" ]; then
             echo "mx > turn off tweak";
             echo "my > change mode tweak to on"
             echo "mt > change mode tweak to turbo"
@@ -283,14 +283,14 @@ MainTweak(){
             echo "turn off ai first for manual mode"
             echo "and re run this tweak"
         fi
-        if [ "$GetModeBefore" != "$GetModeNew" ];then
+        if [ "$GetModeBefore" != "$GetModeNew" ]; then
             echo $kuningPutih"this will set to : $GetModeNew mode"$ResetWarna
         else
             echo $kuningHitam"current status module : $GetModeBefore mode"$ResetWarna;
         fi
         echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
     fi
-    if [ -e "$PathModulConfig/mode_render.txt" ];then
+    if [ -e "$PathModulConfig/mode_render.txt" ]; then
         echo "<-- -- Mode Render Config -- -->"
         echo "srd > Use system default"
         echo "opd > Use Default OpenGL render"
@@ -298,35 +298,35 @@ MainTweak(){
         echo "vkn > Use Vulkan render"
         echo "mrr > reset this setting to default every firstboot (Not Recomended)"
         echo "mrk > always keep this setting"
-        if [ "$GetModeRenderBefore" != "$GetModeRenderNew" ];then
-            if [ $GetModeRenderNew == "opengl" ];then
+        if [ "$GetModeRenderBefore" != "$GetModeRenderNew" ]; then
+            if [ $GetModeRenderNew == "opengl" ]; then
                 echo $hijauPutih"this will set to : OpenGL Default"$ResetWarna
-            elif [ $GetModeRenderNew == "skiagl" ];then
+            elif [ $GetModeRenderNew == "skiagl" ]; then
                 echo $kuningPutih"this will set to : OpenGL Skia"$ResetWarna
-            elif [ $GetModeRenderNew == "skiavk" ];then
+            elif [ $GetModeRenderNew == "skiavk" ]; then
                 echo $merahPutih"this will set to : Vulkan"$ResetWarna
-            elif [ $GetModeRenderNew == "system" ];then
+            elif [ $GetModeRenderNew == "system" ]; then
                 echo $putihHitam"this will set to : System Default"$ResetWarna
             fi
         else
-            if [ $GetModeRenderBefore == "opengl" ];then
+            if [ $GetModeRenderBefore == "opengl" ]; then
                 echo $hijauHitam"Current Status : OpenGL Default"$ResetWarna
-            elif [ $GetModeRenderBefore == "skiagl" ];then
+            elif [ $GetModeRenderBefore == "skiagl" ]; then
                 echo $kuningHitam"Current Status : OpenGL Skia"$ResetWarna
-            elif [ $GetModeRenderBefore == "skiavk" ];then
+            elif [ $GetModeRenderBefore == "skiavk" ]; then
                 echo $merahHitam"Current Status : Vulkan"$ResetWarna
-            elif [ $GetModeRenderBefore == "system" ];then
+            elif [ $GetModeRenderBefore == "system" ]; then
                 echo $abuHitam"Current Status : System Default"$ResetWarna
             fi
         fi
-        if [ "$GetModeRenderLockBefore" != "$GetModeRenderLockNew" ];then
-            if [ "$GetModeRenderLockNew" == "0" ];then
+        if [ "$GetModeRenderLockBefore" != "$GetModeRenderLockNew" ]; then
+            if [ "$GetModeRenderLockNew" == "0" ]; then
                 echo $hijauHitam"this will set to : reset every boot"$ResetWarna
             else
                 echo $kuningPutih"this will set to : dont do reset every boot"$ResetWarna
             fi
         else
-            if [ "$GetModeRenderLockBefore" == "0" ];then
+            if [ "$GetModeRenderLockBefore" == "0" ]; then
                 echo $hijauHitam"Current Status : reset every boot"$ResetWarna
             else
                 echo $kuningHitam"Current Status : dont do reset every boot"$ResetWarna
@@ -334,7 +334,7 @@ MainTweak(){
         fi
         echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
     fi
-    if [ -e "$PathModulConfig/fsync_mode.txt" ];then
+    if [ -e "$PathModulConfig/fsync_mode.txt" ]; then
         echo "<-- -- Fsync Config -- -->"
         echo "fcs > set fsync by system"
         echo "fcx > turn off fsync"
@@ -343,35 +343,35 @@ MainTweak(){
         echo "mfr > reset this setting to default every firstboot (Not Recomended)"
         echo "mfk > always keep this setting"
         echo "      disable fsync after change to turbo mode"
-        if [ "$GetModeFsyncBefore" != "$GetModeFsyncNew" ];then
-            if [ $GetModeFsyncNew == "0" ];then
+        if [ "$GetModeFsyncBefore" != "$GetModeFsyncNew" ]; then
+            if [ $GetModeFsyncNew == "0" ]; then
                 echo $merahPutih"this will set to : off"$ResetWarna
-            elif [ $GetModeFsyncNew == "1" ];then
+            elif [ $GetModeFsyncNew == "1" ]; then
                 echo $hijauPutih"this will set to : on"$ResetWarna
-            elif [ $GetModeFsyncNew == "system" ];then
+            elif [ $GetModeFsyncNew == "system" ]; then
                 echo $biruPutih"this will set to : by system"$ResetWarna
-            elif [ $GetModeFsyncNew == "auto" ];then
+            elif [ $GetModeFsyncNew == "auto" ]; then
                 echo $cyanPutih"this will set to : by auto"$ResetWarna
             fi
         else
-            if [ $GetModeFsyncBefore == "0" ];then
+            if [ $GetModeFsyncBefore == "0" ]; then
                 echo $merahHitam"Current Status : off"$ResetWarna
-            elif [ $GetModeFsyncBefore == "1" ];then
+            elif [ $GetModeFsyncBefore == "1" ]; then
                 echo $hijauHitam"Current Status : on"$ResetWarna
-            elif [ $GetModeFsyncBefore == "system" ];then
+            elif [ $GetModeFsyncBefore == "system" ]; then
                 echo $biruHitam"Current Status : by system"$ResetWarna
-            elif [ $GetModeFsyncBefore == "auto" ];then
+            elif [ $GetModeFsyncBefore == "auto" ]; then
                 echo $cyanHitam"Current Status : by auto"$ResetWarna
             fi
         fi
-        if [ "$GetModeFsyncLockBefore" != "$GetModeFsyncLockNew" ];then
-            if [ "$GetModeFsyncLockNew" == "0" ];then
+        if [ "$GetModeFsyncLockBefore" != "$GetModeFsyncLockNew" ]; then
+            if [ "$GetModeFsyncLockNew" == "0" ]; then
                 echo $hijauHitam"this will set to : reset every boot"$ResetWarna
             else
                 echo $kuningPutih"this will set to : dont do reset every boot"$ResetWarna
             fi
         else
-            if [ "$GetModeFsyncLockBefore" == "0" ];then
+            if [ "$GetModeFsyncLockBefore" == "0" ]; then
                 echo $hijauHitam"Current Status : reset every boot"$ResetWarna
             else
                 echo $kuningHitam"Current Status : dont do reset every boot"$ResetWarna
@@ -379,35 +379,35 @@ MainTweak(){
         fi
         echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
     fi
-    if [ "$TypeOpen" == "1" ];then
-        if [ -e "$PathModulConfig/GpuBooster.txt" ];then
+    if [ "$TypeOpen" == "1" ]; then
+        if [ -e "$PathModulConfig/GpuBooster.txt" ]; then
             echo "adx > turn off adrenoboost"
             echo "adl > set adreno boost to low"
             echo "adm > set adreno boost to med"
             echo "adh > set adreno boost to high"
             echo "adt > set adreno boost by tweak"
-            if [ "$GetModeAdrenoBefore" != "$GetModeAdrenoNew" ];then
-                if [ $GetModeAdrenoNew == "0" ];then
+            if [ "$GetModeAdrenoBefore" != "$GetModeAdrenoNew" ]; then
+                if [ $GetModeAdrenoNew == "0" ]; then
                     echo $hijauHitam"this will set to : off"$ResetWarna
-                elif [ $GetModeAdrenoNew == "1" ];then
+                elif [ $GetModeAdrenoNew == "1" ]; then
                     echo $unguPutih"this will set to : low"$ResetWarna
-                elif [ $GetModeAdrenoNew == "2" ];then
+                elif [ $GetModeAdrenoNew == "2" ]; then
                     echo $kuningPutih"this will set to : medium"$ResetWarna
-                elif [ $GetModeAdrenoNew == "3" ];then
+                elif [ $GetModeAdrenoNew == "3" ]; then
                     echo $merahPutih"this will set to : high"$ResetWarna
-                elif [ $GetModeAdrenoNew == "tweak" ];then
+                elif [ $GetModeAdrenoNew == "tweak" ]; then
                     echo $biruPutih"this will set to : by tweak"$ResetWarna
                 fi
             else
-                if [ $GetModeAdrenoBefore == "0" ];then
+                if [ $GetModeAdrenoBefore == "0" ]; then
                     echo $hijauHitam"Current status : off"$ResetWarna
-                elif [ $GetModeAdrenoBefore == "1" ];then
+                elif [ $GetModeAdrenoBefore == "1" ]; then
                     echo $unguHitam"Current status : low"$ResetWarna
-                elif [ $GetModeAdrenoBefore == "2" ];then
+                elif [ $GetModeAdrenoBefore == "2" ]; then
                     echo $kuningHitam"Current status : medium"$ResetWarna
-                elif [ $GetModeAdrenoBefore == "3" ];then
+                elif [ $GetModeAdrenoBefore == "3" ]; then
                     echo $merahHitam"Current status : high"$ResetWarna
-                elif [ $GetModeAdrenoBefore == "tweak" ];then
+                elif [ $GetModeAdrenoBefore == "tweak" ]; then
                     echo $biruHitam"Current status : by tweak"$ResetWarna
                 fi
             fi
@@ -416,48 +416,48 @@ MainTweak(){
     fi
 }
 SideTweak(){
-    if [ -e "$PathModulConfig/fastcharge.txt" ];then
+    if [ -e "$PathModulConfig/fastcharge.txt" ]; then
         echo "<-- -- Fastcharge Config -- -->"
         echo "fs > fastcharge option by system"
         echo "fy > fastcharge option by this tweak"
-        if [ "$GetModeFCBefore" != "$GetModeFCNew" ];then
-            if [ $GetModeFCNew == "system" ];then
+        if [ "$GetModeFCBefore" != "$GetModeFCNew" ]; then
+            if [ $GetModeFCNew == "system" ]; then
                 echo $hijauPutih"this will set to : by system"$ResetWarna
-            elif [ $GetModeFCNew == "1" ];then
+            elif [ $GetModeFCNew == "1" ]; then
                 echo $hijauPutih"this will set to : by this tweak(trying to force on)"$ResetWarna
             fi
         else
-            if [ $GetModeFCBefore == "system" ];then
+            if [ $GetModeFCBefore == "system" ]; then
                 echo $hijauHitam"Current Status : by system"$ResetWarna
-            elif [ $GetModeFCBefore == "1" ];then
+            elif [ $GetModeFCBefore == "1" ]; then
                 echo $hijauHitam"Current Status : by this tweak(trying to force on)"$ResetWarna
             fi
         fi
         echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
     fi
-    if [ -e "$PathModulConfig/custom_ram_management.txt" ];then
+    if [ -e "$PathModulConfig/custom_ram_management.txt" ]; then
         echo "<-- -- Ram management Config -- -->"
         echo "rms > use system ram management"
         echo "rmt > use ram management by tweak "
-        if [ "$TypeOpen" == "1" ];then
+        if [ "$TypeOpen" == "1" ]; then
             echo "rads > use adj system (recomended)"
             echo "radt > use adj tweak "
         fi
-        if [ "$GetModeRamBefore" != "$GetModeRamNew" ];then
-            if [ "$GetModeRamNew" == "0" ];then
+        if [ "$GetModeRamBefore" != "$GetModeRamNew" ]; then
+            if [ "$GetModeRamNew" == "0" ]; then
                 echo $hijauPutih"this will set to : use system "$ResetWarna
             else 
                 echo $merahPutih"this will set to : method $GetModeRamNew"$ResetWarna
             fi
         else
-            if [ "$GetModeRamNew" == "0" ];then
+            if [ "$GetModeRamNew" == "0" ]; then
                 echo $hijauHitam"current status : use system "$ResetWarna
             else 
                 echo $merahHitam"current status : method $GetModeRamNew"$ResetWarna
             fi
         fi
-        if [ "$TypeOpen" == "1" ];then
-            if [ "$GetModeRamAdjBefore" != "$GetModeRamAdjNew" ];then
+        if [ "$TypeOpen" == "1" ]; then
+            if [ "$GetModeRamAdjBefore" != "$GetModeRamAdjNew" ]; then
                 echo $merahPutih"this will set to adj : $GetModeRamAdjNew"$ResetWarna
             else
                 echo $hijauHitam"current status adj : $GetModeRamAdjBefore "$ResetWarna
@@ -465,110 +465,110 @@ SideTweak(){
         fi
         echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
     fi
-    if [ "$TypeOpen" == "1" ];then
-        if [ -e "$PathModulConfig/gms_doze.txt" ];then
+    if [ "$TypeOpen" == "1" ]; then
+        if [ -e "$PathModulConfig/gms_doze.txt" ]; then
             echo "<-- -- GMS DOZE Config -- -->"
             echo "gdx > Turn off gms doze fix"
             echo "gdy > Turn on gms doze fix"
-            if [ "$GmsDozeBefore" != "$GmsDozeNew" ];then
-                if [ "$GmsDozeNew" == "0" ];then
+            if [ "$GmsDozeBefore" != "$GmsDozeNew" ]; then
+                if [ "$GmsDozeNew" == "0" ]; then
                     echo $kuningPutih"this will set to : off"$ResetWarna
-                elif [ "$GmsDozeNew" == "1" ];then
+                elif [ "$GmsDozeNew" == "1" ]; then
                     echo $hijauPutih"this will set to : on"$ResetWarna
                 fi
             else
-                if [ "$GmsDozeBefore" == "0" ];then
+                if [ "$GmsDozeBefore" == "0" ]; then
                     echo $kuningHitam"Current status : off"$ResetWarna
-                elif [ "$GmsDozeBefore" == "1" ];then
+                elif [ "$GmsDozeBefore" == "1" ]; then
                     echo $hijauHitam"Current status : on"$ResetWarna
                 fi
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
-        if [ -e "$PathModulConfig/zram.txt" ];then
+        if [ -e "$PathModulConfig/zram.txt" ]; then
             echo "<-- -- Zram Config -- -->"
             echo "zrs > Zram setting by system"
             echo "zrx > turn off Zram"
             echo "zrc > costumize Zram size"
             echo "note : do not set to high"
             echo "       it usseless,"
-            if [ "$ZramBefore" != "$ZramNew" ];then
-                if [ "$ZramNew" == "0" ];then
+            if [ "$ZramBefore" != "$ZramNew" ]; then
+                if [ "$ZramNew" == "0" ]; then
                     echo $kuningPutih"this will set to : off"$ResetWarna
-                elif [ "$ZramNew" == "1" ];then
+                elif [ "$ZramNew" == "1" ]; then
                     echo $hijauPutih"this will set to : 1gb "$ResetWarna
-                elif [ "$ZramNew" == "2" ];then
+                elif [ "$ZramNew" == "2" ]; then
                     echo $hijauPutih"this will set to : 2gb"$ResetWarna
-                elif [ "$ZramNew" == "3" ];then
+                elif [ "$ZramNew" == "3" ]; then
                     echo $kuningPutih"this will set to : 3gb"$ResetWarna
-                elif [ "$ZramNew" == "4" ];then
+                elif [ "$ZramNew" == "4" ]; then
                     echo $kuningPutih"this will set to : 4gb"$ResetWarna
-                elif [ "$ZramNew" == "5" ];then
+                elif [ "$ZramNew" == "5" ]; then
                     echo $merahPutih"this will set to : 5gb"$ResetWarna
-                elif [ "$ZramNew" == "6" ];then
+                elif [ "$ZramNew" == "6" ]; then
                     echo $merahPutih"this will set to : 6gb"$ResetWarna
-                elif [ "$ZramNew" == "7" ];then
+                elif [ "$ZramNew" == "7" ]; then
                     echo $merahPutih"this will set to : 7gb"$ResetWarna
-                elif [ "$ZramNew" == "8" ];then
+                elif [ "$ZramNew" == "8" ]; then
                     echo $merahPutih"this will set to : 8gb"$ResetWarna
-                elif [ "$ZramNew" == "system" ];then
+                elif [ "$ZramNew" == "system" ]; then
                     echo $abuHitam"this will set to :  System"$ResetWarna
                 fi
             else
-                if [ "$ZramBefore" == "0" ];then
+                if [ "$ZramBefore" == "0" ]; then
                     echo $kuningHitam"Current status : off"$ResetWarna
-                elif [ "$ZramBefore" == "1" ];then
+                elif [ "$ZramBefore" == "1" ]; then
                     echo $hijauHitam"Current status : 1gb"$ResetWarna
-                elif [ "$ZramBefore" == "2" ];then
+                elif [ "$ZramBefore" == "2" ]; then
                     echo $hijauHitam"Current status : 2gb"$ResetWarna
-                elif [ "$ZramBefore" == "3" ];then
+                elif [ "$ZramBefore" == "3" ]; then
                     echo $kuningHitam"Current status : 3gb"$ResetWarna
-                elif [ "$ZramBefore" == "4" ];then
+                elif [ "$ZramBefore" == "4" ]; then
                     echo $kuningHitam"Current status : 4gb"$ResetWarna
-                elif [ "$ZramBefore" == "5" ];then
+                elif [ "$ZramBefore" == "5" ]; then
                     echo $merahHitam"Current status : 5gb"$ResetWarna
-                elif [ "$ZramBefore" == "6" ];then
+                elif [ "$ZramBefore" == "6" ]; then
                     echo $merahHitam"Current status : 6gb"$ResetWarna
-                elif [ "$ZramBefore" == "7" ];then
+                elif [ "$ZramBefore" == "7" ]; then
                     echo $merahHitam"Current status : 7gb"$ResetWarna
-                elif [ "$ZramBefore" == "8" ];then
+                elif [ "$ZramBefore" == "8" ]; then
                     echo $merahHitam"Current status : 8gb"$ResetWarna
-                elif [ "$ZramBefore" == "system" ];then
+                elif [ "$ZramBefore" == "system" ]; then
                     echo $putihHitam"Current status : By System"$ResetWarna
                 fi
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
-        if [ -e "$PathModulConfig/swapinnes.txt" ];then
+        if [ -e "$PathModulConfig/swapinnes.txt" ]; then
             echo "<-- -- Swappiness Config -- -->"
             echo "csw > Custom swappiness"
-            if [ "$swapinnesBefore" != "$swapinnesNew" ];then
+            if [ "$swapinnesBefore" != "$swapinnesNew" ]; then
                 echo $kuningPutih"this will set to : $swapinnesNew"$ResetWarna
             else
                 echo $hijauHitam"Current status : $swapinnesBefore"$ResetWarna
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
-        if [ -e "$PathModulConfig/zram_optimizer.txt" ];then
+        if [ -e "$PathModulConfig/zram_optimizer.txt" ]; then
             echo "<-- -- Virtual Memory Config -- -->"
             echo "vmx > Vm optimizer by system"
             echo "vmy > Vm optimizer by tweak"
-            if [ "$ZramOptimizerBefore" != "$ZramOptimizerNew" ];then
-                if [ "$ZramOptimizerNew" == "0" ];then
+            if [ "$ZramOptimizerBefore" != "$ZramOptimizerNew" ]; then
+                if [ "$ZramOptimizerNew" == "0" ]; then
                     echo $kuningPutih"this will set to : off"$ResetWarna
-                elif [ "$ZramOptimizerNew" == "1" ];then
+                elif [ "$ZramOptimizerNew" == "1" ]; then
                     echo $hijauPutih"this will set to : on"$ResetWarna
                 fi
             else
-                if [ "$ZramOptimizerBefore" == "0" ];then
+                if [ "$ZramOptimizerBefore" == "0" ]; then
                     echo $kuningHitam"Current status : off"$ResetWarna
-                elif [ "$ZramOptimizerBefore" == "1" ];then
+                elif [ "$ZramOptimizerBefore" == "1" ]; then
                     echo $hijauHitam"Current status : on"$ResetWarna
                 fi
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
-        if [ -e "$PathModulConfig/dns.txt" ];then
+        if [ -e "$PathModulConfig/dns.txt" ]; then
             echo "<-- -- DNS Config -- -->"
             echo "dnss > default dns"
             echo "dnsc > use cloudflare dns"
@@ -576,7 +576,7 @@ SideTweak(){
             echo "dnsa > use adguard dns"
             echo "dnsu > use uncensored dns"
             echo "cdns > check dns"
-            if [ "$DnsBefore" != "$DnsNew" ];then
+            if [ "$DnsBefore" != "$DnsNew" ]; then
                 echo $putihHitam"this will set to : $DnsNew"$ResetWarna
             else
                 echo $abuHitam"Current status : $DnsBefore"$ResetWarna
@@ -586,90 +586,90 @@ SideTweak(){
     fi
 }
 AITwek(){
-    if [ -e "$PathModulConfigAi/ai_status.txt" ];then
+    if [ -e "$PathModulConfigAi/ai_status.txt" ]; then
         echo "<-- -- AI Config -- -->"
         echo "aix > auto/ai mode off"
         echo "aiy > auto/ai mode on"
-        if [ "$GetModeAiBefore" != "$GetModeAiNew" ];then
-            if [ $GetModeAiNew == "0" ];then
+        if [ "$GetModeAiBefore" != "$GetModeAiNew" ]; then
+            if [ $GetModeAiNew == "0" ]; then
                 echo $merahPutih"this will set to : off"$ResetWarna
-            elif [ $GetModeAiNew == "3" ];then
+            elif [ $GetModeAiNew == "3" ]; then
                 echo $cyanPutih"this will set to : turn off"$ResetWarna
-            elif [ $GetModeAiNew == "1" ];then
+            elif [ $GetModeAiNew == "1" ]; then
                 echo $cyanPutih"this will set to : on"$ResetWarna
             fi
         else
-            if [ $GetModeAiBefore == "0" ];then
+            if [ $GetModeAiBefore == "0" ]; then
                 echo $merahHitam"current status : off"$ResetWarna
-            elif [ $GetModeAiBefore == "2" ];then
+            elif [ $GetModeAiBefore == "2" ]; then
                 echo $cyanHitam"current status : running"$ResetWarna
-            elif [ $GetModeAiBefore == "1" ];then
+            elif [ $GetModeAiBefore == "1" ]; then
                 echo $cyanHitam"current status : on"$ResetWarna
             fi
         fi
         echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
     fi    
-    if [ "$TypeOpen" == "1" ];then
-        if [ -e "$PathModulConfigAi/ai_change.txt" ];then
+    if [ "$TypeOpen" == "1" ]; then
+        if [ -e "$PathModulConfigAi/ai_change.txt" ]; then
             echo "<-- -- AI Change mode -- -->"
             echo "acu > change mode based gpu usage"
             echo "ace > change mode to turbo by game only"
             echo "acb > change mode to turbo by game or gpu usage"
             echo "acp > change mode to turbo while using ur phone"
-            if [ "$GetModeAiCBefore" != "$GetModeAiCNew" ];then
-                if [ $GetModeAiCNew == "1" ];then
+            if [ "$GetModeAiCBefore" != "$GetModeAiCNew" ]; then
+                if [ $GetModeAiCNew == "1" ]; then
                     echo $cyanPutih"this will set to : by gpu usage"$ResetWarna
-                elif [ $GetModeAiCNew == "2" ];then
+                elif [ $GetModeAiCNew == "2" ]; then
                     echo $cyanPutih"this will set to : By detected game"$ResetWarna
-                elif [ $GetModeAiCNew == "3" ];then
+                elif [ $GetModeAiCNew == "3" ]; then
                     echo $cyanPutih"this will set to : both"$ResetWarna
-                elif [ $GetModeAiCNew == "4" ];then
+                elif [ $GetModeAiCNew == "4" ]; then
                     echo $cyanPutih"this will set to : while using phone"$ResetWarna
                 fi
             else
-                if [ $GetModeAiCBefore == "1" ];then
+                if [ $GetModeAiCBefore == "1" ]; then
                     echo $cyanHitam"current status : by gpu usage"$ResetWarna
-                elif [ $GetModeAiCBefore == "2" ];then
+                elif [ $GetModeAiCBefore == "2" ]; then
                     echo $cyanHitam"current status : By detected game"$ResetWarna
-                elif [ $GetModeAiCBefore == "3" ];then
+                elif [ $GetModeAiCBefore == "3" ]; then
                     echo $cyanHitam"current status : both"$ResetWarna
-                elif [ $GetModeAiCBefore == "4" ];then
+                elif [ $GetModeAiCBefore == "4" ]; then
                     echo $cyanHitam"current status : while using phone"$ResetWarna
                 fi
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
     fi
-    if [ -e "$PathModulConfigAi/ai_notif_mode.txt" ];then
+    if [ -e "$PathModulConfigAi/ai_notif_mode.txt" ]; then
         echo "<-- -- AI Notif Config -- -->"
-        if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ];then
+        if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ]; then
             echo "anx > turn off notif ai";
             echo "anv > use vibration"
             echo "an1 > use notif method 1"
             echo "an2 > use notif method 2"
             echo "an3 > use notif and vibration [only run game or change to turbo mode]"
-            if [ "$GetModeAiNotifBefore" != "$GetModeAiNotifNew" ];then
-                if [ "$GetModeAiNotifNew" == "0" ];then
+            if [ "$GetModeAiNotifBefore" != "$GetModeAiNotifNew" ]; then
+                if [ "$GetModeAiNotifNew" == "0" ]; then
                     echo $putihHitam"this will set to : off"$ResetWarna
-                elif [ "$GetModeAiNotifNew" == "1" ];then
+                elif [ "$GetModeAiNotifNew" == "1" ]; then
                     echo $cyanPutih"this will set to : use vibration "$ResetWarna
-                elif [ "$GetModeAiNotifNew" == "2" ];then
+                elif [ "$GetModeAiNotifNew" == "2" ]; then
                     echo $hijauPutih"this will set to : use notif method 1"$ResetWarna
-                elif [ "$GetModeAiNotifNew" == "3" ];then
+                elif [ "$GetModeAiNotifNew" == "3" ]; then
                     echo $unguPutih"this will set to : use notif method 2"$ResetWarna
-                elif [ "$GetModeAiNotifNew" == "4" ];then
+                elif [ "$GetModeAiNotifNew" == "4" ]; then
                     echo $unguPutih"this will set to : use notif and vibration"$ResetWarna
                 fi
             else
-                if [ "$GetModeAiNotifBefore" == "0" ];then
+                if [ "$GetModeAiNotifBefore" == "0" ]; then
                     echo $abuHitam"Current status : off"$ResetWarna
-                elif [ "$GetModeAiNotifBefore" == "1" ];then
+                elif [ "$GetModeAiNotifBefore" == "1" ]; then
                     echo $cyanHitam"Current status : use vibration "$ResetWarna
-                elif [ "$GetModeAiNotifBefore" == "2" ];then
+                elif [ "$GetModeAiNotifBefore" == "2" ]; then
                     echo $hijauHitam"Current status : use notif method 1"$ResetWarna
-                elif [ "$GetModeAiNotifBefore" == "3" ];then
+                elif [ "$GetModeAiNotifBefore" == "3" ]; then
                     echo $unguHitam"Current status : use notif method 2"$ResetWarna
-                elif [ "$GetModeAiNotifBefore" == "4" ];then
+                elif [ "$GetModeAiNotifBefore" == "4" ]; then
                     echo $unguHitam"Current status : use notif and vibration"$ResetWarna
                 fi
             fi
@@ -678,26 +678,26 @@ AITwek(){
         fi
         echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
     fi
-    if [ -e "$PathModulConfigAi/ai_notif_mode_running_status.txt" ];then
+    if [ -e "$PathModulConfigAi/ai_notif_mode_running_status.txt" ]; then
         echo "<-- -- AI Notif Running Status Config -- -->"
-        if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ];then
+        if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ]; then
             echo "ansx > turn off notif running status ai" ;
             echo "ans1 > use notif running while on turbo mode" ;
             echo "ans2 > use notif running while on gaming (recomended)" ;
-            if [ "$GetModeAiNotifRunningStatusBefore" != "$GetModeAiNotifRunningStatusNew" ];then
-                if [ "$GetModeAiNotifRunningStatusNew" == "0" ];then
+            if [ "$GetModeAiNotifRunningStatusBefore" != "$GetModeAiNotifRunningStatusNew" ]; then
+                if [ "$GetModeAiNotifRunningStatusNew" == "0" ]; then
                     echo $putihHitam"this will set to : off"$ResetWarna
-                elif [ "$GetModeAiNotifRunningStatusNew" == "1" ];then
+                elif [ "$GetModeAiNotifRunningStatusNew" == "1" ]; then
                     echo $kuningPutih"this will set to : notif running while on turbo mode"$ResetWarna
-                elif [ "$GetModeAiNotifRunningStatusNew" == "2" ];then
+                elif [ "$GetModeAiNotifRunningStatusNew" == "2" ]; then
                     echo $hijauPutih"this will set to : notif running while on gaming"$ResetWarna
                 fi
             else
-                if [ "$GetModeAiNotifRunningStatusBefore" == "0" ];then
+                if [ "$GetModeAiNotifRunningStatusBefore" == "0" ]; then
                     echo $abuHitam"Current status : off"$ResetWarna
-                elif [ "$GetModeAiNotifRunningStatusBefore" == "1" ];then
+                elif [ "$GetModeAiNotifRunningStatusBefore" == "1" ]; then
                     echo $kuningHitam"Current status : notif running while on turbo mode"$ResetWarna
-                elif [ "$GetModeAiNotifRunningStatusBefore" == "2" ];then
+                elif [ "$GetModeAiNotifRunningStatusBefore" == "2" ]; then
                     echo $hijauHitam"Current status : notif running while on gaming"$ResetWarna
                 fi
             fi
@@ -706,36 +706,36 @@ AITwek(){
         fi
         echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
     fi
-    if [ -e "$PathModulConfigAi/ai_notif_mode_running.txt" ];then
+    if [ -e "$PathModulConfigAi/ai_notif_mode_running.txt" ]; then
         echo "<-- -- AI Notif Running Config -- -->"
-        if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ];then
+        if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ]; then
             echo "anmx > turn off notif running ai" ;
             echo "anm1 > use notif running mode 1" ;
             echo "anm2 > use notif running mode 2" ;
             echo "anm3 > use notif running mode 3" ;
             echo "anm4 > use notif running mode 4" ;
-            if [ "$GetModeAiNotifRunningBefore" != "$GetModeAiNotifRunningNew" ];then
-                if [ "$GetModeAiNotifRunningNew" == "0" ];then
+            if [ "$GetModeAiNotifRunningBefore" != "$GetModeAiNotifRunningNew" ]; then
+                if [ "$GetModeAiNotifRunningNew" == "0" ]; then
                     echo $putihHitam"this will set to : off"$ResetWarna
-                elif [ "$GetModeAiNotifRunningNew" == "1" ];then
+                elif [ "$GetModeAiNotifRunningNew" == "1" ]; then
                     echo $kuningPutih"this will set to : notif running mode 1"$ResetWarna
-                elif [ "$GetModeAiNotifRunningNew" == "2" ];then
+                elif [ "$GetModeAiNotifRunningNew" == "2" ]; then
                     echo $hijauPutih"this will set to : notif running mode 2"$ResetWarna
-                elif [ "$GetModeAiNotifRunningNew" == "3" ];then
+                elif [ "$GetModeAiNotifRunningNew" == "3" ]; then
                     echo $cyanPutih"this will set to : notif running mode 3"$ResetWarna
-                elif [ "$GetModeAiNotifRunningNew" == "4" ];then
+                elif [ "$GetModeAiNotifRunningNew" == "4" ]; then
                     echo $unguPutih"this will set to : notif running mode 4"$ResetWarna
                 fi
             else
-                if [ "$GetModeAiNotifRunningBefore" == "0" ];then
+                if [ "$GetModeAiNotifRunningBefore" == "0" ]; then
                     echo $abuHitam"Current status : off"$ResetWarna
-                elif [ "$GetModeAiNotifRunningBefore" == "1" ];then
+                elif [ "$GetModeAiNotifRunningBefore" == "1" ]; then
                     echo $kuningHitam"Current status : notif running mode 1"$ResetWarna
-                elif [ "$GetModeAiNotifRunningBefore" == "2" ];then
+                elif [ "$GetModeAiNotifRunningBefore" == "2" ]; then
                     echo $hijauHitam"Current status : notif running mode 2"$ResetWarna
-                elif [ "$GetModeAiNotifRunningBefore" == "3" ];then
+                elif [ "$GetModeAiNotifRunningBefore" == "3" ]; then
                     echo $cyanHitam"Current status : notif running mode 3"$ResetWarna
-                elif [ "$GetModeAiNotifRunningBefore" == "4" ];then
+                elif [ "$GetModeAiNotifRunningBefore" == "4" ]; then
                     echo $unguHitam"Current status : notif running mode 4"$ResetWarna
                 fi
             fi
@@ -744,12 +744,12 @@ AITwek(){
         fi
         echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
     fi
-    if [ "$TypeOpen" == "1" ];then
-        if [ -e "$PathModulConfigAi/wait_time_off.txt" ];then
+    if [ "$TypeOpen" == "1" ]; then
+        if [ -e "$PathModulConfigAi/wait_time_off.txt" ]; then
             echo "<-- -- AI scan interval while on mode off Config -- -->"
-            if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ];then
+            if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ]; then
                 echo "wtx > set wait time ai to run again while module on mode off"
-                if [ "$waitTimeOffBefore" != "$waitTimeOffNew" ];then
+                if [ "$waitTimeOffBefore" != "$waitTimeOffNew" ]; then
                     echo $putihHitam"this will set to : $waitTimeOffNew s"$ResetWarna
                 else
                     echo $abuHitam"Current status : $waitTimeOffBefore s"$ResetWarna
@@ -759,11 +759,11 @@ AITwek(){
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
-        if [ -e "$PathModulConfigAi/wait_time_on.txt" ];then
+        if [ -e "$PathModulConfigAi/wait_time_on.txt" ]; then
             echo "<-- -- AI scan interval while on mode turbo Config -- -->"
-            if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ];then
+            if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ]; then
                 echo "wty > set wait time ai to run again while module on mode turbo"
-                if [ "$waitTimeOnBefore" != "$waitTimeOnNew" ];then
+                if [ "$waitTimeOnBefore" != "$waitTimeOnNew" ]; then
                     echo $putihHitam"this will set to : $waitTimeOnNew s"$ResetWarna
                 else
                     echo $abuHitam"Current status : $waitTimeOnBefore s"$ResetWarna
@@ -773,12 +773,12 @@ AITwek(){
             fi
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
-        if [ "$GetModeAiCBefore" == "1" ] || [ "$GetModeAiCBefore" == "3" ];then
-            if [ -e "$PathModulConfigAi/status_start_gpu.txt" ];then
+        if [ "$GetModeAiCBefore" == "1" ] || [ "$GetModeAiCBefore" == "3" ]; then
+            if [ -e "$PathModulConfigAi/status_start_gpu.txt" ]; then
                 echo "<-- -- AI max gpu usage for switch to mode turbo Config -- -->"
-                if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ];then
+                if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ]; then
                     echo "gux > set max gpu usage for switch to mode turbo"
-                    if [ "$StatusStartGpuBefore" != "$StatusStartGpuNew" ];then
+                    if [ "$StatusStartGpuBefore" != "$StatusStartGpuNew" ]; then
                         echo $putihHitam"this will set to : $StatusStartGpuNew %"$ResetWarna
                     else
                         echo $abuHitam"Current status : $StatusStartGpuBefore %"$ResetWarna
@@ -789,12 +789,12 @@ AITwek(){
                 echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
             fi
         fi
-        if [ "$GetModeAiCBefore" == "1" ] || [ "$GetModeAiCBefore" == "3" ];then
-            if [ -e "$PathModulConfigAi/status_end_gpu.txt" ];then
+        if [ "$GetModeAiCBefore" == "1" ] || [ "$GetModeAiCBefore" == "3" ]; then
+            if [ -e "$PathModulConfigAi/status_end_gpu.txt" ]; then
                 echo "<-- -- AI min gpu usage for switch to mode off Config -- -->"
-                if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ];then
+                if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ]; then
                     echo "gun > set min gpu usage for switch to mode off "
-                    if [ "$StatusEndGpuBefore" != "$StatusEndGpuNew" ];then
+                    if [ "$StatusEndGpuBefore" != "$StatusEndGpuNew" ]; then
                         echo $putihHitam"this will set to : $StatusEndGpuNew %"$ResetWarna
                     else
                         echo $abuHitam"Current status : $StatusEndGpuBefore %"$ResetWarna
@@ -805,19 +805,19 @@ AITwek(){
                 echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
             fi
         fi
-        if [ -e "$PathModulConfigAi/ai_doze.txt" ];then
+        if [ -e "$PathModulConfigAi/ai_doze.txt" ]; then
             echo "<-- -- AI force doze Config -- -->"
-            if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ];then
+            if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ]; then
                 echo "fdax > turn off ai force doze"
                 echo "fday > turn on ai force doze"
                 echo "fdnx > turn off notification ai force doze"
                 echo "fdny > turn on notification ai force doze"
-                if [ "$AiDozeBefore" != "$AiDozeNew" ];then
+                if [ "$AiDozeBefore" != "$AiDozeNew" ]; then
                     echo $hijauPutih"ai force doze will set to : $AiDozeNew"$ResetWarna
                 else
                     echo $putihHitam"Current doze status : $AiDozeBefore"$ResetWarna
                 fi
-                if [ "$AiDozeNotifBefore" != "$AiDozeNotifNew" ];then
+                if [ "$AiDozeNotifBefore" != "$AiDozeNotifNew" ]; then
                     echo $hijauPutih"doze notification will set to : $AiDozeNotifNew"$ResetWarna
                 else
                     echo $putihHitam"Current notification status : $AiDozeNotifBefore"$ResetWarna
@@ -828,115 +828,115 @@ AITwek(){
             echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
         fi
         
-        if [ "$(getprop spectrum.support)" == "1" ];then
+        if [ "$(getprop spectrum.support)" == "1" ]; then
             echo "<-- -- Spectrum Auto change -- -->"
             echo "acsy > auto change spectrum mode on"
             echo "acsx > auto change spectrum mode off"
             echo "csmf > change spectrum mode when tweak off"
             echo "csmn > change spectrum mode when tweak on"
             echo "csmd > change spectrum mode when force doze on"
-            if [ "$SpectrumStatusNew" == "$SpectrumStatusBefore" ];then
-                if [ $SpectrumStatusNew == "1" ];then
+            if [ "$SpectrumStatusNew" == "$SpectrumStatusBefore" ]; then
+                if [ $SpectrumStatusNew == "1" ]; then
                     echo $kuningHitam"auto change spectrum mode: on"$ResetWarna
                 else
                     echo $kuningHitam"auto change spectrum mode: off"$ResetWarna
                 fi
             else
-                if [ $SpectrumStatusNew == "1" ];then
+                if [ $SpectrumStatusNew == "1" ]; then
                     echo $merahPutih"auto change spectrum mode set to: on"$ResetWarna
                 else
                     echo $merahPutih"auto change spectrum mode set to: off"$ResetWarna
                 fi
             fi
             if [ "$ModeOffNew" == "$ModeOffBefore" ]; then
-                if [ "$ModeOffNew" == "0" ];then
+                if [ "$ModeOffNew" == "0" ]; then
                     echo $biruHitam"current status when tweak mode off: balance"$ResetWarna
-                elif [ "$ModeOffNew" == "1" ];then
+                elif [ "$ModeOffNew" == "1" ]; then
                     echo $biruHitam"current status when tweak mode off: performance"$ResetWarna
-                elif [ "$ModeOffNew" == "2" ];then
+                elif [ "$ModeOffNew" == "2" ]; then
                     echo $biruHitam"current status when tweak mode off: battery"$ResetWarna
-                elif [ "$ModeOffNew" == "3" ];then
+                elif [ "$ModeOffNew" == "3" ]; then
                     echo $biruHitam"current status when tweak mode off: gaming"$ResetWarna
                 else 
                     echo $biruHitam"current status when tweak mode off: unknow > $ModeOffNew"$ResetWarna
                 fi
             else
-                if [ "$ModeOffNew" == "0" ];then
+                if [ "$ModeOffNew" == "0" ]; then
                     echo $cyanPutih"Set To status  when tweak mode off: balance"$ResetWarna
-                elif [ "$ModeOffNew" == "1" ];then
+                elif [ "$ModeOffNew" == "1" ]; then
                     echo $cyanPutih"Set To status  when tweak mode off: performance"$ResetWarna
-                elif [ "$ModeOffNew" == "2" ];then
+                elif [ "$ModeOffNew" == "2" ]; then
                     echo $cyanPutih"Set To status  when tweak mode off: battery"$ResetWarna
-                elif [ "$ModeOffNew" == "3" ];then
+                elif [ "$ModeOffNew" == "3" ]; then
                     echo $cyanPutih"Set To status  when tweak mode off: gaming"$ResetWarna
                 else 
                     echo $cyanPutih"Set To status  when tweak mode off: unknow, set to $ModeOffNew"$ResetWarna
                 fi
             fi
             if [ "$ModeOnNew" == "$ModeOnBefore" ]; then
-                if [ "$ModeOnNew" == "0" ];then
+                if [ "$ModeOnNew" == "0" ]; then
                     echo $biruHitam"current status when tweak mode on/turbo: balance"$ResetWarna
-                elif [ "$ModeOnNew" == "1" ];then
+                elif [ "$ModeOnNew" == "1" ]; then
                     echo $biruHitam"current status when tweak mode on/turbo: performance"$ResetWarna
-                elif [ "$ModeOnNew" == "2" ];then
+                elif [ "$ModeOnNew" == "2" ]; then
                     echo $biruHitam"current status when tweak mode on/turbo: battery"$ResetWarna
-                elif [ "$ModeOnNew" == "3" ];then
+                elif [ "$ModeOnNew" == "3" ]; then
                     echo $biruHitam"current status when tweak mode on/turbo: gaming"$ResetWarna
                 else 
                     echo $biruHitam"current status when tweak mode on/turbo: unknow > $ModeOnNew"$ResetWarna
                 fi
             else
-                if [ "$ModeOnNew" == "0" ];then
+                if [ "$ModeOnNew" == "0" ]; then
                     echo $cyanPutih"Set To status  when tweak mode on/turbo: balance"$ResetWarna
-                elif [ "$ModeOnNew" == "1" ];then
+                elif [ "$ModeOnNew" == "1" ]; then
                     echo $cyanPutih"Set To status  when tweak mode on/turbo: performance"$ResetWarna
-                elif [ "$ModeOnNew" == "2" ];then
+                elif [ "$ModeOnNew" == "2" ]; then
                     echo $cyanPutih"Set To status  when tweak mode on/turbo: battery"$ResetWarna
-                elif [ "$ModeOnNew" == "3" ];then
+                elif [ "$ModeOnNew" == "3" ]; then
                     echo $cyanPutih"Set To status  when tweak mode on/turbo: gaming"$ResetWarna
                 else 
                     echo $cyanPutih"Set To status  when tweak mode on/turbo: unknow, set to $ModeOnNew"$ResetWarna
                 fi
             fi
             if [ "$DozeSpectrumBefore" == "$DozeSpectrumNew" ]; then
-                if [ "$DozeSpectrumNew" == "0" ];then
+                if [ "$DozeSpectrumNew" == "0" ]; then
                     echo $biruHitam"current status when force doze on: balance"$ResetWarna
-                elif [ "$DozeSpectrumNew" == "1" ];then
+                elif [ "$DozeSpectrumNew" == "1" ]; then
                     echo $biruHitam"current status when force doze on: performance"$ResetWarna
-                elif [ "$DozeSpectrumNew" == "2" ];then
+                elif [ "$DozeSpectrumNew" == "2" ]; then
                     echo $biruHitam"current status when force doze on: battery"$ResetWarna
-                elif [ "$DozeSpectrumNew" == "3" ];then
+                elif [ "$DozeSpectrumNew" == "3" ]; then
                     echo $biruHitam"current status when force doze on: gaming"$ResetWarna
                 else 
                     echo $biruHitam"current status when force doze on: unknow > $DozeSpectrumNew"$ResetWarna
                 fi
             else
-                if [ "$DozeSpectrumNew" == "0" ];then
+                if [ "$DozeSpectrumNew" == "0" ]; then
                     echo $cyanPutih"Set To status  when force doze on: balance"$ResetWarna
-                elif [ "$DozeSpectrumNew" == "1" ];then
+                elif [ "$DozeSpectrumNew" == "1" ]; then
                     echo $cyanPutih"Set To status  when force doze on: performance"$ResetWarna
-                elif [ "$DozeSpectrumNew" == "2" ];then
+                elif [ "$DozeSpectrumNew" == "2" ]; then
                     echo $cyanPutih"Set To status  when force doze on: battery"$ResetWarna
-                elif [ "$DozeSpectrumNew" == "3" ];then
+                elif [ "$DozeSpectrumNew" == "3" ]; then
                     echo $cyanPutih"Set To status  when force doze on: gaming"$ResetWarna
                 else 
                     echo $cyanPutih"Set To status  when force doze on: unknow, set to $DozeSpectrumNew"$ResetWarna
                 fi
             fi
         fi
-        if [ -e "$PathModulConfigAi/ai_aos_on_turbo.txt" ];then
+        if [ -e "$PathModulConfigAi/ai_aos_on_turbo.txt" ]; then
             echo "<-- -- AI always on while on turbo mode -- -->"
-            if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ];then
+            if [ "$GetModeAiBefore" == "2" ] || [ "$GetModeAiBefore" == "1" ]; then
                 echo "aosx > turn off always on while on turbo mode"
                 echo "aosy > turn on always on while on turbo mode"
-                if [ "$AosOnTurboBefore" != "$AosOnTurboNew" ];then
-                    if [ "$AosOnTurboNew" == "1" ];then
+                if [ "$AosOnTurboBefore" != "$AosOnTurboNew" ]; then
+                    if [ "$AosOnTurboNew" == "1" ]; then
                         echo $hijauPutih"this will set to : Active"$ResetWarna
                     else
                         echo $hijauPutih"this will set to : Disabled"$ResetWarna
                     fi
                 else
-                    if [ "$AosOnTurboBefore" == "1" ];then
+                    if [ "$AosOnTurboBefore" == "1" ]; then
                         echo $putihHitam"Current status : Active"$ResetWarna
                     else
                         echo $putihHitam"Current status : Disabled"$ResetWarna
@@ -955,12 +955,12 @@ AppGet(){
     echo "sal > to check app list install on your phone"
     echo "sgl > to check game list for trigger ai to mode turbo faster"
     echo "mag > manual add games"
-    if [ "$(getprop dalvik.vm.usejit)" == "true" ];then
+    if [ "$(getprop dalvik.vm.usejit)" == "true" ]; then
         echo "oap > app optimizer"
     fi
-    if [ "$RefreshList" == "sudah" ];then
+    if [ "$RefreshList" == "sudah" ]; then
         echo $hijauHitam"refresh list game and app done . . . :p"$ResetWarna
-    elif [ "$RefreshList" == "iya" ];then
+    elif [ "$RefreshList" == "iya" ]; then
         echo $hijauHitam"refresh list game and app after save setting :p"$ResetWarna
     fi
     echo $cyanPutih"<<----------<=====*=====>---------->>"$ResetWarna
@@ -969,7 +969,7 @@ AppGet(){
     GameTweak
 }
 GameTweak(){
-    if [ -e /data/data/com.mobile.legends/shared_prefs/com.mobile.legends.v2.playerprefs.xml ];then
+    if [ -e /data/data/com.mobile.legends/shared_prefs/com.mobile.legends.v2.playerprefs.xml ]; then
         MoLepath="/data/data/com.mobile.legends/shared_prefs/com.mobile.legends.v2.playerprefs.xml"
         MoLeVal=$(cat $MoLepath | grep 'name="PreformanceLv" value="' | awk -F '\\value=' '{print $2}' | sed 's/" //g' | sed 's/[/][>]//g' | sed 's/"//g' )
         echo "<-- -- Mobile Legends Graphics setting -- -->"
@@ -985,26 +985,26 @@ GameTweak(){
     DragonRajaValueType="Same"
     for DragonRajaPackageName in tw.com.szn.lz com.zloong.eu.dr.gp com.tencent.lzhx com.archosaur.sea.dr.gp com.kr.krlz.google com.tencent.longzu.jp 
     do
-        if [ -e $ModPathGame/$DragonRajaPackageName/files/userdata/usercfg.lua ];then 
+        if [ -e $ModPathGame/$DragonRajaPackageName/files/userdata/usercfg.lua ]; then 
             DragonRajaGame="available"
             getVal=$(cat $ModPathGame/$DragonRajaPackageName/files/userdata/usercfg.lua | grep "QC_HighFrameRateFlag = " | awk -F '\\HighFrameRateFlag' '{print $2}' | sed 's/[;]//g' | sed 's/ = //g' )
-            if [ "$DragonRajaValue" == "none" ];then
+            if [ "$DragonRajaValue" == "none" ]; then
                 DragonRajaValue="$getVal"
             else
-                if [ "$DragonRajaValue" != "$getVal" ];then
+                if [ "$DragonRajaValue" != "$getVal" ]; then
                     DragonRajaValueType="Not Same"
                 fi
             fi
         fi
     done
-    if [ "$DragonRajaGame" == "available" ];then
+    if [ "$DragonRajaGame" == "available" ]; then
         echo "<-- -- Dragon Raja Unlock Highframerate -- -->"
         echo "dru > unlock HFR for all Dragon Raja games"
         echo "NOTE : please dont set custom graphic to make this tweak working !!!"
-        if [ "$DragonRajaValueType" == "Not Same" ];then
+        if [ "$DragonRajaValueType" == "Not Same" ]; then
             echo $merahPutih"current status : not all unlocked 60fps"$ResetWarna
         else
-            if [ "$DragonRajaValue" == "2" ];then
+            if [ "$DragonRajaValue" == "2" ]; then
                 echo $hijauPutih"current status : unlocked 60fps"$ResetWarna
             else
                 echo $kuningPutih"current status : locked at 30fps"$ResetWarna
@@ -1012,11 +1012,11 @@ GameTweak(){
         fi
         echo $biruPutih"<<----------<=====*=====>---------->>"$ResetWarna
     fi
-    if [ -e /data/data/com.epicgames.fortnite/files/UE4Game/FortniteGame/FortniteGame/Saved/Config/Android/GameUserSettings.ini ];then
+    if [ -e /data/data/com.epicgames.fortnite/files/UE4Game/FortniteGame/FortniteGame/Saved/Config/Android/GameUserSettings.ini ]; then
         FortniteGamePath="data/data/com.epicgames.fortnite/files/UE4Game/FortniteGame/FortniteGame/Saved/Config/Android/GameUserSettings.ini"
         FortniteGameGetVal="$(cat $FortniteGamePath)"
     fi
-    if [ -d "$ModPathGame"/com.tencent.ig ];then
+    if [ -d "$ModPathGame"/com.tencent.ig ]; then
         echo "<-- -- PUBG mobile tencenct setting -- -->"
         echo "pubgmf > move file to inside pubg folder"
         echo "pubglf > lock all internal pubg data"
@@ -1024,7 +1024,7 @@ GameTweak(){
     fi
 }
 update_file() {
-    if [ ! -z "$1" ] && [ ! -z "$2" ] && [ ! -z "$3" ];then
+    if [ ! -z "$1" ] && [ ! -z "$2" ] && [ ! -z "$3" ]; then
         GetValue="$(cat "$3" | grep "$1")"
         GetPath=${3/"./"/"/"}
         [ "$GetValue" != "$2" ] && \
@@ -1035,20 +1035,20 @@ ListMenu(){
     clear
     echo "Version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )"
     echo "list menu : "
-    if [ "$typeMenu" == "1" ];then
+    if [ "$typeMenu" == "1" ]; then
         MainTweak
-    elif [ "$typeMenu" == "2" ];then
+    elif [ "$typeMenu" == "2" ]; then
         AITwek
-    elif [ "$typeMenu" == "3" ];then
+    elif [ "$typeMenu" == "3" ]; then
         SideTweak
-    elif [ "$typeMenu" == "4" ];then
+    elif [ "$typeMenu" == "4" ]; then
         AppGet
     else
         echo "1 > main config"
         echo "2 > ai config"
         echo "3 > side config"
         echo "4 > detected app and games config"
-        if [ "$Perubahan" == "ya" ];then
+        if [ "$Perubahan" == "ya" ]; then
             echo "s/save > save setting"
             # echo "0 > exit"
         fi
@@ -1058,30 +1058,30 @@ ListMenu(){
         clear
         echo "Version : $(cat "$PathModulConfig/notes_en.txt" | grep 'Version:' | sed "s/Version:*//g" )"
         echo "list menu : "
-        if [ "$getModeTweak" == "1" ];then
+        if [ "$getModeTweak" == "1" ]; then
             typeMenu="1"
             MainTweak
-        elif [ "$getModeTweak" == "2" ];then
+        elif [ "$getModeTweak" == "2" ]; then
             typeMenu="2"
             AITwek
-        elif [ "$getModeTweak" == "3" ];then
+        elif [ "$getModeTweak" == "3" ]; then
             typeMenu="3"
             SideTweak
-        elif [ "$getModeTweak" == "4" ];then
+        elif [ "$getModeTweak" == "4" ]; then
             typeMenu="4"
             AppGet
-        elif [ "$getModeTweak" == "e" ] || [ "$getModeTweak" == "0" ];then
+        elif [ "$getModeTweak" == "e" ] || [ "$getModeTweak" == "0" ]; then
             exitSetting
         else
-            if [ "$Perubahan" == "ya" ];then
-                if [ "$getModeTweak" == "s" ];then
+            if [ "$Perubahan" == "ya" ]; then
+                if [ "$getModeTweak" == "s" ]; then
                     savedata="yes"
-                elif [ "$getModeTweak" == "save" ];then
+                elif [ "$getModeTweak" == "save" ]; then
                     savedata="yes"
                 else
                     savedata="no"
                 fi
-                if [ "$savedata" == "yes" ];then
+                if [ "$savedata" == "yes" ]; then
                     saveSetting
                 fi
             fi
@@ -1090,141 +1090,141 @@ ListMenu(){
     fi
     
     echo "back > goto main menu"
-    if [ "$TypeOpen" != "4" ];then
-        if [ "$TypeOpen" == "0" ];then
+    if [ "$TypeOpen" != "4" ]; then
+        if [ "$TypeOpen" == "0" ]; then
             echo "adv > show advance menu"
         else
             echo "bsc > show basic menu"
         fi
     fi
-    if [ "$Perubahan" == "ya" ];then
+    if [ "$Perubahan" == "ya" ]; then
         echo "s/save > save setting"
         # echo "0 > exit"
     fi
     echo "0/e/exit > exit setting"
     read pilihan
     clear
-    if [ "$pilihan" == "mx" ];then
+    if [ "$pilihan" == "mx" ]; then
         Perubahan="ya"
         GetModeNew="off"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "my" ];then
+    elif [ "$pilihan" == "my" ]; then
         Perubahan="ya"
         GetModeNew="on"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "mt" ];then
+    elif [ "$pilihan" == "mt" ]; then
         Perubahan="ya"
         GetModeNew="turbo"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "lm" ];then
+    elif [ "$pilihan" == "lm" ]; then
         Perubahan="ya"
         GetModeNew="lag"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "srd" ];then
+    elif [ "$pilihan" == "srd" ]; then
         Perubahan="ya"
         GetModeRenderNew="system"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "opd" ];then
+    elif [ "$pilihan" == "opd" ]; then
         Perubahan="ya"
         GetModeRenderNew="opengl"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "ops" ];then
+    elif [ "$pilihan" == "ops" ]; then
         Perubahan="ya"
         GetModeRenderNew="skiagl"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "vkn" ];then
+    elif [ "$pilihan" == "vkn" ]; then
         Perubahan="ya"
         GetModeRenderNew="skiavk"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "mrr" ];then
+    elif [ "$pilihan" == "mrr" ]; then
         Perubahan="ya"
         GetModeRenderLockNew="0"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "mrk" ];then
+    elif [ "$pilihan" == "mrk" ]; then
         Perubahan="ya"
         GetModeRenderLockNew="1"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "fs" ];then
+    elif [ "$pilihan" == "fs" ]; then
         Perubahan="ya"
         GetModeFCNew="system"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "fy" ];then
+    elif [ "$pilihan" == "fy" ]; then
         Perubahan="ya"
         GetModeFCNew="1"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "fcs" ];then
+    elif [ "$pilihan" == "fcs" ]; then
         Perubahan="ya"
         GetModeFsyncNew="system"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "fcx" ];then
+    elif [ "$pilihan" == "fcx" ]; then
         Perubahan="ya"
         GetModeFsyncNew="0"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "fcy" ];then
+    elif [ "$pilihan" == "fcy" ]; then
         Perubahan="ya"
         GetModeFsyncNew="1"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "fca" ];then
+    elif [ "$pilihan" == "fca" ]; then
         Perubahan="ya"
         GetModeFsyncNew="auto"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "mfr" ];then
+    elif [ "$pilihan" == "mfr" ]; then
         Perubahan="ya"
         GetModeFsyncLockNew="0"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "mfk" ];then
+    elif [ "$pilihan" == "mfk" ]; then
         Perubahan="ya"
         GetModeFsyncLockNew="1"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "adx" ];then
+    elif [ "$pilihan" == "adx" ]; then
         Perubahan="ya"
         GetModeAdrenoNew="0"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "adl" ];then
+    elif [ "$pilihan" == "adl" ]; then
         Perubahan="ya"
         GetModeAdrenoNew="1"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "adm" ];then
+    elif [ "$pilihan" == "adm" ]; then
         Perubahan="ya"
         GetModeAdrenoNew="2"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "adh" ];then
+    elif [ "$pilihan" == "adh" ]; then
         Perubahan="ya"
         GetModeAdrenoNew="3"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "adt" ];then
+    elif [ "$pilihan" == "adt" ]; then
         Perubahan="ya"
         GetModeAdrenoNew="tweak"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "rms" ];then
+    elif [ "$pilihan" == "rms" ]; then
         Perubahan="ya"
         GetModeRamNew="0"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "rmt" ];then
+    elif [ "$pilihan" == "rmt" ]; then
         Perubahan="ya"
         echo '--- --- --- ---'
         echo 'you can set from 1 to 8'
@@ -1232,7 +1232,7 @@ ListMenu(){
         echo 'highest value more app load(less free ram)'
         echo -n 'set ram management fix to : '
         read -n 1 SetRmTo
-        if [ "$SetRmTo" -le "8" ] && [ "$SetRmTo" -ge "1" ];then
+        if [ "$SetRmTo" -le "8" ] && [ "$SetRmTo" -ge "1" ]; then
             GetModeRamNew=$SetRmTo
             echo "set to : method $SetRmTo"
         else
@@ -1240,49 +1240,49 @@ ListMenu(){
         fi
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "rads" ];then
+    elif [ "$pilihan" == "rads" ]; then
         Perubahan="ya"
         GetModeRamAdjNew="system"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "radt" ];then
+    elif [ "$pilihan" == "radt" ]; then
         Perubahan="ya"
         GetModeRamAdjNew="tweak"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "aix" ];then
+    elif [ "$pilihan" == "aix" ]; then
         Perubahan="ya"
         # GetModeAiNew="1"
-        if [ $GetModeAiBefore == "2" ];then
+        if [ $GetModeAiBefore == "2" ]; then
             GetModeAiNew="3"
         else
             GetModeAiNew="0"
         fi
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "acu" ];then
+    elif [ "$pilihan" == "acu" ]; then
         Perubahan="ya"
         GetModeAiCNew="1"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "ace" ];then
+    elif [ "$pilihan" == "ace" ]; then
         Perubahan="ya"
         GetModeAiCNew="2"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "acb" ];then
+    elif [ "$pilihan" == "acb" ]; then
         Perubahan="ya"
         GetModeAiCNew="3"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "acp" ];then
+    elif [ "$pilihan" == "acp" ]; then
         Perubahan="ya"
         GetModeAiCNew="4"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "aiy" ];then
+    elif [ "$pilihan" == "aiy" ]; then
         Perubahan="ya"
-        if [ $GetModeAiBefore == "0" ];then
+        if [ $GetModeAiBefore == "0" ]; then
             GetModeAiNew="1"
         else
             echo "ai still running . . ."
@@ -1290,107 +1290,107 @@ ListMenu(){
         fi
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "anx" ];then
+    elif [ "$pilihan" == "anx" ]; then
         Perubahan="ya"
         GetModeAiNotifNew="0"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "anv" ];then
+    elif [ "$pilihan" == "anv" ]; then
         Perubahan="ya"
         GetModeAiNotifNew="1"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "an1" ];then
+    elif [ "$pilihan" == "an1" ]; then
         Perubahan="ya"
         GetModeAiNotifNew="2"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "an2" ];then
+    elif [ "$pilihan" == "an2" ]; then
         Perubahan="ya"
         GetModeAiNotifNew="3"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "an3" ];then
+    elif [ "$pilihan" == "an3" ]; then
         Perubahan="ya"
         GetModeAiNotifNew="4"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "anmx" ];then
+    elif [ "$pilihan" == "anmx" ]; then
         Perubahan="ya"
         GetModeAiNotifRunningNew="0"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "anm1" ];then
+    elif [ "$pilihan" == "anm1" ]; then
         Perubahan="ya"
         GetModeAiNotifRunningNew="1"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "anm2" ];then
+    elif [ "$pilihan" == "anm2" ]; then
         Perubahan="ya"
         GetModeAiNotifRunningNew="2"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "anm3" ];then
+    elif [ "$pilihan" == "anm3" ]; then
         Perubahan="ya"
         GetModeAiNotifRunningNew="3"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "anm4" ];then
+    elif [ "$pilihan" == "anm4" ]; then
         Perubahan="ya"
         GetModeAiNotifRunningNew="4"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "ansx" ];then
+    elif [ "$pilihan" == "ansx" ]; then
         Perubahan="ya"
         GetModeAiNotifRunningStatusNew="0"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "ans1" ];then
+    elif [ "$pilihan" == "ans1" ]; then
         Perubahan="ya"
         GetModeAiNotifRunningStatusNew="1"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "ans2" ];then
+    elif [ "$pilihan" == "ans2" ]; then
         Perubahan="ya"
         GetModeAiNotifRunningStatusNew="2"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "wtx" ];then
+    elif [ "$pilihan" == "wtx" ]; then
         echo "how long (example : 1) ??"
         read getnumber
         waitTimeOffNew=$getnumber
         Perubahan="ya"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "wty" ];then
+    elif [ "$pilihan" == "wty" ]; then
         echo "how long (example : 1) ??"
         read getnumber
         waitTimeOnNew=$getnumber
         Perubahan="ya"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "gdx" ];then
+    elif [ "$pilihan" == "gdx" ]; then
         Perubahan="ya"
         GmsDozeNew="0"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "gdy" ];then
+    elif [ "$pilihan" == "gdy" ]; then
         Perubahan="ya"
         GmsDozeNew="1"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "sag" ];then
+    elif [ "$pilihan" == "sag" ]; then
         echo "scan now (y/wsc/n)?"
         echo "y=yes,wsc=when save changes,n=no"
         read askScan
-        if [ "$askScan" == "y" ];then
+        if [ "$askScan" == "y" ]; then
             RefreshList="sudah"
             echo "--- --- --- --- ---"
             echo "Re Scan app & game list"
             echo "--- --- --- --- ---"
             . $ModulPath/ZyC_Turbo/initialize.sh "App" & wait 2>/dev/null 1>/dev/null
             echo "done . . ."
-        elif [ "$askScan" == "wsc" ];then
+        elif [ "$askScan" == "wsc" ]; then
             Perubahan="ya"
             RefreshList="iya"
         else 
@@ -1398,37 +1398,37 @@ ListMenu(){
         fi
         $usleep 1000000
         ListMenu
-    elif [ "$pilihan" == "sal" ];then
+    elif [ "$pilihan" == "sal" ]; then
         cat "$PathModulConfigAi/list_app_package_detected.txt"
         echo -n "Press any key to continue . . . ."
         read -n 1 -s -r 
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "sgl" ];then
+    elif [ "$pilihan" == "sgl" ]; then
         cat "$PathModulConfigAi/list_app_auto_turbo.txt"
         echo -n "Press any key to continue . . . ."
         read -n 1 -s -r 
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "mag" ];then
+    elif [ "$pilihan" == "mag" ]; then
         NoApp=1
         GetApp=$ModPath/zyc_app_list.txt
-        if [ -e $GetApp ];then
+        if [ -e $GetApp ]; then
             rm $GetApp
         fi
         changeSE="tidak"
-        if [ "$(getenforce)" == "Enforcing" ] && [ -z "$(getprop | grep begonia)" ] ;then
+        if [ "$(getenforce)" == "Enforcing" ] && [ -z "$(getprop | grep begonia)" ] ; then
             changeSE="ya"
             setenforce 0
         fi
         for appList in `pm list package -3 | sed 's/package:*//g'`
         do
-            if [ -z $( grep "$appList" "$PathModulConfigAi/list_app_auto_turbo.txt" ) ];then
+            if [ -z $( grep "$appList" "$PathModulConfigAi/list_app_auto_turbo.txt" ) ]; then
                 echo "[ $NoApp ] $appList" | tee -a $GetApp
                 NoApp=$(($NoApp+1))
             fi
         done
-        if [ "$changeSE" == "ya" ] && [ -z "$(getprop | grep begonia)" ] ;then
+        if [ "$changeSE" == "ya" ] && [ -z "$(getprop | grep begonia)" ] ; then
             setenforce 1
         fi
         echo 'please input number only'
@@ -1446,18 +1446,18 @@ ListMenu(){
         echo -n "Press any key to continue . . . ."
         read -n 3 -s -r 
         ListMenu
-    elif [ "$pilihan" == "zrx" ];then
+    elif [ "$pilihan" == "zrx" ]; then
         Perubahan="ya"
         ZramNew="0"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "zrc" ];then
+    elif [ "$pilihan" == "zrc" ]; then
         Perubahan="ya"
         echo '--- --- --- ---'
         echo 'set swap/zram to ?'
         echo 'you can set from 1 to 4'
         read SetSwap
-        if [ "$SetSwap" -le "8" ];then
+        if [ "$SetSwap" -le "8" ]; then
             ZramNew=$SetSwap
             echo "set to : $SetSwap Gb"
         else
@@ -1465,19 +1465,19 @@ ListMenu(){
         fi
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "zrs" ];then
+    elif [ "$pilihan" == "zrs" ]; then
         Perubahan="ya"
         ZramNew="system"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "csw" ];then
+    elif [ "$pilihan" == "csw" ]; then
         Perubahan="ya"
         echo '--- --- --- ---'
         echo 'set swappiness to ?'
         echo 'you can set from 0 to 100 '
         echo 'higher value more agresive to use swap'
         read GetChoice
-        if [ "$GetChoice" -le "100" ];then
+        if [ "$GetChoice" -le "100" ]; then
             swapinnesNew=$GetChoice
             echo "set to : $GetChoice Gb"
         else
@@ -1485,89 +1485,89 @@ ListMenu(){
         fi
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "vmx" ];then
+    elif [ "$pilihan" == "vmx" ]; then
         Perubahan="ya"
         ZramOptimizerNew="0"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "vmy" ];then
+    elif [ "$pilihan" == "vmy" ]; then
         Perubahan="ya"
         ZramOptimizerNew="1"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "fdax" ];then
+    elif [ "$pilihan" == "fdax" ]; then
         Perubahan="ya"
         AiDozeNew="off"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "fday" ];then
+    elif [ "$pilihan" == "fday" ]; then
         Perubahan="ya"
         AiDozeNew="on"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "fdnx" ];then
+    elif [ "$pilihan" == "fdnx" ]; then
         Perubahan="ya"
         AiDozeNotifNew="off"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "fdny" ];then
+    elif [ "$pilihan" == "fdny" ]; then
         Perubahan="ya"
         AiDozeNotifNew="on"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "aosx" ];then
+    elif [ "$pilihan" == "aosx" ]; then
         Perubahan="ya"
         AosOnTurboNew="0"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "aosy" ];then
+    elif [ "$pilihan" == "aosy" ]; then
         Perubahan="ya"
         AosOnTurboNew="1"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "dnss" ];then
+    elif [ "$pilihan" == "dnss" ]; then
         Perubahan="ya"
         DnsNew="system"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "dnsc" ];then
+    elif [ "$pilihan" == "dnsc" ]; then
         Perubahan="ya"
         DnsNew="cloudflare"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "dnsg" ];then
+    elif [ "$pilihan" == "dnsg" ]; then
         Perubahan="ya"
         DnsNew="google"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "dnsa" ];then
+    elif [ "$pilihan" == "dnsa" ]; then
         Perubahan="ya"
         DnsNew="adguard"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "dnsu" ];then
+    elif [ "$pilihan" == "dnsu" ]; then
         Perubahan="ya"
         DnsNew="uncensored"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "cdns" ];then
+    elif [ "$pilihan" == "cdns" ]; then
         clear
-        if [ "$DnsBefore" != "system" ];then
+        if [ "$DnsBefore" != "system" ]; then
             DataIpA="none"
             DataIpB="none"
-            if [ "$DnsBefore" == "cloudflare" ];then 
+            if [ "$DnsBefore" == "cloudflare" ]; then 
                 DataIpA="1.1.1.1"
                 DataIpB="1.0.0.1"
             fi
-            if [ "$DnsBefore" == "google" ];then 
+            if [ "$DnsBefore" == "google" ]; then 
                 DataIpA="8.8.8.8"
                 DataIpB="8.8.4.4"
             fi
-            if [ "$DnsBefore" == "adguard" ];then 
+            if [ "$DnsBefore" == "adguard" ]; then 
                 DataIpA="176.103.130.130"
                 DataIpB="176.103.130.131"
             fi
-            if [ "$DnsBefore" == "uncensored" ];then 
+            if [ "$DnsBefore" == "uncensored" ]; then 
                 DataIpA="91.239.100.100"
                 DataIpB="91.239.100.100"
             fi
@@ -1577,20 +1577,20 @@ ListMenu(){
             GetPacketDns="none"
             for GetDataDnsPacket in `iptables -t nat -L -nv | awk "/$DataIpA|$DataIpB/" | awk '{print $1}'`
             do
-                if [ "$GetPacketDns" == "none" ] && [ "$GetDataDnsPacket" -gt "0" ];then
+                if [ "$GetPacketDns" == "none" ] && [ "$GetDataDnsPacket" -gt "0" ]; then
                     GetPacketDns=$GetDataDnsPacket
                     break
                 fi
             done
             for GetDataDns in `iptables -t nat -L -nv | awk "/$DataIpA|$DataIpB/" | awk '{print $2}'`
             do
-                if [ "$GetDns" == "DNS not work,please use internet connection first" ] && [ "$GetDataDns" -gt "0" ];then
+                if [ "$GetDns" == "DNS not work,please use internet connection first" ] && [ "$GetDataDns" -gt "0" ]; then
                     GetDns=$(echo "$GetPacketDns pkts and $GetDataDns bytes")
                     break
                 fi
             done
             echo $GetDns
-            if [ "$GetDns" != "DNS not work,please use internet connection first" ];then
+            if [ "$GetDns" != "DNS not work,please use internet connection first" ]; then
                 echo "thats mean dns working :D"
             fi
         else
@@ -1600,32 +1600,32 @@ ListMenu(){
         read -n 3 -s -r 
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "gux" ];then
+    elif [ "$pilihan" == "gux" ]; then
         echo -n "how long (example : 1) : "
         read getnumber
         Perubahan="ya"
         StatusStartGpuNew="$getnumber"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "gun" ];then
+    elif [ "$pilihan" == "gun" ]; then
         echo -n "how long (example : 1) : "
         read getnumber
         Perubahan="ya"
         StatusEndGpuNew="$getnumber"
         $usleep 100000
         ListMenu
-    elif [ "$pilihan" == "oap" ];then
+    elif [ "$pilihan" == "oap" ]; then
         echo "all > all apps (include system) (NOT WORK FOR SOME DEVICES)"
         echo "app > installed app only (recomended)"
         echo "just enter to cancel"
         echo -n "choose type optimizer : "
         read AppOptimizerType
-        if [ "$AppOptimizerType" == "all"  ];then
+        if [ "$AppOptimizerType" == "all"  ]; then
             echo "starting optimize all app"
             cmd package compile -m speed -f -a
-        elif [ "$AppOptimizerType" == "app"  ];then
+        elif [ "$AppOptimizerType" == "app"  ]; then
             echo "starting optimize installed app"
-            if [ "$(getenforce)" == "Enforcing" ] && [ -z "$(getprop | grep begonia)" ] ;then
+            if [ "$(getenforce)" == "Enforcing" ] && [ -z "$(getprop | grep begonia)" ] ; then
                 changeSE="ya"
                 setenforce 0
             fi
@@ -1634,40 +1634,40 @@ ListMenu(){
                 echo -n "$appList : "
                 cmd package compile -m speed -f "$appList"
             done
-            if [ "$changeSE" == "ya" ] && [ -z "$(getprop | grep begonia)" ] ;then
+            if [ "$changeSE" == "ya" ] && [ -z "$(getprop | grep begonia)" ] ; then
                 setenforce 1
             fi
         fi
         echo -n "Press any key to continue . . . ."
         read -n 3 -s -r 
         ListMenu
-    elif [ "$pilihan" == "0" ] || [ "$pilihan" == "e" ] || [ "$pilihan" == "exit" ];then
+    elif [ "$pilihan" == "0" ] || [ "$pilihan" == "e" ] || [ "$pilihan" == "exit" ]; then
         exitSetting
-    elif [ "$pilihan" == "back" ];then
+    elif [ "$pilihan" == "back" ]; then
         typeMenu="none"
         ListMenu
-    elif [ "$pilihan" == "adv" ];then
+    elif [ "$pilihan" == "adv" ]; then
         TypeOpen="1"
         ListMenu
-    elif [ "$pilihan" == "bsc" ];then
+    elif [ "$pilihan" == "bsc" ]; then
         TypeOpen="0"
         ListMenu
-    elif [ "$pilihan" == "acsy" ];then
+    elif [ "$pilihan" == "acsy" ]; then
         SpectrumStatusNew=1
         Perubahan="ya"
         ListMenu
-    elif [ "$pilihan" == "acsx" ];then
+    elif [ "$pilihan" == "acsx" ]; then
         SpectrumStatusNew=0
         Perubahan="ya"
         ListMenu
-    elif [ "$pilihan" == "csmf" ];then
+    elif [ "$pilihan" == "csmf" ]; then
         echo "0 = balance"
         echo "1 = performance"
         echo "2 = battery"
         echo "3 = gaming"
         echo "etc . . ."
         read GetCsmf
-        if [ "$GetCsmf" -le "100" ];then
+        if [ "$GetCsmf" -le "100" ]; then
             ModeOffNew=$GetCsmf
             Perubahan="ya"
         else
@@ -1675,14 +1675,14 @@ ListMenu(){
             sleep 2
         fi
         ListMenu
-    elif [ "$pilihan" == "csmn" ];then
+    elif [ "$pilihan" == "csmn" ]; then
         echo "0 = balance"
         echo "1 = performance"
         echo "2 = battery"
         echo "3 = gaming"
         echo "etc . . ."
         read GetCsmn
-        if [ "$GetCsmn" -le "100" ];then
+        if [ "$GetCsmn" -le "100" ]; then
             ModeOnNew=$GetCsmn
             Perubahan="ya"
         else
@@ -1691,14 +1691,14 @@ ListMenu(){
         fi
         echo "coming soon :p"
         ListMenu
-    elif [ "$pilihan" == "csmd" ];then
+    elif [ "$pilihan" == "csmd" ]; then
         echo "0 = balance"
         echo "1 = performance"
         echo "2 = battery"
         echo "3 = gaming"
         echo "etc . . ."
         read GetCsmd
-        if [ "$GetCsmd" -le "100" ];then
+        if [ "$GetCsmd" -le "100" ]; then
             DozeSpectrumNew=$GetCsmd
             Perubahan="ya"
         else
@@ -1707,7 +1707,7 @@ ListMenu(){
         fi
         echo "coming soon :p"
         ListMenu
-    elif [ "$pilihan" == "upm" ];then
+    elif [ "$pilihan" == "upm" ]; then
         echo "list devices model"
         echo " 0 > dont change device model"
         echo " 1 > model : SM-G975U, brand : samsung"
@@ -1719,19 +1719,19 @@ ListMenu(){
         echo -n 'set device model to : '
         read GetCdm
         echo ""
-        if [ "$GetCdm" == "0" ];then
+        if [ "$GetCdm" == "0" ]; then
             update_system_prop
-        elif [ "$GetCdm" == "1" ];then
+        elif [ "$GetCdm" == "1" ]; then
             update_system_prop "SM-G975U" "samsung"
-        elif [ "$GetCdm" == "2" ];then
+        elif [ "$GetCdm" == "2" ]; then
             update_system_prop "SM-G975F" "samsung"
-        elif [ "$GetCdm" == "3" ];then
+        elif [ "$GetCdm" == "3" ]; then
             update_system_prop "SM-G9750" "samsung"
-        elif [ "$GetCdm" == "4" ];then
+        elif [ "$GetCdm" == "4" ]; then
             update_system_prop "SM-G9758" "samsung"
-        elif [ "$GetCdm" == "5" ];then
+        elif [ "$GetCdm" == "5" ]; then
             update_system_prop "SM-G975W" "samsung"
-        elif [ "$GetCdm" == "99" ];then
+        elif [ "$GetCdm" == "99" ]; then
             echo -n "device model : "
             read GetDM
             echo ""
@@ -1745,7 +1745,7 @@ ListMenu(){
         echo "done . . ."
         $usleep 1000000
         ListMenu
-    elif [ "$pilihan" == "mlg1" ];then
+    elif [ "$pilihan" == "mlg1" ]; then
         MoLeKey='name="PreformanceLv" value="'$MoLeVal'"'
         MoLeVal='name="PreformanceLv" value="1"'
         chmod  0666 $MoLepath
@@ -1753,7 +1753,7 @@ ListMenu(){
         chmod  0660 $MoLepath
         MoLeVal=$(cat $MoLepath | grep 'name="PreformanceLv" value="' | awk -F '\\value=' '{print $2}' | sed 's/" //g' | sed 's/[/][>]//g' | sed 's/"//g' )
         ListMenu
-    elif [ "$pilihan" == "mlg2" ];then
+    elif [ "$pilihan" == "mlg2" ]; then
         MoLeKey='name="PreformanceLv" value="'$MoLeVal'"'
         MoLeVal='name="PreformanceLv" value="2"'
         chmod  0666 $MoLepath
@@ -1761,7 +1761,7 @@ ListMenu(){
         chmod  0660 $MoLepath
         MoLeVal=$(cat $MoLepath | grep 'name="PreformanceLv" value="' | awk -F '\\value=' '{print $2}' | sed 's/" //g' | sed 's/[/][>]//g' | sed 's/"//g' )
         ListMenu
-    elif [ "$pilihan" == "mlg3" ];then
+    elif [ "$pilihan" == "mlg3" ]; then
         MoLeKey='name="PreformanceLv" value="'$MoLeVal'"'
         MoLeVal='name="PreformanceLv" value="3"'
         chmod  0666 $MoLepath
@@ -1769,7 +1769,7 @@ ListMenu(){
         chmod  0660 $MoLepath
         MoLeVal=$(cat $MoLepath | grep 'name="PreformanceLv" value="' | awk -F '\\value=' '{print $2}' | sed 's/" //g' | sed 's/[/][>]//g' | sed 's/"//g' )
         ListMenu
-    elif [ "$pilihan" == "mlg4" ];then
+    elif [ "$pilihan" == "mlg4" ]; then
         MoLeKey='name="PreformanceLv" value="'$MoLeVal'"'
         MoLeVal='name="PreformanceLv" value="4"'
         chmod  0666 $MoLepath
@@ -1777,16 +1777,16 @@ ListMenu(){
         chmod  0660 $MoLepath
         MoLeVal=$(cat $MoLepath | grep 'name="PreformanceLv" value="' | awk -F '\\value=' '{print $2}' | sed 's/" //g' | sed 's/[/][>]//g' | sed 's/"//g' )
         ListMenu
-    elif [ "$pilihan" == "dru" ];then
+    elif [ "$pilihan" == "dru" ]; then
         for DragonRajaPackageName in tw.com.szn.lz com.zloong.eu.dr.gp com.tencent.lzhx com.archosaur.sea.dr.gp com.kr.krlz.google com.tencent.longzu.jp 
         do
-            if [ -e $ModPathGame/$DragonRajaPackageName/files/userdata/usercfg.lua ];then 
+            if [ -e $ModPathGame/$DragonRajaPackageName/files/userdata/usercfg.lua ]; then 
                 DragonRajaGame="available"
                 getVal=$(cat $ModPathGame/$DragonRajaPackageName/files/userdata/usercfg.lua | grep "QC_HighFrameRateFlag = " | awk -F '\\HighFrameRateFlag' '{print $2}' | sed 's/[;]//g' | sed 's/ = //g' )
-                if [ "$DragonRajaValue" == "none" ];then
+                if [ "$DragonRajaValue" == "none" ]; then
                     DragonRajaValue="$getVal"
                 else
-                    if [ "$DragonRajaValue" != "$getVal" ];then
+                    if [ "$DragonRajaValue" != "$getVal" ]; then
                         DragonRajaValueType="Not Same"
                     fi
                 fi
@@ -1794,28 +1794,28 @@ ListMenu(){
             fi
         done
         ListMenu
-    elif [ "$pilihan" == "pubglf" ];then
+    elif [ "$pilihan" == "pubglf" ]; then
         for PubgFiles in `find "$ModPathGame"/com.tencent.ig/data`
         do
-            if [ -e "$PubgFiles" ];then
+            if [ -e "$PubgFiles" ]; then
                 chmod 0555 "$PubgFiles" -v
             fi
         done
         echo "lock all file done . . . ."
         ListMenu
-    elif [ "$pilihan" == "pubgmf" ];then
+    elif [ "$pilihan" == "pubgmf" ]; then
         PubgFileMover
         ListMenu
     else 
-        if [ "$Perubahan" == "ya" ];then
-            if [ "$pilihan" == "s" ];then
+        if [ "$Perubahan" == "ya" ]; then
+            if [ "$pilihan" == "s" ]; then
                 savedata="yes"
-            elif [ "$pilihan" == "save" ];then
+            elif [ "$pilihan" == "save" ]; then
                 savedata="yes"
             else
                 savedata="no"
             fi
-            if [ "$savedata" == "yes" ];then
+            if [ "$savedata" == "yes" ]; then
                 saveSetting
             fi
         fi
@@ -1826,23 +1826,23 @@ ListMenu(){
     fi
 }
 PubgFileMover(){
-    if [ "$(getenforce)" == "Enforcing" ] && [ -z "$(getprop | grep begonia)" ] ;then
+    if [ "$(getenforce)" == "Enforcing" ] && [ -z "$(getprop | grep begonia)" ] ; then
         changeSE="ya"
         setenforce 0
     fi
     GetListFileConfig="$ModPath"/zyc_pubg_app_list.txt
     GetListFolderConfig="$ModPath"/zyc_pubg_folder_list.txt
-    if [ -e $GetListFileConfig ];then
+    if [ -e $GetListFileConfig ]; then
         rm $GetListFileConfig
     fi
-    if [ -e "$GetListFolderConfig" ];then
+    if [ -e "$GetListFolderConfig" ]; then
         rm "$GetListFolderConfig"
     fi
     NoFolder=1
     NoFile=1
     for GetFileConfig in `find "$ModPath"/modul_mantul/ZyC_mod/Pubg_config`
     do
-        if [ -e "$GetFileConfig" ];then
+        if [ -e "$GetFileConfig" ]; then
             echo "[ $NoFile ] $GetFolder" | tee -a "$GetListFileConfig"
             NoFile=$(($NoFile+1))
         fi
@@ -1851,7 +1851,7 @@ PubgFileMover(){
     read FileNumber
     for GetFolderGame in `find "$ModPathGame"/com.tencent.ig/files/UE4Game/ShadowTrackerExtra/ShadowTrackerExtra/Saved/Config`
     do
-        if [ -d "$GetFolderGame" ];then
+        if [ -d "$GetFolderGame" ]; then
             echo "[ $NoFolder ] $GetFolder" | tee -a "$GetListFolderConfig"
             NoFolder=$(($NoFolder+1))
         fi
@@ -1865,12 +1865,12 @@ PubgFileMover(){
     clear
     rm "$GetListFileConfig"
     rm "$GetListFolderConfig"
-    if [ "$changeSE" == "ya" ] && [ -z "$(getprop | grep begonia)" ] ;then
+    if [ "$changeSE" == "ya" ] && [ -z "$(getprop | grep begonia)" ] ; then
         setenforce 1
     fi
     echo "copy another file again?[y/n]"
     read GetUrInput
-    if [ "$GetUrInput" == "y" ];then
+    if [ "$GetUrInput" == "y" ]; then
         PubgFileMover
     fi
 }
@@ -1878,8 +1878,8 @@ exitSetting(){
     clear
     echo -n "exit (y/n) : "
     read keluar
-    if [ "$keluar" == "y" ];then
-        if [ "$RestartNotif" == "iya" ];then
+    if [ "$keluar" == "y" ]; then
+        if [ "$RestartNotif" == "iya" ]; then
             echo 'please restart to take effect for some settings . . . !!!'
         fi
         echo "selamat tinggal :v "
@@ -1900,165 +1900,165 @@ saveSetting()
 {
     echo "saving changes . . ."
     RunTweak="tidak"
-    if [ "$GetModeBefore" != "$GetModeNew" ];then
+    if [ "$GetModeBefore" != "$GetModeNew" ]; then
         echo "$GetModeNew" > $PathModulConfig/status_modul.txt ; 
         GetModeBefore=$GetModeNew;
         RunTweak="iya"
     fi
-    if [ "$GetModeRenderBefore" != "$GetModeRenderNew" ];then
+    if [ "$GetModeRenderBefore" != "$GetModeRenderNew" ]; then
         echo "$GetModeRenderNew" > $PathModulConfig/mode_render.txt ; 
         GetModeRenderBefore=$GetModeRenderNew;
         RunTweak="iya"
         setprop zyc.change.render "belom"
     fi
-    if [ "$GetModeRenderLockBefore" != "$GetModeRenderLockNew" ];then
+    if [ "$GetModeRenderLockBefore" != "$GetModeRenderLockNew" ]; then
         echo "$GetModeRenderLockNew" > $PathModulConfig/mode_render_lock.txt ; 
         GetModeRenderLockBefore=$GetModeRenderLockNew;
         RunTweak="iya"
     fi
-    if [ "$GetModeFCBefore" != "$GetModeFCNew" ];then
+    if [ "$GetModeFCBefore" != "$GetModeFCNew" ]; then
         echo "$GetModeFCNew" > $PathModulConfig/fastcharge.txt ; 
         GetModeFCBefore=$GetModeFCNew;
         RunTweak="iya"
         setprop zyc.status.fastcharge "belom"
     fi
-    if [ "$GetModeFsyncBefore" != "$GetModeFsyncNew" ];then
+    if [ "$GetModeFsyncBefore" != "$GetModeFsyncNew" ]; then
         echo "$GetModeFsyncNew" > $PathModulConfig/fsync_mode.txt ; 
         GetModeFsyncBefore=$GetModeFsyncNew;
         RunTweak="iya"
     fi
-    if [ "$GetModeFsyncLockBefore" != "$GetModeFsyncLockNew" ];then
+    if [ "$GetModeFsyncLockBefore" != "$GetModeFsyncLockNew" ]; then
         echo "$GetModeFsyncLockNew" > $PathModulConfig/fsync_mode_lock.txt ; 
         GetModeFsyncLockBefore=$GetModeFsyncLockNew;
         RunTweak="iya"
     fi
-    if [ "$GetModeAdrenoBefore" != "$GetModeAdrenoNew" ];then
+    if [ "$GetModeAdrenoBefore" != "$GetModeAdrenoNew" ]; then
         echo "$GetModeAdrenoNew" > $PathModulConfig/GpuBooster.txt ; 
         GetModeAdrenoBefore=$GetModeAdrenoNew;
         RunTweak="iya"
     fi
-    if [ "$GetModeRamBefore" != "$GetModeRamNew" ];then
+    if [ "$GetModeRamBefore" != "$GetModeRamNew" ]; then
         echo "$GetModeRamNew" > $PathModulConfig/custom_ram_management.txt ; 
         GetModeRamBefore=$GetModeRamNew;
         RunTweak="iya"
         setprop zyc.change.rm "belom"
     fi
-    if [ "$GetModeRamAdjBefore" != "$GetModeRamAdjNew" ];then
+    if [ "$GetModeRamAdjBefore" != "$GetModeRamAdjNew" ]; then
         echo "$GetModeRamAdjNew" > $PathModulConfig/custom_ram_management_adj.txt ; 
         GetModeRamAdjBefore=$GetModeRamAdjNew;
         RunTweak="iya"
         setprop zyc.change.rm "belom"
     fi
-    if [ "$GetModeAiBefore" != "$GetModeAiNew" ];then
+    if [ "$GetModeAiBefore" != "$GetModeAiNew" ]; then
         echo "$GetModeAiNew" > $PathModulConfigAi/ai_status.txt ; 
         GetModeAiBefore=$GetModeAiNew;
     fi
-    if [ "$GetModeAiNotifNew" != "$GetModeAiNotifBefore" ];then
+    if [ "$GetModeAiNotifNew" != "$GetModeAiNotifBefore" ]; then
         echo "$GetModeAiNotifNew" > $PathModulConfigAi/ai_notif_mode.txt ; 
         GetModeAiNotifBefore=$GetModeAiNotifNew;
     fi
-    if [ "$GetModeAiNotifRunningNew" != "$GetModeAiNotifRunningBefore" ];then
+    if [ "$GetModeAiNotifRunningNew" != "$GetModeAiNotifRunningBefore" ]; then
         echo "$GetModeAiNotifRunningNew" > $PathModulConfigAi/ai_notif_mode_running.txt ; 
         GetModeAiNotifRunningBefore=$GetModeAiNotifRunningNew;
     fi
-    if [ "$GetModeAiNotifRunningStatusNew" != "$GetModeAiNotifRunningStatusBefore" ];then
+    if [ "$GetModeAiNotifRunningStatusNew" != "$GetModeAiNotifRunningStatusBefore" ]; then
         echo "$GetModeAiNotifRunningStatusNew" > $PathModulConfigAi/ai_notif_mode_running_status.txt ; 
         GetModeAiNotifRunningStatusBefore=$GetModeAiNotifRunningStatusNew;
     fi
-    if [ "$waitTimeOffNew" != "$waitTimeOffBefore" ];then
+    if [ "$waitTimeOffNew" != "$waitTimeOffBefore" ]; then
         echo "$waitTimeOffNew" > $PathModulConfigAi/wait_time_off.txt ; 
         waitTimeOffBefore=$waitTimeOffNew;
     fi
-    if [ "$waitTimeOnNew" != "$waitTimeOnBefore" ];then
+    if [ "$waitTimeOnNew" != "$waitTimeOnBefore" ]; then
         echo "$waitTimeOnNew" > $PathModulConfigAi/wait_time_on.txt ; 
         waitTimeOnBefore=$waitTimeOnNew;
     fi
-    if [ "$GmsDozeNew" != "$GmsDozeBefore" ];then
+    if [ "$GmsDozeNew" != "$GmsDozeBefore" ]; then
         echo "$GmsDozeNew" > $PathModulConfig/gms_doze.txt ; 
         GmsDozeBefore=$GmsDozeNew;
         RestartNotif="iya"
     fi
-    if [ "$ZramNew" != "$ZramBefore" ];then
+    if [ "$ZramNew" != "$ZramBefore" ]; then
         echo "$ZramNew" > $PathModulConfig/zram.txt ; 
         ZramBefore=$ZramNew;
         RunTweak="iya"
         setprop zyc.change.zrm "belom"
     fi
-    if [ "$swapinnesBefore" != "$swapinnesNew" ];then
+    if [ "$swapinnesBefore" != "$swapinnesNew" ]; then
         echo "$swapinnesNew" > $PathModulConfig/swapinnes.txt ; 
         swapinnesBefore=$swapinnesNew;
         RunTweak="iya"
     fi
-    if [ "$ZramOptimizerBefore" != "$ZramOptimizerNew" ];then
+    if [ "$ZramOptimizerBefore" != "$ZramOptimizerNew" ]; then
         echo "$ZramOptimizerNew" > $PathModulConfig/zram_optimizer.txt ; 
         ZramOptimizerBefore=$ZramOptimizerNew;
         RunTweak="iya"
     fi
-    if [ "$GetModeAiCBefore" != "$GetModeAiCNew" ];then
+    if [ "$GetModeAiCBefore" != "$GetModeAiCNew" ]; then
         echo "$GetModeAiCNew" > $PathModulConfigAi/ai_change.txt ; 
         GetModeAiCBefore=$GetModeAiCNew;
     fi
-    if [ "$AiDozeBefore" != "$AiDozeNew" ];then
+    if [ "$AiDozeBefore" != "$AiDozeNew" ]; then
         echo "$AiDozeNew" > $PathModulConfigAi/ai_doze.txt ; 
         AiDozeBefore=$AiDozeNew;
     fi
-    if [ "$AiDozeNotifBefore" != "$AiDozeNotifNew" ];then
+    if [ "$AiDozeNotifBefore" != "$AiDozeNotifNew" ]; then
         echo "$AiDozeNotifNew" > $PathModulConfigAi/ai_doze_notif.txt ; 
         AiDozeNotifBefore=$AiDozeNotifNew;
     fi
-    if [ "$StatusStartGpuBefore" != "$StatusStartGpuNew" ];then
+    if [ "$StatusStartGpuBefore" != "$StatusStartGpuNew" ]; then
         echo "$StatusStartGpuNew" > $PathModulConfigAi/status_start_gpu.txt ; 
         StatusStartGpuBefore=$StatusStartGpuNew;
     fi
-    if [ "$StatusEndGpuBefore" != "$StatusEndGpuNew" ];then
+    if [ "$StatusEndGpuBefore" != "$StatusEndGpuNew" ]; then
         echo "$StatusEndGpuNew" > $PathModulConfigAi/status_end_gpu.txt ; 
         StatusEndGpuBefore=$StatusEndGpuNew;
     fi
-    if [ "$ModeOnBefore" != "$ModeOnNew" ];then
+    if [ "$ModeOnBefore" != "$ModeOnNew" ]; then
         echo "$ModeOnNew" > $PathModulConfigAi/mode_on.txt ; 
         ModeOnBefore=$ModeOnNew;
     fi
-    if [ "$ModeOffBefore" != "$ModeOffNew" ];then
+    if [ "$ModeOffBefore" != "$ModeOffNew" ]; then
         echo "$ModeOffNew" > $PathModulConfigAi/mode_off.txt ; 
         ModeOffBefore=$ModeOffNew;
     fi
-    if [ "$SpectrumStatusBefore" != "$SpectrumStatusNew" ];then
+    if [ "$SpectrumStatusBefore" != "$SpectrumStatusNew" ]; then
         echo "$SpectrumStatusNew" > $PathModulConfigAi/spectrum_status.txt ; 
         SpectrumStatusBefore=$SpectrumStatusNew;
     fi
-    if [ "$DozeSpectrumBefore" != "$DozeSpectrumNew" ];then
+    if [ "$DozeSpectrumBefore" != "$DozeSpectrumNew" ]; then
         echo "$DozeSpectrumNew" > $PathModulConfigAi/doze_spectrum.txt ; 
         DozeSpectrumBefore=$DozeSpectrumNew;
     fi
-    if [ "$AosOnTurboBefore" != "$AosOnTurboNew" ];then
+    if [ "$AosOnTurboBefore" != "$AosOnTurboNew" ]; then
         echo "$AosOnTurboNew" > $PathModulConfigAi/ai_aos_on_turbo.txt
         AosOnTurboBefore="$AosOnTurboNew"
     fi
-    if [ "$DnsBefore" != "$DnsNew" ];then
+    if [ "$DnsBefore" != "$DnsNew" ]; then
         echo "$DnsNew" > $PathModulConfig/dns.txt ; 
         DnsBefore=$DnsNew;
         RunTweak="iya"
         setprop zyc.change.dns "belom"
     fi
-    if [ "$RunTweak" == "iya" ];then
+    if [ "$RunTweak" == "iya" ]; then
         echo "--- --- --- --- ---"
         echo "re run tweak . . ."
         echo "--- --- --- --- ---"
         zyc_turbo & wait
     fi
-    if [ "$GetModeAiNew" == "1" ];then
+    if [ "$GetModeAiNew" == "1" ]; then
         echo "--- --- --- --- ---"
         echo "turn on ai"
         echo "--- --- --- --- ---"
         zyc_auto & wait
     fi
-    if [ "$RefreshList" == "iya" ];then
+    if [ "$RefreshList" == "iya" ]; then
         echo "--- --- --- --- ---"
         echo "Re Scan app & game list"
         echo "--- --- --- --- ---"
         . $ModulPath/ZyC_Turbo/initialize.sh "App" & wait
     fi
-    if [ "$RestartNotif" == "iya" ];then
+    if [ "$RestartNotif" == "iya" ]; then
         echo " please restart to take effect for gms doze fix"
     fi
     echo "done . . . "
